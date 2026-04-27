@@ -5,6 +5,7 @@ extends RigidBody3D
 var last_report_time: float = 0.0
 
 func _ready() -> void:
+	add_to_group("logs")
 	contact_monitor = true
 	max_contacts_reported = 10
 	print("--- LOG TRACER ACTIVE ---")

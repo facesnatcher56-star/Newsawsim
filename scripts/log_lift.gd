@@ -8,12 +8,18 @@ extends AnimatableBody3D
 @export var direction_multiplier: float = -1.0
 @export var reset_threshold_z: float = 4.38
 var start_position: Vector3
+var is_paused: bool = false
 
 func _ready() -> void:
 	start_position = global_position
+	# Add to a group for easy access
+	add_to_group("log_lifts")
 	print("[LOG LIFT] Initialized at: ", start_position)
 
 func _physics_process(delta: float) -> void:
+	if is_paused:
+		return
+		
 	# Move along its LOCAL X-axis, flipped if necessary
 	var move_vec = transform.basis.x * (speed * direction_multiplier) * delta
 	global_position += move_vec
