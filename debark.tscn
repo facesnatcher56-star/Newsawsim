@@ -18,6 +18,9 @@
 [ext_resource type="PackedScene" uid="uid://hgio3urytp0y" path="res://Prefabs/Stop.glb" id="16_op6l5"]
 [ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://scripts/kicker.gd" id="17_kick"]
 [ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://scripts/free_fly_camera.gd" id="18_cam"]
+[ext_resource type="Script" uid="uid://chdlx52sgduuf" path="res://scripts/release_zone.gd" id="19_rel"]
+[ext_resource type="PackedScene" uid="uid://wpvy3sharova" path="res://Prefabs/LogLift.glb" id="20_o3d8n"]
+[ext_resource type="Script" uid="uid://bp7flaalpbpv0" path="res://scripts/log_lift.gd" id="21_lift"]
 
 [sub_resource type="Environment" id="1"]
 background_mode = 2
@@ -28,14 +31,13 @@ glow_enabled = true
 size = Vector3(1.7288818, 0.63623047, 1.8834229)
 
 [sub_resource type="BoxShape3D" id="3"]
-size = Vector3(1.72888, 1, 1.88342)
+size = Vector3(1.72888, 1, 1.0321343)
 
-[sub_resource type="CapsuleShape3D" id="4"]
-radius = 0.26953125
-height = 2.2772064
+[sub_resource type="BoxShape3D" id="BoxShape3D_o3d8n"]
+size = Vector3(0.45629883, 1.9126282, 0.5319824)
 
 [sub_resource type="BoxShape3D" id="5"]
-size = Vector3(0.86932373, 0.2510376, 4.0005493)
+size = Vector3(0.81557465, 0.2510376, 4.0005493)
 
 [sub_resource type="BoxShape3D" id="6"]
 size = Vector3(0.09484863, 0.625, 3.8378906)
@@ -44,7 +46,7 @@ size = Vector3(0.09484863, 0.625, 3.8378906)
 size = Vector3(0.14733887, 0.6220703, 4.107788)
 
 [sub_resource type="BoxShape3D" id="BoxShape_kicker"]
-size = Vector3(1.5, 1, 0.8485718)
+size = Vector3(1.5, 1, 0.973114)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uviwe"]
 size = Vector3(1.7497559, 1.2641602, 0.28710938)
@@ -60,7 +62,13 @@ radius = 0.7133789
 height = 3.3104248
 
 [sub_resource type="BoxShape3D" id="BoxShape_lock"]
-size = Vector3(4, 1.4406738, 1.5410156)
+size = Vector3(4, 0.78253174, 0.5123749)
+
+[sub_resource type="BoxShape3D" id="BoxShape_release"]
+size = Vector3(2, 2, 0.3256836)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_kwu31"]
+size = Vector3(1, 1.8496704, 1)
 
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
@@ -92,7 +100,27 @@ shape = SubResource("2")
 script = ExtResource("9")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DebarkerDeck/RotationLockZone" unique_id=776352212]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015197754, 0.5, 0.004211426)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015197754, 0.5, -4.310439)
+shape = SubResource("3")
+
+[node name="LogDeck" type="StaticBody3D" parent="." unique_id=1892446316]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.100112, 0.29042745, 5.2027254)
+script = ExtResource("4")
+speed = 0.2
+direction = Vector3(0, 0, 1)
+
+[node name="Model" parent="LogDeck" unique_id=368828696 instance=ExtResource("1")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LogDeck" unique_id=1048999245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015197754, -0.18188477, 0.004211426)
+shape = SubResource("2")
+
+[node name="RotationLockZone" type="Area3D" parent="LogDeck" unique_id=1370687735]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.33412457)
+script = ExtResource("9")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LogDeck/RotationLockZone" unique_id=426437531]
+transform = Transform3D(0.99999946, -0.000187283, 0.0009964674, 0.00018374674, 0.9999937, 0.0035404023, -0.0009971256, -0.003540217, 0.9999932, -0.015197754, 0.5, 2.8972702)
 shape = SubResource("3")
 
 [node name="GripRoller1" parent="." unique_id=305399781 instance=ExtResource("10")]
@@ -117,15 +145,27 @@ speed = 3.0
 axis = Vector3(1, 0, 0)
 
 [node name="Log" type="RigidBody3D" parent="." unique_id=540288510]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29977387, 1.517032, 0.10606891)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29977387, 1.7520646, 0.10606891)
 mass = 50.0
 script = ExtResource("14")
 
 [node name="Model" parent="Log" unique_id=1587365440 instance=ExtResource("2")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Log" unique_id=240098998]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.024466515, 0, 0)
-shape = SubResource("4")
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.0031805038, -0.0045166016, 0.009643555)
+shape = SubResource("BoxShape3D_o3d8n")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Log" unique_id=1313958140]
+transform = Transform3D(-4.37114e-08, -1, 0, 0.64123535, -2.8029294e-08, 0.76734424, -0.76734424, 3.354169e-08, 0.64123535, 0.0031805038, -0.0045166016, 0.009643555)
+shape = SubResource("BoxShape3D_o3d8n")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Log" unique_id=77561825]
+transform = Transform3D(-4.3711402e-08, -1, 3.6412028e-15, 0.34011695, -1.4866987e-08, 0.9403831, -0.9403831, 4.110546e-08, 0.34011695, 0.0031805038, -0.0045166016, 0.009643555)
+shape = SubResource("BoxShape3D_o3d8n")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Log" unique_id=919635527]
+transform = Transform3D(-4.3711406e-08, -1, 5.149832e-15, -0.33793312, 1.4771532e-08, 0.9411701, -0.9411701, 4.1139863e-08, -0.33793312, 0.0031805038, -0.0045166016, 0.009643555)
+shape = SubResource("BoxShape3D_o3d8n")
 
 [node name="WasteConveyor" parent="." unique_id=1866187276 instance=ExtResource("3")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.8440187, 0.49387634, 2.118352)
@@ -172,11 +212,11 @@ script = ExtResource("17_kick")
 kick_speed = 0.8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WasteConveyor3/KickerZone" unique_id=1703927785]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25213838, 0, 1.0462084)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25213838, 0, 0.75459576)
 shape = SubResource("BoxShape_kicker")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor3" unique_id=2108579984]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065338135, 0.009726405, 0.03012085)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09221268, 0.009726405, 0.03012085)
 shape = SubResource("5")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor3" unique_id=251383393]
@@ -193,7 +233,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20140922, 0.8587357, 2.1279
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0820346, 1, 2.0626583)
 
 [node name="MarkerYellow" parent="." unique_id=1125315634 instance=ExtResource("8")]
-transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 14.035736, 1.2746072, 4.1616187)
+transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 14.035736, 1.2746072, 4.368806)
 
 [node name="SmoothRoller" parent="." unique_id=894314069 instance=ExtResource("13")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.505981, 1.8345357, 2.1326437)
@@ -204,7 +244,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.7
 [node name="Model" parent="Stop" unique_id=958664101 instance=ExtResource("16_op6l5")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Stop" unique_id=1845640158]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, -0.27378845)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, 0.1076355)
 shape = SubResource("BoxShape3D_uviwe")
 
 [node name="InclineVisualModel" parent="." unique_id=953693003 instance=ExtResource("5_xpg8g")]
@@ -239,5 +279,53 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2, 2, 3.3)
 script = ExtResource("9")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InclineLockZone" unique_id=1762449800]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3698773, 0.6107013)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.9478507, 5.370536)
 shape = SubResource("BoxShape_lock")
+
+[node name="ReleaseZone" type="Area3D" parent="." unique_id=100000001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.035736, 1.2746072, 4.5729485)
+script = ExtResource("19_rel")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ReleaseZone" unique_id=100000002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0871582)
+shape = SubResource("BoxShape_release")
+
+[node name="LogLift" type="AnimatableBody3D" parent="." unique_id=1461095584]
+transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 13.383948, 0.292365, 2.8091352)
+script = ExtResource("21_lift")
+
+[node name="Model" parent="LogLift" unique_id=200000001 instance=ExtResource("20_o3d8n")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift" unique_id=807902333]
+transform = Transform3D(1, 0, -4.8316906e-13, 0, 1, -1.6520119e-13, 1.0658141e-14, 0, 0.9999995, -0.37759972, 0.20532799, 0)
+shape = SubResource("BoxShape3D_kwu31")
+
+[node name="LogLift2" type="AnimatableBody3D" parent="." unique_id=1880575240]
+transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 13.879233, 0.292365, 2.8091352)
+script = ExtResource("21_lift")
+
+[node name="Model" parent="LogLift2" unique_id=169426219 instance=ExtResource("20_o3d8n")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift2" unique_id=300292562]
+transform = Transform3D(1, 0, -4.8316906e-13, 0, 1, -1.6520119e-13, 1.0658141e-14, 0, 0.9999995, -0.37759972, 0.20532799, 0)
+shape = SubResource("BoxShape3D_kwu31")
+
+[node name="LogLift3" type="AnimatableBody3D" parent="." unique_id=814850326]
+transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 14.544235, 0.292365, 2.8091352)
+script = ExtResource("21_lift")
+
+[node name="Model" parent="LogLift3" unique_id=425403451 instance=ExtResource("20_o3d8n")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift3" unique_id=1178357829]
+transform = Transform3D(1, 0, -4.8316906e-13, 0, 1, -1.6520119e-13, 1.0658141e-14, 0, 0.9999995, -0.37759972, 0.20532799, 0)
+shape = SubResource("BoxShape3D_kwu31")
+
+[node name="LogLift4" type="AnimatableBody3D" parent="." unique_id=1509436746]
+transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 15.03424, 0.292365, 2.8091352)
+script = ExtResource("21_lift")
+
+[node name="Model" parent="LogLift4" unique_id=1175327104 instance=ExtResource("20_o3d8n")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift4" unique_id=1315447031]
+transform = Transform3D(1, 0, -4.8316906e-13, 0, 1, -1.6520119e-13, 1.0658141e-14, 0, 0.9999995, -0.37759972, 0.20532799, 0)
+shape = SubResource("BoxShape3D_kwu31")
