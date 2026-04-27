@@ -68,6 +68,13 @@ size = Vector3(4, 0.78253174, 0.5123749)
 [sub_resource type="BoxShape3D" id="BoxShape_release"]
 size = Vector3(2, 2, 0.3256836)
 
+[sub_resource type="Curve3D" id="Curve3D_kwu31"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, -0.00032615662, -0.000918746, 0.0040154457, 0, 0, 0, 0, 0, 0, 0.0007343292, 0.21593916, 0.19594431, 0, 0, 0, 0, 0, 0, 0.0007953644, 0.58987105, 0.516747, 0, 0, 0, 0, 0, 0, 0.0002002716, 0.69537544, 0.6502526, 0, 0, 0, 0, 0, 0, 0.00040531158, 0.7769438, 0.7951894, 0, 0, 0, 0, 0, 0, -0.0011405945, 0.855374, 0.9879384, 0, 0, 0, 0, 0, 0, 0.0016479492, 0.9120451, 1.2727895),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0, 0, 0)
+}
+point_count = 7
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_kwu31"]
 size = Vector3(1, 4.477831, 1)
 
@@ -243,6 +250,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.50
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.780458, 1.2457577, 2.2462158)
 
 [node name="Model" parent="Stop" unique_id=958664101 instance=ExtResource("16_op6l5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36242676, 0, -0.054519653)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Stop" unique_id=1845640158]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, 0.1076355)
@@ -288,46 +296,92 @@ shape = SubResource("BoxShape_release")
 [node name="LiftController" type="Node" parent="." unique_id=123456789]
 script = ExtResource("lift_controller_script")
 
-[node name="LogLift" type="AnimatableBody3D" parent="." unique_id=1461095584]
-transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 13.383948, 0.292365, 2.8091352)
+[node name="Path3D" type="Path3D" parent="." unique_id=1566584387]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.378746, 0.33395708, 2.9458995)
+curve = SubResource("Curve3D_kwu31")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D" unique_id=1608518488]
+transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, -0.7488238, 0.0055250484, -0.74881256, -0.66274226, -0.00032615662, -0.000918746, 0.0040154457)
+
+[node name="LogLift" type="AnimatableBody3D" parent="Path3D/PathFollow3D" unique_id=1461095584]
+transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
 speed = 0.6
 
-[node name="Model" parent="LogLift" unique_id=200000001 instance=ExtResource("20_o3d8n")]
+[node name="Model" parent="Path3D/PathFollow3D/LogLift" unique_id=200000001 instance=ExtResource("20_o3d8n")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift" unique_id=807902333]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D/PathFollow3D/LogLift" unique_id=807902333]
 transform = Transform3D(1, 0, -3.090861e-13, 0, 1, -3.126388e-13, -1.7763568e-15, -2.8066438e-13, 0.9999996, -0.37759972, 0.51854324, 0)
 shape = SubResource("BoxShape3D_kwu31")
 
-[node name="LogLift2" type="AnimatableBody3D" parent="." unique_id=1880575240]
-transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 13.879233, 0.292365, 2.8091352)
+[node name="Path3D2" type="Path3D" parent="." unique_id=1146249294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.890961, 0.33395708, 2.9458995)
+curve = SubResource("Curve3D_kwu31")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D2" unique_id=136910387]
+transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, -0.7488238, 0.0055250484, -0.74881256, -0.66274226, -0.00032615662, -0.000918746, 0.0040154457)
+
+[node name="LogLift" type="AnimatableBody3D" parent="Path3D2/PathFollow3D" unique_id=1616717765]
+transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
 speed = 0.6
 
-[node name="Model" parent="LogLift2" unique_id=169426219 instance=ExtResource("20_o3d8n")]
+[node name="Model" parent="Path3D2/PathFollow3D/LogLift" unique_id=2084767503 instance=ExtResource("20_o3d8n")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift2" unique_id=300292562]
-transform = Transform3D(1, 0, -4.2987836e-13, 0, 1, -2.1138646e-13, -1.7763568e-15, -8.881784e-14, 0.9999996, -0.3775959, 0.47442436, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D2/PathFollow3D/LogLift" unique_id=2089604006]
+transform = Transform3D(1, 0, -3.090861e-13, 0, 1, -3.126388e-13, -1.7763568e-15, -2.8066438e-13, 0.9999996, -0.37759972, 0.51854324, 0)
 shape = SubResource("BoxShape3D_kwu31")
 
-[node name="LogLift3" type="AnimatableBody3D" parent="." unique_id=814850326]
-transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 14.544235, 0.292365, 2.8091352)
+[node name="Path3D3" type="Path3D" parent="." unique_id=1206699063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.212872, 0.33395708, 2.9458995)
+curve = SubResource("Curve3D_kwu31")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D3" unique_id=1630679824]
+transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, -0.7488238, 0.0055250484, -0.74881256, -0.66274226, -0.00032615662, -0.000918746, 0.0040154457)
+
+[node name="LogLift" type="AnimatableBody3D" parent="Path3D3/PathFollow3D" unique_id=1292299446]
+transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
 speed = 0.6
 
-[node name="Model" parent="LogLift3" unique_id=425403451 instance=ExtResource("20_o3d8n")]
+[node name="Model" parent="Path3D3/PathFollow3D/LogLift" unique_id=1380302307 instance=ExtResource("20_o3d8n")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift3" unique_id=1178357829]
-transform = Transform3D(1, 0, -4.3876014e-13, 0, 1, -2.0428104e-13, -1.7763568e-15, -7.460699e-14, 0.9999996, -0.37759972, 0.49661446, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D3/PathFollow3D/LogLift" unique_id=362706434]
+transform = Transform3D(1, 0, -3.090861e-13, 0, 1, -3.126388e-13, -1.7763568e-15, -2.8066438e-13, 0.9999996, -0.37759972, 0.51854324, 0)
 shape = SubResource("BoxShape3D_kwu31")
 
-[node name="LogLift4" type="AnimatableBody3D" parent="." unique_id=1509436746]
-transform = Transform3D(-5.1563083e-09, -6.6042505e-10, 0.09999999, -0.07648426, 0.06442171, -3.5183063e-09, -0.06442171, -0.07648426, -3.826903e-09, 15.03424, 0.292365, 2.8091352)
+[node name="Path3D4" type="Path3D" parent="." unique_id=283833245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.562981, 0.33395708, 2.9458995)
+curve = SubResource("Curve3D_kwu31")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D4" unique_id=1990449847]
+transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, -0.7488238, 0.0055250484, -0.74881256, -0.66274226, -0.00032615662, -0.000918746, 0.0040154457)
+
+[node name="LogLift" type="AnimatableBody3D" parent="Path3D4/PathFollow3D" unique_id=177117894]
+transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
 speed = 0.6
 
-[node name="Model" parent="LogLift4" unique_id=1175327104 instance=ExtResource("20_o3d8n")]
+[node name="Model" parent="Path3D4/PathFollow3D/LogLift" unique_id=692513231 instance=ExtResource("20_o3d8n")]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="LogLift4" unique_id=1315447031]
-transform = Transform3D(1, 0, -3.9790393e-13, 0, 1, -2.3803182e-13, -1.7763568e-15, -1.3855583e-13, 0.9999996, -0.3775921, 0.6458111, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D4/PathFollow3D/LogLift" unique_id=1223861977]
+transform = Transform3D(1, 0, -3.090861e-13, 0, 1, -3.126388e-13, -1.7763568e-15, -2.8066438e-13, 0.9999996, -0.37759972, 0.51854324, 0)
+shape = SubResource("BoxShape3D_kwu31")
+
+[node name="Path3D5" type="Path3D" parent="." unique_id=1633400728]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.021803, 0.33395708, 2.9458995)
+curve = SubResource("Curve3D_kwu31")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Path3D5" unique_id=248293847]
+transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, -0.7488238, 0.0055250484, -0.74881256, -0.66274226, -0.00032615662, -0.000918746, 0.0040154457)
+
+[node name="LogLift" type="AnimatableBody3D" parent="Path3D5/PathFollow3D" unique_id=1843554989]
+transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
+script = ExtResource("21_lift")
+speed = 0.6
+
+[node name="Model" parent="Path3D5/PathFollow3D/LogLift" unique_id=949683555 instance=ExtResource("20_o3d8n")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Path3D5/PathFollow3D/LogLift" unique_id=1441967856]
+transform = Transform3D(1, 0, -3.090861e-13, 0, 1, -3.126388e-13, -1.7763568e-15, -2.8066438e-13, 0.9999996, -0.37759972, 0.51854324, 0)
 shape = SubResource("BoxShape3D_kwu31")
