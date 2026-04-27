@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/marker_point.gd" id="1"]
+
+[sub_resource type="StandardMaterial3D" id="1"]
+shading_mode = 0
+albedo_color = Color(1, 1, 0, 1)
+
+[node name="MarkerPoint" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Label3D" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+billboard = 1
+double_sided = false
+text = "Marker Point"
+font_size = 64
+outline_size = 12
+
+[node name="EditorVisual" type="CSGBox3D" parent="."]
+size = Vector3(0.2, 0.2, 0.2)
+material_override = SubResource("1")

@@ -1,0 +1,241 @@
+[gd_scene format=3 uid="uid://bmvrfshlclq6b"]
+
+[ext_resource type="PackedScene" uid="uid://bqw3qfkie7cl7" path="res://Prefabs/DebarkerDeck.glb" id="1"]
+[ext_resource type="PackedScene" uid="uid://chru2vbog6bky" path="res://Prefabs/Log.glb" id="2"]
+[ext_resource type="PackedScene" uid="uid://c8n8q4u6r8v3" path="res://scenes/waste_conveyor.tscn" id="3"]
+[ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/marker_red.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://dd665000wxoxl" path="res://Prefabs/Incline.glb" id="5_xpg8g"]
+[ext_resource type="PackedScene" path="res://scenes/marker_blue.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/marker_green.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://scenes/marker_yellow.tscn" id="8"]
+[ext_resource type="Script" uid="uid://c2pvfb3bf4fkx" path="res://scripts/rotation_lock_zone.gd" id="9"]
+[ext_resource type="PackedScene" uid="uid://c3mlf0h3g6a7r" path="res://scenes/grip_roller.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://bo7hpjp2jfjyf" path="res://Prefabs/DebarkerRing.glb" id="11"]
+[ext_resource type="Script" uid="uid://b6manf5t3mmr0" path="res://scripts/rotator.gd" id="12"]
+[ext_resource type="PackedScene" path="res://scenes/smooth_roller.tscn" id="13"]
+[ext_resource type="Script" uid="uid://r8es0fu0jela" path="res://scripts/tracer.gd" id="14"]
+[ext_resource type="PackedScene" uid="uid://hgio3urytp0y" path="res://Prefabs/Stop.glb" id="16_op6l5"]
+[ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://scripts/kicker.gd" id="17_kick"]
+[ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://scripts/free_fly_camera.gd" id="18_cam"]
+
+[sub_resource type="Environment" id="1"]
+background_mode = 2
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="2"]
+size = Vector3(1.7288818, 0.63623047, 1.8834229)
+
+[sub_resource type="BoxShape3D" id="3"]
+size = Vector3(1.72888, 1, 1.88342)
+
+[sub_resource type="CapsuleShape3D" id="4"]
+radius = 0.26953125
+height = 2.2772064
+
+[sub_resource type="BoxShape3D" id="5"]
+size = Vector3(1.1052246, 0.2510376, 4.0005493)
+
+[sub_resource type="BoxShape3D" id="6"]
+size = Vector3(0.09484863, 0.625, 3.8378906)
+
+[sub_resource type="BoxShape3D" id="7"]
+size = Vector3(0.14733887, 0.6220703, 4.107788)
+
+[sub_resource type="BoxShape3D" id="BoxShape_kicker"]
+size = Vector3(1.5, 1, 0.8485718)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uviwe"]
+size = Vector3(1.7497559, 1.2641602, 0.28710938)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_618a6"]
+size = Vector3(1.8398819, 0.030517578, 0.29840088)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hajir"]
+size = Vector3(1.8259277, 0.14172363, 0.7290039)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_o3d8n"]
+radius = 0.7133789
+height = 3.3104248
+
+[sub_resource type="BoxShape3D" id="BoxShape_lock"]
+size = Vector3(4, 1.4406738, 1.5410156)
+
+[node name="DebarkScene" type="Node3D" unique_id=2093779747]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
+environment = SubResource("1")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=522720136]
+transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602545, -0.50000024, -0.74999994, 0.43301257, 11.351148, 5, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
+transform = Transform3D(0.54131204, 0.4204107, -0.72817314, 2.379199e-10, 0.86602557, 0.49999973, 0.8408218, -0.27065587, 0.46879002, 10.872887, 1.4940186, 3.9898376)
+current = true
+script = ExtResource("18_cam")
+
+[node name="DebarkerDeck" type="StaticBody3D" parent="." unique_id=1357662049]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 1.0632678, 0.659112)
+script = ExtResource("4")
+speed = 0.2
+direction = Vector3(0, 0, 1)
+
+[node name="Model" parent="DebarkerDeck" unique_id=1116857412 instance=ExtResource("1")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DebarkerDeck" unique_id=1022364952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015197754, -0.18188477, 0.004211426)
+shape = SubResource("2")
+
+[node name="RotationLockZone" type="Area3D" parent="DebarkerDeck" unique_id=1941206573]
+script = ExtResource("9")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DebarkerDeck/RotationLockZone" unique_id=776352212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015197754, 0.5, 0.004211426)
+shape = SubResource("3")
+
+[node name="GripRoller1" parent="." unique_id=305399781 instance=ExtResource("10")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 0.29016703, 2.114215)
+
+[node name="GripRoller2" parent="." unique_id=927016362 instance=ExtResource("10")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.587456, 0.29016703, 2.114215)
+
+[node name="GripRoller3" parent="." unique_id=732283271 instance=ExtResource("10")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.716435, 0.29016703, 2.114215)
+
+[node name="GripRoller4" parent="." unique_id=295887159 instance=ExtResource("10")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.6376386, 0.29016703, 2.114215)
+
+[node name="DebarkerRing" type="Node3D" parent="." unique_id=98748114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.4, 1.25)
+
+[node name="Model" parent="DebarkerRing" unique_id=69417199 instance=ExtResource("11")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.8652086, -0.68601704, 0.82223344)
+script = ExtResource("12")
+speed = 3.0
+axis = Vector3(1, 0, 0)
+
+[node name="Log" type="RigidBody3D" parent="." unique_id=540288510]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29977387, 1.517032, 0.10606891)
+mass = 50.0
+script = ExtResource("14")
+
+[node name="Model" parent="Log" unique_id=1587365440 instance=ExtResource("2")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Log" unique_id=240098998]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.024466515, 0, 0)
+shape = SubResource("4")
+
+[node name="WasteConveyor" parent="." unique_id=1866187276 instance=ExtResource("3")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.8440187, 0.49387634, 2.118352)
+speed = 0.2
+direction = Vector3(1, 0, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor" unique_id=1420525182]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.009726405, 0.03012085)
+shape = SubResource("5")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor" unique_id=757500729]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("6")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="WasteConveyor" unique_id=230816374]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5342386, 0.18896484, 0.08856225)
+shape = SubResource("7")
+
+[node name="WasteConveyor2" parent="." unique_id=1270012316 instance=ExtResource("3")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.252166, 0.45196784, 2.118352)
+speed = 0.2
+direction = Vector3(1, 0, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor2" unique_id=704173424]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.009726405, 0.03012085)
+shape = SubResource("5")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor2" unique_id=957500864]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("6")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="WasteConveyor2" unique_id=20960965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5342386, 0.18896484, 0.08856225)
+shape = SubResource("7")
+
+[node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("3")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.253051, 0.45196784, 2.118352)
+speed = 0.2
+direction = Vector3(1, 0, 0)
+
+[node name="KickerZone" type="Area3D" parent="WasteConveyor3" unique_id=1449677283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 0.5, 1.3315182)
+script = ExtResource("17_kick")
+kick_speed = 0.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WasteConveyor3/KickerZone" unique_id=1703927785]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25213838, 0, 0.755847)
+shape = SubResource("BoxShape_kicker")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor3" unique_id=2108579984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.052612305, 0.009726405, 0.03012085)
+shape = SubResource("5")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor3" unique_id=251383393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("6")
+
+[node name="MarkerRed" parent="." unique_id=1863297703 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32253027, 1.3105912, -0.18816942)
+
+[node name="MarkerBlue" parent="." unique_id=846704829 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.20140922, 0.8587357, 2.1279464)
+
+[node name="MarkerGreen" parent="." unique_id=946960788 instance=ExtResource("7")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0820346, 1, 2.0626583)
+
+[node name="MarkerYellow" parent="." unique_id=1125315634 instance=ExtResource("8")]
+transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 14.035736, 1.2746072, 4.1616187)
+
+[node name="SmoothRoller" parent="." unique_id=894314069 instance=ExtResource("13")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.505981, 1.8345357, 2.1326437)
+
+[node name="Stop" type="StaticBody3D" parent="." unique_id=1741714093]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.780458, 1.2457577, 2.2462158)
+
+[node name="Model" parent="Stop" unique_id=958664101 instance=ExtResource("16_op6l5")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stop" unique_id=1845640158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020141602, -0.13208008, -0.3564453)
+shape = SubResource("BoxShape3D_uviwe")
+
+[node name="InclineVisualModel" parent="." unique_id=953693003 instance=ExtResource("5_xpg8g")]
+transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, -1.2, 14.219804, 0.69682693, 3.3655105)
+
+[node name="InclinePart1" type="StaticBody3D" parent="." unique_id=1569705269]
+transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, -1.2, 14.219804, 0.69682693, 3.3655105)
+script = ExtResource("4")
+speed = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InclinePart1" unique_id=103265876]
+transform = Transform3D(0.99999976, 5.005359e-08, 1.5742735e-08, -5.005203e-08, 0.8198714, 0.57254624, 1.5751375e-08, -0.57254624, 0.8198714, 0.035144806, -0.23319224, 0.4532621)
+shape = SubResource("BoxShape3D_618a6")
+
+[node name="InclinePart2" type="StaticBody3D" parent="." unique_id=1418526360]
+transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, -1.2, 14.219804, 0.69682693, 3.3655105)
+script = ExtResource("4")
+speed = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InclinePart2" unique_id=1579883454]
+transform = Transform3D(0.99999976, -6.4076204e-08, 2.7948658e-08, 6.4075046e-08, 0.68028575, -0.7329464, 2.7951884e-08, 0.7329464, 0.68028575, 0.014282227, -0.0679605, 0.06598854)
+shape = SubResource("BoxShape3D_hajir")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="InclinePart2" unique_id=1060660645]
+transform = Transform3D(-4.3711363e-08, -0.99999976, -3.9790393e-12, 0.99999976, -4.3711363e-08, 0, -4.2351647e-22, -3.9861447e-12, 0.99999976, 0.12957859, -0.25111178, -0.631958)
+shape = SubResource("CapsuleShape3D_o3d8n")
+
+[node name="InclineLockZone" type="Area3D" parent="." unique_id=1930148588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2, 2, 3.3)
+script = ExtResource("9")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InclineLockZone" unique_id=1762449800]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3698773, 0.3945315)
+shape = SubResource("BoxShape_lock")

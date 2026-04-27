@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/conveyor.gd" id="1"]
+
+[sub_resource type="BoxShape3D" id="1"]
+size = Vector3(1.05, 0.25, 4.05)
+
+[sub_resource type="StandardMaterial3D" id="2"]
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="StandardMaterial3D" id="3"]
+albedo_color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="WasteConveyor" type="StaticBody3D"]
+script = ExtResource("1")
+speed = 1.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("1")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Belt" type="CSGBox3D" parent="Visuals"]
+size = Vector3(1, 0.2, 4)
+material = SubResource("2")
+
+[node name="RailLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55, 0.15, 0)
+size = Vector3(0.1, 0.5, 4)
+material = SubResource("3")
+
+[node name="RailRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.55, 0.15, 0)
+size = Vector3(0.1, 0.5, 4)
+material = SubResource("3")
