@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bqw3qfkie7cl7" path="res://Prefabs/DebarkerDeck.glb" id="1"]
 [ext_resource type="PackedScene" uid="uid://chru2vbog6bky" path="res://Prefabs/Log.glb" id="2"]
-[ext_resource type="PackedScene" uid="uid://c8n8q4u6r8v3" path="res://scenes/waste_conveyor.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="3"]
 [ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/marker_red.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://dd665000wxoxl" path="res://Prefabs/Incline.glb" id="5_xpg8g"]
@@ -35,7 +35,7 @@ radius = 0.26953125
 height = 2.2772064
 
 [sub_resource type="BoxShape3D" id="5"]
-size = Vector3(1.1052246, 0.2510376, 4.0005493)
+size = Vector3(0.86932373, 0.2510376, 4.0005493)
 
 [sub_resource type="BoxShape3D" id="6"]
 size = Vector3(0.09484863, 0.625, 3.8378906)
@@ -162,7 +162,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5342386, 0.18896484, 0.088
 shape = SubResource("7")
 
 [node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("3")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.253051, 0.45196784, 2.118352)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.254882, 0.45677352, 2.118968)
 speed = 0.2
 direction = Vector3(1, 0, 0)
 
@@ -172,11 +172,11 @@ script = ExtResource("17_kick")
 kick_speed = 0.8
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WasteConveyor3/KickerZone" unique_id=1703927785]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25213838, 0, 0.755847)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25213838, 0, 1.0462084)
 shape = SubResource("BoxShape_kicker")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor3" unique_id=2108579984]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.052612305, 0.009726405, 0.03012085)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.065338135, 0.009726405, 0.03012085)
 shape = SubResource("5")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor3" unique_id=251383393]
@@ -204,7 +204,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.7
 [node name="Model" parent="Stop" unique_id=958664101 instance=ExtResource("16_op6l5")]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Stop" unique_id=1845640158]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020141602, -0.13208008, -0.3564453)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, -0.27378845)
 shape = SubResource("BoxShape3D_uviwe")
 
 [node name="InclineVisualModel" parent="." unique_id=953693003 instance=ExtResource("5_xpg8g")]
@@ -213,7 +213,8 @@ transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, 
 [node name="InclinePart1" type="StaticBody3D" parent="." unique_id=1569705269]
 transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, -1.2, 14.219804, 0.69682693, 3.3655105)
 script = ExtResource("4")
-speed = 0.5
+speed = 0.2
+direction = Vector3(0, 0, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InclinePart1" unique_id=103265876]
 transform = Transform3D(0.99999976, 5.005359e-08, 1.5742735e-08, -5.005203e-08, 0.8198714, 0.57254624, 1.5751375e-08, -0.57254624, 0.8198714, 0.035144806, -0.23319224, 0.4532621)
@@ -222,7 +223,8 @@ shape = SubResource("BoxShape3D_618a6")
 [node name="InclinePart2" type="StaticBody3D" parent="." unique_id=1418526360]
 transform = Transform3D(-1.2, 0, -1.04907336e-07, 0, 1.2, 0, 1.04907336e-07, 0, -1.2, 14.219804, 0.69682693, 3.3655105)
 script = ExtResource("4")
-speed = 0.5
+speed = 0.2
+direction = Vector3(0, 0, 1)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InclinePart2" unique_id=1579883454]
 transform = Transform3D(0.99999976, -6.4076204e-08, 2.7948658e-08, 6.4075046e-08, 0.68028575, -0.7329464, 2.7951884e-08, 0.7329464, 0.68028575, 0.014282227, -0.0679605, 0.06598854)
@@ -237,5 +239,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.2, 2, 3.3)
 script = ExtResource("9")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="InclineLockZone" unique_id=1762449800]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3698773, 0.3945315)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.3698773, 0.6107013)
 shape = SubResource("BoxShape_lock")
