@@ -20,10 +20,6 @@ func _physics_process(delta: float) -> void:
 	if is_paused:
 		return
 		
-	# Move along its LOCAL X-axis, flipped if necessary
-	var move_vec = transform.basis.x * (speed * direction_multiplier) * delta
-	global_position += move_vec
-	
-	# Loop the lift: If it passes the ReleaseZone (MarkerYellow), reset to start.
-	if global_position.z > reset_threshold_z:
-		global_position = start_position
+	var parent = get_parent()
+	if parent is PathFollow3D:
+		parent.progress += speed * delta
