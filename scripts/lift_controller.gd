@@ -29,10 +29,28 @@ func _physics_process(_delta: float) -> void:
 				# Also check height to ensure it's on the incline/lift path
 				if pos.y > 0.1 and pos.y < 2.5:
 					log_is_ready_or_moving = true
-					break
+					if log_body.sleeping:
+						print("[LIFT CONTROLLER] Waking up sleeping log: ", log_body.name)
+						log_body.sleeping = false
 	
 	# Update all lifts: Run ONLY if a log is in the system
 	for lift in lifts:
+		# --- DEEP PHYSICS DIAGNOSTIC ---
+		if Engine.get_frames_drawn() % 30 == 0:
+			for log_body in logs:
+				if log_body is RigidBody3D:
+					var dist = lift.global_position.distance_to(log_body.global_position)
+					if dist < 1.0:
+						print("[PHYSICS DEEP TRACE] %s <-> Log Dist: %.3f" % [lift.name, dist])
+						print("  Lift Global Pos: %v | Scale: %v" % [lift.global_position, lift.global_transform.basis.get_scale()])
+						print("  Log Global Pos: %v | Sleep: %s" % [log_body.global_position, log_body.sleeping])
+						
+						# Check if their collision layers/masks actually match
+						print("  Lift Layer: %d, Mask: %d | Log Layer: %d, Mask: %d" % [lift.collision_layer, lift.collision_mask, log_body.collision_layer, log_body.collision_mask])
+						if (lift.collision_layer & log_body.collision_mask) == 0:
+							print("  !!! ALERT: Layer/Mask mismatch! Lift Layer: %d vs Log Mask: %d" % [lift.collision_layer, log_body.collision_mask])
+		# --- END DIAGNOSTIC ---
+		
 		if lift.is_paused != (!log_is_ready_or_moving):
 			if log_is_ready_or_moving:
 				print("[LIFT CONTROLLER] Log detected. Starting lifts.")

@@ -8,6 +8,7 @@ func _ready() -> void:
 	add_to_group("logs")
 	contact_monitor = true
 	max_contacts_reported = 10
+	
 	print("--- LOG TRACER ACTIVE ---")
 	print("Monitoring contacts for: ", name)
 
@@ -52,6 +53,10 @@ func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 			
 			print("  #%d hit [%s] at %v" % [i, collider_name, collider_pos])
 			print("     Normal: %v (Points into log)" % [normal])
+			
+			if "LogLift" in collider_name:
+				print("     >>> LIFT COLLIDER CONTACT DETECTED <<<")
+				print("     Lift Name: %s | Relative Pos: %v" % [collider_name, local_pos])
 			
 			# Check if normal is opposing velocity
 			if current_speed > 0.01:

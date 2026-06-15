@@ -23,3 +23,5 @@ func _physics_process(delta: float) -> void:
 	var parent = get_parent()
 	if parent is PathFollow3D:
 		parent.progress += speed * delta
+		# Force physics server to register the transform change and compute velocity
+		global_transform = global_transform
