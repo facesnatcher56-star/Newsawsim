@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-@export var speed: float = 2.0:
+@export var speed: float = 5.0:
 	set(v):
 		if speed != v:
 			print("[Conveyor: ", name, "] Speed changed from ", speed, " to ", v)

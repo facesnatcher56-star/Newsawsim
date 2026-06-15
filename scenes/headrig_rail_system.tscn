@@ -1,0 +1,188 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/headrig_carriage.gd" id="1_script"]
+
+[sub_resource type="StandardMaterial3D" id="Material_Rails"]
+albedo_color = Color(0.25, 0.25, 0.28, 1)
+metallic = 1.0
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Material_Ties"]
+albedo_color = Color(0.2, 0.14, 0.08, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Material_Carriage"]
+albedo_color = Color(0.85, 0.6, 0.05, 1)
+metallic = 0.5
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Material_Knees"]
+albedo_color = Color(0.7, 0.15, 0.15, 1)
+metallic = 0.6
+roughness = 0.3
+
+[sub_resource type="BoxShape3D" id="Shape_Rail"]
+size = Vector3(0.1, 0.15, 14.0)
+
+[sub_resource type="BoxShape3D" id="Shape_Platform"]
+size = Vector3(1.4, 0.1, 2.2)
+
+[sub_resource type="BoxShape3D" id="Shape_Knee"]
+size = Vector3(0.2, 0.8, 2.2)
+
+[node name="HeadrigRailSystem" type="Node3D"]
+
+[node name="Rails" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="CollisionLeft" type="CollisionShape3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.075, 5.0)
+shape = SubResource("Shape_Rail")
+
+[node name="CollisionRight" type="CollisionShape3D" parent="Rails"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.075, 5.0)
+shape = SubResource("Shape_Rail")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Rails"]
+
+[node name="RailLeft" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.075, 5.0)
+size = Vector3(0.1, 0.15, 14.0)
+material = SubResource("Material_Rails")
+
+[node name="RailRight" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.075, 5.0)
+size = Vector3(0.1, 0.15, 14.0)
+material = SubResource("Material_Rails")
+
+[node name="Tie0" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -1.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie1" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, -0.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie2" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie3" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 1.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie4" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 2.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie5" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 3.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie6" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 4.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie7" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 5.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie8" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 6.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie9" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 7.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie10" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 8.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie11" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 9.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie12" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 10.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="Tie13" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 11.5)
+size = Vector3(1.5, 0.04, 0.2)
+material = SubResource("Material_Ties")
+
+[node name="HeadrigCarriage" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 0)
+script = ExtResource("1_script")
+speed = 2.0
+travel_distance = 10.0
+auto_cycle = true
+pause_at_ends = 2.0
+travel_axis = Vector3(0, 0, 1)
+
+[node name="CollisionPlatform" type="CollisionShape3D" parent="HeadrigCarriage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+shape = SubResource("Shape_Platform")
+
+[node name="CollisionKneeLeft" type="CollisionShape3D" parent="HeadrigCarriage"]
+transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, -0.45, 0.35, 0)
+shape = SubResource("Shape_Knee")
+
+[node name="CollisionKneeRight" type="CollisionShape3D" parent="HeadrigCarriage"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0.45, 0.35, 0)
+shape = SubResource("Shape_Knee")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="HeadrigCarriage"]
+
+[node name="Platform" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+size = Vector3(1.4, 0.1, 2.2)
+material = SubResource("Material_Carriage")
+
+[node name="KneeLeft" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(0.866025, 0.5, 0, -0.5, 0.866025, 0, 0, 0, 1, -0.45, 0.35, 0)
+size = Vector3(0.2, 0.8, 2.2)
+material = SubResource("Material_Knees")
+
+[node name="KneeRight" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 0.45, 0.35, 0)
+size = Vector3(0.2, 0.8, 2.2)
+material = SubResource("Material_Knees")
+
+[node name="WheelFL" type="CSGCylinder3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.6, -0.05, -0.7)
+radius = 0.15
+height = 0.08
+material = SubResource("Material_Rails")
+
+[node name="WheelFR" type="CSGCylinder3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.6, -0.05, -0.7)
+radius = 0.15
+height = 0.08
+material = SubResource("Material_Rails")
+
+[node name="WheelRL" type="CSGCylinder3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.6, -0.05, 0.7)
+radius = 0.15
+height = 0.08
+material = SubResource("Material_Rails")
+
+[node name="WheelRR" type="CSGCylinder3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.6, -0.05, 0.7)
+radius = 0.15
+height = 0.08
+material = SubResource("Material_Rails")
