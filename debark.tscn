@@ -112,7 +112,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.015197754, 0.5, -4.310439)
 shape = SubResource("3")
 
 [node name="LogDeck" type="StaticBody3D" parent="." unique_id=1892446316]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.100112, 0.29042745, 5.2027254)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.100112, 1.0119203, 5.2027254)
 script = ExtResource("4")
 speed = 0.2
 direction = Vector3(0, 0, 1)
@@ -306,7 +306,6 @@ transform = Transform3D(-0.99994266, -0.0041374117, -0.003661849, 0, 0.6627498, 
 [node name="LogLift" type="AnimatableBody3D" parent="Path3D/PathFollow3D" unique_id=1461095584]
 transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
-speed = 0.6
 
 [node name="Model" parent="Path3D/PathFollow3D/LogLift" unique_id=200000001 instance=ExtResource("20_o3d8n")]
 
@@ -324,7 +323,6 @@ transform = Transform3D(-0.99994266, -0.0041374117, -0.003661849, 0, 0.6627498, 
 [node name="LogLift" type="AnimatableBody3D" parent="Path3D2/PathFollow3D" unique_id=1616717765]
 transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
-speed = 0.6
 
 [node name="Model" parent="Path3D2/PathFollow3D/LogLift" unique_id=2084767503 instance=ExtResource("20_o3d8n")]
 
@@ -342,7 +340,6 @@ transform = Transform3D(-0.99994266, -0.0041374117, -0.003661849, 0, 0.6627498, 
 [node name="LogLift" type="AnimatableBody3D" parent="Path3D3/PathFollow3D" unique_id=1292299446]
 transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
-speed = 0.6
 
 [node name="Model" parent="Path3D3/PathFollow3D/LogLift" unique_id=1380302307 instance=ExtResource("20_o3d8n")]
 
@@ -360,7 +357,6 @@ transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, 
 [node name="LogLift" type="AnimatableBody3D" parent="Path3D4/PathFollow3D" unique_id=177117894]
 transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
-speed = 0.6
 
 [node name="Model" parent="Path3D4/PathFollow3D/LogLift" unique_id=692513231 instance=ExtResource("20_o3d8n")]
 
@@ -378,7 +374,6 @@ transform = Transform3D(-0.99995095, -0.004137429, -0.0036618628, 0, 0.6627525, 
 [node name="LogLift" type="AnimatableBody3D" parent="Path3D5/PathFollow3D" unique_id=1843554989]
 transform = Transform3D(-0.00035594, -0.0004225929, -0.09999847, -0.002450373, 0.09996912, -0.00041374683, 0.09996934, 0.0024488643, -0.00036618515, -0.0063066483, 0.078439236, 0.123739004)
 script = ExtResource("21_lift")
-speed = 0.6
 
 [node name="Model" parent="Path3D5/PathFollow3D/LogLift" unique_id=949683555 instance=ExtResource("20_o3d8n")]
 
