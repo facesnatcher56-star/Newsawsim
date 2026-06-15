@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bqw3qfkie7cl7" path="res://Prefabs/DebarkerDeck.glb" id="1"]
 [ext_resource type="PackedScene" uid="uid://chru2vbog6bky" path="res://Prefabs/Log.glb" id="2"]
-[ext_resource type="PackedScene" uid="uid://c8n8q4u6r8v3" path="res://scenes/waste_conveyor.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="3"]
 [ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/marker_red.tscn" id="5"]
 [ext_resource type="PackedScene" uid="uid://dd665000wxoxl" path="res://Prefabs/Incline.glb" id="5_xpg8g"]
@@ -153,7 +153,7 @@ speed = 3.0
 axis = Vector3(1, 0, 0)
 
 [node name="Log" type="RigidBody3D" parent="." unique_id=540288510]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.29977387, 1.7520646, 0.10606891)
+transform = Transform3D(1, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 8.256102, 1.4254994, 2.3542683)
 mass = 50.0
 script = ExtResource("14")
 

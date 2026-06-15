@@ -11,29 +11,73 @@ extends Node
 # Active Zone: The entire travel length of the lift to ensure it finishes the job
 @export var travel_z_max: float = 4.5
 
-func _physics_process(_delta: float) -> void:
+@export var start_delay: float = 2.0
+
+var delay_timer: float = 0.0
+var delay_completed: bool = false
+
+func _physics_process(delta: float) -> void:
 	var logs = get_tree().get_nodes_in_group("logs")
 	var lifts = get_tree().get_nodes_in_group("log_lifts")
 	
 	if lifts.size() == 0:
 		return
 		
-	var log_is_ready_or_moving = false
+	var log_in_pickup_zone = false
+	var log_in_travel_zone = false
 	
 	for log_body in logs:
 		if log_body is RigidBody3D:
 			var pos = log_body.global_position
 			
-			# Detect if a log is at the bottom (ready) or being carried (up to release point)
-			if pos.z > pickup_z_min and pos.z < travel_z_max:
-				# Also check height to ensure it's on the incline/lift path
+			# Check if log is in pickup zone (at the bottom)
+			if pos.z > pickup_z_min and pos.z < pickup_z_max:
 				if pos.y > 0.1 and pos.y < 2.5:
-					log_is_ready_or_moving = true
+					log_in_pickup_zone = true
 					if log_body.sleeping:
 						print("[LIFT CONTROLLER] Waking up sleeping log: ", log_body.name)
 						log_body.sleeping = false
+			
+			# Check if log is in travel zone (climbing)
+			elif pos.z >= pickup_z_max and pos.z < travel_z_max:
+				if pos.y > 0.1 and pos.y < 2.5:
+					log_in_travel_zone = true
+					if log_body.sleeping:
+						print("[LIFT CONTROLLER] Waking up sleeping log: ", log_body.name)
+						log_body.sleeping = false
+
+	var log_is_present = log_in_pickup_zone or log_in_travel_zone
+	var run_lifts = false
+
+	if log_is_present:
+		if log_in_pickup_zone and not log_in_travel_zone:
+			# Log is at the bottom, and nothing is currently climbing
+			if not delay_completed:
+				if delay_timer <= 0.0:
+					delay_timer = start_delay
+					print("[LIFT CONTROLLER] Log arrived at pickup. Starting ", start_delay, "s delay before lift starts.")
+				
+				delay_timer -= delta
+				if delay_timer <= 0.0:
+					delay_completed = true
+					run_lifts = true
+					print("[LIFT CONTROLLER] Delay finished. Starting lifts.")
+				else:
+					run_lifts = false
+			else:
+				run_lifts = true
+		else:
+			# Log is climbing or we have logs in both zones
+			run_lifts = true
+	else:
+		# No logs in system, reset delay state
+		if delay_completed or delay_timer > 0.0:
+			print("[LIFT CONTROLLER] System empty. Resetting delay timer.")
+		delay_timer = 0.0
+		delay_completed = false
+		run_lifts = false
 	
-	# Update all lifts: Run ONLY if a log is in the system
+	# Update all lifts: Run ONLY if run_lifts is true
 	for lift in lifts:
 		# --- DEEP PHYSICS DIAGNOSTIC ---
 		if Engine.get_frames_drawn() % 30 == 0:
@@ -51,10 +95,10 @@ func _physics_process(_delta: float) -> void:
 							print("  !!! ALERT: Layer/Mask mismatch! Lift Layer: %d vs Log Mask: %d" % [lift.collision_layer, log_body.collision_mask])
 		# --- END DIAGNOSTIC ---
 		
-		if lift.is_paused != (!log_is_ready_or_moving):
-			if log_is_ready_or_moving:
-				print("[LIFT CONTROLLER] Log detected. Starting lifts.")
+		if lift.is_paused != (!run_lifts):
+			if run_lifts:
+				print("[LIFT CONTROLLER] Starting lifts.")
 			else:
-				print("[LIFT CONTROLLER] No log in system. Stopping lifts.")
+				print("[LIFT CONTROLLER] Stopping lifts.")
 		
-		lift.is_paused = !log_is_ready_or_moving
+		lift.is_paused = !run_lifts

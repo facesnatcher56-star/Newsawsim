@@ -1,7 +1,7 @@
 extends Area3D
 
 @export var kick_direction: Vector3 = Vector3(1, 0, 0) # Local direction to push (X is sideways)
-@export var kick_speed: float = 4.0
+@export var kick_speed: float = 1.0
 @export var kick_damping: float = 5.0 # How aggressively to reach target velocity
 
 var original_speed: float = -1.0
