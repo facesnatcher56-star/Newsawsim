@@ -1,0 +1,22 @@
+Carriage Global Position: (14.1, 0.855381, 6.551477)
+Carriage Global Basis: 
+  X: (-0.0, 0.0, -1.0)
+  Y: (0.0, 1.0, 0.0)
+  Z: (1.0, 0.0, -0.0)
+Carriage KneesAssembly elements (world space):
+  CollisionHeadblock1 -> local: (0.1, 0.5, -0.7) | world: (13.4, 1.355381, 6.451477)
+  CollisionHeadblock2 -> local: (0.1, 0.5, 0.0) | world: (14.1, 1.355381, 6.451477)
+  CollisionHeadblock3 -> local: (0.1, 0.5, 0.7) | world: (14.8, 1.355381, 6.451477)
+  CSGCombiner3D -> local: (0.0, 0.0, 0.0) | world: (14.1, 0.855381, 6.551477)
+  DogPivot1 -> local: (0.175, 0.8, -0.7) | world: (13.4, 1.655381, 6.376477)
+  DogPivot2 -> local: (0.175, 0.8, 0.0) | world: (14.1, 1.655381, 6.376477)
+  DogPivot3 -> local: (0.175, 0.8, 0.7) | world: (14.8, 1.655381, 6.376477)
+  KneePivot1 -> local: (0.4, 0.15, -0.7) | world: (13.4, 1.005381, 6.151477)
+  KneePivot2 -> local: (0.4, 0.15, 0.0) | world: (14.1, 1.005381, 6.151477)
+  KneePivot3 -> local: (0.4, 0.15, 0.7) | world: (14.8, 1.005381, 6.151477)
+  LogDetector -> local: (0.2, 0.4, 0.0) | world: (14.1, 1.255381, 6.351477)
+Incline Global Position: (14.2198, 0.696827, 3.36551)
+Incline Global Basis: 
+  X: (-1.2, 0.0, 0.0)
+  Y: (0.0, 1.2, 0.0)
+  Z: (-0.0, 0.0, -1.2)

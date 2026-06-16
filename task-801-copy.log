@@ -1,0 +1,1394 @@
+Godot Engine v4.6.2.stable.official.71f334935 - https://godotengine.org
+
+[Conveyor: ] Speed changed from 5.0 to 0.2
+[Conveyor: ] Speed changed from 5.0 to 0.2
+[Conveyor: ] Speed changed from 5.0 to 0.2
+[Conveyor: ] Speed changed from 5.0 to 0.2
+[Conveyor: ] Speed changed from 5.0 to 0.2
+[Conveyor: ] Speed changed from 5.0 to 0.2
+[Conveyor: ] Speed changed from 5.0 to 1.5
+[Conveyor: WasteConveyor] Speed changed from 1.5 to 0.8
+[Conveyor: ] Speed changed from 5.0 to 1.5
+[Conveyor: WasteConveyor] Speed changed from 1.5 to 0.8
+[Conveyor: ] Speed changed from 5.0 to 1.5
+[Conveyor: WasteConveyor] Speed changed from 1.5 to 0.8
+[Conveyor: ] Speed changed from 5.0 to 2.0
+[Conveyor: SmoothRoller] Speed changed from 2.0 to 5.0
+[Conveyor: ] Speed changed from 5.0 to 2.0
+--- LOG TRACER ACTIVE ---
+Monitoring contacts for: Log
+[LOG LIFT] Initialized at: (4.626456, 0.292366, 2.830774)
+[LOG LIFT] Initialized at: (4.114241, 0.292366, 2.830774)
+[LOG LIFT] Initialized at: (3.792331, 0.292366, 2.830774)
+[LOG LIFT] Initialized at: (3.442222, 0.292365, 2.830774)
+[LOG LIFT] Initialized at: (2.9834, 0.292365, 2.830774)
+[HEADRIG CARRIAGE] Initialized at: (0.0, 0.15, 0.0) traveling to: (0.0, 0.15, -10.0)
+[LIFT CONTROLLER] Stopping lifts.
+[LIFT CONTROLLER] Stopping lifts.
+[LIFT CONTROLLER] Stopping lifts.
+[LIFT CONTROLLER] Stopping lifts.
+[LIFT CONTROLLER] Stopping lifts.
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.986
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.745118, 0.953922, 2.110000) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.961
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.745118, 0.916221, 2.110000) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.935
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.745118, 0.875860, 2.110000) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.909
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.745118, 0.832845, 2.110000) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.738314, 0.832548, 2.109980) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.907
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.731069, 0.832548, 2.109961) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.723427, 0.832548, 2.109941) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.715389, 0.832548, 2.109923) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.706957, 0.832548, 2.109905) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 0.530 | Contacts: 8 | Angular: (0.000000, 0.000474, -0.000000)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (3.757186, 0.592019, 1.860071)
+     Normal: (-0.000000, 1.000000, 0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (3.757205, 0.592019, 2.360071)
+     Normal: (-0.000000, 1.000000, 0.000000) (Points into log)
+  #2 hit [/root/DebarkScene/WasteConveyor3] at (5.657204, 0.592019, 2.360000)
+     Normal: (-0.000000, 1.000000, 0.000000) (Points into log)
+  #3 hit [/root/DebarkScene/WasteConveyor3] at (5.657186, 0.592019, 1.860000)
+     Normal: (-0.000000, 1.000000, 0.000000) (Points into log)
+  #4 hit [/root/DebarkScene/WasteConveyor3] at (3.757186, 0.581774, 1.860071)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #5 hit [/root/DebarkScene/WasteConveyor3] at (3.757205, 0.581774, 2.360071)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #6 hit [/root/DebarkScene/WasteConveyor3] at (5.657204, 0.581774, 2.360000)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #7 hit [/root/DebarkScene/WasteConveyor3] at (5.657186, 0.581774, 1.860000)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.698130, 0.832548, 2.109887) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.688910, 0.832548, 2.109870) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.679297, 0.832548, 2.109853) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.669291, 0.832548, 2.109837) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.658895, 0.832548, 2.109822) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.648107, 0.832548, 2.109807) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.636928, 0.832548, 2.109792) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.625360, 0.832548, 2.109779) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.613403, 0.832548, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.601057, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.588324, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.575203, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.561870, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.548536, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.535203, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.994
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.535203, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.907
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.521870, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.989
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.521870, 0.832548, 2.109740) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.909
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.508536, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.983
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.508536, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.910
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.495203, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.978
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.495203, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.912
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.481870, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.973
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.481870, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.915
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.468536, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.968
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.468536, 0.832548, 2.109741) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.917
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.455203, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.963
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.455203, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.920
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.441870, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.959
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.441870, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.922
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.428536, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.954
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.428536, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.925
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.415203, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.950
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.415203, 0.832548, 2.109742) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.929
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.401870, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.946
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.401870, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.932
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.388536, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.942
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.388536, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.935
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.375203, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.938
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.375203, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.939
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.361870, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.934
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.361870, 0.832548, 2.109743) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.943
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.348536, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.931
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.348536, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.947
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.335203, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.928
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.335203, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.951
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.321870, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.925
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.321870, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 0.800 | Contacts: 8 | Angular: (0.000006, -0.000007, -0.000001)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (3.372086, 0.592019, 1.859962)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (3.372131, 0.592019, 2.359962)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #2 hit [/root/DebarkScene/WasteConveyor3] at (5.272130, 0.592019, 2.359788)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #3 hit [/root/DebarkScene/WasteConveyor3] at (5.272085, 0.592019, 1.859788)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #4 hit [/root/DebarkScene/WasteConveyor3] at (3.372086, 0.581774, 1.859962)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+  #5 hit [/root/DebarkScene/WasteConveyor3] at (3.372131, 0.581774, 2.359962)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+  #6 hit [/root/DebarkScene/WasteConveyor3] at (5.272130, 0.581774, 2.359788)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+  #7 hit [/root/DebarkScene/WasteConveyor3] at (5.272085, 0.581774, 1.859788)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.955
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.308537, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.922
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.308537, 0.832548, 2.109744) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.960
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.295203, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.919
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.295203, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.965
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.281870, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.916
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.281870, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.969
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.268537, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.914
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.268537, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.974
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.255203, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.912
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.255203, 0.832548, 2.109745) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.980
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.241870, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.910
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.241870, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.985
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.228537, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.228537, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.990
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.215203, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.907
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.215203, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.995
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.215203, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.996
+  Lift Global Pos: (4.626456, 0.292365, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.201870, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.201870, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.990
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.201870, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.188537, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.984
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.188537, 0.832548, 2.109746) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.175203, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.979
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.175203, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.161870, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.974
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.161870, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.148537, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.969
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.148537, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.135203, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.964
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.135203, 0.832548, 2.109747) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.121870, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.959
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.121870, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.108537, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.955
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.108537, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.095203, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.950
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.095203, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.081870, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.946
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.081870, 0.832548, 2.109748) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.068537, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.942
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.068537, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.055203, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.938
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.055203, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.041870, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.935
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.041870, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.028537, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.931
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.028537, 0.832548, 2.109749) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.015203, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.928
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.015203, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.001870, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.925
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (4.001870, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.910
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.988537, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.922
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.988537, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.912
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.975204, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.919
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.975204, 0.832548, 2.109750) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.914
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.961870, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.917
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.961870, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.916
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.948537, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.914
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.948537, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.919
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.935204, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.912
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.935204, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.921
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.921870, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.910
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.921870, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.924
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.908537, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.908537, 0.832548, 2.109751) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 0.800 | Contacts: 8 | Angular: (0.000006, -0.000007, -0.000001)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (2.958753, 0.592019, 1.859969)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (2.958798, 0.592019, 2.359969)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #2 hit [/root/DebarkScene/WasteConveyor3] at (4.858798, 0.592019, 2.359796)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #3 hit [/root/DebarkScene/WasteConveyor3] at (4.858752, 0.592019, 1.859796)
+     Normal: (-0.000000, 1.000000, -0.000000) (Points into log)
+  #4 hit [/root/DebarkScene/WasteConveyor3] at (2.958753, 0.581774, 1.859969)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+  #5 hit [/root/DebarkScene/WasteConveyor3] at (2.958798, 0.581774, 2.359969)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+  #6 hit [/root/DebarkScene/WasteConveyor3] at (4.858798, 0.581774, 2.359796)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+  #7 hit [/root/DebarkScene/WasteConveyor3] at (4.858752, 0.581774, 1.859796)
+     Normal: (0.000000, 1.000000, -0.000000) (Points into log)
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.927
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.895204, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.907
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.895204, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.930
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.881870, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.881870, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.934
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.868537, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.868537, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.997
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.868537, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.937
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.855204, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.855204, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.991
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.855204, 0.832548, 2.109752) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.941
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.841870, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.841870, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.986
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.841870, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.945
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.828537, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.828537, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.980
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.828537, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.949
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.815204, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.815204, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.975
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.815204, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.954
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.801870, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.801870, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.970
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.801870, 0.832548, 2.109753) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.958
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.788537, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.788537, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.965
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.788537, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.963
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.775204, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.775204, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.960
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.775204, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.967
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.761870, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.761870, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.956
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.761870, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.972
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.748537, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.748537, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.952
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.748537, 0.832548, 2.109754) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.977
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.735204, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.735204, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.947
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.735204, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.983
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.721870, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.721870, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.943
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.721870, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.988
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.708537, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.708537, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.939
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.708537, 0.832548, 2.109755) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.994
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.695206, 0.832539, 2.109757) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.695206, 0.832539, 2.109757) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.936
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.695206, 0.832539, 2.109757) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.999
+  Lift Global Pos: (4.114241, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.681875, 0.832530, 2.109759) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.681875, 0.832530, 2.109759) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.932
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.681875, 0.832530, 2.109759) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.909
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.668543, 0.832521, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.929
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.668543, 0.832521, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.911
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.655212, 0.832512, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.926
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.655212, 0.832512, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.913
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.641879, 0.832498, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.923
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.641879, 0.832498, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.916
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.628546, 0.832486, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.920
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.628546, 0.832486, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.918
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.615212, 0.832474, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.917
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.615212, 0.832474, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.921
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.601879, 0.832461, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.915
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.601879, 0.832461, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.924
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.588546, 0.832449, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.913
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.588546, 0.832449, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.927
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.575212, 0.832437, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.911
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.575212, 0.832437, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.930
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.561879, 0.832425, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.909
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.561879, 0.832425, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.933
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.548546, 0.832412, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.907
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.548546, 0.832412, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.937
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.535212, 0.832400, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.535212, 0.832400, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.941
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.521879, 0.832388, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.521879, 0.832388, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.944
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.508546, 0.832376, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.508546, 0.832376, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.949
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.495212, 0.832364, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.495212, 0.832364, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 0.800 | Contacts: 8 | Angular: (0.000011, -0.000002, 0.000004)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (2.774964, 0.592019, 1.859952)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (2.774964, 0.592019, 2.359952)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #2 hit [/root/DebarkScene/WasteConveyor3] at (4.445456, 0.592019, 2.359800)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #3 hit [/root/DebarkScene/WasteConveyor3] at (4.445411, 0.592019, 1.859800)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #4 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 1.859957)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+  #5 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 2.359957)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+  #6 hit [/root/DebarkScene/WasteConveyor3] at (4.445465, 0.581774, 2.359800)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+  #7 hit [/root/DebarkScene/WasteConveyor3] at (4.445420, 0.581774, 1.859800)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.953
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.481879, 0.832351, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.481879, 0.832351, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.957
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.468546, 0.832339, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.468546, 0.832339, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.962
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.455212, 0.832327, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.455212, 0.832327, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.967
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.441879, 0.832315, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.441879, 0.832315, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.971
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.428546, 0.832302, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.428546, 0.832302, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.977
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.415212, 0.832290, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.415212, 0.832290, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.999
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.415212, 0.832290, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.982
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.401879, 0.832278, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.401879, 0.832278, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.993
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.401879, 0.832278, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.987
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.388546, 0.832266, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.388546, 0.832266, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.988
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.388546, 0.832266, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.993
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.375212, 0.832254, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.375212, 0.832254, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.982
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.375212, 0.832254, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.998
+  Lift Global Pos: (3.792331, 0.292366, 2.830774) | Scale: (0.099998, 0.099999, 0.099996)
+  Log Global Pos: (3.361879, 0.832241, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.361879, 0.832241, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.977
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.361879, 0.832241, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.348546, 0.832229, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.972
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.348546, 0.832229, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.907
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.335212, 0.832217, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.967
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.335212, 0.832217, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.909
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.321879, 0.832205, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.962
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.321879, 0.832205, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.911
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.308546, 0.832192, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.958
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.308546, 0.832192, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.913
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.295213, 0.832180, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.953
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.295213, 0.832180, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.915
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.281879, 0.832168, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.949
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.281879, 0.832168, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.917
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.268546, 0.832156, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.945
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.268546, 0.832156, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.920
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.255213, 0.832143, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.941
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.255213, 0.832143, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.923
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.241879, 0.832131, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.937
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.241879, 0.832131, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.926
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.228546, 0.832119, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.933
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.228546, 0.832119, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.929
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.215213, 0.832107, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.930
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.215213, 0.832107, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.932
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.201879, 0.832095, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.927
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.201879, 0.832095, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.936
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.188546, 0.832082, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.924
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.188546, 0.832082, 2.109766) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.939
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.175213, 0.832070, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.921
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.175213, 0.832070, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.943
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.161879, 0.832058, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.918
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.161879, 0.832058, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.947
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.148546, 0.832046, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.916
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.148546, 0.832046, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.951
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.135213, 0.832034, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.913
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.135213, 0.832034, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.956
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.121879, 0.832021, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.911
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.121879, 0.832021, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.960
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.108546, 0.832009, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.909
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.108546, 0.832009, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.965
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.095213, 0.831997, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.095213, 0.831997, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.970
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.081879, 0.831985, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.081879, 0.831985, 2.109764) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 0.800 | Contacts: 8 | Angular: (0.000007, 0.000002, 0.000001)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (2.774964, 0.592019, 1.859912)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (2.774964, 0.592019, 2.359912)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #2 hit [/root/DebarkScene/WasteConveyor3] at (4.032123, 0.592019, 2.359798)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #3 hit [/root/DebarkScene/WasteConveyor3] at (4.032077, 0.592019, 1.859798)
+     Normal: (-0.000917, 1.000000, -0.000000) (Points into log)
+  #4 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 1.859917)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+  #5 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 2.359917)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+  #6 hit [/root/DebarkScene/WasteConveyor3] at (4.032132, 0.581774, 2.359798)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+  #7 hit [/root/DebarkScene/WasteConveyor3] at (4.032086, 0.581774, 1.859798)
+     Normal: (-0.000917, 1.000000, 0.000000) (Points into log)
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.975
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.068546, 0.831972, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.068546, 0.831972, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.980
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.055213, 0.831960, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.055213, 0.831960, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.986
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.041879, 0.831948, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.041879, 0.831948, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.991
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.028546, 0.831936, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.028546, 0.831936, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.997
+  Lift Global Pos: (3.442222, 0.292365, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.015213, 0.831923, 2.109762) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.015213, 0.831923, 2.109762) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (3.001879, 0.831911, 2.109762) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.988546, 0.831899, 2.109762) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.975213, 0.831887, 2.109762) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.961879, 0.831875, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.901
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.948546, 0.831862, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.902
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.935213, 0.831850, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.903
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.921880, 0.831838, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.904
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.908546, 0.831826, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.905
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.895213, 0.831813, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.906
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.881880, 0.831801, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.908
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.868546, 0.831789, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.910
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.855213, 0.831777, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.912
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.841880, 0.831765, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.914
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.828546, 0.831752, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.916
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.815213, 0.831740, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.919
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.801880, 0.831728, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.921
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.788546, 0.831716, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.924
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.775213, 0.831703, 2.109760) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.927
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.761879, 0.831691, 2.109760) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.931
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.748538, 0.831680, 2.109760) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.934
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.735167, 0.831671, 2.109760) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.938
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.721746, 0.831658, 2.109761) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.941
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.708255, 0.831634, 2.109763) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.946
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.694675, 0.831585, 2.109765) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.950
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.680992, 0.831495, 2.109769) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 0.828 | Contacts: 8 | Angular: (-0.000055, 0.000047, 0.113472)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (2.774964, 0.592019, 1.859886)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (2.774964, 0.592019, 2.359886)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #2 hit [/root/DebarkScene/WasteConveyor3] at (3.632095, 0.592019, 2.359806)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #3 hit [/root/DebarkScene/WasteConveyor3] at (3.632048, 0.592019, 1.859806)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #4 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 1.859891)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #5 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 2.359891)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #6 hit [/root/DebarkScene/WasteConveyor3] at (3.632141, 0.581774, 2.359806)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+  #7 hit [/root/DebarkScene/WasteConveyor3] at (3.632094, 0.581774, 1.859805)
+     Normal: (-0.004470, 0.999990, -0.000000) (Points into log)
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.954
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.667189, 0.831342, 2.109775) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.959
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.653252, 0.831103, 2.109782) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.963
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.639169, 0.830751, 2.109791) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.968
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.624930, 0.830256, 2.109801) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.973
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.610521, 0.829586, 2.109817) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.979
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.595937, 0.828706, 2.109838) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.984
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.581164, 0.827582, 2.109903) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.989
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.566175, 0.826185, 2.109965) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+[PHYSICS DEEP TRACE] LogLift <-> Log Dist: 0.995
+  Lift Global Pos: (2.983400, 0.292366, 2.830774) | Scale: (0.099999, 0.099999, 0.099997)
+  Log Global Pos: (2.550972, 0.824446, 2.110027) | Sleep: false
+  Lift Layer: 1, Mask: 1 | Log Layer: 1, Mask: 1
+
+[LOG TRACER] Speed: 2.084 | Contacts: 2 | Angular: (0.000090, -0.000138, 2.068487)
+  State: Sleep=false | Freeze=false | Damp[L:0.00, A:0.00]
+  Locks: Lin=[None] | Ang=[None]
+  #0 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 1.859925)
+     Normal: (-0.483657, 0.875258, 0.000000) (Points into log)
+  #1 hit [/root/DebarkScene/WasteConveyor3] at (2.720118, 0.581774, 2.359925)
+     Normal: (-0.483657, 0.875258, 0.000000) (Points into log)

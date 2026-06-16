@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://procedurallog_nobark_scene"]
+
+[ext_resource type="Script" path="res://scripts/procedural_log.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Prefabs/Log.glb" id="2"]
+[sub_resource type="BoxShape3D" id="3"]
+size = Vector3(0.31848145, 1.9126282, 0.34985352)
+
+[node name="ProceduralLogNoBark" type="RigidBody3D"]
+script = ExtResource("1")
+bark_enabled = false
+mass = 50.0
+collision_layer = 1
+collision_mask = 1
+
+# Collision shape matching the original Log size
+[node name="CollisionShape3D" parent="ProceduralLogNoBark"]
+shape = SubResource("3")
+
+# Visual model – instance the regular Log mesh; bark & boards generated at runtime by the script.
+[node name="LogModel" parent="ProceduralLogNoBark" instance=ExtResource("2")]
