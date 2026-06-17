@@ -12,7 +12,7 @@ var _conveyor: Node = null
 
 func _ready() -> void:
 	_collect_and_sort_chains()
-	_collect_rotating_parts()
+	_collect_rotating_parts.call_deferred()
 	var parent = get_parent()
 	if parent:
 		_conveyor = parent.get_parent()
@@ -43,11 +43,14 @@ func _process(delta: float) -> void:
 	_travel_distance += scroll_speed * delta
 	_update_positions(_travel_distance)
 	
+	if _rotating_parts.is_empty():
+		_collect_rotating_parts()
+	
 	# Rotate sprockets and shafts: positive rotation around local Y matches negative scroll speed
 	var rot_step = (-scroll_speed / 0.20) * delta
 	for part in _rotating_parts:
 		if is_instance_valid(part):
-			part.rotate_y(rot_step)
+			part.rotate_object_local(Vector3.UP, rot_step)
 
 func _update_positions(travel_dist: float) -> void:
 	for group_name in _chains:
