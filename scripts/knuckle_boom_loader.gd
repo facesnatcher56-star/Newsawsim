@@ -64,6 +64,10 @@ var grapple_swivel_yaw: float = 0.0
 var bunk_turret_angle: float = PI
 var conveyor_turret_angle: float = 0.0
 
+var actual_mb_drop_angle: float = 0.0
+var actual_ob_drop_angle: float = 0.0
+var has_set_actual_drop_angles: bool = false
+
 func _ready() -> void:
 	print("[KNUCKLE BOOM] Initialized at: ", global_position)
 	
@@ -131,6 +135,7 @@ func _physics_process(delta: float) -> void:
 			target_mb_z = main_boom_swing_angle
 			target_ob_z = outer_boom_swing_angle
 			target_claw = claw_open_angle
+			has_set_actual_drop_angles = false
 			
 			# Check if conveyor intake is empty
 			if not _is_log_in_area(conveyor_zone):
@@ -212,15 +217,48 @@ func _physics_process(delta: float) -> void:
 			target_ob_z = outer_boom_drop_angle
 			target_claw = claw_closed_angle
 			
-			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+			var reached_conveyor = false
+			if clamped_log != null and is_instance_valid(clamped_log):
+				var deck = null
+				var bodies = conveyor_zone.get_overlapping_bodies()
+				for body in bodies:
+					if body.name.contains("Deck") or body.name.contains("Conveyor") or body is StaticBody3D:
+						deck = body
+						break
+				if deck == null:
+					# Fallback: search parents
+					var parent = get_parent()
+					if parent:
+						deck = parent.find_child("OppositeChainDeckTest", true, false)
+						if deck == null:
+							deck = parent.find_child("ChainLogDeck", true, false)
+				if deck != null:
+					var log_radius = 0.27
+					var col_shape = clamped_log.get_node_or_null("CollisionShape3D")
+					if col_shape and col_shape.shape is CapsuleShape3D:
+						log_radius = col_shape.shape.radius
+					
+					var landing_y = deck.global_position.y + 1.15 + log_radius
+					if clamped_log.global_position.y <= landing_y:
+						reached_conveyor = true
+						actual_mb_drop_angle = main_boom_pivot.rotation.z
+						actual_ob_drop_angle = outer_boom_pivot.rotation.z
+						has_set_actual_drop_angles = true
+						print("[KNUCKLE BOOM] Log reached conveyor landing Y (%.3f <= %.3f). Releasing." % [clamped_log.global_position.y, landing_y])
+			
+			if reached_conveyor or _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				if not has_set_actual_drop_angles:
+					actual_mb_drop_angle = main_boom_pivot.rotation.z
+					actual_ob_drop_angle = outer_boom_pivot.rotation.z
+					has_set_actual_drop_angles = true
 				current_state = State.RELEASE_LOG
 				timer = 0.6
 				print("[KNUCKLE BOOM] Reached deck dropoff. Releasing log.")
 				
 		State.RELEASE_LOG:
 			target_turret_y = conveyor_turret_angle
-			target_mb_z = main_boom_drop_angle
-			target_ob_z = outer_boom_drop_angle
+			target_mb_z = actual_mb_drop_angle if has_set_actual_drop_angles else main_boom_drop_angle
+			target_ob_z = actual_ob_drop_angle if has_set_actual_drop_angles else outer_boom_drop_angle
 			target_claw = claw_open_angle
 			
 			timer -= delta
@@ -361,8 +399,8 @@ func _release_log() -> void:
 	if clamped_log != null:
 		if is_instance_valid(clamped_log):
 			clamped_log.freeze = false
-			# Drop with slight downward momentum
-			clamped_log.linear_velocity = Vector3(0.0, -0.5, 0.0)
+			# Drop with zero linear velocity for smooth handoff
+			clamped_log.linear_velocity = Vector3.ZERO
 			print("[KNUCKLE BOOM] Log released: ", clamped_log.name)
 		clamped_log = null
 

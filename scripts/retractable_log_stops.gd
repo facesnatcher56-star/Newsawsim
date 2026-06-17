@@ -36,6 +36,26 @@ func _ready() -> void:
 		
 	moving_stops.rotation.x = deg_to_rad(_current_rot)
 	trigger_area.body_entered.connect(_on_trigger_area_body_entered)
+	if deck_area:
+		deck_area.body_entered.connect(_on_deck_area_body_entered)
+		deck_area.body_exited.connect(_on_deck_area_body_exited)
+		for body in deck_area.get_overlapping_bodies():
+			_on_deck_area_body_entered(body)
+
+func _on_deck_area_body_entered(body: Node3D) -> void:
+	if body is RigidBody3D and body.is_in_group("logs"):
+		body.axis_lock_angular_x = true
+		body.axis_lock_angular_y = true
+		body.axis_lock_angular_z = true
+		body.angular_velocity = Vector3.ZERO
+		print("[STOPS] Log entered deck area. Locking rotation: ", body.name)
+
+func _on_deck_area_body_exited(body: Node3D) -> void:
+	if body is RigidBody3D and body.is_in_group("logs"):
+		body.axis_lock_angular_x = false
+		body.axis_lock_angular_y = false
+		body.axis_lock_angular_z = false
+		print("[STOPS] Log left deck area. Unlocking rotation: ", body.name)
 
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
