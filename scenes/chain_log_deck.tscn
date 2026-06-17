@@ -19,6 +19,9 @@ size = Vector3(0.18, 0.35, 0.1)
 [sub_resource type="BoxShape3D" id="BoxShape_stop_heel"]
 size = Vector3(0.18, 0.25, 0.1)
 
+[sub_resource type="BoxShape3D" id="BoxShape_deck_area"]
+size = Vector3(3.0, 0.6, 4.2)
+
 [sub_resource type="BoxShape3D" id="BoxShape_stop_trigger"]
 size = Vector3(2.9, 0.7, 0.36)
 
@@ -101,10 +104,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, 2.1)
 size = Vector3(3.2, 0.18, 0.12)
 material = SubResource("Material_Frame")
 
-[node name="DischargeEndBeam" type="CSGBox3D" parent="Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, -2.1)
-size = Vector3(3.2, 0.18, 0.12)
-material = SubResource("Material_Frame")
 
 [node name="LegFrontLeft" type="CSGBox3D" parent="Visuals"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, -0.0416, -1.72)
@@ -3331,6 +3330,12 @@ material = SubResource("Material_Chain")
 
 [node name="RetractableStops" type="Node3D" parent="."]
 script = ExtResource("3")
+
+[node name="DeckArea" type="Area3D" parent="RetractableStops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/DeckArea"]
+shape = SubResource("BoxShape_deck_area")
 
 [node name="TriggerArea" type="Area3D" parent="RetractableStops"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -2.09)

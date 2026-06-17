@@ -14,16 +14,21 @@ enum StopState {
 @export var rotation_speed: float = 120.0 # degrees per second
 @export var hold_time: float = 0.45
 @export var retracted_time: float = 1.25
+@export var run_speed: float = 0.2
 
 @onready var moving_stops: Node3D = $MovingStops
 @onready var trigger_area: Area3D = $TriggerArea
+@onready var deck_area: Area3D = $DeckArea
 
 var _state: StopState = StopState.EXTENDED
 var _timer: float = 0.0
 var _current_rot: float = 0.0
+var _conveyor: Node3D = null
 
 func _ready() -> void:
 	_current_rot = extended_rotation_deg
+	_conveyor = get_parent()
+	
 	if Engine.is_editor_hint():
 		if moving_stops:
 			moving_stops.rotation.x = deg_to_rad(_current_rot)
@@ -39,24 +44,45 @@ func _physics_process(delta: float) -> void:
 		return
 		
 	match _state:
+		StopState.EXTENDED:
+			# Conveyor runs only when a log is on the deck
+			if _conveyor:
+				if _is_log_on_deck():
+					_conveyor.speed = run_speed
+				else:
+					_conveyor.speed = 0.0
+					
 		StopState.HOLDING_LOG:
+			if _conveyor:
+				_conveyor.speed = 0.0
 			_timer -= delta
 			if _timer <= 0.0:
 				_state = StopState.RETRACTING
+				
 		StopState.RETRACTING:
+			if _conveyor:
+				_conveyor.speed = 0.0
 			_move_stops_toward(retracted_rotation_deg, delta)
 			if is_equal_approx(_current_rot, retracted_rotation_deg):
 				_state = StopState.RETRACTED
 				_timer = retracted_time
+				
 		StopState.RETRACTED:
-			var has_log = false
+			if _conveyor:
+				_conveyor.speed = 0.0
+			_timer -= delta
+			# Wait until timer completes and the log has cleared the trigger area
+			var has_log_in_trigger = false
 			for body in trigger_area.get_overlapping_bodies():
 				if body is RigidBody3D and body.is_in_group("logs"):
-					has_log = true
+					has_log_in_trigger = true
 					break
-			if not has_log:
+			if _timer <= 0.0 and not has_log_in_trigger:
 				_state = StopState.EXTENDING
+				
 		StopState.EXTENDING:
+			if _conveyor:
+				_conveyor.speed = 0.0
 			_move_stops_toward(extended_rotation_deg, delta)
 			if is_equal_approx(_current_rot, extended_rotation_deg):
 				_state = StopState.EXTENDED
@@ -72,3 +98,11 @@ func _on_trigger_area_body_entered(body: Node3D) -> void:
 		_state = StopState.HOLDING_LOG
 		_timer = hold_time
 
+func _is_log_on_deck() -> bool:
+	if deck_area == null:
+		return false
+	var bodies = deck_area.get_overlapping_bodies()
+	for body in bodies:
+		if body is RigidBody3D and body.is_in_group("logs"):
+			return true
+	return false
