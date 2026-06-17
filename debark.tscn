@@ -71,6 +71,11 @@ roughness = 0.2
 shading_mode = 0
 albedo_color = Color(0.1, 0.9, 0.1, 1)
 
+[sub_resource type="StandardMaterial3D" id="Material_Enclosure"]
+albedo_color = Color(0.4, 0.42, 0.45, 1)
+metallic = 0.8
+roughness = 0.3
+
 [sub_resource type="BoxShape3D" id="BoxShape_kicker"]
 size = Vector3(1.0029297, 1, 0.973114)
 
@@ -133,11 +138,6 @@ size = Vector3(60, 0.2, 60)
 [sub_resource type="StandardMaterial3D" id="Material_Ground"]
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
-
-[sub_resource type="StandardMaterial3D" id="Material_Enclosure"]
-albedo_color = Color(0.4, 0.42, 0.45, 1)
-metallic = 0.8
-roughness = 0.3
 
 [sub_resource type="StandardMaterial3D" id="Material_Glass"]
 transparency = 1
@@ -284,13 +284,13 @@ omni_range = 1.5
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, -0.6, 0.5)
 direction = Vector3(0, 0, -1)
 
-[node name="LeftSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" unique_id=1270012410]
+[node name="LeftSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="7" unique_id=1270012410]
 transform = Transform3D(0.981262, -0.192702, 0, 0.192702, 0.981262, 0, 0, 0, 1, -1.3905, 0.575, 1.614)
 size = Vector3(1.815, 0.05, 1.76)
 material = SubResource("Material_Enclosure")
 
-[node name="RightSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" unique_id=1270012411]
-transform = Transform3D(0.975446, 0.22022, 0, -0.22022, 0.975446, 0, 0, 0, 1, 1.275, 0.575, 1.614)
+[node name="RightSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="8" unique_id=1270012411]
+transform = Transform3D(0.99467367, -0.103035, 0, 0.103035, 0.99467367, 0, 0, 0, 1, 1.2750001, 0.5542878, 1.6139998)
 size = Vector3(1.589, 0.05, 1.76)
 material = SubResource("Material_Enclosure")
 
@@ -705,7 +705,6 @@ material = SubResource("Material_Enclosure")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
 operation = 2
 size = Vector3(3.6, 1.2, 0.2)
-
 
 [node name="WindowGlass" type="CSGBox3D" parent="DebarkerEnclosure" unique_id=1270012412]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
