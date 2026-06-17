@@ -46,8 +46,8 @@ func _process(delta: float) -> void:
 	if _rotating_parts.is_empty():
 		_collect_rotating_parts()
 	
-	# Rotate sprockets and shafts: positive rotation around local Y matches negative scroll speed
-	var rot_step = (-scroll_speed / 0.20) * delta
+	# Rotate sprockets and shafts: scroll_speed / radius matches the chain's angular velocity
+	var rot_step = (scroll_speed / 0.20) * delta
 	for part in _rotating_parts:
 		if is_instance_valid(part):
 			part.rotate_object_local(Vector3.UP, rot_step)
