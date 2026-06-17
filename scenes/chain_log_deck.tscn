@@ -11,7 +11,7 @@ size = Vector3(3.0, 0.16, 4.2)
 size = Vector3(0.14, 0.38, 4.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape_stop"]
-size = Vector3(2.7, 0.38, 0.14)
+size = Vector3(0.18, 0.6, 0.18)
 
 [sub_resource type="BoxShape3D" id="BoxShape_stop_trigger"]
 size = Vector3(2.9, 0.7, 0.36)
@@ -1206,26 +1206,36 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, 0)
 
 [node name="StopBody" type="StaticBody3D" parent="RetractableStops/MovingStops"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+[node name="CollisionShapeLeft" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.3, 0)
+shape = SubResource("BoxShape_stop")
+
+[node name="CollisionShapeCenter" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+shape = SubResource("BoxShape_stop")
+
+[node name="CollisionShapeRight" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.3, 0)
 shape = SubResource("BoxShape_stop")
 
 [node name="Visuals" type="Node3D" parent="RetractableStops/MovingStops"]
 
 [node name="StopBar" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-size = Vector3(2.7, 0.38, 0.14)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
+size = Vector3(2.28, 0.1, 0.18)
 material = SubResource("Material_Stop")
 
 [node name="StopLeftPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.18, 0)
-size = Vector3(0.18, 0.42, 0.18)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.3, 0)
+size = Vector3(0.18, 0.6, 0.18)
 material = SubResource("Material_Stop")
 
 [node name="StopCenterPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18, 0)
-size = Vector3(0.18, 0.42, 0.18)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
+size = Vector3(0.18, 0.6, 0.18)
 material = SubResource("Material_Stop")
 
 [node name="StopRightPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.18, 0)
-size = Vector3(0.18, 0.42, 0.18)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.3, 0)
+size = Vector3(0.18, 0.6, 0.18)
 material = SubResource("Material_Stop")

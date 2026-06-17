@@ -1,3 +1,4 @@
+@tool
 extends Node3D
 
 enum StopState {
@@ -21,10 +22,20 @@ var _state: StopState = StopState.EXTENDED
 var _timer: float = 0.0
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		if moving_stops:
+			moving_stops.position.y = extended_y
+		return
+		
 	moving_stops.position.y = extended_y
 	trigger_area.body_entered.connect(_on_trigger_area_body_entered)
 
 func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		if moving_stops and moving_stops.position.y != extended_y:
+			moving_stops.position.y = extended_y
+		return
+		
 	match _state:
 		StopState.HOLDING_LOG:
 			_timer -= delta
