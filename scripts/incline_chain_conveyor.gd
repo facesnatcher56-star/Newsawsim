@@ -4,11 +4,11 @@ extends StaticBody3D
 @export var direction: Vector3 = Vector3(0.0, 0.447, -0.894) # Sloped towards -Z
 @export var conveyor_length: float = 9.0
 @export var link_spacing: float = 0.7
-@export var link_scale: Vector3 = Vector3(0.32, 0.18, 0.55)
+@export var link_scale: Vector3 = Vector3(1.0, 1.0, 1.0)
 
 @onready var visuals: Node3D = $Visuals/ChainContainer
 
-var chain_links: Array[MeshInstance3D] = []
+var chain_links: Array[Node3D] = []
 var offset: float = 0.0
 
 func _ready() -> void:
@@ -21,34 +21,63 @@ func _ready() -> void:
 	# Spawn visual chain links along local Z
 	var num_links = int(conveyor_length / link_spacing) + 2
 	
-	# Create a simple Torus mesh for the links
-	var link_mesh = TorusMesh.new()
-	link_mesh.inner_radius = 0.14
-	link_mesh.outer_radius = 0.28
+	# Materials for the chain
+	var metal_mat = StandardMaterial3D.new()
+	metal_mat.albedo_color = Color(0.18, 0.18, 0.2, 1)
+	metal_mat.metallic = 0.95
+	metal_mat.roughness = 0.35
 	
-	var link_mat = StandardMaterial3D.new()
-	link_mat.albedo_color = Color(0.18, 0.18, 0.2, 1)
-	link_mat.metallic = 0.95
-	link_mat.roughness = 0.35
+	# Pre-create meshes to share them among links for performance
+	var plate_mesh = BoxMesh.new()
+	plate_mesh.size = Vector3(0.04, 0.12, 0.75) # Slight overlap at link_spacing=0.7
+	
+	var roller_mesh = CylinderMesh.new()
+	roller_mesh.top_radius = 0.06
+	roller_mesh.bottom_radius = 0.06
+	roller_mesh.height = 0.8
+	
+	var flight_mesh = BoxMesh.new()
+	flight_mesh.size = Vector3(0.8, 0.08, 0.08)
 	
 	for i in range(num_links):
-		var link = MeshInstance3D.new()
-		link.mesh = link_mesh
-		link.material_override = link_mat
+		var link = Node3D.new()
+		link.name = "RollerLink_%d" % i
 		link.scale = link_scale
 		
-		# Alternate link orientations (horizontal vs vertical) to form a chain
-		if i % 2 == 0:
-			link.rotation_degrees = Vector3(0, 0, 0)
-		else:
-			link.rotation_degrees = Vector3(0, 90, 90)
-			
+		# Left plate
+		var left_plate = MeshInstance3D.new()
+		left_plate.mesh = plate_mesh
+		left_plate.material_override = metal_mat
+		left_plate.position = Vector3(-0.42, 0.06, 0.0)
+		link.add_child(left_plate)
+		
+		# Right plate
+		var right_plate = MeshInstance3D.new()
+		right_plate.mesh = plate_mesh
+		right_plate.material_override = metal_mat
+		right_plate.position = Vector3(0.42, 0.06, 0.0)
+		link.add_child(right_plate)
+		
+		# Center roller
+		var roller = MeshInstance3D.new()
+		roller.mesh = roller_mesh
+		roller.material_override = metal_mat
+		roller.rotation_degrees = Vector3(0, 0, 90) # Align cylinder along X-axis
+		roller.position = Vector3(0.0, 0.06, 0.0)
+		link.add_child(roller)
+		
+		# Pusher flight bar
+		var flight = MeshInstance3D.new()
+		flight.mesh = flight_mesh
+		flight.material_override = metal_mat
+		flight.position = Vector3(0.0, 0.12, 0.0)
+		link.add_child(flight)
+		
 		visuals.add_child(link)
 		chain_links.append(link)
 
 func _process(delta: float) -> void:
 	# Move the offset to represent flow along the conveyor length
-	# Since local +Z is now the high end (left), the chain links should move towards local +Z!
 	offset += speed * delta
 	if offset > link_spacing:
 		offset = fmod(offset, link_spacing)

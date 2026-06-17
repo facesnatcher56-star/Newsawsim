@@ -98,10 +98,38 @@ albedo_color = Color(0.2, 0.5, 0.3, 1)
 metallic = 0.5
 roughness = 0.3
 
-[sub_resource type="StandardMaterial3D" id="Material_Blade"]
-albedo_color = Color(0.7, 0.7, 0.75, 1)
-metallic = 0.9
-roughness = 0.2
+[sub_resource type="Shader" id="Shader_Blade"]
+code = "shader_type spatial;
+render_mode cull_disabled;
+
+uniform vec4 albedo : source_color = vec4(0.7, 0.7, 0.75, 1.0);
+uniform float metallic : hint_range(0.0, 1.0) = 0.9;
+uniform float roughness : hint_range(0.0, 1.0) = 0.25;
+uniform float frequency : hint_range(1.0, 500.0) = 250.0;
+uniform float amplitude : hint_range(0.0, 0.2) = 0.08;
+uniform float speed : hint_range(0.0, 50.0) = 20.0;
+
+varying vec3 local_pos;
+
+void vertex() {
+	local_pos = VERTEX;
+}
+
+void fragment() {
+	float z_norm = (local_pos.z + 0.05) / 0.1;
+	float y_val = (local_pos.y - TIME * speed) * frequency;
+	float tooth_pattern = abs(fract(y_val) - 0.5) * 2.0;
+	float cutting_edge_threshold = 1.0 - amplitude * tooth_pattern;
+	if (z_norm > cutting_edge_threshold) {
+		discard;
+	}
+	ALBEDO = albedo.rgb;
+	METALLIC = metallic;
+	ROUGHNESS = roughness;
+}"
+
+[sub_resource type="ShaderMaterial" id="Material_Blade"]
+shader = SubResource("Shader_Blade")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(60, 0.2, 60)
@@ -109,6 +137,22 @@ size = Vector3(60, 0.2, 60)
 [sub_resource type="StandardMaterial3D" id="Material_Ground"]
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
+
+[sub_resource type="Gradient" id="Gradient_LaserLine"]
+offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
+colors = PackedColorArray(0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="Texture_LaserLine"]
+gradient = SubResource("Gradient_LaserLine")
+width = 256
+height = 16
+fill_from = Vector2(0, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_LaserBeam"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0, 1, 0, 0.15)
 
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
@@ -447,6 +491,34 @@ material = SubResource("Material_Blade")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.15)
 size = Vector3(0.15, 0.15, 0.3)
 material = SubResource("Material_Bandsaw")
+
+[node name="LaserSupportBracketCross" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000071]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -0.3)
+size = Vector3(0.15, 0.1, 0.6)
+material = SubResource("Material_Bandsaw")
+
+[node name="LaserSupportBracketLong" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 2.6, 0)
+size = Vector3(2.5, 0.1, 0.1)
+material = SubResource("Material_Bandsaw")
+
+[node name="LaserEmitterHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 2.5, 0)
+size = Vector3(2.5, 0.08, 0.08)
+material = SubResource("Material_Outfeed")
+
+[node name="LaserBeam" type="CSGBox3D" parent="Bandsaw" unique_id=100000074]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.66, 0)
+size = Vector3(2.5, 1.6, 0.004)
+material = SubResource("Material_LaserBeam")
+
+[node name="LaserDecal" type="Decal" parent="Bandsaw" unique_id=100000075]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.66, 0)
+size = Vector3(2.5, 1.6, 0.006)
+texture_albedo = SubResource("Texture_LaserLine")
+texture_emission = SubResource("Texture_LaserLine")
+emission_energy = 8.0
+modulate = Color(0, 1, 0, 1)
 
 [node name="DebarkerLight" type="SpotLight3D" parent="." unique_id=100000030]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.165, 2.8, 2.072)
