@@ -36,8 +36,12 @@ func _physics_process(delta: float) -> void:
 				_state = StopState.RETRACTED
 				_timer = retracted_time
 		StopState.RETRACTED:
-			_timer -= delta
-			if _timer <= 0.0:
+			var has_log = false
+			for body in trigger_area.get_overlapping_bodies():
+				if body is RigidBody3D and body.is_in_group("logs"):
+					has_log = true
+					break
+			if not has_log:
 				_state = StopState.EXTENDING
 		StopState.EXTENDING:
 			_move_stops_toward(extended_y, delta)
