@@ -149,11 +149,6 @@ height = 16
 fill_from = Vector2(0, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="Material_LaserBeam"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0, 1, 0, 0.15)
-
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
@@ -506,11 +501,6 @@ material = SubResource("Material_Bandsaw")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 2.5, 0)
 size = Vector3(2.5, 0.08, 0.08)
 material = SubResource("Material_Outfeed")
-
-[node name="LaserBeam" type="CSGBox3D" parent="Bandsaw" unique_id=100000074]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.66, 0)
-size = Vector3(2.5, 1.6, 0.004)
-material = SubResource("Material_LaserBeam")
 
 [node name="LaserDecal" type="Decal" parent="Bandsaw" unique_id=100000075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.66, 0)
