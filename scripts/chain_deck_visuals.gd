@@ -97,7 +97,7 @@ func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
 		var theta = (d - L) / R
 		z = C_infeed_z + R * sin(theta)
 		y = 0.95 + R * cos(theta)
-		rot_x = -theta
+		rot_x = theta - 2.0 * PI
 	elif d < 2.0 * L + pi_R:
 		# Bottom Run (moving towards negative Z)
 		var d_bottom = d - (L + pi_R)
@@ -109,7 +109,7 @@ func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
 		var theta = (d - (2.0 * L + pi_R)) / R
 		z = C_discharge_z - R * sin(theta)
 		y = 0.95 - R * cos(theta)
-		rot_x = -PI - theta
+		rot_x = theta - PI
 		
 	var basis = Basis(Vector3(1, 0, 0), rot_x)
 	return Transform3D(basis, Vector3(0.0, y, z))
@@ -137,7 +137,7 @@ func _collect_and_sort_chains() -> void:
 
 func _collect_rotating_parts() -> void:
 	_rotating_parts.clear()
-	var visuals_node = find_child("Visuals")
+	var visuals_node = get_parent()
 	if not visuals_node:
 		visuals_node = self
 		
