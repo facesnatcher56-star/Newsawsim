@@ -10,7 +10,7 @@ enum StopState {
 }
 
 @export var extended_rotation_deg: float = 0.0
-@export var retracted_rotation_deg: float = -70.0
+@export var retracted_rotation_deg: float = -180.0
 @export var rotation_speed: float = 120.0 # degrees per second
 @export var hold_time: float = 0.45
 @export var retracted_time: float = 1.25
