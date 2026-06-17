@@ -1,3 +1,4 @@
+@tool
 extends Node3D
 
 @export var deck_length: float = 4.2
@@ -11,7 +12,9 @@ var _conveyor: Node = null
 
 func _ready() -> void:
 	_collect_links(self)
-	_conveyor = get_parent().get_parent()
+	var parent = get_parent()
+	if parent:
+		_conveyor = parent.get_parent()
 
 func _process(delta: float) -> void:
 	if _links.is_empty():
