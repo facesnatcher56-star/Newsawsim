@@ -6,11 +6,13 @@ extends Node3D
 @export var chain_speed: float = 0.55
 
 var _chains: Dictionary = {} # Dictionary of String -> Array[Node3D]
+var _rotating_parts: Array[Node3D] = []
 var _travel_distance: float = 0.0
 var _conveyor: Node = null
 
 func _ready() -> void:
 	_collect_and_sort_chains()
+	_collect_rotating_parts()
 	var parent = get_parent()
 	if parent:
 		_conveyor = parent.get_parent()
@@ -40,6 +42,12 @@ func _process(delta: float) -> void:
 	# Continuously scroll travel distance
 	_travel_distance += scroll_speed * delta
 	_update_positions(_travel_distance)
+	
+	# Rotate sprockets and shafts: positive rotation around local Y matches negative scroll speed
+	var rot_step = (-scroll_speed / 0.20) * delta
+	for part in _rotating_parts:
+		if is_instance_valid(part):
+			part.rotate_y(rot_step)
 
 func _update_positions(travel_dist: float) -> void:
 	for group_name in _chains:
@@ -49,21 +57,62 @@ func _update_positions(travel_dist: float) -> void:
 			continue
 			
 		var loop_length = num_links * link_spacing
-		var half_loop = loop_length * 0.5
 		
 		for idx in range(num_links):
 			var link = links[idx]
 			if not is_instance_valid(link):
 				continue
 				
-			# Calculate nominal initial position of this link along the loop
-			# Distributed evenly centered around Z = 0
-			var nominal_z = -half_loop + (idx * link_spacing)
+			# Nominal distance of this link along the loop
+			var nominal_d = idx * link_spacing
 			
-			# Apply offset and wrap it cleanly within [-half_loop, half_loop]
-			var z = fposmod(nominal_z + travel_dist + half_loop, loop_length) - half_loop
+			# Calculate wrapped transform along the Y-Z loop path
+			var local_t = _get_loop_transform(nominal_d + travel_dist, loop_length)
 			
-			link.position.z = z
+			link.transform.basis = local_t.basis
+			link.position.y = local_t.origin.y
+			link.position.z = local_t.origin.z
+
+func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
+	d = fposmod(d, loop_length)
+	
+	var R: float = 0.20
+	var pi_R: float = PI * R
+	var L: float = (loop_length - 2.0 * pi_R) * 0.5
+	
+	var C_infeed_z: float = 2.24
+	var C_discharge_z: float = -2.24
+	
+	var y: float = 1.15
+	var z: float = 0.0
+	var rot_x: float = 0.0
+	
+	if d < L:
+		# Top Run (moving towards positive Z)
+		z = C_discharge_z + d
+		y = 1.15
+		rot_x = 0.0
+	elif d < L + pi_R:
+		# Infeed sprocket wrap
+		var theta = (d - L) / R
+		z = C_infeed_z + R * sin(theta)
+		y = 0.95 + R * cos(theta)
+		rot_x = -theta
+	elif d < 2.0 * L + pi_R:
+		# Bottom Run (moving towards negative Z)
+		var d_bottom = d - (L + pi_R)
+		z = C_infeed_z - d_bottom
+		y = 0.75
+		rot_x = -PI
+	else:
+		# Discharge sprocket wrap
+		var theta = (d - (2.0 * L + pi_R)) / R
+		z = C_discharge_z - R * sin(theta)
+		y = 0.95 - R * cos(theta)
+		rot_x = -PI - theta
+		
+	var basis = Basis(Vector3(1, 0, 0), rot_x)
+	return Transform3D(basis, Vector3(0.0, y, z))
 
 func _collect_and_sort_chains() -> void:
 	_chains.clear()
@@ -83,9 +132,19 @@ func _collect_and_sort_chains() -> void:
 				links.append(child)
 				
 		if not links.is_empty():
-			# Safe bubble-sort to avoid Engine lambda sort_custom crash bugs in editor thread
 			_sort_links_by_name(links)
 			_chains[group_name] = links
+
+func _collect_rotating_parts() -> void:
+	_rotating_parts.clear()
+	var visuals_node = find_child("Visuals")
+	if not visuals_node:
+		visuals_node = self
+		
+	for child in visuals_node.get_children():
+		if child is CSGCylinder3D:
+			if child.name.contains("Shaft") or child.name.contains("Sprocket"):
+				_rotating_parts.append(child)
 
 func _sort_links_by_name(arr: Array[Node3D]) -> void:
 	var n = arr.size()

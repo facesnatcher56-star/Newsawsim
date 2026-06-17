@@ -266,7 +266,7 @@ material = SubResource("Material_Chain")
 [node name="LeftOuterLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkLO00" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO00"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -289,7 +289,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO01" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -307,7 +307,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO02" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO02"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -330,7 +330,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO03" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -348,7 +348,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO04" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO04"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -371,7 +371,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO05" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -389,7 +389,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO06" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.00)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO06"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -412,7 +412,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO07" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -430,7 +430,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO08" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO08"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -453,7 +453,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO09" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -471,7 +471,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO10" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO10"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -494,7 +494,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO11" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -512,7 +512,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO12" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO12"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -535,7 +535,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLO13" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -552,10 +552,379 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
+[node name="ChainLinkLO14" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO15" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO16" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO17" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO18" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO19" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO20" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO21" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO22" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO23" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO24" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO25" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO26" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO27" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO28" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO29" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO30" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO31" type="CSGCombiner3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
 [node name="LeftInnerLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkLI00" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI00"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -578,7 +947,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI01" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -596,7 +965,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI02" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI02"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -619,7 +988,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI03" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -637,7 +1006,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI04" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI04"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -660,7 +1029,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI05" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -678,7 +1047,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI06" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.00)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI06"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -701,7 +1070,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI07" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -719,7 +1088,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI08" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI08"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -742,7 +1111,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI09" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -760,7 +1129,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI10" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI10"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -783,7 +1152,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI11" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -801,7 +1170,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI12" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI12"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -824,7 +1193,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkLI13" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -841,10 +1210,379 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
+[node name="ChainLinkLI14" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI15" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI16" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI17" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI18" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI19" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI20" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI21" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI22" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI23" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI24" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI25" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI26" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI27" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI28" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI29" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI30" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI31" type="CSGCombiner3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
 [node name="RightInnerLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkRI00" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI00"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -867,7 +1605,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI01" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -885,7 +1623,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI02" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI02"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -908,7 +1646,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI03" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -926,7 +1664,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI04" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI04"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -949,7 +1687,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI05" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -967,7 +1705,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI06" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.00)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI06"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -990,7 +1728,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI07" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1008,7 +1746,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI08" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI08"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1031,7 +1769,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI09" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1049,7 +1787,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI10" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI10"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1072,7 +1810,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI11" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1090,7 +1828,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI12" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI12"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1113,7 +1851,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRI13" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1130,10 +1868,379 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
+[node name="ChainLinkRI14" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI15" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI16" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI17" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI18" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI19" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI20" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI21" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI22" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI23" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI24" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI25" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI26" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI27" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI28" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI29" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI30" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI31" type="CSGCombiner3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
 [node name="RightOuterLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkRO00" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO00"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1156,7 +2263,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO01" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1174,7 +2281,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO02" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO02"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1197,7 +2304,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO03" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1215,7 +2322,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO04" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO04"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1238,7 +2345,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO05" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1256,7 +2363,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO06" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.00)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO06"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1279,7 +2386,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO07" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1297,7 +2404,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO08" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO08"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1320,7 +2427,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO09" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1338,7 +2445,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO10" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO10"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1361,7 +2468,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO11" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.60)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1379,7 +2486,7 @@ size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO12" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO12"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
@@ -1402,7 +2509,7 @@ size = Vector3(0.20, 0.04, 0.04)
 material = SubResource("Material_Chain")
 
 [node name="ChainLinkRO13" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
 
 [node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO13"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
@@ -1415,6 +2522,375 @@ size = Vector3(0.02, 0.08, 0.36)
 material = SubResource("Material_Chain")
 
 [node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO13"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO14" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO14"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO15" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO15"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO16" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO16"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO17" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO18" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO19" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO20" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO21" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO22" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO23" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO24" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO24"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO25" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO26" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO27" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO28" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO29" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+size = Vector3(0.12, 0.06, 0.20)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO30" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.10, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="PinFront" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, -0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="PinBack" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0.16)
+size = Vector3(0.20, 0.04, 0.04)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO31" type="CSGCombiner3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0)
+
+[node name="LeftSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightSidebar" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.07, 0.04, 0)
+size = Vector3(0.02, 0.08, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="Barrel" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO31"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
@@ -1437,6 +2913,46 @@ radius = 0.20
 height = 0.12
 material = SubResource("Material_Chain")
 
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftOuter"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
 [node name="InfeedSprocketHubLeftOuter" type="CSGCylinder3D" parent="Visuals"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.95, 2.24)
 radius = 0.08
@@ -1447,6 +2963,46 @@ material = SubResource("Material_Chain")
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.95, -2.24)
 radius = 0.20
 height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftOuter"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
 material = SubResource("Material_Chain")
 
 [node name="DischargeSprocketHubLeftOuter" type="CSGCylinder3D" parent="Visuals"]
@@ -1461,6 +3017,46 @@ radius = 0.20
 height = 0.12
 material = SubResource("Material_Chain")
 
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/InfeedSprocketLeftInner"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
 [node name="InfeedSprocketHubLeftInner" type="CSGCylinder3D" parent="Visuals"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 0.95, 2.24)
 radius = 0.08
@@ -1471,6 +3067,46 @@ material = SubResource("Material_Chain")
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 0.95, -2.24)
 radius = 0.20
 height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/DischargeSprocketLeftInner"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
 material = SubResource("Material_Chain")
 
 [node name="DischargeSprocketHubLeftInner" type="CSGCylinder3D" parent="Visuals"]
@@ -1485,6 +3121,46 @@ radius = 0.20
 height = 0.12
 material = SubResource("Material_Chain")
 
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/InfeedSprocketRightInner"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
 [node name="InfeedSprocketHubRightInner" type="CSGCylinder3D" parent="Visuals"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.95, 2.24)
 radius = 0.08
@@ -1495,6 +3171,46 @@ material = SubResource("Material_Chain")
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.95, -2.24)
 radius = 0.20
 height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/DischargeSprocketRightInner"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
 material = SubResource("Material_Chain")
 
 [node name="DischargeSprocketHubRightInner" type="CSGCylinder3D" parent="Visuals"]
@@ -1509,6 +3225,46 @@ radius = 0.20
 height = 0.12
 material = SubResource("Material_Chain")
 
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/InfeedSprocketRightOuter"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
 [node name="InfeedSprocketHubRightOuter" type="CSGCylinder3D" parent="Visuals"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.95, 2.24)
 radius = 0.08
@@ -1519,6 +3275,46 @@ material = SubResource("Material_Chain")
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.95, -2.24)
 radius = 0.20
 height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="Tooth0" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, 1.000000, 0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth1" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth2" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(0.000000, 0, 1.000000, 0, 1, 0, -1.000000, 0, 0.000000, 0.000000, 0, 0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth3" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(-0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, -0.707107, -0.134350, 0, 0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth4" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(-1.000000, 0, 0.000000, 0, 1, 0, -0.000000, 0, -1.000000, -0.190000, 0, 0.000000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth5" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, -0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth6" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(-0.000000, 0, -1.000000, 0, 1, 0, 1.000000, 0, -0.000000, -0.000000, 0, -0.190000)
+size = Vector3(0.04, 0.08, 0.06)
+material = SubResource("Material_Chain")
+
+[node name="Tooth7" type="CSGBox3D" parent="Visuals/DischargeSprocketRightOuter"]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0.134350, 0, -0.134350)
+size = Vector3(0.04, 0.08, 0.06)
 material = SubResource("Material_Chain")
 
 [node name="DischargeSprocketHubRightOuter" type="CSGCylinder3D" parent="Visuals"]
