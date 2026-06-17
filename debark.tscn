@@ -26,6 +26,8 @@
 [ext_resource type="PackedScene" path="res://scenes/incline_chain_conveyor.tscn" id="29_incline"]
 [ext_resource type="PackedScene" path="res://scenes/semi_trailer.tscn" id="30_trailer"]
 [ext_resource type="Script" uid="uid://bn8p7ne8daqiy" path="res://scripts/lift_controller.gd" id="lift_controller_script"]
+[ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="31_loader"]
+
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
@@ -448,9 +450,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -0.15)
 size = Vector3(0.15, 0.15, 0.3)
 material = SubResource("Material_Bandsaw")
 
-[node name="LogPrefab" parent="." unique_id=1661611946 instance=ExtResource("26_4ssqf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6316681, 1.3103027, 2.127243)
-
 [node name="DebarkerLight" type="SpotLight3D" parent="." unique_id=100000030]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.165, 2.8, 2.072)
 light_color = Color(0.85, 0.92, 1, 1)
@@ -520,5 +519,35 @@ light_energy = 6.0
 spot_range = 8.0
 spot_angle = 40.0
 
+[node name="LogBunk" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.9, -0.5)
+
+[node name="Base" type="CSGBox3D" parent="LogBunk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+size = Vector3(1.5, 0.1, 2.5)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftFront" type="CSGBox3D" parent="LogBunk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftBack" type="CSGBox3D" parent="LogBunk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightFront" type="CSGBox3D" parent="LogBunk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightBack" type="CSGBox3D" parent="LogBunk"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="KnuckleBoomLoader" parent="." unique_id=100000048 instance=ExtResource("31_loader")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, -0.5)
+
 [editable path="WasteConveyor3"]
-[editable path="LogPrefab"]

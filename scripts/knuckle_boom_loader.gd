@@ -1,0 +1,307 @@
+extends Node3D
+
+## knuckle_boom_loader.gd
+## Implements an automated hydraulic knuckle boom log loader.
+## Detects when the Debarker deck conveyor is empty, spawns a log in the bunk,
+## and loads it onto the conveyor automatically using joint rotations and state machine.
+
+enum State {
+	IDLE,               # Waiting for log to clear deck, spawns log in bunk
+	SWING_TO_BUNK,      # Swing booms over the bunk
+	LOWER_TO_LOG,       # Lower grapple to pickup height
+	GRAB_LOG,           # Close grapple and lock log
+	LIFT_LOG,           # Lift log clear of bunk
+	SWING_TO_CONVEYOR,  # Swing over to the conveyor
+	LOWER_TO_CONVEYOR,  # Lower log onto the conveyor deck
+	RELEASE_LOG,        # Open grapple and release log
+	RETRACT_BOOM        # Raise empty boom back up
+}
+
+@export var swing_speed: float = 1.2
+@export var boom_speed: float = 0.8
+@export var claw_speed: float = 3.0
+
+# Joint target angles (in radians)
+@export var main_boom_swing_angle: float = -0.785
+@export var main_boom_pickup_angle: float = -2.409
+@export var main_boom_drop_angle: float = -1.623
+
+@export var outer_boom_swing_angle: float = 0.785
+@export var outer_boom_pickup_angle: float = 1.030
+@export var outer_boom_drop_angle: float = 0.750
+
+@export var claw_open_angle: float = -0.6
+@export var claw_closed_angle: float = 0.4
+
+var current_state: State = State.IDLE
+var timer: float = 0.0
+
+# Node references
+@onready var turret: Node3D = $Turret
+@onready var main_boom_pivot: Node3D = $Turret/MainBoomPivot
+@onready var outer_boom_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot
+@onready var claw_left_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot
+@onready var claw_right_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot
+@onready var grapple_area: Area3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/GrappleArea
+
+@onready var conveyor_zone: Area3D = $ConveyorIntakeZone
+@onready var bunk_zone: Area3D = $BunkZone
+
+var clamped_log: RigidBody3D = null
+var log_relative_transform: Transform3D
+
+# Dynamic turret angles computed at ready
+var bunk_turret_angle: float = PI
+var conveyor_turret_angle: float = 0.0
+
+func _ready() -> void:
+	print("[KNUCKLE BOOM] Initialized at: ", global_position)
+	
+	# Dynamically calculate turret rotation angles to face the bunk and conveyor zones
+	var rel_bunk = bunk_zone.global_position - global_position
+	bunk_turret_angle = atan2(-rel_bunk.z, rel_bunk.x)
+	
+	var rel_conveyor = conveyor_zone.global_position - global_position
+	conveyor_turret_angle = atan2(-rel_conveyor.z, rel_conveyor.x)
+	
+	print("[KNUCKLE BOOM] Dynamic Turret Angles - Bunk: %.3f rad, Conveyor: %.3f rad" % [bunk_turret_angle, conveyor_turret_angle])
+	
+	# Start with boom retracted and grapple open
+	_set_joints(bunk_turret_angle, main_boom_swing_angle, outer_boom_swing_angle, claw_open_angle)
+
+func _physics_process(delta: float) -> void:
+	var target_turret_y: float = bunk_turret_angle
+	var target_mb_z: float = main_boom_swing_angle
+	var target_ob_z: float = outer_boom_swing_angle
+	var target_claw: float = claw_open_angle
+	
+	# Keep track of clamped log transform if holding one
+	if clamped_log != null:
+		if is_instance_valid(clamped_log):
+			clamped_log.global_transform = grapple_area.global_transform * log_relative_transform
+		else:
+			clamped_log = null
+			current_state = State.RETRACT_BOOM
+			print("[KNUCKLE BOOM] Clamped log became invalid. Retracting boom.")
+			
+	# Debug print every 60 frames
+	if Engine.get_frames_drawn() % 60 == 0:
+		var bunk_logs = bunk_zone.get_overlapping_bodies()
+		var bunk_log_pos = "None"
+		for b in bunk_logs:
+			if b is RigidBody3D and b.is_in_group("logs"):
+				bunk_log_pos = str(b.global_position)
+				break
+		print("[KNUCKLE BOOM TRACE] State: %s | Turret Y: %.3f | Main Z: %.3f | Outer Z: %.3f | Grapple Pos: %v | Bunk Log: %s" % [
+			State.keys()[current_state],
+			turret.rotation.y if turret else 0.0,
+			main_boom_pivot.rotation.z if main_boom_pivot else 0.0,
+			outer_boom_pivot.rotation.z if outer_boom_pivot else 0.0,
+			grapple_area.global_position if grapple_area else Vector3.ZERO,
+			bunk_log_pos
+		])
+
+	match current_state:
+		State.IDLE:
+			target_turret_y = bunk_turret_angle
+			target_mb_z = main_boom_swing_angle
+			target_ob_z = outer_boom_swing_angle
+			target_claw = claw_open_angle
+			
+			# Check if conveyor intake is empty
+			if not _is_log_in_area(conveyor_zone):
+				# Check if log bunk is empty
+				if not _is_log_in_area(bunk_zone):
+					_spawn_new_log()
+				else:
+					# Log is in bunk, conveyor is empty -> Start load cycle!
+					current_state = State.SWING_TO_BUNK
+					print("[KNUCKLE BOOM] Conveyor deck empty. Swinging to log bunk.")
+					
+		State.SWING_TO_BUNK:
+			target_turret_y = bunk_turret_angle
+			target_mb_z = main_boom_swing_angle
+			target_ob_z = outer_boom_swing_angle
+			target_claw = claw_open_angle
+			
+			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				current_state = State.LOWER_TO_LOG
+				print("[KNUCKLE BOOM] Reached bunk alignment. Lowering to log.")
+				
+		State.LOWER_TO_LOG:
+			target_turret_y = bunk_turret_angle
+			target_mb_z = main_boom_pickup_angle
+			target_ob_z = outer_boom_pickup_angle
+			target_claw = claw_open_angle
+			
+			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				current_state = State.GRAB_LOG
+				timer = 0.6
+				print("[KNUCKLE BOOM] Reached pickup position. Grabbing log.")
+				
+		State.GRAB_LOG:
+			target_turret_y = bunk_turret_angle
+			target_mb_z = main_boom_pickup_angle
+			target_ob_z = outer_boom_pickup_angle
+			target_claw = claw_closed_angle
+			
+			timer -= delta
+			if timer <= 0.0:
+				_grab_log_from_area()
+				if clamped_log != null:
+					current_state = State.LIFT_LOG
+					print("[KNUCKLE BOOM] Log grabbed. Lifting.")
+				else:
+					current_state = State.RETRACT_BOOM
+					print("[KNUCKLE BOOM] Grab failed. Retracting boom to retry.")
+				
+		State.LIFT_LOG:
+			target_turret_y = bunk_turret_angle
+			target_mb_z = main_boom_swing_angle
+			target_ob_z = outer_boom_swing_angle
+			target_claw = claw_closed_angle
+			
+			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				current_state = State.SWING_TO_CONVEYOR
+				print("[KNUCKLE BOOM] Reached lift height. Swinging to conveyor deck.")
+				
+		State.SWING_TO_CONVEYOR:
+			target_turret_y = conveyor_turret_angle
+			target_mb_z = main_boom_swing_angle
+			target_ob_z = outer_boom_swing_angle
+			target_claw = claw_closed_angle
+			
+			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				current_state = State.LOWER_TO_CONVEYOR
+				print("[KNUCKLE BOOM] Reached conveyor alignment. Lowering log.")
+				
+		State.LOWER_TO_CONVEYOR:
+			target_turret_y = conveyor_turret_angle
+			target_mb_z = main_boom_drop_angle
+			target_ob_z = outer_boom_drop_angle
+			target_claw = claw_closed_angle
+			
+			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				current_state = State.RELEASE_LOG
+				timer = 0.6
+				print("[KNUCKLE BOOM] Reached deck dropoff. Releasing log.")
+				
+		State.RELEASE_LOG:
+			target_turret_y = conveyor_turret_angle
+			target_mb_z = main_boom_drop_angle
+			target_ob_z = outer_boom_drop_angle
+			target_claw = claw_open_angle
+			
+			timer -= delta
+			if timer <= 0.0:
+				_release_log()
+				current_state = State.RETRACT_BOOM
+				print("[KNUCKLE BOOM] Log released. Retracting boom.")
+				
+		State.RETRACT_BOOM:
+			target_turret_y = conveyor_turret_angle
+			target_mb_z = main_boom_swing_angle
+			target_ob_z = outer_boom_swing_angle
+			target_claw = claw_open_angle
+			
+			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
+				current_state = State.IDLE
+				print("[KNUCKLE BOOM] Boom retracted. Loader is idle.")
+				
+	_animate_joints(target_turret_y, target_mb_z, target_ob_z, target_claw, delta)
+
+func _set_joints(tur_y: float, mb_z: float, ob_z: float, claw: float) -> void:
+	if turret != null:
+		turret.rotation.y = tur_y
+	if main_boom_pivot != null:
+		main_boom_pivot.rotation.z = mb_z
+	if outer_boom_pivot != null:
+		outer_boom_pivot.rotation.z = ob_z
+	if claw_left_pivot != null:
+		claw_left_pivot.rotation.x = claw
+	if claw_right_pivot != null:
+		claw_right_pivot.rotation.x = -claw
+
+func _animate_joints(tur_y: float, mb_z: float, ob_z: float, claw: float, delta: float) -> void:
+	if turret != null:
+		turret.rotation.y = rotate_toward(turret.rotation.y, turret.rotation.y + angle_difference(turret.rotation.y, tur_y), swing_speed * delta)
+	if main_boom_pivot != null:
+		main_boom_pivot.rotation.z = move_toward(main_boom_pivot.rotation.z, mb_z, boom_speed * delta)
+	if outer_boom_pivot != null:
+		outer_boom_pivot.rotation.z = move_toward(outer_boom_pivot.rotation.z, ob_z, boom_speed * delta)
+	if claw_left_pivot != null:
+		claw_left_pivot.rotation.x = move_toward(claw_left_pivot.rotation.x, claw, claw_speed * delta)
+	if claw_right_pivot != null:
+		claw_right_pivot.rotation.x = move_toward(claw_right_pivot.rotation.x, -claw, claw_speed * delta)
+
+func _joints_reached(tur_y: float, mb_z: float, ob_z: float, claw: float) -> bool:
+	var t_ok = abs(angle_difference(turret.rotation.y, tur_y)) < 0.02 if turret != null else true
+	var mb_ok = abs(angle_difference(main_boom_pivot.rotation.z, mb_z)) < 0.02 if main_boom_pivot != null else true
+	var ob_ok = abs(angle_difference(outer_boom_pivot.rotation.z, ob_z)) < 0.02 if outer_boom_pivot != null else true
+	var claw_ok = abs(angle_difference(claw_left_pivot.rotation.x, claw)) < 0.02 if claw_left_pivot != null else true
+	return t_ok and mb_ok and ob_ok and claw_ok
+
+func _is_log_in_area(area: Area3D) -> bool:
+	if area == null:
+		return false
+	var bodies = area.get_overlapping_bodies()
+	for body in bodies:
+		if body is RigidBody3D and body.is_in_group("logs"):
+			return true
+			
+	# Distance fallback (1.2m range)
+	var logs = get_tree().get_nodes_in_group("logs")
+	for l in logs:
+		if l is RigidBody3D:
+			var dist = area.global_position.distance_to(l.global_position)
+			if dist < 1.2:
+				return true
+	return false
+
+func _spawn_new_log() -> void:
+	var log_scene = load("res://Prefabs/LogPrefab.tscn")
+	if log_scene:
+		var log_instance = log_scene.instantiate()
+		log_instance.freeze = true # Spawn frozen to guarantee stability and prevent rolling
+		get_parent().add_child(log_instance)
+		log_instance.global_position = Vector3(-5.0, -0.4, -0.5)
+		log_instance.global_rotation = Vector3(0.0, 0.0, 0.0)
+		print("[KNUCKLE BOOM] Spawned new log in bunk (frozen): ", log_instance.name)
+
+func _grab_log_from_area() -> void:
+	if grapple_area == null:
+		return
+	
+	# Try Area3D first
+	var bodies = grapple_area.get_overlapping_bodies()
+	for body in bodies:
+		if body is RigidBody3D and body.is_in_group("logs"):
+			clamped_log = body
+			break
+			
+	# Fallback to proximity search if Area3D missed
+	if clamped_log == null:
+		var logs = get_tree().get_nodes_in_group("logs")
+		var min_dist = 0.6
+		for l in logs:
+			if l is RigidBody3D:
+				var dist = grapple_area.global_position.distance_to(l.global_position)
+				if dist < min_dist:
+					min_dist = dist
+					clamped_log = l
+					
+	if clamped_log != null:
+		clamped_log.freeze = true
+		log_relative_transform = grapple_area.global_transform.affine_inverse() * clamped_log.global_transform
+		print("[KNUCKLE BOOM] Log grabbed: ", clamped_log.name, " at distance: ", grapple_area.global_position.distance_to(clamped_log.global_position))
+	else:
+		print("[KNUCKLE BOOM] Grab failed! No log in range of grapple. Grapple Pos: ", grapple_area.global_position)
+
+func _release_log() -> void:
+	if clamped_log != null:
+		if is_instance_valid(clamped_log):
+			clamped_log.freeze = false
+			# Drop with slight downward momentum
+			clamped_log.linear_velocity = Vector3(0.0, -0.5, 0.0)
+			print("[KNUCKLE BOOM] Log released: ", clamped_log.name)
+		clamped_log = null
