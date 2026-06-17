@@ -12,6 +12,9 @@ enum State {
 	MOVING_FORWARD,    # Travels forward, slows down as it cuts, slices off a board
 	RETRACTING_LOG,    # Retracts knees and dogged log to -0.25 at end of travel
 	RETURNING,         # Returns home with log retracted
+	UNDOGGING_FOR_FLIP,# Opens dogs at home so the log can be turned
+	FLIPPING_LOG,      # Rolls the log 180 degrees to put the sawn face against the blocks
+	REDOGGING_AFTER_FLIP,# Closes dogs again after turning
 	ADVANCING_LOG,     # Advances knees forward to expose next board thickness
 	UNCLAMPING,        # Opens knees and dogs to release leftover slab
 	KICKING_LOG,       # Kicks leftover slab off carriage
@@ -29,6 +32,8 @@ enum State {
 @export var open_dog_angle: float = -0.8
 @export var closed_dog_angle: float = 0.2
 @export var clamp_speed: float = 4.0
+@export var cuts_before_flip: int = 2
+@export var flip_duration: float = 1.2
 
 # Kicking parameters
 @export var kick_speed_x: float = 2.5 # sideway push (local +X, global -Z)
@@ -59,6 +64,12 @@ var log_relative_transform: Transform3D
 var clamp_timer: float = 0.0
 var clamp_duration: float = 0.8 # duration for each stage
 var has_cut_this_pass: bool = false
+var cuts_on_current_face: int = 0
+var has_flipped_log: bool = false
+var log_roll_angle: float = 0.0
+var flip_timer: float = 0.0
+var flip_start_roll: float = 0.0
+var flip_target_roll: float = 0.0
 
 func _ready() -> void:
 	start_pos = position
@@ -113,12 +124,13 @@ func _physics_process(delta: float) -> void:
 				# Log is now clamped, lock it programmatically and align it
 				if clamped_log != null:
 					clamped_log.freeze = true
-					var relative_basis = Basis(Vector3.UP, PI / 2.0).scaled(Vector3(1.0, 1.0, clamped_log.scale.z))
 					var log_radius = clamped_log.get_current_radius()
-					log_relative_transform = Transform3D(relative_basis, Vector3(0.175 + log_radius, 0.15 + log_radius, 0.0))
+					log_roll_angle = 0.0
+					cuts_on_current_face = 0
+					has_flipped_log = false
+					log_relative_transform = Transform3D(_get_log_relative_basis(), Vector3(0.175 + log_radius, 0.15 + log_radius, 0.0))
 					
 					_update_clamped_log_transform()
-						
 					clamped_log.add_collision_exception_with(self)
 					print("[HEADRIG CARRIAGE] Log locked and aligned. Starting travel.")
 				has_cut_this_pass = false
@@ -152,6 +164,7 @@ func _physics_process(delta: float) -> void:
 			if global_position.x > 20.15 and not has_cut_this_pass:
 				if clamped_log != null and clamped_log.has_method("cut_board"):
 					clamped_log.cut_board(Vector3(19, -0.083, 6.13))
+					cuts_on_current_face += 1
 				has_cut_this_pass = true
 			
 			# Update clamped log relative transform (keeps it flush with knees as it shrinks)
@@ -174,8 +187,13 @@ func _physics_process(delta: float) -> void:
 			if current_progress <= 0.0:
 				current_progress = 0.0
 				if clamped_log != null and clamped_log.board_count > 0:
-					current_state = State.ADVANCING_LOG
-					print("[HEADRIG CARRIAGE] Returned home. Advancing log.")
+					if _should_flip_log_at_home():
+						clamp_timer = clamp_duration
+						current_state = State.UNDOGGING_FOR_FLIP
+						print("[HEADRIG CARRIAGE] Returned home after ", cuts_on_current_face, " cuts. Undogging for 180-degree turn.")
+					else:
+						current_state = State.ADVANCING_LOG
+						print("[HEADRIG CARRIAGE] Returned home. Advancing log.")
 				else:
 					timer = pause_at_ends
 					current_state = State.WAITING_START
@@ -189,7 +207,47 @@ func _physics_process(delta: float) -> void:
 			
 			# Keep log attached during return
 			_update_clamped_log_transform()
-					
+
+		State.UNDOGGING_FOR_FLIP:
+			_animate_knees(closed_knee_angle, delta)
+			_animate_dogs(open_dog_angle, delta)
+			_update_clamped_log_transform()
+			clamp_timer -= delta
+			if clamp_timer <= 0.0:
+				flip_timer = 0.0
+				flip_start_roll = log_roll_angle
+				flip_target_roll = log_roll_angle + PI
+				current_state = State.FLIPPING_LOG
+				print("[HEADRIG CARRIAGE] Dogs open. Turning log 180 degrees.")
+
+		State.FLIPPING_LOG:
+			_animate_knees(closed_knee_angle, delta)
+			_animate_dogs(open_dog_angle, delta)
+			flip_timer = min(flip_timer + delta, flip_duration)
+			var t: float = flip_timer / max(flip_duration, 0.001)
+			t = t * t * (3.0 - 2.0 * t)
+			log_roll_angle = lerp(flip_start_roll, flip_target_roll, t)
+			_update_clamped_log_transform()
+			if flip_timer >= flip_duration:
+				log_roll_angle = flip_target_roll
+				has_flipped_log = true
+				cuts_on_current_face = 0
+				if clamped_log != null and clamped_log.has_method("start_new_cut_face"):
+					clamped_log.start_new_cut_face()
+				clamp_timer = clamp_duration
+				current_state = State.REDOGGING_AFTER_FLIP
+				print("[HEADRIG CARRIAGE] Log turned. Redogging on the fresh face.")
+
+		State.REDOGGING_AFTER_FLIP:
+			_animate_knees(closed_knee_angle, delta)
+			_animate_dogs(closed_dog_angle, delta)
+			_update_clamped_log_transform()
+			clamp_timer -= delta
+			if clamp_timer <= 0.0:
+				has_cut_this_pass = false
+				current_state = State.ADVANCING_LOG
+				print("[HEADRIG CARRIAGE] Log redogged. Advancing for next face cut.")
+						
 		State.ADVANCING_LOG:
 			# Advance knees forward to expose next board thickness
 			var target_x = _get_knees_target_x()
@@ -272,9 +330,7 @@ func _detect_log() -> RigidBody3D:
 func _get_knees_target_x() -> float:
 	if clamped_log == null or not is_instance_valid(clamped_log):
 		return -0.25
-	var max_b = clamped_log.max_boards if "max_boards" in clamped_log else 4
-	var cur_b = clamped_log.board_count if "board_count" in clamped_log else 4
-	var cut_index = max_b - cur_b + 1 # Next cut index (1-indexed)
+	var cut_index = cuts_on_current_face + 1 # Next cut on the current face (1-indexed)
 	var cut_z = 0.245 - cut_index * 0.05
 	
 	# The saw blade is located at carriage local X = 0.4215 (global Z = 6.13).
@@ -286,6 +342,25 @@ func _get_knees_target_x() -> float:
 	var log_radius = clamped_log.get_current_radius() if clamped_log.has_method("get_current_radius") else 0.245
 	return 0.4215 - 0.175 - log_radius - cut_z
 
+func _should_flip_log_at_home() -> bool:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return false
+	if has_flipped_log:
+		return false
+	if cuts_before_flip <= 0:
+		return false
+	if cuts_on_current_face < cuts_before_flip:
+		return false
+	if not ("board_count" in clamped_log) or clamped_log.board_count <= 0:
+		return false
+	return true
+
+func _get_log_relative_basis() -> Basis:
+	var log_scale_z = clamped_log.scale.z if clamped_log != null and is_instance_valid(clamped_log) else 1.0
+	var base_basis := Basis(Vector3.UP, PI / 2.0)
+	var roll_basis := Basis(Vector3.RIGHT, log_roll_angle)
+	return (base_basis * roll_basis).scaled(Vector3(1.0, 1.0, log_scale_z))
+
 func _update_clamped_log_transform() -> void:
 	if clamped_log == null or not is_instance_valid(clamped_log):
 		return
@@ -294,10 +369,7 @@ func _update_clamped_log_transform() -> void:
 	log_relative_transform.origin.x = 0.175 + log_radius
 	log_relative_transform.origin.y = 0.15 + log_radius
 	
-	# Preserve/update log scale in transform
-	var log_scale_z = clamped_log.scale.z
-	var base_basis = Basis(Vector3.UP, PI / 2.0)
-	log_relative_transform.basis = base_basis.scaled(Vector3(1.0, 1.0, log_scale_z))
+	log_relative_transform.basis = _get_log_relative_basis()
 	
 	if knees_assembly != null:
 		clamped_log.global_transform = knees_assembly.global_transform * log_relative_transform

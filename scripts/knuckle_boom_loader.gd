@@ -132,12 +132,13 @@ func _physics_process(delta: float) -> void:
 			# Check if conveyor intake is empty
 			if not _is_log_in_area(conveyor_zone):
 				# Check if log bunk is empty
-				if not _is_log_in_area(bunk_zone):
+				if not _is_log_in_area(bunk_zone) and not _has_active_log():
 					_spawn_new_log()
 				else:
 					# Log is in bunk, conveyor is empty -> Start load cycle!
-					current_state = State.SWING_TO_BUNK
-					print("[KNUCKLE BOOM] Conveyor deck empty. Swinging to log bunk.")
+					if _is_log_in_area(bunk_zone):
+						current_state = State.SWING_TO_BUNK
+						print("[KNUCKLE BOOM] Conveyor deck empty. Swinging to log bunk.")
 					
 		State.SWING_TO_BUNK:
 			target_turret_y = bunk_turret_angle
@@ -295,7 +296,15 @@ func _is_log_in_area(area: Area3D) -> bool:
 				return true
 	return false
 
+func _has_active_log() -> bool:
+	for log_body in get_tree().get_nodes_in_group("logs"):
+		if is_instance_valid(log_body) and log_body is RigidBody3D:
+			return true
+	return false
+
 func _spawn_new_log() -> void:
+	if _has_active_log():
+		return
 	var log_scene = load("res://Prefabs/LogPrefab.tscn")
 	if log_scene:
 		var log_instance = log_scene.instantiate()

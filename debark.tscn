@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" path="res://scenes/incline_chain_conveyor.tscn" id="29_incline"]
 [ext_resource type="PackedScene" path="res://scenes/semi_trailer.tscn" id="30_trailer"]
 [ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="31_loader"]
+[ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://scripts/bandsaw_teeth.gd" id="32_teeth"]
 [ext_resource type="Script" uid="uid://bn8p7ne8daqiy" path="res://scripts/lift_controller.gd" id="lift_controller_script"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
@@ -154,7 +155,7 @@ transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
-transform = Transform3D(0.9999155, 0.0065011648, -0.011260356, 2.379199e-10, 0.86602557, 0.49999973, 0.013002336, -0.49995747, 0.8659524, -5.1622295, 1.4940186, 3.9898376)
+transform = Transform3D(0.9999155, 0.0065011648, -0.011260356, 2.379199e-10, 0.86602557, 0.49999973, 0.013002336, -0.49995747, 0.8659524, 18.574118, 1.4940186, 7.0434656)
 current = true
 script = ExtResource("18_cam")
 
@@ -285,13 +286,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, -0.6, 0.5)
 direction = Vector3(0, 0, -1)
 
 [node name="LeftSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="7" unique_id=1270012410]
-transform = Transform3D(0.981262, -0.192702, 0, 0.192702, 0.981262, 0, 0, 0, 1, -1.3905, 0.575, 1.614)
-size = Vector3(1.815, 0.05, 1.76)
+transform = Transform3D(0.9946362, 0.103479415, 0, -0.103479415, 0.9946362, 0, 0, 0, 1, -1.3905001, 0.575, 1.504322)
+size = Vector3(1.815, 0.05, 1.5406445)
 material = SubResource("Material_Enclosure")
 
 [node name="RightSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="8" unique_id=1270012411]
-transform = Transform3D(0.99467367, -0.103035, 0, 0.103035, 0.99467367, 0, 0, 0, 1, 1.2750001, 0.5542878, 1.6139998)
-size = Vector3(1.589, 0.05, 1.76)
+transform = Transform3D(0.99467367, -0.103035, 0, 0.103035, 0.99467367, 0, 0, 0, 1, 1.2750001, 0.5542878, 1.5226936)
+size = Vector3(1.589, 0.05, 1.5773877)
+material = SubResource("Material_Enclosure")
+
+[node name="VibEndCap" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="9" unique_id=1270012420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0078125, 0.44149774, 2.28)
+size = Vector3(1.0585938, 0.8668579, 0.12)
 material = SubResource("Material_Enclosure")
 
 [node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("3")]
@@ -531,6 +537,10 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1
 size = Vector3(0.02, 3, 0.1)
 material = SubResource("Material_Blade")
 
+[node name="BladeTeeth" type="Node3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000100]
+script = ExtResource("32_teeth")
+blade_speed = 1.35
+
 [node name="GuideArm" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000026]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.1512306, -0.1500001)
 size = Vector3(0.15, 0.15, 0.3)
@@ -713,4 +723,5 @@ material = SubResource("Material_Glass")
 
 [editable path="VibratoryConveyor"]
 [editable path="WasteConveyor3"]
+[editable path="HeadrigRailSystemInstance"]
 [editable path="KnuckleBoomLoader"]

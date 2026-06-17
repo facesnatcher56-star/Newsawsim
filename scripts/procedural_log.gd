@@ -9,6 +9,7 @@ extends RigidBody3D
 @export var board_count: int = 4  # Number of cuttable boards attached to the log
 
 var max_boards: int = 4
+var cuts_on_current_face: int = 0
 
 # Approximate world coordinates of processing stations (adjust if needed)
 const DEBARKER_RING_POS: Vector3 = Vector3(0.3, 1.4, 1.25)
@@ -126,7 +127,7 @@ func _update_csg_cut_position() -> void:
 			if board_count == max_boards:
 				cut_box.position = Vector3(0.0, 0.0, 10.0)
 			else:
-				var cut_z = 0.245 - (max_boards - board_count) * 0.05
+				var cut_z = 0.245 - cuts_on_current_face * 0.05
 				cut_box.position = Vector3(0.0, 0.0, cut_z + 0.5)
 				print("[PROCEDURAL LOG] Cut flat face at Z: ", cut_z)
 
@@ -157,9 +158,13 @@ func cut_board(saw_pos: Vector3) -> void:
 		print("[PROCEDURAL LOG] Sliced board. Spawned at: ", board.global_position)
 		
 	board_count -= 1
+	cuts_on_current_face += 1
 	
 	# Perform visual flat cut using CSG Subtraction!
 	_update_csg_cut_position()
+
+func start_new_cut_face() -> void:
+	cuts_on_current_face = 0
 
 func get_current_radius() -> float:
 	return 0.245
