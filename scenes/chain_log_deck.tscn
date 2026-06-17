@@ -280,20 +280,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO00"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLO01" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 1.15, -1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -315,20 +305,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLO03" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 1.15, -0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO03"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -350,20 +330,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO04"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLO05" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 1.15, -0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO05"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -385,20 +355,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO06"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLO07" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 1.15, 0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO07"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -420,20 +380,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO08"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLO09" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 1.15, 0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO09"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -455,20 +405,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLO11" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 1.15, 1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -490,11 +430,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks/ChainLinkLO12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="LeftInnerLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkLI00" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
@@ -512,20 +447,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI00"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLI01" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 1.15, -1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -547,20 +472,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLI03" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 1.15, -0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI03"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -582,20 +497,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI04"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLI05" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 1.15, -0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI05"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -617,20 +522,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI06"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLI07" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 1.15, 0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI07"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -652,20 +547,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI08"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLI09" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 1.15, 0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI09"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -687,20 +572,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkLI11" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 1.15, 1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -722,11 +597,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks/ChainLinkLI12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="RightInnerLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkRI00" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
@@ -744,20 +614,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI00"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRI01" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 1.15, -1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -779,20 +639,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRI03" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 1.15, -0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI03"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -814,20 +664,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI04"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRI05" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 1.15, -0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI05"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -849,20 +689,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI06"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRI07" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 1.15, 0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI07"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -884,20 +714,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI08"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRI09" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 1.15, 0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI09"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -919,20 +739,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRI11" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 1.15, 1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -954,11 +764,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks/ChainLinkRI12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="RightOuterLinks" type="Node3D" parent="Visuals/Chains"]
 
 [node name="ChainLinkRO00" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
@@ -976,20 +781,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO00"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRO01" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 1.15, -1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO01"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO01"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1011,20 +806,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO02"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRO03" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 1.15, -0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO03"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO03"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1046,20 +831,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO04"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRO05" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 1.15, -0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO05"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO05"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1081,20 +856,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO06"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRO07" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 1.15, 0.32)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO07"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO07"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1116,20 +881,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO08"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRO09" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 1.15, 0.96)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO09"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO09"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1151,20 +906,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
 
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
-
 [node name="ChainLinkRO11" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
 transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 1.15, 1.6)
 size = Vector3(0.24, 0.07, 0.36)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO11"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -1185,11 +930,6 @@ size = Vector3(0.12, 0.1, 0.24)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
 size = Vector3(0.24, 0.12, 0.18)
 material = SubResource("Material_Chain")
-
-[node name="Hole" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks/ChainLinkRO12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-operation = 2
-size = Vector3(0.12, 0.1, 0.24)
 
 [node name="RetractableStops" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.92)
