@@ -22,12 +22,11 @@ enum State {
 @export var claw_speed: float = 1.5
 @export var enabled: bool = true
 
-# Joint target angles (in radians)
-@export var main_boom_swing_angle: float = -0.541
+@export var main_boom_swing_angle: float = -0.244
 @export var main_boom_pickup_angle: float = -1.117
 @export var main_boom_drop_angle: float = -0.716
 
-@export var outer_boom_swing_angle: float = -1.152
+@export var outer_boom_swing_angle: float = -1.134
 @export var outer_boom_pickup_angle: float = -1.501
 @export var outer_boom_drop_angle: float = -1.030
 

@@ -3338,7 +3338,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 shape = SubResource("BoxShape_deck_area")
 
 [node name="TriggerArea" type="Area3D" parent="RetractableStops"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -2.09)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -2.25)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/TriggerArea"]
 shape = SubResource("BoxShape_stop_trigger")
