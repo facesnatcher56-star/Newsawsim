@@ -20,6 +20,7 @@ enum State {
 @export var swing_speed: float = 0.6
 @export var boom_speed: float = 0.4
 @export var claw_speed: float = 1.5
+@export var enabled: bool = true
 
 # Joint target angles (in radians)
 @export var main_boom_swing_angle: float = -0.541
@@ -79,6 +80,8 @@ func _ready() -> void:
 	_set_joints(bunk_turret_angle, main_boom_swing_angle, outer_boom_swing_angle, claw_open_angle)
 
 func _physics_process(delta: float) -> void:
+	if not enabled:
+		return
 	var target_turret_y: float = bunk_turret_angle
 	var target_mb_z: float = main_boom_swing_angle
 	var target_ob_z: float = outer_boom_swing_angle
@@ -297,9 +300,12 @@ func _is_log_in_area(area: Area3D) -> bool:
 	return false
 
 func _has_active_log() -> bool:
-	for log_body in get_tree().get_nodes_in_group("logs"):
-		if is_instance_valid(log_body) and log_body is RigidBody3D:
-			return true
+	if is_instance_valid(clamped_log):
+		return true
+	if _is_log_in_area(bunk_zone):
+		return true
+	if _is_log_in_area(conveyor_zone):
+		return true
 	return false
 
 func _spawn_new_log() -> void:
@@ -310,7 +316,7 @@ func _spawn_new_log() -> void:
 		var log_instance = log_scene.instantiate()
 		log_instance.freeze = true # Spawn frozen to guarantee stability and prevent rolling
 		get_parent().add_child(log_instance)
-		log_instance.global_position = Vector3(-5.0, -0.4, -0.5)
+		log_instance.global_position = bunk_zone.global_position
 		log_instance.global_rotation = Vector3(0.0, 0.0, 0.0)
 		print("[KNUCKLE BOOM] Spawned new log in bunk (frozen): ", log_instance.name)
 

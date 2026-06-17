@@ -824,12 +824,46 @@ material = SubResource("Material_Ground")
 [node name="PostRightBack" type="CSGBox3D" parent="LogBunk" unique_id=656102065]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
 size = Vector3(0.1, 1, 0.1)
+
+[node name="LogBunkOpposite" type="Node3D" parent="." unique_id=1006123451]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.9, 4.05)
+
+[node name="Base" type="CSGBox3D" parent="LogBunkOpposite" unique_id=2011912949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+size = Vector3(1.5, 0.1, 2.5)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=2587174899]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=3051296868]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=3001313652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=1656102065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
 material = SubResource("Material_Ground")
 
 [node name="KnuckleBoomLoader" parent="." unique_id=100000048 instance=ExtResource("31_loader")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, -0.5)
+enabled = false
+
+[node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("31_loader")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, 4.05)
 
 [node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" index="0"]
+emitting = false
+
+[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
 emitting = false
 
 [node name="DebarkerEnclosure" type="Node3D" parent="." unique_id=1270012400]
