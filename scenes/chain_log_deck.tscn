@@ -1419,6 +1419,114 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
 size = Vector3(0.12, 0.06, 0.20)
 material = SubResource("Material_Chain")
 
+[node name="InfeedShaft" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.95, 2.24)
+radius = 0.05
+height = 3.0
+material = SubResource("Material_Frame")
+
+[node name="DischargeShaft" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.95, -2.24)
+radius = 0.05
+height = 3.0
+material = SubResource("Material_Frame")
+
+[node name="InfeedSprocketLeftOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.95, 2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketHubLeftOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.95, 2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketLeftOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.95, -2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketHubLeftOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.9, 0.95, -2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketLeftInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 0.95, 2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketHubLeftInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 0.95, 2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketLeftInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 0.95, -2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketHubLeftInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, -0.3, 0.95, -2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketRightInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.95, 2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketHubRightInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.95, 2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketRightInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.95, -2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketHubRightInner" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.3, 0.95, -2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketRightOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.95, 2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="InfeedSprocketHubRightOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.95, 2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketRightOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.95, -2.24)
+radius = 0.20
+height = 0.12
+material = SubResource("Material_Chain")
+
+[node name="DischargeSprocketHubRightOuter" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0.9, 0.95, -2.24)
+radius = 0.08
+height = 0.18
+material = SubResource("Material_Chain")
+
 [node name="RetractableStops" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.92)
 script = ExtResource("3")
