@@ -1,0 +1,76 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/vibratory_conveyor.gd" id="1"]
+
+[sub_resource type="BoxShape3D" id="1"]
+size = Vector3(1.0, 0.1, 4.5)
+
+[sub_resource type="BoxShape3D" id="2"]
+size = Vector3(0.08, 0.4, 4.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_Trough"]
+albedo_color = Color(0.25, 0.25, 0.28, 1)
+metallic = 0.8
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_Springs"]
+albedo_color = Color(0.4, 0.4, 0.45, 1)
+metallic = 0.9
+roughness = 0.2
+
+[node name="VibratoryConveyor" type="StaticBody3D"]
+script = ExtResource("1")
+speed = 1.2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+shape = SubResource("1")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.2, 0)
+shape = SubResource("2")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.2, 0)
+shape = SubResource("2")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="TroughBase" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+size = Vector3(1, 0.1, 4.5)
+material = SubResource("Material_Trough")
+
+[node name="WallLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.2, 0)
+size = Vector3(0.08, 0.4, 4.5)
+material = SubResource("Material_Trough")
+
+[node name="WallRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.2, 0)
+size = Vector3(0.08, 0.4, 4.5)
+material = SubResource("Material_Trough")
+
+[node name="Spring1" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.25, -1.5)
+radius = 0.04
+height = 0.5
+material = SubResource("Material_Springs")
+
+[node name="Spring2" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, -1.5)
+radius = 0.04
+height = 0.5
+material = SubResource("Material_Springs")
+
+[node name="Spring3" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.25, 1.5)
+radius = 0.04
+height = 0.5
+material = SubResource("Material_Springs")
+
+[node name="Spring4" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, 1.5)
+radius = 0.04
+height = 0.5
+material = SubResource("Material_Springs")

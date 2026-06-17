@@ -1,0 +1,131 @@
+[gd_scene load_steps=10 format=3]
+
+[sub_resource type="BoxShape3D" id="1"]
+size = Vector3(2.4, 0.1, 6.8)
+
+[sub_resource type="BoxShape3D" id="2"]
+size = Vector3(0.1, 2.0, 6.8)
+
+[sub_resource type="BoxShape3D" id="3"]
+size = Vector3(2.4, 2.0, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="Material_Chassis"]
+albedo_color = Color(0.15, 0.15, 0.16, 1)
+metallic = 0.8
+roughness = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Material_Body"]
+albedo_color = Color(0.8, 0.6, 0.1, 1)
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="Material_Tires"]
+albedo_color = Color(0.1, 0.1, 0.12, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="Material_Rims"]
+albedo_color = Color(0.7, 0.7, 0.75, 1)
+metallic = 0.9
+roughness = 0.3
+
+[node name="SemiTrailer" type="StaticBody3D"]
+
+[node name="Collision_Floor" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("1")
+
+[node name="Collision_LeftWall" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.5, 0)
+shape = SubResource("2")
+
+[node name="Collision_RightWall" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.5, 0)
+shape = SubResource("2")
+
+[node name="Collision_FrontWall" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 3.45)
+shape = SubResource("3")
+
+[node name="Collision_BackWall" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -3.45)
+shape = SubResource("3")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Chassis" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+size = Vector3(2.5, 0.1, 6.9)
+material = SubResource("Material_Chassis")
+
+[node name="HitchBar" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 3.7)
+size = Vector3(0.4, 0.1, 1.5)
+material = SubResource("Material_Chassis")
+
+[node name="HitchPost" type="CSGCylinder3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.15, 4.3)
+radius = 0.06
+height = 0.3
+material = SubResource("Material_Chassis")
+
+[node name="TrailerBody" type="CSGCombiner3D" parent="Visuals"]
+
+[node name="OuterBox" type="CSGBox3D" parent="Visuals/TrailerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+size = Vector3(2.6, 2.0, 7.0)
+material = SubResource("Material_Body")
+
+[node name="InnerBox" type="CSGBox3D" parent="Visuals/TrailerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+operation = 2
+size = Vector3(2.4, 2.0, 6.8)
+material = SubResource("Material_Body")
+
+[node name="Wheels" type="Node3D" parent="Visuals"]
+
+[node name="TireFL" type="CSGCylinder3D" parent="Visuals/Wheels"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1.0, 0.3, -1.8)
+radius = 0.3
+height = 0.25
+material = SubResource("Material_Tires")
+
+[node name="RimFL" type="CSGCylinder3D" parent="Visuals/Wheels/TireFL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.18
+height = 0.26
+material = SubResource("Material_Rims")
+
+[node name="TireFR" type="CSGCylinder3D" parent="Visuals/Wheels"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 1.0, 0.3, -1.8)
+radius = 0.3
+height = 0.25
+material = SubResource("Material_Tires")
+
+[node name="RimFR" type="CSGCylinder3D" parent="Visuals/Wheels/TireFR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.18
+height = 0.26
+material = SubResource("Material_Rims")
+
+[node name="TireRL" type="CSGCylinder3D" parent="Visuals/Wheels"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1.0, 0.3, -2.6)
+radius = 0.3
+height = 0.25
+material = SubResource("Material_Tires")
+
+[node name="RimRL" type="CSGCylinder3D" parent="Visuals/Wheels/TireRL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.18
+height = 0.26
+material = SubResource("Material_Rims")
+
+[node name="TireRR" type="CSGCylinder3D" parent="Visuals/Wheels"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 1.0, 0.3, -2.6)
+radius = 0.3
+height = 0.25
+material = SubResource("Material_Tires")
+
+[node name="RimRR" type="CSGCylinder3D" parent="Visuals/Wheels/TireRR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+radius = 0.18
+height = 0.26
+material = SubResource("Material_Rims")

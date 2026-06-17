@@ -19,7 +19,7 @@ albedo_color = Color(0.72, 0.54, 0.32, 1)
 roughness = 0.85
 
 [sub_resource type="Shader" id="Shader_inner_wood"]
-code = "shader_type spatial;\nrender_mode diffuse_burley;\n\nvoid fragment() {\n\tfloat length_grain = sin(VERTEX.y * 34.0 + sin(VERTEX.x * 18.0) * 0.35 + sin(VERTEX.z * 15.0) * 0.25);\n\tfloat fine_grain = sin(VERTEX.y * 91.0 + VERTEX.x * 7.0) * 0.5 + 0.5;\n\tfloat grain = smoothstep(0.50, 0.92, length_grain * 0.5 + 0.5) * 0.10 + fine_grain * 0.035;\n\tvec3 base_color = vec3(0.72, 0.54, 0.32);\n\tvec3 grain_color = vec3(0.46, 0.30, 0.15);\n\tALBEDO = mix(base_color, grain_color, grain);\n\tROUGHNESS = 0.88;\n}"
+code = "shader_type spatial;\nrender_mode diffuse_burley;\n\nvarying vec3 local_pos;\n\nvoid vertex() {\n\tlocal_pos = VERTEX;\n}\n\nvoid fragment() {\n\tfloat length_grain = sin(local_pos.y * 45.0 + sin(local_pos.x * 20.0) * 0.4 + sin(local_pos.z * 20.0) * 0.4);\n\tfloat dist_from_center = length(local_pos.xz);\n\tfloat ring = sin(dist_from_center * 150.0 + sin(local_pos.y * 5.0) * 0.3);\n\tfloat fine_grain = sin(local_pos.y * 120.0 + local_pos.x * 20.0) * 0.5 + 0.5;\n\tfloat grain = smoothstep(0.45, 0.95, length_grain * 0.5 + 0.5) * 0.15 + smoothstep(0.6, 0.95, ring * 0.5 + 0.5) * 0.15 + fine_grain * 0.04;\n\tvec3 base_color = vec3(0.78, 0.62, 0.42);\n\tvec3 grain_color = vec3(0.45, 0.28, 0.12);\n\tALBEDO = mix(base_color, grain_color, grain);\n\tROUGHNESS = 0.9;\n}"
 
 [sub_resource type="ShaderMaterial" id="Material_inner_wood"]
 shader = SubResource("Shader_inner_wood")

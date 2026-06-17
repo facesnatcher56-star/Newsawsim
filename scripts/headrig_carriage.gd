@@ -9,11 +9,13 @@ enum State {
 	WAITING_FOR_LOG,
 	CLAMPING_STAGE_1,  # Knee/turner arms close to push log against the backstop knees
 	CLAMPING_STAGE_2,  # Dogs close down to bite into the log
-	MOVING_FORWARD,
-	UNCLAMPING,
-	KICKING_LOG,
-	RETURNING,
-	WAITING_START
+	MOVING_FORWARD,    # Travels forward, slows down as it cuts, slices off a board
+	RETRACTING_LOG,    # Retracts knees and dogged log to -0.25 at end of travel
+	RETURNING,         # Returns home with log retracted
+	ADVANCING_LOG,     # Advances knees forward to expose next board thickness
+	UNCLAMPING,        # Opens knees and dogs to release leftover slab
+	KICKING_LOG,       # Kicks leftover slab off carriage
+	WAITING_START      # Wait pause at home
 }
 
 @export var speed: float = 2.0
@@ -56,6 +58,7 @@ var clamped_log: RigidBody3D = null
 var log_relative_transform: Transform3D
 var clamp_timer: float = 0.0
 var clamp_duration: float = 0.8 # duration for each stage
+var has_cut_this_pass: bool = false
 
 func _ready() -> void:
 	start_pos = position
@@ -63,6 +66,8 @@ func _ready() -> void:
 	
 	# Set initial open positions for knees and dogs
 	_set_angles(open_knee_angle, open_dog_angle)
+	if knees_assembly != null:
+		knees_assembly.position.x = -0.25
 	print("[HEADRIG CARRIAGE] Initialized at: ", start_pos, " traveling to: ", target_pos)
 
 func _physics_process(delta: float) -> void:
@@ -75,7 +80,7 @@ func _physics_process(delta: float) -> void:
 	match current_state:
 		State.WAITING_FOR_LOG:
 			if knees_assembly != null:
-				knees_assembly.position.x = 0.0
+				knees_assembly.position.x = -0.25
 			_animate_knees(open_knee_angle, delta)
 			_animate_dogs(open_dog_angle, delta)
 			var log_body = _detect_log()
@@ -83,17 +88,21 @@ func _physics_process(delta: float) -> void:
 				clamped_log = log_body
 				clamp_timer = clamp_duration
 				current_state = State.CLAMPING_STAGE_1
-				print("[HEADRIG CARRIAGE] Log detected: ", clamped_log.name, ". Starting Stage 1 (pushing log back).")
+				has_cut_this_pass = false
+				print("[HEADRIG CARRIAGE] Log detected: ", clamped_log.name, ". Starting Stage 1 (pushing knees to log).")
 				
 		State.CLAMPING_STAGE_1:
-			# Stage 1: Close knees to push the log against the backstops (dogs stay open)
+			# Stage 1: Close knees to push the log against the backstops, slide knees forward to target cut position
 			_animate_knees(closed_knee_angle, delta)
 			_animate_dogs(open_dog_angle, delta)
+			var target_x = _get_knees_target_x()
+			if knees_assembly != null:
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, 1.0 * delta)
 			clamp_timer -= delta
 			if clamp_timer <= 0.0:
 				clamp_timer = clamp_duration
 				current_state = State.CLAMPING_STAGE_2
-				print("[HEADRIG CARRIAGE] Log pushed back. Starting Stage 2 (dogging).")
+				print("[HEADRIG CARRIAGE] Log pushed. Starting Stage 2 (dogging).")
 				
 		State.CLAMPING_STAGE_2:
 			# Stage 2: Clamping dogs close down to secure the log
@@ -101,63 +110,99 @@ func _physics_process(delta: float) -> void:
 			_animate_dogs(closed_dog_angle, delta)
 			clamp_timer -= delta
 			if clamp_timer <= 0.0:
-				# Log is now clamped, lock it programmatically and align it on Y-axis
+				# Log is now clamped, lock it programmatically and align it
 				if clamped_log != null:
 					clamped_log.freeze = true
-					# Rotate log on Y axis by 90 degrees relative to carriage so it lies along travel direction
-					var relative_basis = Basis(Vector3.UP, PI / 2.0)
-					
-					# Calculate log radius dynamically
-					var log_radius = 0.18
-					for child in clamped_log.get_children():
-						if child is CollisionShape3D and child.shape is BoxShape3D:
-							var shape_size = child.shape.size
-							var global_scale = clamped_log.global_transform.basis.get_scale()
-							log_radius = min(shape_size.x * global_scale.x, shape_size.z * global_scale.z) * 0.5
-							print("[HEADRIG CARRIAGE] Calculated log radius: ", log_radius)
-							break
-					
-					# Offset relative to knees_assembly (loading side local +X)
+					var relative_basis = Basis(Vector3.UP, PI / 2.0).scaled(Vector3(1.0, 1.0, clamped_log.scale.z))
+					var log_radius = clamped_log.get_current_radius()
 					log_relative_transform = Transform3D(relative_basis, Vector3(0.175 + log_radius, 0.15 + log_radius, 0.0))
 					
-					if knees_assembly != null:
-						clamped_log.global_transform = knees_assembly.global_transform * log_relative_transform
-					else:
-						clamped_log.global_transform = global_transform * log_relative_transform
+					_update_clamped_log_transform()
 						
 					clamped_log.add_collision_exception_with(self)
-					print("[HEADRIG CARRIAGE] Log locked, exception added, and aligned. Starting travel.")
+					print("[HEADRIG CARRIAGE] Log locked and aligned. Starting travel.")
+				has_cut_this_pass = false
 				current_state = State.MOVING_FORWARD
 				
 		State.MOVING_FORWARD:
-			# Player can slide the knees back and forth once log is dogged
-			var slide_dir = 0.0
-			if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT) or Input.is_key_pressed(KEY_UP):
-				slide_dir -= 1.0
-			if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT) or Input.is_key_pressed(KEY_DOWN):
-				slide_dir += 1.0
-			if slide_dir != 0.0:
-				if knees_assembly != null:
-					knees_assembly.position.x = clamp(knees_assembly.position.x + slide_dir * 0.3 * delta, -0.2, 0.2)
-
-			current_progress += (speed / travel_distance) * delta
+			# Automated speed control: slow down to 35% of normal speed as we pass the bandsaw (global X 17.5 to 20.5)
+			var current_speed = speed
+			if global_position.x > 17.5 and global_position.x < 20.5:
+				current_speed = 0.35 * speed
+			
+			current_progress += (current_speed / travel_distance) * delta
 			if current_progress >= 1.0:
 				current_progress = 1.0
-				current_state = State.UNCLAMPING
-				clamp_timer = clamp_duration
-				print("[HEADRIG CARRIAGE] Reached end of travel. Starting unclamping.")
+				if clamped_log != null and clamped_log.board_count > 0:
+					current_state = State.RETRACTING_LOG
+					print("[HEADRIG CARRIAGE] Pass complete. Retracting knees/log for safe return.")
+				else:
+					current_state = State.UNCLAMPING
+					clamp_timer = clamp_duration
+					print("[HEADRIG CARRIAGE] Reached end of travel (no boards left). Unclamping.")
+			
+			# Carriage travel position
 			var parent = get_parent()
 			if parent != null:
 				global_position = parent.global_transform * start_pos.lerp(target_pos, current_progress)
 			else:
 				position = start_pos.lerp(target_pos, current_progress)
 			
-			# Make log follow knees_assembly perfectly
-			if clamped_log != null:
-				if knees_assembly != null:
-					clamped_log.global_transform = knees_assembly.global_transform * log_relative_transform
+			# Trigger cut board when log crosses bandsaw blade (global X > 19.2)
+			if global_position.x > 19.2 and not has_cut_this_pass:
+				if clamped_log != null and clamped_log.has_method("cut_board"):
+					clamped_log.cut_board(Vector3(19, -0.083, 6.13))
+				has_cut_this_pass = true
+			
+			# Update clamped log relative transform (keeps it flush with knees as it shrinks)
+			_update_clamped_log_transform()
+				
+		State.RETRACTING_LOG:
+			# Retract knees to -0.25 so the log clears the saw blade on the return trip
+			if knees_assembly != null:
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, -0.25, 1.0 * delta)
+			
+			# Update clamped log transform to follow retraction
+			_update_clamped_log_transform()
+			
+			if knees_assembly == null or abs(knees_assembly.position.x + 0.25) < 0.001:
+				current_state = State.RETURNING
+				print("[HEADRIG CARRIAGE] Knees retracted. Returning home.")
+				
+		State.RETURNING:
+			current_progress -= (speed / travel_distance) * delta
+			if current_progress <= 0.0:
+				current_progress = 0.0
+				if clamped_log != null and clamped_log.board_count > 0:
+					current_state = State.ADVANCING_LOG
+					print("[HEADRIG CARRIAGE] Returned home. Advancing log.")
 				else:
-					clamped_log.global_transform = global_transform * log_relative_transform
+					timer = pause_at_ends
+					current_state = State.WAITING_START
+					print("[HEADRIG CARRIAGE] Returned home (finished). Pausing.")
+			
+			var parent = get_parent()
+			if parent != null:
+				global_position = parent.global_transform * start_pos.lerp(target_pos, current_progress)
+			else:
+				position = start_pos.lerp(target_pos, current_progress)
+			
+			# Keep log attached during return
+			_update_clamped_log_transform()
+					
+		State.ADVANCING_LOG:
+			# Advance knees forward to expose next board thickness
+			var target_x = _get_knees_target_x()
+			if knees_assembly != null:
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, 1.0 * delta)
+				
+			# Keep log attached as it is advanced
+			_update_clamped_log_transform()
+					
+			if knees_assembly == null or abs(knees_assembly.position.x - target_x) < 0.001:
+				has_cut_this_pass = false
+				current_state = State.MOVING_FORWARD
+				print("[HEADRIG CARRIAGE] Log advanced to ", target_x, ". Starting pass.")
 				
 		State.UNCLAMPING:
 			# Open both knees and dogs
@@ -166,18 +211,14 @@ func _physics_process(delta: float) -> void:
 			clamp_timer -= delta
 			
 			# Keep log attached during unclamping animation
-			if clamped_log != null:
-				if knees_assembly != null:
-					clamped_log.global_transform = knees_assembly.global_transform * log_relative_transform
-				else:
-					clamped_log.global_transform = global_transform * log_relative_transform
+			_update_clamped_log_transform()
 				
 			if clamp_timer <= 0.0:
 				current_state = State.KICKING_LOG
 				
 		State.KICKING_LOG:
 			if clamped_log != null:
-				# Unfreeze the log and kick it off
+				# Unfreeze the remaining slab and kick it off
 				clamped_log.freeze = false
 				clamped_log.remove_collision_exception_with(self)
 				
@@ -185,30 +226,13 @@ func _physics_process(delta: float) -> void:
 				var kick_dir_x = global_transform.basis.x.normalized()
 				var kick_vel = kick_dir_x * kick_speed_x + Vector3(0, kick_speed_y, 0)
 				clamped_log.linear_velocity = kick_vel
-				
-				# Wake it up
 				clamped_log.sleeping = false
 				
-				print("[HEADRIG CARRIAGE] Log kicked with velocity: ", kick_vel)
+				print("[HEADRIG CARRIAGE] Slab kicked with velocity: ", kick_vel)
 				clamped_log = null
 				
 			timer = pause_at_ends
 			current_state = State.RETURNING
-			
-		State.RETURNING:
-			_animate_knees(open_knee_angle, delta)
-			_animate_dogs(open_dog_angle, delta)
-			current_progress -= (speed / travel_distance) * delta
-			if current_progress <= 0.0:
-				current_progress = 0.0
-				timer = pause_at_ends
-				current_state = State.WAITING_START
-				print("[HEADRIG CARRIAGE] Returned to start. Pausing.")
-			var parent = get_parent()
-			if parent != null:
-				global_position = parent.global_transform * start_pos.lerp(target_pos, current_progress)
-			else:
-				position = start_pos.lerp(target_pos, current_progress)
 			
 		State.WAITING_START:
 			timer -= delta
@@ -240,7 +264,42 @@ func _detect_log() -> RigidBody3D:
 	var bodies = log_detector.get_overlapping_bodies()
 	for body in bodies:
 		if body is RigidBody3D and body.is_in_group("logs"):
-			# Only clamp logs that are free (not already frozen/locked by something else)
+			# Only clamp logs that are free
 			if not body.freeze:
 				return body
 	return null
+
+func _get_knees_target_x() -> float:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return -0.25
+	var max_b = clamped_log.max_boards if "max_boards" in clamped_log else 4
+	var cur_b = clamped_log.board_count if "board_count" in clamped_log else 4
+	var cut_index = max_b - cur_b + 1 # Next cut index (1-indexed)
+	var cut_z = 0.245 - cut_index * 0.05
+	
+	# The saw blade is located at carriage local X = 0.4215 (global Z = 6.13).
+	# The log center is at: X_log_center = knees_assembly.position.x + 0.175 + log_radius.
+	# The cut plane (log local Z = cut_z) aligns with carriage local X_cut = X_log_center + cut_z.
+	# We want X_cut = 0.4215, which means:
+	# knees_assembly.position.x + 0.175 + log_radius + cut_z = 0.4215
+	# Solve for target knees_assembly.position.x:
+	var log_radius = clamped_log.get_current_radius() if clamped_log.has_method("get_current_radius") else 0.245
+	return 0.4215 - 0.175 - log_radius - cut_z
+
+func _update_clamped_log_transform() -> void:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return
+	
+	var log_radius = clamped_log.get_current_radius()
+	log_relative_transform.origin.x = 0.175 + log_radius
+	log_relative_transform.origin.y = 0.15 + log_radius
+	
+	# Preserve/update log scale in transform
+	var log_scale_z = clamped_log.scale.z
+	var base_basis = Basis(Vector3.UP, PI / 2.0)
+	log_relative_transform.basis = base_basis.scaled(Vector3(1.0, 1.0, log_scale_z))
+	
+	if knees_assembly != null:
+		clamped_log.global_transform = knees_assembly.global_transform * log_relative_transform
+	else:
+		clamped_log.global_transform = global_transform * log_relative_transform
