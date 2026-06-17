@@ -13,6 +13,12 @@ size = Vector3(0.14, 0.38, 4.2)
 [sub_resource type="BoxShape3D" id="BoxShape_stop"]
 size = Vector3(0.18, 0.6, 0.18)
 
+[sub_resource type="BoxShape3D" id="BoxShape_stop_horn"]
+size = Vector3(0.18, 0.35, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_heel"]
+size = Vector3(0.18, 0.25, 0.1)
+
 [sub_resource type="BoxShape3D" id="BoxShape_stop_trigger"]
 size = Vector3(2.9, 0.7, 0.36)
 
@@ -37,7 +43,7 @@ metallic = 0.6
 roughness = 0.45
 
 [sub_resource type="StandardMaterial3D" id="Material_Stop"]
-albedo_color = Color(0.68, 0.12, 0.08, 1)
+albedo_color = Color(0.95, 0.45, 0.05, 1)
 metallic = 0.6
 roughness = 0.35
 
@@ -3324,50 +3330,65 @@ height = 0.18
 material = SubResource("Material_Chain")
 
 [node name="RetractableStops" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.92)
 script = ExtResource("3")
 
 [node name="TriggerArea" type="Area3D" parent="RetractableStops"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26, 0.08)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -2.09)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/TriggerArea"]
 shape = SubResource("BoxShape_stop_trigger")
 
 [node name="MovingStops" type="Node3D" parent="RetractableStops"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.28, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -2.24)
 
-[node name="StopBody" type="StaticBody3D" parent="RetractableStops/MovingStops"]
+[node name="StopBody" type="AnimatableBody3D" parent="RetractableStops/MovingStops"]
 
-[node name="CollisionShapeLeft" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.3, 0)
-shape = SubResource("BoxShape_stop")
+[node name="CollisionShapeLeftHorn" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0.25, 0.12)
+shape = SubResource("BoxShape_stop_horn")
 
-[node name="CollisionShapeCenter" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
-shape = SubResource("BoxShape_stop")
+[node name="CollisionShapeLeftHeel" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.05, -0.22)
+shape = SubResource("BoxShape_stop_heel")
 
-[node name="CollisionShapeRight" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.3, 0)
-shape = SubResource("BoxShape_stop")
+[node name="CollisionShapeCenterHorn" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0.12)
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeCenterHeel" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, -0.22)
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeRightHorn" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.25, 0.12)
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeRightHeel" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.05, -0.22)
+shape = SubResource("BoxShape_stop_heel")
 
 [node name="Visuals" type="Node3D" parent="RetractableStops/MovingStops"]
 
-[node name="StopBar" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.55, 0)
-size = Vector3(2.28, 0.1, 0.18)
+[node name="TorqueTube" type="CSGCylinder3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+radius = 0.08
+height = 2.6
 material = SubResource("Material_Stop")
 
-[node name="StopLeftPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.3, 0)
-size = Vector3(0.18, 0.6, 0.18)
+[node name="ArmLeft" type="CSGPolygon3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -1.05, 0, 0)
+polygon = PackedVector2Array(0.15, 0.4, 0.11, 0.22, 0.04, 0.09, -0.08, 0.06, -0.32, -0.15, -0.15, -0.22, 0, -0.12, 0.1, -0.08, 0.24, 0.15)
+depth = 0.06
 material = SubResource("Material_Stop")
 
-[node name="StopCenterPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.3, 0)
-size = Vector3(0.18, 0.6, 0.18)
+[node name="ArmCenter" type="CSGPolygon3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+polygon = PackedVector2Array(0.15, 0.4, 0.11, 0.22, 0.04, 0.09, -0.08, 0.06, -0.32, -0.15, -0.15, -0.22, 0, -0.12, 0.1, -0.08, 0.24, 0.15)
+depth = 0.06
 material = SubResource("Material_Stop")
 
-[node name="StopRightPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.3, 0)
-size = Vector3(0.18, 0.6, 0.18)
+[node name="ArmRight" type="CSGPolygon3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 1.05, 0, 0)
+polygon = PackedVector2Array(0.15, 0.4, 0.11, 0.22, 0.04, 0.09, -0.08, 0.06, -0.32, -0.15, -0.15, -0.22, 0, -0.12, 0.1, -0.08, 0.24, 0.15)
+depth = 0.06
 material = SubResource("Material_Stop")
