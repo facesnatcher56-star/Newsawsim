@@ -702,12 +702,12 @@ size = Vector3(3.6, 1.2, 0.2)
 operation = 2
 
 [node name="LeftSlopedPlate" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012410]
-transform = Transform3D(0.9659258, -0.258819, 0, 0.258819, 0.9659258, 0, 0, 0, 1, 3.8, 0.15, 2.114)
+transform = Transform3D(0.9659258, 0.258819, 0, -0.258819, 0.9659258, 0, 0, 0, 1, 3.8, 0.15, 2.114)
 size = Vector3(2.5, 0.05, 1.76)
 material = SubResource("Material_Enclosure")
 
 [node name="RightSlopedPlate" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012411]
-transform = Transform3D(0.9659258, 0.258819, 0, -0.258819, 0.9659258, 0, 0, 0, 1, 6.3, 0.15, 2.114)
+transform = Transform3D(0.9659258, -0.258819, 0, 0.258819, 0.9659258, 0, 0, 0, 1, 6.3, 0.15, 2.114)
 size = Vector3(2.5, 0.05, 1.76)
 material = SubResource("Material_Enclosure")
 
