@@ -1,0 +1,555 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/chain_deck_visuals.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/retractable_log_stops.gd" id="3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape_deck"]
+size = Vector3(3.0, 0.16, 4.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape_rail"]
+size = Vector3(0.14, 0.38, 4.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop"]
+size = Vector3(2.7, 0.38, 0.14)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_trigger"]
+size = Vector3(2.9, 0.7, 0.36)
+
+[sub_resource type="StandardMaterial3D" id="Material_Frame"]
+albedo_color = Color(0.34, 0.36, 0.38, 1)
+metallic = 0.85
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Material_Chain"]
+albedo_color = Color(0.045, 0.047, 0.05, 1)
+metallic = 0.9
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="Material_Bolts"]
+albedo_color = Color(0.12, 0.12, 0.13, 1)
+metallic = 0.95
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Material_Flights"]
+albedo_color = Color(0.55, 0.5, 0.38, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="Material_Stop"]
+albedo_color = Color(0.68, 0.12, 0.08, 1)
+metallic = 0.6
+roughness = 0.35
+
+[node name="ChainLogDeck" type="StaticBody3D"]
+script = ExtResource("1")
+speed = 0.2
+direction = Vector3(0, 0, -1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+shape = SubResource("BoxShape_deck")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.12, 0)
+shape = SubResource("BoxShape_rail")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.12, 0)
+shape = SubResource("BoxShape_rail")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Bed" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.94, 0)
+size = Vector3(3.0, 0.1, 4.2)
+material = SubResource("Material_Frame")
+
+[node name="RailLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 1.12, 0)
+size = Vector3(0.14, 0.38, 4.3)
+material = SubResource("Material_Frame")
+
+[node name="RailRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.58, 1.12, 0)
+size = Vector3(0.14, 0.38, 4.3)
+material = SubResource("Material_Frame")
+
+[node name="InfeedEndBeam" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, 2.1)
+size = Vector3(3.2, 0.18, 0.12)
+material = SubResource("Material_Frame")
+
+[node name="DischargeEndBeam" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.08, -2.1)
+size = Vector3(3.2, 0.18, 0.12)
+material = SubResource("Material_Frame")
+
+[node name="LegFrontLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.48, -1.72)
+size = Vector3(0.14, 0.9, 0.14)
+material = SubResource("Material_Frame")
+
+[node name="LegFrontRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.48, -1.72)
+size = Vector3(0.14, 0.9, 0.14)
+material = SubResource("Material_Frame")
+
+[node name="LegBackLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.48, 1.72)
+size = Vector3(0.14, 0.9, 0.14)
+material = SubResource("Material_Frame")
+
+[node name="LegBackRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.48, 1.72)
+size = Vector3(0.14, 0.9, 0.14)
+material = SubResource("Material_Frame")
+
+[node name="FootFrontLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.035, -1.72)
+size = Vector3(0.42, 0.07, 0.42)
+material = SubResource("Material_Frame")
+
+[node name="FootFrontRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.035, -1.72)
+size = Vector3(0.42, 0.07, 0.42)
+material = SubResource("Material_Frame")
+
+[node name="FootBackLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 0.035, 1.72)
+size = Vector3(0.42, 0.07, 0.42)
+material = SubResource("Material_Frame")
+
+[node name="FootBackRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 0.035, 1.72)
+size = Vector3(0.42, 0.07, 0.42)
+material = SubResource("Material_Frame")
+
+[node name="Bolts" type="Node3D" parent="Visuals"]
+
+[node name="BoltFL1" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.37, 0.09, -1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFL2" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.13, 0.09, -1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFL3" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.37, 0.09, -1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFL4" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.13, 0.09, -1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFR1" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13, 0.09, -1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFR2" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37, 0.09, -1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFR3" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13, 0.09, -1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltFR4" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37, 0.09, -1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBL1" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.37, 0.09, 1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBL2" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.13, 0.09, 1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBL3" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.37, 0.09, 1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBL4" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.13, 0.09, 1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBR1" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13, 0.09, 1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBR2" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37, 0.09, 1.6)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBR3" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.13, 0.09, 1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="BoltBR4" type="CSGCylinder3D" parent="Visuals/Bolts"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.37, 0.09, 1.84)
+radius = 0.035
+height = 0.04
+material = SubResource("Material_Bolts")
+
+[node name="Chains" type="Node3D" parent="Visuals"]
+script = ExtResource("2")
+deck_length = 4.2
+link_spacing = 0.32
+
+[node name="RunnerBedLeftOuter" type="CSGBox3D" parent="Visuals/Chains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.075, 0)
+size = Vector3(0.28, 0.05, 4.2)
+material = SubResource("Material_Chain")
+
+[node name="RunnerBedLeftInner" type="CSGBox3D" parent="Visuals/Chains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.075, 0)
+size = Vector3(0.28, 0.05, 4.2)
+material = SubResource("Material_Chain")
+
+[node name="RunnerBedRightInner" type="CSGBox3D" parent="Visuals/Chains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.075, 0)
+size = Vector3(0.28, 0.05, 4.2)
+material = SubResource("Material_Chain")
+
+[node name="RunnerBedRightOuter" type="CSGBox3D" parent="Visuals/Chains"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.075, 0)
+size = Vector3(0.28, 0.05, 4.2)
+material = SubResource("Material_Chain")
+
+[node name="LeftOuterLinks" type="Node3D" parent="Visuals/Chains"]
+
+[node name="ChainLinkLO00" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, -1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO01" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.9, 1.15, -1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO02" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, -1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO03" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.9, 1.15, -0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO04" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, -0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO05" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.9, 1.15, -0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO06" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, 0)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO07" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.9, 1.15, 0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO08" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, 0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO09" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.9, 1.15, 0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO10" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, 1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO11" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.9, 1.15, 1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLO12" type="CSGBox3D" parent="Visuals/Chains/LeftOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.9, 1.15, 1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="LeftInnerLinks" type="Node3D" parent="Visuals/Chains"]
+
+[node name="ChainLinkLI00" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, -1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI01" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.3, 1.15, -1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI02" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, -1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI03" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.3, 1.15, -0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI04" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, -0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI05" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.3, 1.15, -0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI06" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, 0)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI07" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.3, 1.15, 0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI08" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, 0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI09" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.3, 1.15, 0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI10" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, 1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI11" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, -0.3, 1.15, 1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkLI12" type="CSGBox3D" parent="Visuals/Chains/LeftInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, -0.3, 1.15, 1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightInnerLinks" type="Node3D" parent="Visuals/Chains"]
+
+[node name="ChainLinkRI00" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, -1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI01" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.3, 1.15, -1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI02" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, -1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI03" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.3, 1.15, -0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI04" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, -0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI05" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.3, 1.15, -0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI06" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, 0)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI07" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.3, 1.15, 0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI08" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, 0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI09" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.3, 1.15, 0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI10" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, 1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI11" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.3, 1.15, 1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRI12" type="CSGBox3D" parent="Visuals/Chains/RightInnerLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.3, 1.15, 1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RightOuterLinks" type="Node3D" parent="Visuals/Chains"]
+
+[node name="ChainLinkRO00" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, -1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO01" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.9, 1.15, -1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO02" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, -1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO03" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.9, 1.15, -0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO04" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, -0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO05" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.9, 1.15, -0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO06" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, 0)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO07" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.9, 1.15, 0.32)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO08" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, 0.64)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO09" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.9, 1.15, 0.96)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO10" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, 1.28)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO11" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, -0.08715574, 0, 1, 0, 0.08715574, 0, 0.9961947, 0.9, 1.15, 1.6)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="ChainLinkRO12" type="CSGBox3D" parent="Visuals/Chains/RightOuterLinks"]
+transform = Transform3D(0.9961947, 0, 0.08715574, 0, 1, 0, -0.08715574, 0, 0.9961947, 0.9, 1.15, 1.92)
+size = Vector3(0.24, 0.07, 0.36)
+material = SubResource("Material_Chain")
+
+[node name="RetractableStops" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.92)
+script = ExtResource("3")
+
+[node name="TriggerArea" type="Area3D" parent="RetractableStops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.26, 0.08)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/TriggerArea"]
+shape = SubResource("BoxShape_stop_trigger")
+
+[node name="MovingStops" type="Node3D" parent="RetractableStops"]
+
+[node name="StopBody" type="StaticBody3D" parent="RetractableStops/MovingStops"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
+shape = SubResource("BoxShape_stop")
+
+[node name="Visuals" type="Node3D" parent="RetractableStops/MovingStops"]
+
+[node name="StopBar" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
+size = Vector3(2.7, 0.38, 0.14)
+material = SubResource("Material_Stop")
+
+[node name="StopLeftPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.18, 0)
+size = Vector3(0.18, 0.42, 0.18)
+material = SubResource("Material_Stop")
+
+[node name="StopCenterPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.18, 0)
+size = Vector3(0.18, 0.42, 0.18)
+material = SubResource("Material_Stop")
+
+[node name="StopRightPost" type="CSGBox3D" parent="RetractableStops/MovingStops/Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.18, 0)
+size = Vector3(0.18, 0.42, 0.18)
+material = SubResource("Material_Stop")

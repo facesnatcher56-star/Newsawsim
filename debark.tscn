@@ -26,6 +26,7 @@
 [ext_resource type="PackedScene" path="res://scenes/semi_trailer.tscn" id="30_trailer"]
 [ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="31_loader"]
 [ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://scripts/bandsaw_teeth.gd" id="32_teeth"]
+[ext_resource type="PackedScene" path="res://scenes/chain_log_deck.tscn" id="33_chain_deck"]
 [ext_resource type="Script" uid="uid://bn8p7ne8daqiy" path="res://scripts/lift_controller.gd" id="lift_controller_script"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
@@ -299,6 +300,9 @@ material = SubResource("Material_Enclosure")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0078125, 0.44149774, 2.28)
 size = Vector3(1.0585938, 0.8668579, 0.12)
 material = SubResource("Material_Enclosure")
+
+[node name="OppositeChainDeckTest" parent="." unique_id=1006123449 instance=ExtResource("33_chain_deck")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39293075, 1.1920929e-07, 4.05)
 
 [node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("3")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.254882, 0.45677352, 2.118968)
@@ -722,6 +726,7 @@ size = Vector3(3.6, 1.2, 0.02)
 material = SubResource("Material_Glass")
 
 [editable path="VibratoryConveyor"]
+[editable path="OppositeChainDeckTest"]
 [editable path="WasteConveyor3"]
 [editable path="HeadrigRailSystemInstance"]
 [editable path="KnuckleBoomLoader"]
