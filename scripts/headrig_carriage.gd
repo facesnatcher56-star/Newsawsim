@@ -148,8 +148,8 @@ func _physics_process(delta: float) -> void:
 			else:
 				position = start_pos.lerp(target_pos, current_progress)
 			
-			# Trigger cut board when log crosses bandsaw blade (global X > 19.2)
-			if global_position.x > 19.2 and not has_cut_this_pass:
+			# Trigger cut board when log tail end clears the bandsaw blade (global X > 20.15)
+			if global_position.x > 20.15 and not has_cut_this_pass:
 				if clamped_log != null and clamped_log.has_method("cut_board"):
 					clamped_log.cut_board(Vector3(19, -0.083, 6.13))
 				has_cut_this_pass = true
