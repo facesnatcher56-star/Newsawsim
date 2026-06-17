@@ -22,6 +22,11 @@ albedo_color = Color(0.15, 0.15, 0.15, 1)
 metallic = 0.8
 roughness = 0.3
 
+[sub_resource type="StandardMaterial3D" id="Material_Chrome"]
+albedo_color = Color(0.85, 0.85, 0.88, 1)
+metallic = 1.0
+roughness = 0.05
+
 [sub_resource type="BoxShape3D" id="Shape_GrappleArea"]
 size = Vector3(0.8, 0.8, 1.2)
 
@@ -30,6 +35,24 @@ size = Vector3(1.5, 1.5, 2.5)
 
 [sub_resource type="BoxShape3D" id="Shape_BunkZone"]
 size = Vector3(1.5, 1.5, 2.5)
+
+[sub_resource type="StandardMaterial3D" id="Material_Smoke"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.12, 0.12, 0.12, 0.75)
+
+[sub_resource type="SphereMesh" id="SphereMesh_smoke"]
+material = SubResource("Material_Smoke")
+radius = 0.12
+height = 0.24
+
+[sub_resource type="Curve" id="Curve_smoke_scale"]
+_data = [Vector2(0, 0.2), 0.0, 2.0, 0, 0, Vector2(1, 1.5), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_smoke_color"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(0.08, 0.08, 0.08, 0.8, 0.15, 0.15, 0.15, 0.5, 0.2, 0.2, 0.2, 0)
 
 [node name="KnuckleBoomLoader" type="Node3D"]
 script = ExtResource("1")
@@ -59,6 +82,41 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.65, -0.05)
 size = Vector3(0.5, 0.5, 0.7)
 material = SubResource("Material_Pedestal")
 
+[node name="ExhaustStack" type="CSGCylinder3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 1.3, -0.2)
+radius = 0.06
+height = 0.8
+material = SubResource("Material_Chrome")
+
+[node name="ExhaustSmoke" type="CPUParticles3D" parent="Turret/ExhaustStack"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+amount = 30
+lifetime = 4.8
+mesh = SubResource("SphereMesh_smoke")
+direction = Vector3(0, 1, 0)
+spread = 20.0
+gravity = Vector3(0, 0.5, 0)
+initial_velocity_min = 0.25
+initial_velocity_max = 0.5
+scale_amount_min = 0.5
+scale_amount_max = 1.5
+scale_amount_curve = SubResource("Curve_smoke_scale")
+color_ramp = SubResource("Gradient_smoke_color")
+
+[node name="BracketBaseMain" type="CSGBox3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.27, 0.3, 0.0)
+size = Vector3(0.15, 0.2, 0.1)
+material = SubResource("Material_Pedestal")
+
+[node name="HydraulicMainBase" type="Node3D" parent="Turret"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.27, 0.3, 0.0)
+
+[node name="Barrel" type="CSGCylinder3D" parent="Turret/HydraulicMainBase"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.25)
+radius = 0.05
+height = 0.5
+material = SubResource("Material_Pedestal")
+
 [node name="MainBoomPivot" type="Node3D" parent="Turret"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.4, 0.0)
 
@@ -66,6 +124,34 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0.4, 0.0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 size = Vector3(0.15, 2, 0.15)
 material = SubResource("Material_Boom")
+
+[node name="BracketRodMain" type="CSGBox3D" parent="Turret/MainBoomPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.8, 0.0)
+size = Vector3(0.1, 0.1, 0.08)
+material = SubResource("Material_Boom")
+
+[node name="HydraulicMainRod" type="Node3D" parent="Turret/MainBoomPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.15, 0.8, 0.0)
+
+[node name="Rod" type="CSGCylinder3D" parent="Turret/MainBoomPivot/HydraulicMainRod"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.25)
+radius = 0.03
+height = 0.5
+material = SubResource("Material_Grapple")
+
+[node name="BracketBaseOuter" type="CSGBox3D" parent="Turret/MainBoomPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 1.2, 0.0)
+size = Vector3(0.1, 0.1, 0.08)
+material = SubResource("Material_Boom")
+
+[node name="HydraulicOuterBase" type="Node3D" parent="Turret/MainBoomPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 1.2, 0.0)
+
+[node name="Barrel" type="CSGCylinder3D" parent="Turret/MainBoomPivot/HydraulicOuterBase"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.35)
+radius = 0.04
+height = 0.7
+material = SubResource("Material_Pedestal")
 
 [node name="OuterBoomPivot" type="Node3D" parent="Turret/MainBoomPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
@@ -75,12 +161,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 size = Vector3(0.12, 1.8, 0.12)
 material = SubResource("Material_Boom")
 
+[node name="BracketRodOuter" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.0)
+size = Vector3(0.08, 0.1, 0.06)
+material = SubResource("Material_Boom")
+
+[node name="HydraulicOuterRod" type="Node3D" parent="Turret/MainBoomPivot/OuterBoomPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, 0.5, 0.0)
+
+[node name="Rod" type="CSGCylinder3D" parent="Turret/MainBoomPivot/OuterBoomPivot/HydraulicOuterRod"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, -0.35)
+radius = 0.024
+height = 0.7
+material = SubResource("Material_Grapple")
+
 [node name="GrapplePivot" type="Node3D" parent="Turret/MainBoomPivot/OuterBoomPivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
 
 [node name="GrappleBase" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.15, 0)
-size = Vector3(0.2, 0.3, 0.2)
+size = Vector3(0.25, 0.3, 0.65)
 material = SubResource("Material_Grapple")
 
 [node name="GrappleArea" type="Area3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot"]
@@ -90,19 +190,43 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
 shape = SubResource("Shape_GrappleArea")
 
 [node name="ClawLeftPivot" type="Node3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0.28)
 
-[node name="ClawLeft" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, -0.18, -0.05)
-size = Vector3(0.1, 0.4, 0.08)
+[node name="ClawLeft" type="CSGCombiner3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot"]
+
+[node name="Upper" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft"]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, -0.258819, 0, 0.258819, 0.9659258, 0, -0.15, -0.02)
+size = Vector3(0.15, 0.3, 0.08)
+material = SubResource("Material_Grapple")
+
+[node name="Middle" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, -0.5, 0, 0.5, 0.866025, 0, -0.38, -0.1)
+size = Vector3(0.15, 0.25, 0.08)
+material = SubResource("Material_Grapple")
+
+[node name="Tip" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft"]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, -0.7071068, 0, 0.7071068, 0.7071068, 0, -0.54, -0.23)
+size = Vector3(0.15, 0.2, 0.06)
 material = SubResource("Material_Grapple")
 
 [node name="ClawRightPivot" type="Node3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -0.1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -0.28)
 
-[node name="ClawRight" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, -0.18, 0.05)
-size = Vector3(0.1, 0.4, 0.08)
+[node name="ClawRight" type="CSGCombiner3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot"]
+
+[node name="Upper" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight"]
+transform = Transform3D(1, 0, 0, 0, 0.9659258, 0.258819, 0, -0.258819, 0.9659258, 0, -0.15, 0.02)
+size = Vector3(0.15, 0.3, 0.08)
+material = SubResource("Material_Grapple")
+
+[node name="Middle" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight"]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, -0.38, 0.1)
+size = Vector3(0.15, 0.25, 0.08)
+material = SubResource("Material_Grapple")
+
+[node name="Tip" type="CSGBox3D" parent="Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight"]
+transform = Transform3D(1, 0, 0, 0, 0.7071068, 0.7071068, 0, -0.7071068, 0.7071068, 0, -0.54, 0.23)
+size = Vector3(0.15, 0.2, 0.06)
 material = SubResource("Material_Grapple")
 
 [node name="ConveyorIntakeZone" type="Area3D" parent="."]

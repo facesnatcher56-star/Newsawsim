@@ -17,21 +17,21 @@ enum State {
 	RETRACT_BOOM        # Raise empty boom back up
 }
 
-@export var swing_speed: float = 1.2
-@export var boom_speed: float = 0.8
-@export var claw_speed: float = 3.0
+@export var swing_speed: float = 0.6
+@export var boom_speed: float = 0.4
+@export var claw_speed: float = 1.5
 
 # Joint target angles (in radians)
-@export var main_boom_swing_angle: float = -0.785
-@export var main_boom_pickup_angle: float = -2.409
-@export var main_boom_drop_angle: float = -1.623
+@export var main_boom_swing_angle: float = -0.541
+@export var main_boom_pickup_angle: float = -1.117
+@export var main_boom_drop_angle: float = -0.716
 
-@export var outer_boom_swing_angle: float = 0.785
-@export var outer_boom_pickup_angle: float = 1.030
-@export var outer_boom_drop_angle: float = 0.750
+@export var outer_boom_swing_angle: float = -1.152
+@export var outer_boom_pickup_angle: float = -1.501
+@export var outer_boom_drop_angle: float = -1.030
 
-@export var claw_open_angle: float = -0.6
-@export var claw_closed_angle: float = 0.4
+@export var claw_open_angle: float = -0.8
+@export var claw_closed_angle: float = -0.20
 
 var current_state: State = State.IDLE
 var timer: float = 0.0
@@ -40,15 +40,24 @@ var timer: float = 0.0
 @onready var turret: Node3D = $Turret
 @onready var main_boom_pivot: Node3D = $Turret/MainBoomPivot
 @onready var outer_boom_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot
+@onready var grapple_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot
 @onready var claw_left_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot
 @onready var claw_right_pivot: Node3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot
 @onready var grapple_area: Area3D = $Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/GrappleArea
+
+@onready var hydraulic_main_base: Node3D = $Turret/HydraulicMainBase
+@onready var hydraulic_main_rod: Node3D = $Turret/MainBoomPivot/HydraulicMainRod
+@onready var hydraulic_outer_base: Node3D = $Turret/MainBoomPivot/HydraulicOuterBase
+@onready var hydraulic_outer_rod: Node3D = $Turret/MainBoomPivot/OuterBoomPivot/HydraulicOuterRod
 
 @onready var conveyor_zone: Area3D = $ConveyorIntakeZone
 @onready var bunk_zone: Area3D = $BunkZone
 
 var clamped_log: RigidBody3D = null
 var log_relative_transform: Transform3D
+var grab_start_relative_transform: Transform3D
+var grab_target_relative_transform: Transform3D
+var grapple_swivel_yaw: float = 0.0
 
 # Dynamic turret angles computed at ready
 var bunk_turret_angle: float = PI
@@ -83,6 +92,18 @@ func _physics_process(delta: float) -> void:
 			clamped_log = null
 			current_state = State.RETRACT_BOOM
 			print("[KNUCKLE BOOM] Clamped log became invalid. Retracting boom.")
+			
+	# Swivel grapple to align log straight across conveyor during transport
+	match current_state:
+		State.LIFT_LOG, State.SWING_TO_CONVEYOR, State.LOWER_TO_CONVEYOR, State.RELEASE_LOG:
+			grapple_swivel_yaw = rotate_toward(grapple_swivel_yaw, 0.0, 1.5 * delta)
+		State.GRAB_LOG:
+			if clamped_log != null and is_instance_valid(clamped_log):
+				# Lock to the log's actual orientation while grabbing
+				grapple_swivel_yaw = clamped_log.global_rotation.y
+		_:
+			# Default alignment for bunk
+			grapple_swivel_yaw = rotate_toward(grapple_swivel_yaw, 0.0, 1.5 * delta)
 			
 	# Debug print every 60 frames
 	if Engine.get_frames_drawn() % 60 == 0:
@@ -137,6 +158,7 @@ func _physics_process(delta: float) -> void:
 			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
 				current_state = State.GRAB_LOG
 				timer = 0.6
+				_start_grab_log()
 				print("[KNUCKLE BOOM] Reached pickup position. Grabbing log.")
 				
 		State.GRAB_LOG:
@@ -146,11 +168,16 @@ func _physics_process(delta: float) -> void:
 			target_claw = claw_closed_angle
 			
 			timer -= delta
+			if clamped_log != null:
+				var t = 1.0 - (timer / 0.6)
+				t = clamp(t, 0.0, 1.0)
+				log_relative_transform = grab_start_relative_transform.interpolate_with(grab_target_relative_transform, t)
+				
 			if timer <= 0.0:
-				_grab_log_from_area()
 				if clamped_log != null:
+					log_relative_transform = grab_target_relative_transform
 					current_state = State.LIFT_LOG
-					print("[KNUCKLE BOOM] Log grabbed. Lifting.")
+					print("[KNUCKLE BOOM] Log grab complete. Lifting.")
 				else:
 					current_state = State.RETRACT_BOOM
 					print("[KNUCKLE BOOM] Grab failed. Retracting boom to retry.")
@@ -209,6 +236,11 @@ func _physics_process(delta: float) -> void:
 				print("[KNUCKLE BOOM] Boom retracted. Loader is idle.")
 				
 	_animate_joints(target_turret_y, target_mb_z, target_ob_z, target_claw, delta)
+	
+	if grapple_pivot != null:
+		grapple_pivot.global_rotation = Vector3(0.0, grapple_swivel_yaw, 0.0)
+		
+	_update_hydraulics()
 
 func _set_joints(tur_y: float, mb_z: float, ob_z: float, claw: float) -> void:
 	if turret != null:
@@ -221,6 +253,11 @@ func _set_joints(tur_y: float, mb_z: float, ob_z: float, claw: float) -> void:
 		claw_left_pivot.rotation.x = claw
 	if claw_right_pivot != null:
 		claw_right_pivot.rotation.x = -claw
+		
+	if grapple_pivot != null:
+		grapple_pivot.global_rotation = Vector3(0.0, grapple_swivel_yaw, 0.0)
+		
+	_update_hydraulics()
 
 func _animate_joints(tur_y: float, mb_z: float, ob_z: float, claw: float, delta: float) -> void:
 	if turret != null:
@@ -268,19 +305,20 @@ func _spawn_new_log() -> void:
 		log_instance.global_rotation = Vector3(0.0, 0.0, 0.0)
 		print("[KNUCKLE BOOM] Spawned new log in bunk (frozen): ", log_instance.name)
 
-func _grab_log_from_area() -> void:
+func _start_grab_log() -> void:
 	if grapple_area == null:
 		return
 	
 	# Try Area3D first
+	var target_log = null
 	var bodies = grapple_area.get_overlapping_bodies()
 	for body in bodies:
 		if body is RigidBody3D and body.is_in_group("logs"):
-			clamped_log = body
+			target_log = body
 			break
 			
 	# Fallback to proximity search if Area3D missed
-	if clamped_log == null:
+	if target_log == null:
 		var logs = get_tree().get_nodes_in_group("logs")
 		var min_dist = 0.6
 		for l in logs:
@@ -288,14 +326,21 @@ func _grab_log_from_area() -> void:
 				var dist = grapple_area.global_position.distance_to(l.global_position)
 				if dist < min_dist:
 					min_dist = dist
-					clamped_log = l
+					target_log = l
 					
-	if clamped_log != null:
+	if target_log != null:
+		clamped_log = target_log
 		clamped_log.freeze = true
-		log_relative_transform = grapple_area.global_transform.affine_inverse() * clamped_log.global_transform
-		print("[KNUCKLE BOOM] Log grabbed: ", clamped_log.name, " at distance: ", grapple_area.global_position.distance_to(clamped_log.global_position))
+		
+		# Record starting relative transform
+		grab_start_relative_transform = grapple_area.global_transform.affine_inverse() * clamped_log.global_transform
+		grab_target_relative_transform = grab_start_relative_transform
+		
+		log_relative_transform = grab_start_relative_transform
+		print("[KNUCKLE BOOM] Grab animation started for log: ", clamped_log.name, " at distance: ", grapple_area.global_position.distance_to(clamped_log.global_position))
 	else:
-		print("[KNUCKLE BOOM] Grab failed! No log in range of grapple. Grapple Pos: ", grapple_area.global_position)
+		clamped_log = null
+		print("[KNUCKLE BOOM] Grab animation failed! No log in range of grapple.")
 
 func _release_log() -> void:
 	if clamped_log != null:
@@ -305,3 +350,17 @@ func _release_log() -> void:
 			clamped_log.linear_velocity = Vector3(0.0, -0.5, 0.0)
 			print("[KNUCKLE BOOM] Log released: ", clamped_log.name)
 		clamped_log = null
+
+func _update_hydraulics() -> void:
+	if turret == null:
+		return
+		
+	var up_vector = turret.global_transform.basis.z
+	
+	if hydraulic_main_base != null and hydraulic_main_rod != null:
+		hydraulic_main_base.look_at(hydraulic_main_rod.global_position, up_vector)
+		hydraulic_main_rod.look_at(hydraulic_main_base.global_position, up_vector)
+		
+	if hydraulic_outer_base != null and hydraulic_outer_rod != null:
+		hydraulic_outer_base.look_at(hydraulic_outer_rod.global_position, up_vector)
+		hydraulic_outer_rod.look_at(hydraulic_outer_base.global_position, up_vector)

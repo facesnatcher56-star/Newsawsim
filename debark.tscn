@@ -120,7 +120,7 @@ transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
-transform = Transform3D(0.9999155, 0.0065011648, -0.011260355, 2.379199e-10, 0.86602557, 0.49999973, 0.013002336, -0.49995747, 0.8659524, 4.946434, 1.4940186, 3.9898376)
+transform = Transform3D(0.9999155, 0.0065011648, -0.011260356, 2.379199e-10, 0.86602557, 0.49999973, 0.013002336, -0.49995747, 0.8659524, -5.1622295, 1.4940186, 3.9898376)
 current = true
 script = ExtResource("18_cam")
 
@@ -549,3 +549,4 @@ material = SubResource("Material_Ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, -0.5)
 
 [editable path="WasteConveyor3"]
+[editable path="KnuckleBoomLoader"]
