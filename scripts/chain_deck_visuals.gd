@@ -14,8 +14,15 @@ func _ready() -> void:
 	var parent = get_parent()
 	if parent:
 		_conveyor = parent.get_parent()
+		
+	if Engine.is_editor_hint():
+		# Position links once in their default layout in the editor
+		_update_positions(0.0)
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+
 	if _chains.is_empty():
 		return
 
@@ -32,8 +39,9 @@ func _process(delta: float) -> void:
 
 	# Continuously scroll travel distance
 	_travel_distance += scroll_speed * delta
+	_update_positions(_travel_distance)
 
-	# Animate each chain group
+func _update_positions(travel_dist: float) -> void:
 	for group_name in _chains:
 		var links: Array = _chains[group_name]
 		var num_links = links.size()
@@ -52,8 +60,8 @@ func _process(delta: float) -> void:
 			# Distributed evenly centered around Z = 0
 			var nominal_z = -half_loop + (idx * link_spacing)
 			
-			# Apply continuous offset and wrap it cleanly within [-half_loop, half_loop]
-			var z = fposmod(nominal_z + _travel_distance + half_loop, loop_length) - half_loop
+			# Apply offset and wrap it cleanly within [-half_loop, half_loop]
+			var z = fposmod(nominal_z + travel_dist + half_loop, loop_length) - half_loop
 			
 			link.position.z = z
 
@@ -75,7 +83,16 @@ func _collect_and_sort_chains() -> void:
 				links.append(child)
 				
 		if not links.is_empty():
-			# Sort links by name (e.g. LO00, LO01...) to preserve the alternating sequence order
-			links.sort_custom(func(a, b): return a.name < b.name)
+			# Safe bubble-sort to avoid Engine lambda sort_custom crash bugs in editor thread
+			_sort_links_by_name(links)
 			_chains[group_name] = links
+
+func _sort_links_by_name(arr: Array[Node3D]) -> void:
+	var n = arr.size()
+	for i in range(n):
+		for j in range(0, n - i - 1):
+			if arr[j].name > arr[j + 1].name:
+				var temp = arr[j]
+				arr[j] = arr[j + 1]
+				arr[j + 1] = temp
 
