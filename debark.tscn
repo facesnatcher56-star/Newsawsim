@@ -98,45 +98,10 @@ albedo_color = Color(0.2, 0.5, 0.3, 1)
 metallic = 0.5
 roughness = 0.3
 
-[sub_resource type="Shader" id="Shader_Blade"]
-code = "shader_type spatial;
-render_mode cull_disabled;
-
-uniform vec4 albedo : source_color = vec4(0.7, 0.7, 0.75, 1.0);
-uniform float metallic : hint_range(0.0, 1.0) = 0.9;
-uniform float roughness : hint_range(0.0, 1.0) = 0.25;
-uniform float frequency : hint_range(1.0, 500.0) = 250.0;
-uniform float amplitude : hint_range(0.0, 0.2) = 0.08;
-uniform float speed : hint_range(0.0, 50.0) = 20.0;
-
-varying vec3 local_pos;
-
-void vertex() {
-	local_pos = VERTEX;
-}
-
-void fragment() {
-	float z_norm = (local_pos.z + 0.05) / 0.1;
-	float y_val = (local_pos.y - TIME * speed) * frequency;
-	float tooth_pattern = abs(fract(y_val) - 0.5) * 2.0;
-	float cutting_edge_threshold = 1.0 - amplitude * tooth_pattern;
-	if (z_norm > cutting_edge_threshold) {
-		discard;
-	}
-	ALBEDO = albedo.rgb;
-	METALLIC = metallic;
-	ROUGHNESS = roughness;
-}"
-
-[sub_resource type="ShaderMaterial" id="Material_Blade"]
-shader = SubResource("Shader_Blade")
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(60, 0.2, 60)
-
-[sub_resource type="StandardMaterial3D" id="Material_Ground"]
-albedo_color = Color(0.35, 0.35, 0.38, 1)
-roughness = 0.95
+[sub_resource type="StandardMaterial3D" id="Material_Blade"]
+albedo_color = Color(0.7, 0.7, 0.75, 1)
+metallic = 0.9
+roughness = 0.2
 
 [sub_resource type="Gradient" id="Gradient_LaserLine"]
 offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
@@ -148,6 +113,26 @@ width = 256
 height = 16
 fill_from = Vector2(0, 0.5)
 fill_to = Vector2(1, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(60, 0.2, 60)
+
+[sub_resource type="StandardMaterial3D" id="Material_Ground"]
+albedo_color = Color(0.35, 0.35, 0.38, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="Material_MetalDetector"]
+albedo_color = Color(0.85, 0.7, 0.1, 1)
+metallic = 0.5
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Material_RedBulb_Off"]
+albedo_color = Color(0.5, 0.1, 0.1, 1)
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Material_GreenBulb_On"]
+shading_mode = 0
+albedo_color = Color(0.1, 0.9, 0.1, 1)
 
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
@@ -244,6 +229,47 @@ shape = SubResource("6")
 [node name="CollisionShape3D4" type="CollisionShape3D" parent="WasteConveyor2" unique_id=20960965]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5342386, 0.18896484, 0.08856225)
 shape = SubResource("7")
+
+[node name="MetalDetector" type="Node3D" parent="WasteConveyor2" unique_id=1270012350]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="WasteConveyor2/MetalDetector" unique_id=1270012351]
+
+[node name="LeftLeg" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.5, 0)
+size = Vector3(0.1, 1, 0.2)
+material = SubResource("Material_MetalDetector")
+
+[node name="RightLeg" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012353]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.5, 0)
+size = Vector3(0.1, 1, 0.2)
+material = SubResource("Material_MetalDetector")
+
+[node name="CrossBeam" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012354]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+size = Vector3(1.4, 0.1, 0.2)
+material = SubResource("Material_MetalDetector")
+
+[node name="LightBase" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+size = Vector3(0.2, 0.1, 0.1)
+material = SubResource("Material_Outfeed")
+
+[node name="RedBulb" type="CSGSphere3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 1.2, 0)
+radius = 0.04
+material = SubResource("Material_RedBulb_Off")
+
+[node name="GreenBulb" type="CSGSphere3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012357]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 1.2, 0)
+radius = 0.04
+material = SubResource("Material_GreenBulb_On")
+
+[node name="GreenLight" type="OmniLight3D" parent="WasteConveyor2/MetalDetector" unique_id=1270012358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 1.25, 0)
+light_color = Color(0.2, 1, 0.2, 1)
+light_energy = 1.5
+omni_range = 1.5
+
 
 [node name="VibratoryConveyor" parent="." unique_id=198754162 instance=ExtResource("27_vib")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, -0.6, 0.5)
