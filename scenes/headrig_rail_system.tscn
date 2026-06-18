@@ -57,22 +57,22 @@ size = Vector3(0.5, 0.8, 2.2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CollisionLeft" type="CollisionShape3D" parent="Rails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.075, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.165, 5.0)
 shape = SubResource("Shape_Rail")
 
 [node name="CollisionRight" type="CollisionShape3D" parent="Rails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.075, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.165, 5.0)
 shape = SubResource("Shape_Rail")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="Rails"]
 
 [node name="RailLeft" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.075, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.165, 5.0)
 size = Vector3(0.1, 0.15, 14.0)
 material = SubResource("Material_Rails")
 
 [node name="RailRight" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.075, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.165, 5.0)
 size = Vector3(0.1, 0.15, 14.0)
 material = SubResource("Material_Rails")
 
@@ -96,8 +96,28 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.075, 0.075, 0)
 size = Vector3(0.85, 0.15, 2.2)
 material = SubResource("Material_Carriage")
 
+[node name="PlatformCutoutFL" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.075, -0.7)
+operation = 2
+size = Vector3(0.13, 0.18, 0.44)
+
+[node name="PlatformCutoutFR" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.075, -0.7)
+operation = 2
+size = Vector3(0.13, 0.18, 0.44)
+
+[node name="PlatformCutoutRL" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.075, 0.7)
+operation = 2
+size = Vector3(0.13, 0.18, 0.44)
+
+[node name="PlatformCutoutRR" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.075, 0.7)
+operation = 2
+size = Vector3(0.13, 0.18, 0.44)
+
 [node name="WheelFL" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.35, 0.18, -0.7)
+position = Vector3(-0.35, -0.06, -0.7)
 
 [node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelFL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -119,7 +139,7 @@ size = Vector3(0.018, 0.15, 0.025)
 material = SubResource("Material_BiteSteel")
 
 [node name="WheelFR" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(0.25, 0.18, -0.7)
+position = Vector3(0.25, -0.06, -0.7)
 
 [node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelFR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -141,7 +161,7 @@ size = Vector3(0.018, 0.15, 0.025)
 material = SubResource("Material_BiteSteel")
 
 [node name="WheelRL" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.35, 0.18, 0.7)
+position = Vector3(-0.35, -0.06, 0.7)
 
 [node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelRL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -163,7 +183,7 @@ size = Vector3(0.018, 0.15, 0.025)
 material = SubResource("Material_BiteSteel")
 
 [node name="WheelRR" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(0.25, 0.18, 0.7)
+position = Vector3(0.25, -0.06, 0.7)
 
 [node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelRR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -185,7 +205,7 @@ size = Vector3(0.018, 0.15, 0.025)
 material = SubResource("Material_BiteSteel")
 
 [node name="FrontAxle" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.05, 0.18, -0.7)
+position = Vector3(-0.05, -0.06, -0.7)
 
 [node name="Shaft" type="CSGCylinder3D" parent="HeadrigCarriage/FrontAxle"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -195,7 +215,7 @@ sides = 24
 material = SubResource("Material_BiteSteel")
 
 [node name="RearAxle" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.05, 0.18, 0.7)
+position = Vector3(-0.05, -0.06, 0.7)
 
 [node name="Shaft" type="CSGCylinder3D" parent="HeadrigCarriage/RearAxle"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)

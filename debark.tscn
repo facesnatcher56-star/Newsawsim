@@ -1130,34 +1130,34 @@ script = ExtResource("9")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.1, 0.70538116, 6.551477)
 
 [node name="WheelFL" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.18, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.06, -0.7)
 
 [node name="RotationMarker" parent="HeadrigRailSystemInstance/HeadrigCarriage/WheelFL" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.062, 0.09, 0)
 
 [node name="WheelFR" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.18, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.06, -0.7)
 
 [node name="RotationMarker" parent="HeadrigRailSystemInstance/HeadrigCarriage/WheelFR" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.062, 0.09, 0)
 
 [node name="WheelRL" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.18, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.06, 0.7)
 
 [node name="RotationMarker" parent="HeadrigRailSystemInstance/HeadrigCarriage/WheelRL" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.062, 0.09, 0)
 
 [node name="WheelRR" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.18, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.06, 0.7)
 
 [node name="RotationMarker" parent="HeadrigRailSystemInstance/HeadrigCarriage/WheelRR" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.062, 0.09, 0)
 
 [node name="FrontAxle" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, 0.18, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, -0.06, -0.7)
 
 [node name="RearAxle" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, 0.18, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.05, -0.06, 0.7)
 
 [node name="ReleaseZone" type="Area3D" parent="." unique_id=100000001]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.035736, 1.2746072, 4.5729485)
