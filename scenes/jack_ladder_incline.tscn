@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://jack_ladder_incline"]
+
+[ext_resource type="Script" path="res://scripts/jack_ladder_incline.gd" id="1_jakinc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_col"]
+size = Vector3(2.8, 0.12, 4.4)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1"]
+rough = true
+bounce = 0.0
+friction = 2.0
+
+[node name="JackLadderIncline" type="StaticBody3D"]
+physics_material_override = SubResource("PhysicsMaterial_1")
+script = ExtResource("1_jakinc")
+chain_speed = 0.55
+incline_angle_deg = 20.0
+chain_length_along_slope = 4.4
+lug_spacing = 1.2
+strand_x_positions = [-0.75, 0.0, 0.75]
+running = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0.0, 0.04, 0.0)
+shape = SubResource("BoxShape3D_col")

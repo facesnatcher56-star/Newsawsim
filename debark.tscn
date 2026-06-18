@@ -22,13 +22,15 @@
 [ext_resource type="PackedScene" path="res://scenes/headrig_rail_system.tscn" id="22_headrig"]
 [ext_resource type="PackedScene" path="res://scenes/vibratory_conveyor.tscn" id="27_vib"]
 [ext_resource type="Script" uid="uid://cky2nxbo88adw" path="res://scripts/sky_clouds.gd" id="28_clouds"]
+[ext_resource type="PackedScene" path="res://scenes/jack_ladder_incline.tscn" id="29_jackincline"]
 [ext_resource type="PackedScene" path="res://scenes/incline_chain_conveyor.tscn" id="29_incline"]
+[ext_resource type="PackedScene" path="res://scenes/live_log_deck.tscn" id="34_live_deck"]
 [ext_resource type="PackedScene" path="res://scenes/semi_trailer.tscn" id="30_trailer"]
 [ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="31_loader"]
 [ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://scripts/bandsaw_teeth.gd" id="32_teeth"]
 [ext_resource type="PackedScene" path="res://scenes/chain_log_deck.tscn" id="33_chain_deck"]
 [ext_resource type="Script" uid="uid://bn8p7ne8daqiy" path="res://scripts/lift_controller.gd" id="lift_controller_script"]
-[ext_resource type="PackedScene" path="res://scenes/headrig_log_deck.tscn" id="34_headrig_deck"]
+
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
@@ -1092,15 +1094,26 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36242676, 0, -0.054519653)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, 0.1076355)
 shape = SubResource("BoxShape3D_uviwe")
 
-[node name="HeadrigInclineConveyor" parent="." unique_id=987654321 instance=ExtResource("29_incline")]
-transform = Transform3D(1, 0, 0, 0, 0.948683, -0.316228, 0, 0.316228, 0.948683, 14.1, 0.457, 2.119)
-speed = 0.8
-direction = Vector3(0.0, 0.316, 0.949)
-conveyor_length = 2.2
-link_spacing = 0.35
+[node name="JackLadderIncline" parent="." unique_id=987654321 instance=ExtResource("29_jackincline")]
+transform = Transform3D(1, 0, 0, 0, 0.9397, 0.342, 0, -0.342, 0.9397, 13.25, 0.0, 2.0)
+chain_speed = 0.55
+incline_angle_deg = 20.0
+chain_length_along_slope = 4.4
+lug_spacing = 1.2
+strand_x_positions = [-0.75, 0.0, 0.75]
 
-[node name="HeadrigLogDeck" parent="." unique_id=987654322 instance=ExtResource("34_headrig_deck")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.1, -0.14, 5.2)
+[node name="LiveLogDeck" parent="." unique_id=987654322 instance=ExtResource("34_live_deck")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.25, 1.52, 5.2)
+deck_length = 2.4
+deck_width = 2.6
+chain_speed = 0.30
+lug_spacing = 1.4
+strand_x_positions = [-0.75, -0.25, 0.25, 0.75]
+
+[node name="JackLadderController" parent="LiveLogDeck" unique_id=987654399]
+carriage_path = NodePath("../../HeadrigRailSystemInstance/HeadrigCarriage")
+incline_path = NodePath("../../JackLadderIncline")
+deck_path = NodePath("..")
 
 [node name="HeadrigRailSystemInstance" parent="." unique_id=100000003 instance=ExtResource("22_headrig")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.1, 0.70538116, 6.551477)
