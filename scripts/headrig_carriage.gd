@@ -34,6 +34,7 @@ enum State {
 @export var clamp_speed: float = 4.0
 @export var cuts_before_flip: int = 2
 @export var flip_duration: float = 1.2
+@export var wheel_radius: float = 0.18
 
 # Kicking parameters
 @export var kick_speed_x: float = 2.5 # sideway push (local +X, global -Z)
@@ -58,6 +59,14 @@ var current_progress: float = 0.0 # Normalized position [0.0, 1.0]
 	get_node_or_null("KneesAssembly/KneePivot3")
 ]
 @onready var log_detector: Area3D = get_node_or_null("KneesAssembly/LogDetector")
+@onready var rolling_parts: Array[Node3D] = [
+	$WheelFL,
+	$WheelFR,
+	$WheelRL,
+	$WheelRR,
+	$FrontAxle,
+	$RearAxle,
+]
 
 var clamped_log: RigidBody3D = null
 var log_relative_transform: Transform3D
@@ -70,10 +79,13 @@ var log_roll_angle: float = 0.0
 var flip_timer: float = 0.0
 var flip_start_roll: float = 0.0
 var flip_target_roll: float = 0.0
+var wheel_angle: float = 0.0
+var last_carriage_position: Vector3
 
 func _ready() -> void:
 	start_pos = position
 	target_pos = start_pos + travel_axis.normalized() * travel_distance
+	last_carriage_position = global_position
 	
 	# Set initial open positions for knees and dogs
 	_set_angles(open_knee_angle, open_dog_angle)
@@ -297,6 +309,19 @@ func _physics_process(delta: float) -> void:
 			if timer <= 0.0:
 				current_state = State.WAITING_FOR_LOG
 				print("[HEADRIG CARRIAGE] Ready for next log.")
+
+	_update_wheel_rotation()
+
+func _update_wheel_rotation() -> void:
+	var movement := global_position - last_carriage_position
+	last_carriage_position = global_position
+	if movement.length_squared() <= 0.0000001 or wheel_radius <= 0.0:
+		return
+	var world_travel_axis := (global_basis * travel_axis.normalized()).normalized()
+	var signed_distance := movement.dot(world_travel_axis)
+	wheel_angle = fmod(wheel_angle - signed_distance / wheel_radius, TAU)
+	for part in rolling_parts:
+		part.rotation.x = wheel_angle
 
 func _set_angles(knee_rot: float, dog_rot: float) -> void:
 	for knee in knee_pivots:

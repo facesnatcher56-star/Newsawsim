@@ -3341,6 +3341,7 @@ shape = SubResource("BoxShape_deck_area")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, -2.25)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RetractableStops/TriggerArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.069591284)
 shape = SubResource("BoxShape_stop_trigger")
 
 [node name="MovingStops" type="Node3D" parent="RetractableStops"]
@@ -3349,27 +3350,27 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, -2.24)
 [node name="StopBody" type="AnimatableBody3D" parent="RetractableStops/MovingStops"]
 
 [node name="CollisionShapeLeftHorn" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0.25, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, 0.25, -0.07525158)
 shape = SubResource("BoxShape_stop_horn")
 
 [node name="CollisionShapeLeftHeel" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.05, -0.05, -0.22)
+transform = Transform3D(1, 0, 0, 0, 0.63656306, 0.77122486, 0, -0.77122486, 0.63656306, -1.05, -0.12669075, 0.23682141)
 shape = SubResource("BoxShape_stop_heel")
 
 [node name="CollisionShapeCenterHorn" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -0.102778435)
 shape = SubResource("BoxShape_stop_horn")
 
 [node name="CollisionShapeCenterHeel" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, -0.22)
+transform = Transform3D(1, 0, 0, 0, 0.63656306, 0.77122486, 0, -0.77122486, 0.63656306, 0, -0.12669075, 0.23682141)
 shape = SubResource("BoxShape_stop_heel")
 
 [node name="CollisionShapeRightHorn" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.25, 0.12)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, 0.25, -0.09918499)
 shape = SubResource("BoxShape_stop_horn")
 
 [node name="CollisionShapeRightHeel" type="CollisionShape3D" parent="RetractableStops/MovingStops/StopBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.05, -0.05, -0.22)
+transform = Transform3D(1, 0, 0, 0, 0.63656306, 0.77122486, 0, -0.77122486, 0.63656306, 1.05, -0.12669075, 0.23682141)
 shape = SubResource("BoxShape_stop_heel")
 
 [node name="Visuals" type="Node3D" parent="RetractableStops/MovingStops"]
