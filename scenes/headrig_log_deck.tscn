@@ -1,0 +1,196 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/conveyor.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/headrig_chain_deck_visuals.gd" id="2"]
+[ext_resource type="Script" path="res://scripts/headrig_log_loader.gd" id="3"]
+
+[sub_resource type="BoxShape3D" id="BoxShape_deck"]
+size = Vector3(3.0, 0.16, 2.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape_rail"]
+size = Vector3(0.14, 0.38, 2.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_horn"]
+size = Vector3(0.18, 0.35, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_heel"]
+size = Vector3(0.18, 0.25, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_deck_area"]
+size = Vector3(3.0, 0.6, 2.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_trigger"]
+size = Vector3(2.9, 0.7, 0.36)
+
+[sub_resource type="BoxShape3D" id="BoxShape_turner_arm"]
+size = Vector3(0.08, 0.55, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="Material_Frame"]
+albedo_color = Color(0.34, 0.36, 0.38, 1)
+metallic = 0.85
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Material_Stop"]
+albedo_color = Color(0.95, 0.45, 0.05, 1)
+metallic = 0.6
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="Material_Turner"]
+albedo_color = Color(0.2, 0.6, 0.3, 1)
+metallic = 0.8
+roughness = 0.3
+
+[node name="HeadrigLogDeck" type="StaticBody3D"]
+script = ExtResource("1")
+speed = 0.0
+direction = Vector3(0, 0, 1)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07, 0)
+shape = SubResource("BoxShape_deck")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.12, 0)
+shape = SubResource("BoxShape_rail")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.12, 0)
+shape = SubResource("BoxShape_rail")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="Bed" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.94, 0)
+size = Vector3(3.0, 0.1, 2.0)
+material = SubResource("Material_Frame")
+
+[node name="RailLeft" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.58, 1.12, 0)
+size = Vector3(0.14, 0.38, 2.0)
+material = SubResource("Material_Frame")
+
+[node name="RailRight" type="CSGBox3D" parent="Visuals"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.58, 1.12, 0)
+size = Vector3(0.14, 0.38, 2.0)
+material = SubResource("Material_Frame")
+
+[node name="Chains" type="Node3D" parent="Visuals"]
+script = ExtResource("2")
+deck_length = 2.0
+link_spacing = 0.32
+chain_speed = 0.2
+
+[node name="DeckArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeckArea"]
+shape = SubResource("BoxShape_deck_area")
+
+[node name="TriggerArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0.966)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TriggerArea"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.069591284)
+shape = SubResource("BoxShape_stop_trigger")
+
+[node name="RetractableStops" type="Node3D" parent="."]
+
+[node name="StopBody" type="AnimatableBody3D" parent="RetractableStops"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0.966)
+
+[node name="CollisionShapeLeftHorn" type="CollisionShape3D" parent="RetractableStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.25, -0.075)
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeLeftHeel" type="CollisionShape3D" parent="RetractableStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 0.636563, 0.771225, 0, -0.771225, 0.636563, -0.7, -0.127, 0.237)
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeCenterHorn" type="CollisionShape3D" parent="RetractableStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, -0.103)
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeCenterHeel" type="CollisionShape3D" parent="RetractableStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 0.636563, 0.771225, 0, -0.771225, 0.636563, 0, -0.127, 0.237)
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeRightHorn" type="CollisionShape3D" parent="RetractableStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.25, -0.099)
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeRightHeel" type="CollisionShape3D" parent="RetractableStops/StopBody"]
+transform = Transform3D(1, 0, 0, 0, 0.636563, 0.771225, 0, -0.771225, 0.636563, 0.7, -0.127, 0.237)
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="Visuals" type="Node3D" parent="RetractableStops/StopBody"]
+
+[node name="TorqueTube" type="CSGCylinder3D" parent="RetractableStops/StopBody/Visuals"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+radius = 0.08
+height = 2.6
+material = SubResource("Material_Frame")
+
+[node name="ArmLeft" type="CSGPolygon3D" parent="RetractableStops/StopBody/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.7, 0, 0)
+polygon = PackedVector2Array(0.15, 0.4, 0.11, 0.22, 0.04, 0.09, -0.08, 0.06, -0.32, -0.15, -0.15, -0.22, 0, -0.12, 0.1, -0.08, 0.24, 0.15)
+depth = 0.06
+material = SubResource("Material_Stop")
+
+[node name="ArmCenter" type="CSGPolygon3D" parent="RetractableStops/StopBody/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+polygon = PackedVector2Array(0.15, 0.4, 0.11, 0.22, 0.04, 0.09, -0.08, 0.06, -0.32, -0.15, -0.15, -0.22, 0, -0.12, 0.1, -0.08, 0.24, 0.15)
+depth = 0.06
+material = SubResource("Material_Stop")
+
+[node name="ArmRight" type="CSGPolygon3D" parent="RetractableStops/StopBody/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.7, 0, 0)
+polygon = PackedVector2Array(0.15, 0.4, 0.11, 0.22, 0.04, 0.09, -0.08, 0.06, -0.32, -0.15, -0.15, -0.22, 0, -0.12, 0.1, -0.08, 0.24, 0.15)
+depth = 0.06
+material = SubResource("Material_Stop")
+
+[node name="LogTurner" type="Node3D" parent="."]
+
+[node name="TurnerBody" type="AnimatableBody3D" parent="LogTurner"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0.966)
+
+[node name="CollisionShapeLeft" type="CollisionShape3D" parent="LogTurner/TurnerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.275, 0.0)
+shape = SubResource("BoxShape_turner_arm")
+
+[node name="CollisionShapeCenter" type="CollisionShape3D" parent="LogTurner/TurnerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.275, 0.0)
+shape = SubResource("BoxShape_turner_arm")
+
+[node name="CollisionShapeRight" type="CollisionShape3D" parent="LogTurner/TurnerBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.275, 0.0)
+shape = SubResource("BoxShape_turner_arm")
+
+[node name="Visuals" type="Node3D" parent="LogTurner/TurnerBody"]
+
+[node name="TorqueTube" type="CSGCylinder3D" parent="LogTurner/TurnerBody/Visuals"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+radius = 0.07
+height = 2.4
+material = SubResource("Material_Frame")
+
+[node name="ArmLeft" type="CSGPolygon3D" parent="LogTurner/TurnerBody/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -0.7, 0, 0)
+polygon = PackedVector2Array(0, 0, 0.08, 0.5, 0.08, 0.55, 0, 0.55, -0.08, 0.1)
+depth = 0.08
+material = SubResource("Material_Turner")
+
+[node name="ArmCenter" type="CSGPolygon3D" parent="LogTurner/TurnerBody/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+polygon = PackedVector2Array(0, 0, 0.08, 0.5, 0.08, 0.55, 0, 0.55, -0.08, 0.1)
+depth = 0.08
+material = SubResource("Material_Turner")
+
+[node name="ArmRight" type="CSGPolygon3D" parent="LogTurner/TurnerBody/Visuals"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.7, 0, 0)
+polygon = PackedVector2Array(0, 0, 0.08, 0.5, 0.08, 0.55, 0, 0.55, -0.08, 0.1)
+depth = 0.08
+material = SubResource("Material_Turner")
+
+[node name="LogLoader" type="Node" parent="."]
+script = ExtResource("3")
+carriage_path = NodePath("../../HeadrigRailSystemInstance/HeadrigCarriage")

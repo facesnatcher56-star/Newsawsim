@@ -27,6 +27,31 @@ albedo_color = Color(0.08, 0.08, 0.09, 1)
 metallic = 0.85
 roughness = 0.22
 
+[sub_resource type="CylinderMesh" id="Mesh_Tread"]
+top_radius = 0.18
+bottom_radius = 0.18
+height = 0.11
+radial_segments = 32
+material = SubResource("Material_Rails")
+
+[sub_resource type="CylinderMesh" id="Mesh_InnerFlange"]
+top_radius = 0.215
+bottom_radius = 0.215
+height = 0.025
+radial_segments = 32
+material = SubResource("Material_Rails")
+
+[sub_resource type="BoxMesh" id="Mesh_RotationMarker"]
+size = Vector3(0.018, 0.15, 0.025)
+material = SubResource("Material_BiteSteel")
+
+[sub_resource type="CylinderMesh" id="Mesh_Shaft"]
+top_radius = 0.04
+bottom_radius = 0.04
+height = 0.72
+radial_segments = 24
+material = SubResource("Material_BiteSteel")
+
 [sub_resource type="BoxShape3D" id="Shape_Rail"]
 size = Vector3(0.1, 0.15, 14.0)
 
@@ -84,6 +109,7 @@ travel_distance = 10.0
 auto_cycle = true
 pause_at_ends = 2.0
 travel_axis = Vector3(0, 0, 1)
+open_knee_angle = -0.4
 
 [node name="CollisionPlatform" type="CollisionShape3D" parent="HeadrigCarriage"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.075, 0.075, 0)
@@ -119,110 +145,76 @@ size = Vector3(0.13, 0.18, 0.44)
 [node name="WheelFL" type="Node3D" parent="HeadrigCarriage"]
 position = Vector3(-0.35, -0.06, -0.7)
 
-[node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelFL"]
+[node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelFL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-radius = 0.18
-height = 0.11
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_Tread")
 
-[node name="InnerFlange" type="CSGCylinder3D" parent="HeadrigCarriage/WheelFL"]
+[node name="InnerFlange" type="MeshInstance3D" parent="HeadrigCarriage/WheelFL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.065, 0, 0)
-radius = 0.215
-height = 0.025
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_InnerFlange")
 
-[node name="RotationMarker" type="CSGBox3D" parent="HeadrigCarriage/WheelFL"]
-position = Vector3(-0.062, 0.09, 0)
-size = Vector3(0.018, 0.15, 0.025)
-material = SubResource("Material_BiteSteel")
+[node name="RotationMarker" type="MeshInstance3D" parent="HeadrigCarriage/WheelFL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.062, 0.09, 0)
+mesh = SubResource("Mesh_RotationMarker")
 
 [node name="WheelFR" type="Node3D" parent="HeadrigCarriage"]
 position = Vector3(0.25, -0.06, -0.7)
 
-[node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelFR"]
+[node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelFR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-radius = 0.18
-height = 0.11
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_Tread")
 
-[node name="InnerFlange" type="CSGCylinder3D" parent="HeadrigCarriage/WheelFR"]
+[node name="InnerFlange" type="MeshInstance3D" parent="HeadrigCarriage/WheelFR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.065, 0, 0)
-radius = 0.215
-height = 0.025
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_InnerFlange")
 
-[node name="RotationMarker" type="CSGBox3D" parent="HeadrigCarriage/WheelFR"]
-position = Vector3(0.062, 0.09, 0)
-size = Vector3(0.018, 0.15, 0.025)
-material = SubResource("Material_BiteSteel")
+[node name="RotationMarker" type="MeshInstance3D" parent="HeadrigCarriage/WheelFR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.062, 0.09, 0)
+mesh = SubResource("Mesh_RotationMarker")
 
 [node name="WheelRL" type="Node3D" parent="HeadrigCarriage"]
 position = Vector3(-0.35, -0.06, 0.7)
 
-[node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelRL"]
+[node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelRL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-radius = 0.18
-height = 0.11
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_Tread")
 
-[node name="InnerFlange" type="CSGCylinder3D" parent="HeadrigCarriage/WheelRL"]
+[node name="InnerFlange" type="MeshInstance3D" parent="HeadrigCarriage/WheelRL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.065, 0, 0)
-radius = 0.215
-height = 0.025
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_InnerFlange")
 
-[node name="RotationMarker" type="CSGBox3D" parent="HeadrigCarriage/WheelRL"]
-position = Vector3(-0.062, 0.09, 0)
-size = Vector3(0.018, 0.15, 0.025)
-material = SubResource("Material_BiteSteel")
+[node name="RotationMarker" type="MeshInstance3D" parent="HeadrigCarriage/WheelRL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.062, 0.09, 0)
+mesh = SubResource("Mesh_RotationMarker")
 
 [node name="WheelRR" type="Node3D" parent="HeadrigCarriage"]
 position = Vector3(0.25, -0.06, 0.7)
 
-[node name="Tread" type="CSGCylinder3D" parent="HeadrigCarriage/WheelRR"]
+[node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelRR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-radius = 0.18
-height = 0.11
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_Tread")
 
-[node name="InnerFlange" type="CSGCylinder3D" parent="HeadrigCarriage/WheelRR"]
+[node name="InnerFlange" type="MeshInstance3D" parent="HeadrigCarriage/WheelRR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.065, 0, 0)
-radius = 0.215
-height = 0.025
-sides = 32
-material = SubResource("Material_Rails")
+mesh = SubResource("Mesh_InnerFlange")
 
-[node name="RotationMarker" type="CSGBox3D" parent="HeadrigCarriage/WheelRR"]
-position = Vector3(0.062, 0.09, 0)
-size = Vector3(0.018, 0.15, 0.025)
-material = SubResource("Material_BiteSteel")
+[node name="RotationMarker" type="MeshInstance3D" parent="HeadrigCarriage/WheelRR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.062, 0.09, 0)
+mesh = SubResource("Mesh_RotationMarker")
 
 [node name="FrontAxle" type="Node3D" parent="HeadrigCarriage"]
 position = Vector3(-0.05, -0.06, -0.7)
 
-[node name="Shaft" type="CSGCylinder3D" parent="HeadrigCarriage/FrontAxle"]
+[node name="Shaft" type="MeshInstance3D" parent="HeadrigCarriage/FrontAxle"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-radius = 0.04
-height = 0.72
-sides = 24
-material = SubResource("Material_BiteSteel")
+mesh = SubResource("Mesh_Shaft")
 
 [node name="RearAxle" type="Node3D" parent="HeadrigCarriage"]
 position = Vector3(-0.05, -0.06, 0.7)
 
-[node name="Shaft" type="CSGCylinder3D" parent="HeadrigCarriage/RearAxle"]
+[node name="Shaft" type="MeshInstance3D" parent="HeadrigCarriage/RearAxle"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-radius = 0.04
-height = 0.72
-sides = 24
-material = SubResource("Material_BiteSteel")
+mesh = SubResource("Mesh_Shaft")
 
 [node name="KneesAssembly" type="Node3D" parent="HeadrigCarriage"]
 
