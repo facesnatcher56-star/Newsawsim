@@ -677,7 +677,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.64)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.32)
 
 [node name="RetractableStops" parent="OppositeChainDeckTest" index="4"]
-run_speed = null
+dump_target_path = NodePath("../../WasteConveyor")
 
 [node name="CollisionShape3D" parent="OppositeChainDeckTest/RetractableStops/TriggerArea" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.069591284)
