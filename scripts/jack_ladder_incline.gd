@@ -35,7 +35,7 @@ func _ready() -> void:
 	_cos_a = cos(ang)
 
 	# Set physics surface velocity (global: up the slope = -Z + Y)
-	var slope_dir := Vector3(0.0, _sin_a, -_cos_a).normalized()
+	var slope_dir := Vector3(0.0, _sin_a, _cos_a).normalized()
 	constant_linear_velocity = slope_dir * chain_speed
 
 	_build_materials()
@@ -236,5 +236,5 @@ func _process(delta: float) -> void:
 
 func set_running(on: bool) -> void:
 	running = on
-	var slope_dir := Vector3(0.0, _sin_a, -_cos_a).normalized()
+	var slope_dir := Vector3(0.0, _sin_a, _cos_a).normalized()
 	constant_linear_velocity = slope_dir * chain_speed if on else Vector3.ZERO

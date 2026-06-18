@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/jack_ladder_incline.gd" id="1_jakinc"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_col"]
-size = Vector3(2.8, 0.12, 4.4)
+size = Vector3(2.8, 0.12, 2.3)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1"]
 rough = true

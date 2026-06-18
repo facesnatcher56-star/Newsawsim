@@ -37,7 +37,7 @@ func _physics_process(delta: float) -> void:
 
 	# Animate cylinder extend/contract based on arm angle
 	if _cylinder_visual:
-		var t := (_current_angle_deg - rest_angle_deg) / max(tip_angle_deg - rest_angle_deg, 0.001)
+		var t: float = (_current_angle_deg - rest_angle_deg) / maxf(tip_angle_deg - rest_angle_deg, 0.001)
 		t = clamp(t, 0.0, 1.0)
 		_cylinder_visual.scale.z = lerp(0.6, 1.0, t)
 

@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://incline_log_deck"]
+
+[ext_resource type="Script" path="res://scripts/incline_log_deck.gd" id="1_incldeck"]
+
+[node name="InclineLogDeck" type="Node3D"]
+script = ExtResource("1_incldeck")
