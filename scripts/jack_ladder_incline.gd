@@ -77,7 +77,7 @@ func _build_materials() -> void:
 
 func _build_frame() -> void:
 	# Side stringers along the slope (left and right of the strand array)
-	var span_x := (strand_x_positions.back() - strand_x_positions.front()) * 0.5 + 0.3
+	var span_x: float = (strand_x_positions.back() - strand_x_positions.front()) * 0.5 + 0.3
 	var stringer_mesh := BoxMesh.new()
 	stringer_mesh.size = Vector3(0.08, 0.10, chain_length_along_slope)
 
@@ -106,8 +106,8 @@ func _build_frame() -> void:
 func _build_v_notch() -> void:
 	# Two angled plates meeting at a V at the bottom of the incline.
 	# The trough catches the log as it rolls off WasteConveyor3.
-	var span_x := (strand_x_positions.back() - strand_x_positions.front()) * 0.5 + 0.6
-	var trough_len := span_x * 2.2
+	var span_x: float = (strand_x_positions.back() - strand_x_positions.front()) * 0.5 + 0.6
+	var trough_len: float = span_x * 2.2
 	var plate_mesh := BoxMesh.new()
 	plate_mesh.size = Vector3(trough_len, 0.08, 0.55)
 
@@ -124,7 +124,7 @@ func _build_v_notch() -> void:
 		add_child(p)
 
 func _build_shafts_and_sprockets() -> void:
-	var span_x := (strand_x_positions.back() - strand_x_positions.front()) + 0.3
+	var span_x: float = (strand_x_positions.back() - strand_x_positions.front()) + 0.3
 	var shaft_mesh := CylinderMesh.new()
 	shaft_mesh.top_radius = 0.04
 	shaft_mesh.bottom_radius = 0.04
