@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://global_transform_dock"]
+
+[ext_resource type="Script" path="res://addons/global_transform_inspector/dock.gd" id="1_dock"]
+
+[node name="Dock" type="Control"]
+custom_minimum_size = Vector2(200, 0)
+size_flags_vertical = 3
+script = ExtResource("1_dock")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+
+[node name="Header" type="Label" parent="VBox"]
+text = "Global Transform"
+theme_override_font_sizes/font_size = 14
+
+[node name="HSep" type="HSeparator" parent="VBox"]
+
+[node name="NodeName" type="Label" parent="VBox"]
+text = "(no Node3D selected)"
+theme_override_font_sizes/font_size = 11
+autowrap_mode = 3
+
+[node name="PosLabel" type="Label" parent="VBox"]
+theme_override_font_sizes/font_size = 11
+
+[node name="RotLabel" type="Label" parent="VBox"]
+theme_override_font_sizes/font_size = 11
+
+[node name="ScaleLabel" type="Label" parent="VBox"]
+theme_override_font_sizes/font_size = 11
+
+[node name="HSep2" type="HSeparator" parent="VBox"]
+
+[node name="BasisLabel" type="Label" parent="VBox"]
+theme_override_font_sizes/font_size = 10
+autowrap_mode = 3

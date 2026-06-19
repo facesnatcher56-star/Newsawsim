@@ -525,7 +525,6 @@ func _process(delta: float) -> void:
 		_start_delay_timer -= delta
 		if _start_delay_timer <= 0.0:
 			set_running(true)
-			print("[INCLINE] Chain started.")
 
 	if not running:
 		return
@@ -579,7 +578,6 @@ func _build_load_zone() -> void:
 func _on_load_zone_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs") and not running and _start_delay_timer <= 0.0:
 		_start_delay_timer = 2.0
-		print("[INCLINE] Log landed — starting chain in 2s.")
 
 
 func _build_top_zone() -> void:
@@ -599,4 +597,3 @@ func _build_top_zone() -> void:
 func _on_top_zone_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs"):
 		log_reached_top.emit(body as RigidBody3D)
-		print("[INCLINE] Log reached top — signalling transfer station.")

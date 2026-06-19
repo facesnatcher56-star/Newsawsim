@@ -69,7 +69,6 @@ func _on_deck_area_body_entered(body: Node3D) -> void:
 		body.axis_lock_angular_y = true
 		body.axis_lock_angular_z = true
 		body.angular_velocity = Vector3.ZERO
-		print("[STOPS] Log entered deck area. Locking rotation: ", body.name)
 
 func _on_deck_area_body_exited(body: Node3D) -> void:
 	if body is RigidBody3D and body.is_in_group("logs"):
@@ -77,7 +76,6 @@ func _on_deck_area_body_exited(body: Node3D) -> void:
 		body.axis_lock_angular_x = false
 		body.axis_lock_angular_y = false
 		body.axis_lock_angular_z = false
-		print("[STOPS] Log left deck area. Unlocking rotation: ", body.name)
 
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
@@ -99,7 +97,6 @@ func _physics_process(delta: float) -> void:
 					_conveyor.speed = 0.0
 				else:
 					if not is_equal_approx(_conveyor.speed, run_speed):
-						print("[STOPS] Deck placement delay complete. Starting chains.")
 					_conveyor.speed = run_speed
 					_carry_logs_with_chains(deck_logs, delta)
 					
@@ -248,7 +245,6 @@ func _on_trigger_area_body_entered(body: Node3D) -> void:
 		return
 	if body is RigidBody3D and body.is_in_group("logs"):
 		if not _dumping_logs.has(body):
-			print("[STOPS] Log reached stop trigger: ", body.name)
 			_dumping_logs.append(body)
 			_set_dump_target_speed(0.0)
 			_state = StopState.HOLDING_LOG

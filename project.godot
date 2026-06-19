@@ -15,6 +15,10 @@ run/main_scene="res://debark.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/global_transform_inspector/plugin.cfg")
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

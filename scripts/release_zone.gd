@@ -16,4 +16,3 @@ func _on_body_entered(body: Node) -> void:
 			# This tells the physics engine to stop calculating collisions 
 			# between this specific log and the target incline.
 			body.add_collision_exception_with(target)
-			print("[RELEASE ZONE] Log entered. Now ignoring: ", target.name)

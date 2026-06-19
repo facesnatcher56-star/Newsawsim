@@ -103,12 +103,10 @@ func _ready() -> void:
 		knees_assembly.position.x = knees_retracted_x
 	active_cut_knees_x = knees_retracted_x
 	_update_setworks_hydraulics()
-	print("[HEADRIG CARRIAGE] Initialized at: ", start_pos, " traveling to: ", target_pos)
 
 func _physics_process(delta: float) -> void:
 	# Check if clamped log is still valid
 	if clamped_log != null and not is_instance_valid(clamped_log):
-		print("[HEADRIG CARRIAGE] Clamped log became invalid. Resetting.")
 		clamped_log = null
 		current_state = State.RETURNING
 	
@@ -132,7 +130,6 @@ func _physics_process(delta: float) -> void:
 					clamp_timer = clamp_duration
 					current_state = State.CLAMPING_STAGE_1
 					has_cut_this_pass = false
-					print("[HEADRIG CARRIAGE] Log detected: ", clamped_log.name, ". Starting Stage 1 (pushing knees to log).")
 				
 		State.CLAMPING_STAGE_1:
 			# Stage 1: Close knees to push the log against the backstops, slide knees forward to target cut position
@@ -153,7 +150,6 @@ func _physics_process(delta: float) -> void:
 			if clamp_timer <= 0.0 and knees_at_cut:
 				clamp_timer = clamp_duration
 				current_state = State.CLAMPING_STAGE_2
-				print("[HEADRIG CARRIAGE] Log pushed. Starting Stage 2 (dogging).")
 				
 		State.CLAMPING_STAGE_2:
 			# Stage 2: Clamping dogs close down to secure the log
@@ -171,7 +167,6 @@ func _physics_process(delta: float) -> void:
 					
 					_update_clamped_log_transform()
 					clamped_log.add_collision_exception_with(self)
-					print("[HEADRIG CARRIAGE] Log locked and aligned. Starting travel.")
 				has_cut_this_pass = false
 				current_state = State.MOVING_FORWARD
 				
@@ -193,11 +188,9 @@ func _physics_process(delta: float) -> void:
 				current_progress = 1.0
 				if clamped_log != null and clamped_log.board_count > 0:
 					current_state = State.RETRACTING_LOG
-					print("[HEADRIG CARRIAGE] Pass complete. Retracting knees/log for safe return.")
 				else:
 					current_state = State.UNCLAMPING
 					clamp_timer = clamp_duration
-					print("[HEADRIG CARRIAGE] Reached end of travel (no boards left). Unclamping.")
 			
 			# Carriage travel position
 			var parent = get_parent()
@@ -226,7 +219,6 @@ func _physics_process(delta: float) -> void:
 			
 			if knees_assembly == null or abs(knees_assembly.position.x - knees_retracted_x) < 0.001:
 				current_state = State.RETURNING
-				print("[HEADRIG CARRIAGE] Knees retracted. Returning home.")
 				
 		State.RETURNING:
 			current_progress -= (speed / travel_distance) * delta
@@ -236,14 +228,11 @@ func _physics_process(delta: float) -> void:
 					if _should_flip_log_at_home():
 						clamp_timer = clamp_duration
 						current_state = State.UNDOGGING_FOR_FLIP
-						print("[HEADRIG CARRIAGE] Returned home after ", cuts_on_current_face, " cuts. Undogging for 180-degree turn.")
 					else:
 						current_state = State.ADVANCING_LOG
-						print("[HEADRIG CARRIAGE] Returned home. Advancing log.")
 				else:
 					timer = pause_at_ends
 					current_state = State.WAITING_START
-					print("[HEADRIG CARRIAGE] Returned home (finished). Pausing.")
 			
 			var parent = get_parent()
 			if parent != null:
@@ -263,7 +252,6 @@ func _physics_process(delta: float) -> void:
 				flip_start_roll = log_roll_angle
 				flip_target_roll = log_roll_angle + PI
 				current_state = State.FLIPPING_LOG
-				print("[HEADRIG CARRIAGE] Dogs open. Turning log 180 degrees.")
 
 		State.FLIPPING_LOG:
 			_animate_dogs(dog_released_y, delta)
@@ -280,7 +268,6 @@ func _physics_process(delta: float) -> void:
 					clamped_log.start_new_cut_face()
 				clamp_timer = clamp_duration
 				current_state = State.REDOGGING_AFTER_FLIP
-				print("[HEADRIG CARRIAGE] Log turned. Redogging on the fresh face.")
 
 		State.REDOGGING_AFTER_FLIP:
 			_animate_dogs(dog_clamped_y, delta)
@@ -289,7 +276,6 @@ func _physics_process(delta: float) -> void:
 			if clamp_timer <= 0.0:
 				has_cut_this_pass = false
 				current_state = State.ADVANCING_LOG
-				print("[HEADRIG CARRIAGE] Log redogged. Advancing for next face cut.")
 						
 		State.ADVANCING_LOG:
 			# Advance knees forward to expose next board thickness
@@ -304,7 +290,6 @@ func _physics_process(delta: float) -> void:
 			if knees_assembly == null or abs(knees_assembly.position.x - active_cut_knees_x) < 0.001:
 				has_cut_this_pass = false
 				current_state = State.MOVING_FORWARD
-				print("[HEADRIG CARRIAGE] Log advanced to ", target_x, ". Starting pass.")
 				
 		State.UNCLAMPING:
 			# Open both knees and dogs
@@ -329,7 +314,6 @@ func _physics_process(delta: float) -> void:
 				clamped_log.linear_velocity = kick_vel
 				clamped_log.sleeping = false
 				
-				print("[HEADRIG CARRIAGE] Slab kicked with velocity: ", kick_vel)
 				clamped_log = null
 				
 			timer = pause_at_ends
@@ -339,7 +323,6 @@ func _physics_process(delta: float) -> void:
 			timer -= delta
 			if timer <= 0.0:
 				current_state = State.WAITING_FOR_LOG
-				print("[HEADRIG CARRIAGE] Ready for next log.")
 
 	_update_setworks_hydraulics()
 	_update_wheel_rotation()

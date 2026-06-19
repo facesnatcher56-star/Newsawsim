@@ -35,7 +35,6 @@ func _physics_process(delta: float) -> void:
 				if pos.y > 0.1 and pos.y < 2.5:
 					log_in_pickup_zone = true
 					if log_body.sleeping:
-						print("[LIFT CONTROLLER] Waking up sleeping log: ", log_body.name)
 						log_body.sleeping = false
 			
 			# Check if log is in travel zone (climbing)
@@ -43,7 +42,6 @@ func _physics_process(delta: float) -> void:
 				if pos.y > 0.1 and pos.y < 2.5:
 					log_in_travel_zone = true
 					if log_body.sleeping:
-						print("[LIFT CONTROLLER] Waking up sleeping log: ", log_body.name)
 						log_body.sleeping = false
 
 	var log_is_present = log_in_pickup_zone or log_in_travel_zone
@@ -55,13 +53,11 @@ func _physics_process(delta: float) -> void:
 			if not delay_completed:
 				if delay_timer <= 0.0:
 					delay_timer = start_delay
-					print("[LIFT CONTROLLER] Log arrived at pickup. Starting ", start_delay, "s delay before lift starts.")
 				
 				delay_timer -= delta
 				if delay_timer <= 0.0:
 					delay_completed = true
 					run_lifts = true
-					print("[LIFT CONTROLLER] Delay finished. Starting lifts.")
 				else:
 					run_lifts = false
 			else:
@@ -72,7 +68,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		# No logs in system, reset delay state
 		if delay_completed or delay_timer > 0.0:
-			print("[LIFT CONTROLLER] System empty. Resetting delay timer.")
 		delay_timer = 0.0
 		delay_completed = false
 		run_lifts = false
@@ -85,20 +80,13 @@ func _physics_process(delta: float) -> void:
 				if log_body is RigidBody3D:
 					var dist = lift.global_position.distance_to(log_body.global_position)
 					if dist < 1.0:
-						print("[PHYSICS DEEP TRACE] %s <-> Log Dist: %.3f" % [lift.name, dist])
-						print("  Lift Global Pos: %v | Scale: %v" % [lift.global_position, lift.global_transform.basis.get_scale()])
-						print("  Log Global Pos: %v | Sleep: %s" % [log_body.global_position, log_body.sleeping])
 						
 						# Check if their collision layers/masks actually match
-						print("  Lift Layer: %d, Mask: %d | Log Layer: %d, Mask: %d" % [lift.collision_layer, lift.collision_mask, log_body.collision_layer, log_body.collision_mask])
 						if (lift.collision_layer & log_body.collision_mask) == 0:
-							print("  !!! ALERT: Layer/Mask mismatch! Lift Layer: %d vs Log Mask: %d" % [lift.collision_layer, log_body.collision_mask])
 		# --- END DIAGNOSTIC ---
 		
 		if lift.is_paused != (!run_lifts):
 			if run_lifts:
-				print("[LIFT CONTROLLER] Starting lifts.")
 			else:
-				print("[LIFT CONTROLLER] Stopping lifts.")
 		
 		lift.is_paused = !run_lifts

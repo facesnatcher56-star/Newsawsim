@@ -23,6 +23,16 @@ const PROCESS_RADIUS: float = 0.5  # Proximity radius to trigger processing
 var bark_sections: Array[Node3D] = []
 var bark_coat: CSGCylinder3D = null
 
+var _trace_active: bool = false
+var _trace_timer: float = 0.0
+const _TRACE_INTERVAL: float = 0.4
+
+func enable_trace() -> void:
+	_trace_active = true
+	contact_monitor = true
+	max_contacts_reported = 16
+	print("[TRACE] Boom log tracking active — watching for incline hang-ups.")
+
 func _ready() -> void:
 	add_to_group("logs")
 	if board_count <= 0:
@@ -124,12 +134,16 @@ func _create_boards() -> void:
 		boards_root.add_child(board)
 
 func _process(delta: float) -> void:
-	# Automatic bark removal when near the debarker ring
 	if bark_enabled:
 		_update_bark_peeling()
-	# Automatic board cutting when near the bandsaw (fallback, only if not frozen)
 	if not freeze and board_count > 0 and global_transform.origin.distance_to(BANDSaw_POS) < PROCESS_RADIUS:
 		cut_board(BANDSaw_POS)
+
+	if _trace_active:
+		_trace_timer -= delta
+		if _trace_timer <= 0.0:
+			_trace_timer = _TRACE_INTERVAL
+			_report_contacts()
 
 func _remove_bark() -> void:
 	if bark_enabled and $Bark:
@@ -259,11 +273,11 @@ func _update_csg_cut_position() -> void:
 		if current_cut_face == 0 and cut_box_face_a:
 			var cut_z := 0.245 - cut_depth
 			cut_box_face_a.position = Vector3(0.0, 0.0, cut_z + 0.5)
-			print("[LOG] Cut face A flat at Z: ", cut_z)
+			pass
 		elif current_cut_face == 1 and cut_box_face_b:
 			var cut_z := -0.245 + cut_depth
 			cut_box_face_b.position = Vector3(0.0, 0.0, cut_z - 0.5)
-			print("[LOG] Cut face B flat at Z: ", cut_z)
+			pass
 
 func cut_board(saw_pos: Vector3) -> void:
 	if board_count <= 0:
@@ -289,7 +303,7 @@ func cut_board(saw_pos: Vector3) -> void:
 		board.angular_velocity = Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0))
 		
 		board.add_collision_exception_with(self)
-		print("[LOG] Sliced board. Spawned at: ", board.global_position)
+		pass
 		
 	board_count -= 1
 	cuts_on_current_face += 1
@@ -303,3 +317,14 @@ func start_new_cut_face() -> void:
 
 func get_current_radius() -> float:
 	return 0.245
+
+func _report_contacts() -> void:
+	var contacts := get_colliding_bodies()
+	var speed := linear_velocity.length()
+	if contacts.is_empty() and speed > 0.05:
+		return
+	print("[TRACE] pos=%v  vel=%.3f  sleep=%s  contacts=%d" % [
+		global_position, speed, sleeping, contacts.size()])
+	for body in contacts:
+		var path := String(body.get_path()) if body is Node else "unknown"
+		print("  >> %s" % path)

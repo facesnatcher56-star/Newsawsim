@@ -68,7 +68,6 @@ var actual_ob_drop_angle: float = 0.0
 var has_set_actual_drop_angles: bool = false
 
 func _ready() -> void:
-	print("[KNUCKLE BOOM] Initialized at: ", global_position)
 	
 	# Dynamically calculate turret rotation angles to face the bunk and conveyor zones
 	var rel_bunk = bunk_zone.global_position - global_position
@@ -77,7 +76,6 @@ func _ready() -> void:
 	var rel_conveyor = conveyor_zone.global_position - global_position
 	conveyor_turret_angle = atan2(-rel_conveyor.z, rel_conveyor.x)
 	
-	print("[KNUCKLE BOOM] Dynamic Turret Angles - Bunk: %.3f rad, Conveyor: %.3f rad" % [bunk_turret_angle, conveyor_turret_angle])
 	
 	# Start with boom retracted and grapple open
 	_set_joints(bunk_turret_angle, main_boom_swing_angle, outer_boom_swing_angle, claw_open_angle)
@@ -97,7 +95,6 @@ func _physics_process(delta: float) -> void:
 		else:
 			clamped_log = null
 			current_state = State.RETRACT_BOOM
-			print("[KNUCKLE BOOM] Clamped log became invalid. Retracting boom.")
 			
 	# Swivel grapple to align log straight across conveyor during transport
 	match current_state:
@@ -111,22 +108,6 @@ func _physics_process(delta: float) -> void:
 			# Default alignment for bunk
 			grapple_swivel_yaw = rotate_toward(grapple_swivel_yaw, 0.0, 1.5 * delta)
 			
-	# Debug print every 60 frames
-	if Engine.get_frames_drawn() % 60 == 0:
-		var bunk_logs = bunk_zone.get_overlapping_bodies()
-		var bunk_log_pos = "None"
-		for b in bunk_logs:
-			if b is RigidBody3D and b.is_in_group("logs"):
-				bunk_log_pos = str(b.global_position)
-				break
-		print("[KNUCKLE BOOM TRACE] State: %s | Turret Y: %.3f | Main Z: %.3f | Outer Z: %.3f | Grapple Pos: %v | Bunk Log: %s" % [
-			State.keys()[current_state],
-			turret.rotation.y if turret else 0.0,
-			main_boom_pivot.rotation.z if main_boom_pivot else 0.0,
-			outer_boom_pivot.rotation.z if outer_boom_pivot else 0.0,
-			grapple_area.global_position if grapple_area else Vector3.ZERO,
-			bunk_log_pos
-		])
 
 	match current_state:
 		State.IDLE:
@@ -145,7 +126,6 @@ func _physics_process(delta: float) -> void:
 					# Log is in bunk, conveyor is empty -> Start load cycle!
 					if _is_log_in_area(bunk_zone):
 						current_state = State.SWING_TO_BUNK
-						print("[KNUCKLE BOOM] Conveyor deck empty. Swinging to log bunk.")
 					
 		State.SWING_TO_BUNK:
 			target_turret_y = bunk_turret_angle
@@ -155,7 +135,6 @@ func _physics_process(delta: float) -> void:
 			
 			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
 				current_state = State.LOWER_TO_LOG
-				print("[KNUCKLE BOOM] Reached bunk alignment. Lowering to log.")
 				
 		State.LOWER_TO_LOG:
 			target_turret_y = bunk_turret_angle
@@ -167,7 +146,6 @@ func _physics_process(delta: float) -> void:
 				current_state = State.GRAB_LOG
 				timer = 0.6
 				_start_grab_log()
-				print("[KNUCKLE BOOM] Reached pickup position. Grabbing log.")
 				
 		State.GRAB_LOG:
 			target_turret_y = bunk_turret_angle
@@ -185,10 +163,8 @@ func _physics_process(delta: float) -> void:
 				if clamped_log != null:
 					log_relative_transform = grab_target_relative_transform
 					current_state = State.LIFT_LOG
-					print("[KNUCKLE BOOM] Log grab complete. Lifting.")
 				else:
 					current_state = State.RETRACT_BOOM
-					print("[KNUCKLE BOOM] Grab failed. Retracting boom to retry.")
 				
 		State.LIFT_LOG:
 			target_turret_y = bunk_turret_angle
@@ -198,7 +174,6 @@ func _physics_process(delta: float) -> void:
 			
 			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
 				current_state = State.SWING_TO_CONVEYOR
-				print("[KNUCKLE BOOM] Reached lift height. Swinging to conveyor deck.")
 				
 		State.SWING_TO_CONVEYOR:
 			target_turret_y = conveyor_turret_angle
@@ -208,7 +183,6 @@ func _physics_process(delta: float) -> void:
 			
 			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
 				current_state = State.LOWER_TO_CONVEYOR
-				print("[KNUCKLE BOOM] Reached conveyor alignment. Lowering log.")
 				
 		State.LOWER_TO_CONVEYOR:
 			target_turret_y = conveyor_turret_angle
@@ -243,7 +217,6 @@ func _physics_process(delta: float) -> void:
 						actual_mb_drop_angle = main_boom_pivot.rotation.z
 						actual_ob_drop_angle = outer_boom_pivot.rotation.z
 						has_set_actual_drop_angles = true
-						print("[KNUCKLE BOOM] Log reached conveyor landing Y (%.3f <= %.3f). Releasing." % [clamped_log.global_position.y, landing_y])
 			
 			if reached_conveyor or _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
 				if not has_set_actual_drop_angles:
@@ -252,7 +225,6 @@ func _physics_process(delta: float) -> void:
 					has_set_actual_drop_angles = true
 				current_state = State.RELEASE_LOG
 				timer = 0.6
-				print("[KNUCKLE BOOM] Reached deck dropoff. Releasing log.")
 				
 		State.RELEASE_LOG:
 			target_turret_y = conveyor_turret_angle
@@ -264,7 +236,6 @@ func _physics_process(delta: float) -> void:
 			if timer <= 0.0:
 				_release_log()
 				current_state = State.RETRACT_BOOM
-				print("[KNUCKLE BOOM] Log released. Retracting boom.")
 				
 		State.RETRACT_BOOM:
 			target_turret_y = conveyor_turret_angle
@@ -274,7 +245,6 @@ func _physics_process(delta: float) -> void:
 			
 			if _joints_reached(target_turret_y, target_mb_z, target_ob_z, target_claw):
 				current_state = State.IDLE
-				print("[KNUCKLE BOOM] Boom retracted. Loader is idle.")
 				
 	_animate_joints(target_turret_y, target_mb_z, target_ob_z, target_claw, delta)
 	
@@ -355,7 +325,7 @@ func _spawn_new_log() -> void:
 		get_parent().add_child(log_instance)
 		log_instance.global_position = bunk_zone.global_position
 		log_instance.global_rotation = Vector3(0.0, 0.0, 0.0)
-		print("[KNUCKLE BOOM] Spawned new log in bunk (frozen): ", log_instance.name)
+		log_instance.set_meta("boom_log", true)
 
 func _start_grab_log() -> void:
 	if grapple_area == null:
@@ -389,10 +359,8 @@ func _start_grab_log() -> void:
 		grab_target_relative_transform = grab_start_relative_transform
 		
 		log_relative_transform = grab_start_relative_transform
-		print("[KNUCKLE BOOM] Grab animation started for log: ", clamped_log.name, " at distance: ", grapple_area.global_position.distance_to(clamped_log.global_position))
 	else:
 		clamped_log = null
-		print("[KNUCKLE BOOM] Grab animation failed! No log in range of grapple.")
 
 func _release_log() -> void:
 	if clamped_log != null:
@@ -400,7 +368,6 @@ func _release_log() -> void:
 			clamped_log.freeze = false
 			# Drop with zero linear velocity for smooth handoff
 			clamped_log.linear_velocity = Vector3.ZERO
-			print("[KNUCKLE BOOM] Log released: ", clamped_log.name)
 		clamped_log = null
 
 func _update_hydraulics() -> void:

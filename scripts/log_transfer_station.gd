@@ -215,7 +215,6 @@ func _on_log_reached_top(log: RigidBody3D) -> void:
 	if _state != KickerState.IDLE or _waiting_log != null:
 		return
 	_waiting_log = log
-	print("[TRANSFER] Log at top — waiting for carriage.")
 
 
 func _on_catch_zone_body_entered(body: Node3D) -> void:
@@ -224,7 +223,6 @@ func _on_catch_zone_body_entered(body: Node3D) -> void:
 	_waiting_log = body as RigidBody3D
 	if _incline != null:
 		_incline.set_running(false)
-	print("[TRANSFER] Log caught at stop bar.")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -243,7 +241,6 @@ func _physics_process(delta: float) -> void:
 			# Wait until carriage is ready (WAITING_FOR_LOG == 0)
 			if _carriage != null and "current_state" in _carriage and _carriage.current_state == 0:
 				_state = KickerState.KICKING
-				print("[TRANSFER] Carriage ready — kicking log.")
 
 		KickerState.KICKING:
 			_arm_angle_deg = move_toward(_arm_angle_deg, kick_swing_deg, swing_speed_deg * delta)
@@ -252,13 +249,11 @@ func _physics_process(delta: float) -> void:
 				_state      = KickerState.HOLDING
 				_hold_timer = hold_at_top
 				_waiting_log = null   # arms have thrown it — physics takes over
-				print("[TRANSFER] Arms at full swing.")
 
 		KickerState.HOLDING:
 			_hold_timer -= delta
 			if _hold_timer <= 0.0:
 				_state = KickerState.RETRACTING
-				print("[TRANSFER] Arms retracting.")
 
 		KickerState.RETRACTING:
 			_arm_angle_deg = move_toward(_arm_angle_deg, -15.0, swing_speed_deg * delta)
@@ -266,11 +261,9 @@ func _physics_process(delta: float) -> void:
 			if _arm_angle_deg <= -15.0:
 				_state        = KickerState.IDLE
 				_resume_timer = resume_delay
-				print("[TRANSFER] Arms reset. Resuming incline in %.1fs." % resume_delay)
 
 	# Resume incline after arms have cleared
 	if _resume_timer > 0.0:
 		_resume_timer -= delta
 		if _resume_timer <= 0.0 and _incline != null:
 			_incline.set_running(true)
-			print("[TRANSFER] Incline resumed.")

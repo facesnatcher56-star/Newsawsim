@@ -14,7 +14,6 @@ func _ready() -> void:
 	start_position = global_position
 	# Add to a group for easy access
 	add_to_group("log_lifts")
-	print("[LOG LIFT] Initialized at: ", start_position)
 
 func _physics_process(delta: float) -> void:
 	if is_paused:

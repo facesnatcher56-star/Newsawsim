@@ -129,7 +129,6 @@ func _update_csg_cut_position() -> void:
 			else:
 				var cut_z = 0.245 - cuts_on_current_face * 0.05
 				cut_box.position = Vector3(0.0, 0.0, cut_z + 0.5)
-				print("[PROCEDURAL LOG] Cut flat face at Z: ", cut_z)
 
 func cut_board(saw_pos: Vector3) -> void:
 	if board_count <= 0:
@@ -155,7 +154,6 @@ func cut_board(saw_pos: Vector3) -> void:
 		board.angular_velocity = Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0))
 		
 		board.add_collision_exception_with(self)
-		print("[PROCEDURAL LOG] Sliced board. Spawned at: ", board.global_position)
 		
 	board_count -= 1
 	cuts_on_current_face += 1

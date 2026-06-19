@@ -3,7 +3,6 @@ extends StaticBody3D
 @export var speed: float = 5.0:
 	set(v):
 		if speed != v:
-			print("[Conveyor: ", name, "] Speed changed from ", speed, " to ", v)
 		speed = v
 		constant_linear_velocity = direction.normalized() * speed
 
