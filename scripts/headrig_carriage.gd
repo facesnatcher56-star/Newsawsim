@@ -27,14 +27,18 @@ enum State {
 @export var travel_axis: Vector3 = Vector3(0, 0, 1) # Axis in local space
 
 # Clamp angles (in radians)
-@export var open_knee_angle: float = -1.2
-@export var closed_knee_angle: float = 0.2
-@export var open_dog_angle: float = -0.8
-@export var closed_dog_angle: float = 0.2
-@export var clamp_speed: float = 4.0
+@export var dog_released_y: float = 1.08
+@export var dog_clamped_y: float = 0.78
+@export var dog_slide_speed: float = 0.55
 @export var cuts_before_flip: int = 2
 @export var flip_duration: float = 1.2
 @export var wheel_radius: float = 0.18
+@export var knees_retracted_x: float = -0.45
+@export var setworks_slide_speed: float = 0.65
+## X offset from KneesAssembly origin to log center (pushes log against headblock face).
+@export var log_seat_x: float = 0.285
+## Y offset from KneesAssembly origin to log center (raises log off platform). Tune this until log sits on platform with dogs gripping from above.
+@export var log_seat_y: float = 0.18
 
 # Kicking parameters
 @export var kick_speed_x: float = 2.5 # sideway push (local +X, global -Z)
@@ -53,11 +57,6 @@ var current_progress: float = 0.0 # Normalized position [0.0, 1.0]
 	get_node_or_null("KneesAssembly/DogPivot2"),
 	get_node_or_null("KneesAssembly/DogPivot3")
 ]
-@onready var knee_pivots = [
-	get_node_or_null("KneesAssembly/KneePivot1"),
-	get_node_or_null("KneesAssembly/KneePivot2"),
-	get_node_or_null("KneesAssembly/KneePivot3")
-]
 @onready var log_detector: Area3D = get_node_or_null("KneesAssembly/LogDetector")
 @onready var rolling_parts: Array[Node3D] = [
 	$WheelFL,
@@ -67,6 +66,14 @@ var current_progress: float = 0.0 # Normalized position [0.0, 1.0]
 	$FrontAxle,
 	$RearAxle,
 ]
+@onready var setworks_rods: Array[CSGCylinder3D] = [
+	get_node_or_null("SetworksHydraulics/Rod1"),
+	get_node_or_null("SetworksHydraulics/Rod2"),
+	get_node_or_null("SetworksHydraulics/Rod3"),
+]
+
+const SETWORKS_CYLINDER_FRONT_X := -0.48
+const SETWORKS_ROD_ATTACH_X := 0.02
 
 var clamped_log: RigidBody3D = null
 var log_relative_transform: Transform3D
@@ -88,9 +95,10 @@ func _ready() -> void:
 	last_carriage_position = global_position
 	
 	# Set initial open positions for knees and dogs
-	_set_angles(open_knee_angle, open_dog_angle)
+	_set_dog_height(dog_released_y)
 	if knees_assembly != null:
-		knees_assembly.position.x = -0.25
+		knees_assembly.position.x = knees_retracted_x
+	_update_setworks_hydraulics()
 	print("[HEADRIG CARRIAGE] Initialized at: ", start_pos, " traveling to: ", target_pos)
 
 func _physics_process(delta: float) -> void:
@@ -103,24 +111,31 @@ func _physics_process(delta: float) -> void:
 	match current_state:
 		State.WAITING_FOR_LOG:
 			if knees_assembly != null:
-				knees_assembly.position.x = -0.25
-			_animate_knees(open_knee_angle, delta)
-			_animate_dogs(open_dog_angle, delta)
-			var log_body = _detect_log()
-			if log_body != null:
-				clamped_log = log_body
-				clamp_timer = clamp_duration
-				current_state = State.CLAMPING_STAGE_1
-				has_cut_this_pass = false
-				print("[HEADRIG CARRIAGE] Log detected: ", clamped_log.name, ". Starting Stage 1 (pushing knees to log).")
+				knees_assembly.position.x = move_toward(
+					knees_assembly.position.x,
+					knees_retracted_x,
+					setworks_slide_speed * delta
+				)
+			_animate_dogs(dog_released_y, delta)
+			var knees_are_retracted := knees_assembly == null or is_equal_approx(
+				knees_assembly.position.x,
+				knees_retracted_x
+			)
+			if knees_are_retracted:
+				var log_body = _detect_log()
+				if log_body != null:
+					clamped_log = log_body
+					clamp_timer = clamp_duration
+					current_state = State.CLAMPING_STAGE_1
+					has_cut_this_pass = false
+					print("[HEADRIG CARRIAGE] Log detected: ", clamped_log.name, ". Starting Stage 1 (pushing knees to log).")
 				
 		State.CLAMPING_STAGE_1:
 			# Stage 1: Close knees to push the log against the backstops, slide knees forward to target cut position
-			_animate_knees(closed_knee_angle, delta)
-			_animate_dogs(open_dog_angle, delta)
+			_animate_dogs(dog_released_y, delta)
 			var target_x = _get_knees_target_x()
 			if knees_assembly != null:
-				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, 1.0 * delta)
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, setworks_slide_speed * delta)
 			clamp_timer -= delta
 			if clamp_timer <= 0.0:
 				clamp_timer = clamp_duration
@@ -129,8 +144,7 @@ func _physics_process(delta: float) -> void:
 				
 		State.CLAMPING_STAGE_2:
 			# Stage 2: Clamping dogs close down to secure the log
-			_animate_knees(closed_knee_angle, delta)
-			_animate_dogs(closed_dog_angle, delta)
+			_animate_dogs(dog_clamped_y, delta)
 			clamp_timer -= delta
 			if clamp_timer <= 0.0:
 				# Log is now clamped, lock it programmatically and align it
@@ -140,7 +154,7 @@ func _physics_process(delta: float) -> void:
 					log_roll_angle = 0.0
 					cuts_on_current_face = 0
 					has_flipped_log = false
-					log_relative_transform = Transform3D(_get_log_relative_basis(), Vector3(0.175 + log_radius, 0.15 + log_radius, 0.0))
+					log_relative_transform = Transform3D(_get_log_relative_basis(), Vector3(log_seat_x + log_radius, log_seat_y + log_radius, 0.0))
 					
 					_update_clamped_log_transform()
 					clamped_log.add_collision_exception_with(self)
@@ -183,14 +197,14 @@ func _physics_process(delta: float) -> void:
 			_update_clamped_log_transform()
 				
 		State.RETRACTING_LOG:
-			# Retract knees to -0.25 so the log clears the saw blade on the return trip
+			# Pull the setworks crosshead and dogged log fully behind the saw line.
 			if knees_assembly != null:
-				knees_assembly.position.x = move_toward(knees_assembly.position.x, -0.25, 1.0 * delta)
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, knees_retracted_x, setworks_slide_speed * delta)
 			
 			# Update clamped log transform to follow retraction
 			_update_clamped_log_transform()
 			
-			if knees_assembly == null or abs(knees_assembly.position.x + 0.25) < 0.001:
+			if knees_assembly == null or abs(knees_assembly.position.x - knees_retracted_x) < 0.001:
 				current_state = State.RETURNING
 				print("[HEADRIG CARRIAGE] Knees retracted. Returning home.")
 				
@@ -221,8 +235,7 @@ func _physics_process(delta: float) -> void:
 			_update_clamped_log_transform()
 
 		State.UNDOGGING_FOR_FLIP:
-			_animate_knees(closed_knee_angle, delta)
-			_animate_dogs(open_dog_angle, delta)
+			_animate_dogs(dog_released_y, delta)
 			_update_clamped_log_transform()
 			clamp_timer -= delta
 			if clamp_timer <= 0.0:
@@ -233,8 +246,7 @@ func _physics_process(delta: float) -> void:
 				print("[HEADRIG CARRIAGE] Dogs open. Turning log 180 degrees.")
 
 		State.FLIPPING_LOG:
-			_animate_knees(closed_knee_angle, delta)
-			_animate_dogs(open_dog_angle, delta)
+			_animate_dogs(dog_released_y, delta)
 			flip_timer = min(flip_timer + delta, flip_duration)
 			var t: float = flip_timer / max(flip_duration, 0.001)
 			t = t * t * (3.0 - 2.0 * t)
@@ -251,8 +263,7 @@ func _physics_process(delta: float) -> void:
 				print("[HEADRIG CARRIAGE] Log turned. Redogging on the fresh face.")
 
 		State.REDOGGING_AFTER_FLIP:
-			_animate_knees(closed_knee_angle, delta)
-			_animate_dogs(closed_dog_angle, delta)
+			_animate_dogs(dog_clamped_y, delta)
 			_update_clamped_log_transform()
 			clamp_timer -= delta
 			if clamp_timer <= 0.0:
@@ -264,7 +275,7 @@ func _physics_process(delta: float) -> void:
 			# Advance knees forward to expose next board thickness
 			var target_x = _get_knees_target_x()
 			if knees_assembly != null:
-				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, 1.0 * delta)
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, setworks_slide_speed * delta)
 				
 			# Keep log attached as it is advanced
 			_update_clamped_log_transform()
@@ -276,8 +287,7 @@ func _physics_process(delta: float) -> void:
 				
 		State.UNCLAMPING:
 			# Open both knees and dogs
-			_animate_knees(open_knee_angle, delta)
-			_animate_dogs(open_dog_angle, delta)
+			_animate_dogs(dog_released_y, delta)
 			clamp_timer -= delta
 			
 			# Keep log attached during unclamping animation
@@ -310,36 +320,35 @@ func _physics_process(delta: float) -> void:
 				current_state = State.WAITING_FOR_LOG
 				print("[HEADRIG CARRIAGE] Ready for next log.")
 
+	_update_setworks_hydraulics()
 	_update_wheel_rotation()
 
-func _update_wheel_rotation() -> void:
-	var movement := global_position - last_carriage_position
-	last_carriage_position = global_position
-	if movement.length_squared() <= 0.0000001 or wheel_radius <= 0.0:
+func _update_setworks_hydraulics() -> void:
+	if knees_assembly == null:
 		return
-	var world_travel_axis := (global_basis * travel_axis.normalized()).normalized()
-	var signed_distance := movement.dot(world_travel_axis)
-	wheel_angle = fmod(wheel_angle - signed_distance / wheel_radius, TAU)
-	for part in rolling_parts:
-		part.rotation.x = wheel_angle
+	var rod_end_x := maxf(
+		knees_assembly.position.x + SETWORKS_ROD_ATTACH_X,
+		SETWORKS_CYLINDER_FRONT_X + 0.04
+	)
+	var rod_length := rod_end_x - SETWORKS_CYLINDER_FRONT_X
+	for rod in setworks_rods:
+		if rod == null:
+			continue
+		rod.height = rod_length
+		rod.position.x = SETWORKS_CYLINDER_FRONT_X + rod_length * 0.5
 
-func _set_angles(knee_rot: float, dog_rot: float) -> void:
-	for knee in knee_pivots:
-		if knee != null:
-			knee.rotation.z = knee_rot
+func _update_wheel_rotation() -> void:
+	last_carriage_position = global_position
+
+func _set_dog_height(dog_height: float) -> void:
 	for dog in dog_pivots:
 		if dog != null:
-			dog.rotation.z = dog_rot
+			dog.position.y = dog_height
 
-func _animate_knees(target_knee: float, delta: float) -> void:
-	for knee in knee_pivots:
-		if knee != null:
-			knee.rotation.z = rotate_toward(knee.rotation.z, target_knee, clamp_speed * delta)
-
-func _animate_dogs(target_dog: float, delta: float) -> void:
+func _animate_dogs(target_height: float, delta: float) -> void:
 	for dog in dog_pivots:
 		if dog != null:
-			dog.rotation.z = rotate_toward(dog.rotation.z, target_dog, clamp_speed * delta)
+			dog.position.y = move_toward(dog.position.y, target_height, dog_slide_speed * delta)
 
 func _detect_log() -> RigidBody3D:
 	if log_detector == null:
@@ -354,7 +363,7 @@ func _detect_log() -> RigidBody3D:
 
 func _get_knees_target_x() -> float:
 	if clamped_log == null or not is_instance_valid(clamped_log):
-		return -0.25
+		return knees_retracted_x
 	var cut_index = cuts_on_current_face + 1 # Next cut on the current face (1-indexed)
 	var cut_z = 0.245 - cut_index * 0.05
 	
@@ -362,10 +371,9 @@ func _get_knees_target_x() -> float:
 	# The log center is at: X_log_center = knees_assembly.position.x + 0.175 + log_radius.
 	# The cut plane (log local Z = cut_z) aligns with carriage local X_cut = X_log_center + cut_z.
 	# We want X_cut = 0.4215, which means:
-	# knees_assembly.position.x + 0.175 + log_radius + cut_z = 0.4215
-	# Solve for target knees_assembly.position.x:
+	# knees_assembly.position.x + log_seat_x + log_radius + cut_z = 0.4215 (saw blade)
 	var log_radius = clamped_log.get_current_radius() if clamped_log.has_method("get_current_radius") else 0.245
-	return 0.4215 - 0.175 - log_radius - cut_z
+	return 0.4215 - log_seat_x - log_radius - cut_z
 
 func _should_flip_log_at_home() -> bool:
 	if clamped_log == null or not is_instance_valid(clamped_log):
@@ -391,8 +399,8 @@ func _update_clamped_log_transform() -> void:
 		return
 	
 	var log_radius = clamped_log.get_current_radius()
-	log_relative_transform.origin.x = 0.175 + log_radius
-	log_relative_transform.origin.y = 0.15 + log_radius
+	log_relative_transform.origin.x = log_seat_x + log_radius
+	log_relative_transform.origin.y = log_seat_y + log_radius
 	
 	log_relative_transform.basis = _get_log_relative_basis()
 	

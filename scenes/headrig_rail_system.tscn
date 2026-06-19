@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=18 format=3]
 
 [ext_resource type="Script" path="res://scripts/headrig_carriage.gd" id="1_script"]
 
@@ -13,9 +13,9 @@ metallic = 0.7
 roughness = 0.25
 
 [sub_resource type="StandardMaterial3D" id="Material_Knees"]
-albedo_color = Color(0.9, 0.35, 0.05, 1)
-metallic = 0.6
-roughness = 0.3
+albedo_color = Color(0.12, 0.14, 0.16, 1)
+metallic = 0.82
+roughness = 0.42
 
 [sub_resource type="StandardMaterial3D" id="Material_BiteSteel"]
 albedo_color = Color(0.72, 0.72, 0.76, 1)
@@ -26,6 +26,11 @@ roughness = 0.18
 albedo_color = Color(0.08, 0.08, 0.09, 1)
 metallic = 0.85
 roughness = 0.22
+
+[sub_resource type="StandardMaterial3D" id="Material_Dogs"]
+albedo_color = Color(0.72, 0.12, 0.055, 1)
+metallic = 0.72
+roughness = 0.38
 
 [sub_resource type="CylinderMesh" id="Mesh_Tread"]
 top_radius = 0.18
@@ -48,7 +53,7 @@ material = SubResource("Material_BiteSteel")
 [sub_resource type="CylinderMesh" id="Mesh_Shaft"]
 top_radius = 0.04
 bottom_radius = 0.04
-height = 0.72
+height = 1.0
 radial_segments = 24
 material = SubResource("Material_BiteSteel")
 
@@ -56,25 +61,19 @@ material = SubResource("Material_BiteSteel")
 size = Vector3(0.1, 0.15, 14.0)
 
 [sub_resource type="BoxShape3D" id="Shape_Platform"]
-size = Vector3(0.85, 0.15, 2.2)
+size = Vector3(1.3, 0.18, 2.8)
 
 [sub_resource type="BoxShape3D" id="Shape_Headblock"]
-size = Vector3(0.15, 0.8, 0.3)
+size = Vector3(0.26, 0.95, 0.32)
 
-[sub_resource type="BoxShape3D" id="Shape_DogBase"]
-size = Vector3(0.3, 0.08, 0.12)
+[sub_resource type="BoxShape3D" id="Shape_DogSlide"]
+size = Vector3(0.1, 0.52, 0.035)
 
 [sub_resource type="BoxShape3D" id="Shape_DogTip"]
-size = Vector3(0.08, 0.15, 0.12)
-
-[sub_resource type="BoxShape3D" id="Shape_KneeBase"]
-size = Vector3(0.4, 0.08, 0.15)
-
-[sub_resource type="BoxShape3D" id="Shape_KneeTip"]
-size = Vector3(0.08, 0.4, 0.15)
+size = Vector3(0.2, 0.07, 0.045)
 
 [sub_resource type="BoxShape3D" id="Shape_Detector"]
-size = Vector3(0.5, 0.8, 2.2)
+size = Vector3(0.75, 0.8, 2.8)
 
 [node name="HeadrigRailSystem" type="Node3D"]
 
@@ -82,22 +81,22 @@ size = Vector3(0.5, 0.8, 2.2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CollisionLeft" type="CollisionShape3D" parent="Rails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.165, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, -0.165, 5.0)
 shape = SubResource("Shape_Rail")
 
 [node name="CollisionRight" type="CollisionShape3D" parent="Rails"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.165, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, -0.165, 5.0)
 shape = SubResource("Shape_Rail")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="Rails"]
 
 [node name="RailLeft" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.165, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, -0.165, 5.0)
 size = Vector3(0.1, 0.15, 14.0)
 material = SubResource("Material_Rails")
 
 [node name="RailRight" type="CSGBox3D" parent="Rails/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.165, 5.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, -0.165, 5.0)
 size = Vector3(0.1, 0.15, 14.0)
 material = SubResource("Material_Rails")
 
@@ -109,41 +108,40 @@ travel_distance = 10.0
 auto_cycle = true
 pause_at_ends = 2.0
 travel_axis = Vector3(0, 0, 1)
-open_knee_angle = -0.4
 
 [node name="CollisionPlatform" type="CollisionShape3D" parent="HeadrigCarriage"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.075, 0.075, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.275, 0.09, 0)
 shape = SubResource("Shape_Platform")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="HeadrigCarriage"]
 
 [node name="Platform" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.075, 0.075, 0)
-size = Vector3(0.85, 0.15, 2.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.275, 0.09, 0)
+size = Vector3(1.3, 0.18, 2.8)
 material = SubResource("Material_Carriage")
 
 [node name="PlatformCutoutFL" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.075, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, 0.09, -1.0)
 operation = 2
 size = Vector3(0.13, 0.18, 0.44)
 
 [node name="PlatformCutoutFR" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.075, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, 0.09, -1.0)
 operation = 2
 size = Vector3(0.13, 0.18, 0.44)
 
 [node name="PlatformCutoutRL" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, 0.075, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.72, 0.09, 1.0)
 operation = 2
 size = Vector3(0.13, 0.18, 0.44)
 
 [node name="PlatformCutoutRR" type="CSGBox3D" parent="HeadrigCarriage/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, 0.075, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.17, 0.09, 1.0)
 operation = 2
 size = Vector3(0.13, 0.18, 0.44)
 
 [node name="WheelFL" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.35, -0.06, -0.7)
+position = Vector3(-0.72, -0.06, -1.0)
 
 [node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelFL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -158,7 +156,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.062, 0.09, 0)
 mesh = SubResource("Mesh_RotationMarker")
 
 [node name="WheelFR" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(0.25, -0.06, -0.7)
+position = Vector3(0.17, -0.06, -1.0)
 
 [node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelFR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -173,7 +171,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.062, 0.09, 0)
 mesh = SubResource("Mesh_RotationMarker")
 
 [node name="WheelRL" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.35, -0.06, 0.7)
+position = Vector3(-0.72, -0.06, 1.0)
 
 [node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelRL"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -188,7 +186,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.062, 0.09, 0)
 mesh = SubResource("Mesh_RotationMarker")
 
 [node name="WheelRR" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(0.25, -0.06, 0.7)
+position = Vector3(0.17, -0.06, 1.0)
 
 [node name="Tread" type="MeshInstance3D" parent="HeadrigCarriage/WheelRR"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -203,23 +201,76 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.062, 0.09, 0)
 mesh = SubResource("Mesh_RotationMarker")
 
 [node name="FrontAxle" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.05, -0.06, -0.7)
+position = Vector3(-0.275, -0.06, -1.0)
 
 [node name="Shaft" type="MeshInstance3D" parent="HeadrigCarriage/FrontAxle"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("Mesh_Shaft")
 
 [node name="RearAxle" type="Node3D" parent="HeadrigCarriage"]
-position = Vector3(-0.05, -0.06, 0.7)
+position = Vector3(-0.275, -0.06, 1.0)
 
 [node name="Shaft" type="MeshInstance3D" parent="HeadrigCarriage/RearAxle"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("Mesh_Shaft")
 
+[node name="SetworksHydraulics" type="Node3D" parent="HeadrigCarriage"]
+
+[node name="CylinderMount1" type="CSGBox3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.82, 0.27, -0.9)
+size = Vector3(0.12, 0.34, 0.24)
+material = SubResource("Material_Carriage")
+
+[node name="Cylinder1" type="CSGCylinder3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.68, 0.27, -0.9)
+radius = 0.055
+height = 0.4
+material = SubResource("Material_Hydraulics")
+
+[node name="Rod1" type="CSGCylinder3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.455, 0.27, -0.9)
+radius = 0.026
+height = 0.05
+material = SubResource("Material_BiteSteel")
+
+[node name="CylinderMount2" type="CSGBox3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.82, 0.27, 0)
+size = Vector3(0.12, 0.34, 0.24)
+material = SubResource("Material_Carriage")
+
+[node name="Cylinder2" type="CSGCylinder3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.68, 0.27, 0)
+radius = 0.055
+height = 0.4
+material = SubResource("Material_Hydraulics")
+
+[node name="Rod2" type="CSGCylinder3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.455, 0.27, 0)
+radius = 0.026
+height = 0.05
+material = SubResource("Material_BiteSteel")
+
+[node name="CylinderMount3" type="CSGBox3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.82, 0.27, 0.9)
+size = Vector3(0.12, 0.34, 0.24)
+material = SubResource("Material_Carriage")
+
+[node name="Cylinder3" type="CSGCylinder3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.68, 0.27, 0.9)
+radius = 0.055
+height = 0.4
+material = SubResource("Material_Hydraulics")
+
+[node name="Rod3" type="CSGCylinder3D" parent="HeadrigCarriage/SetworksHydraulics"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.455, 0.27, 0.9)
+radius = 0.026
+height = 0.05
+material = SubResource("Material_BiteSteel")
+
 [node name="KneesAssembly" type="Node3D" parent="HeadrigCarriage"]
 
 [node name="CollisionHeadblock1" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, -0.9)
 shape = SubResource("Shape_Headblock")
 
 [node name="CollisionHeadblock2" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly"]
@@ -227,265 +278,175 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.0)
 shape = SubResource("Shape_Headblock")
 
 [node name="CollisionHeadblock3" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.9)
 shape = SubResource("Shape_Headblock")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="HeadrigCarriage/KneesAssembly"]
 
 [node name="Headblock1" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, -0.7)
-size = Vector3(0.24, 0.95, 0.36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.525, -0.9)
+size = Vector3(0.32, 1.05, 0.38)
 material = SubResource("Material_Carriage")
 
-[node name="HeadblockFace1" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.245, 0.54, -0.7)
-size = Vector3(0.05, 0.72, 0.28)
+[node name="HeadblockFace1Left" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, 0.525, -0.99)
+size = Vector3(0.045, 1.0, 0.15)
+material = SubResource("Material_BiteSteel")
+
+[node name="HeadblockFace1Right" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, 0.525, -0.81)
+size = Vector3(0.045, 1.0, 0.15)
 material = SubResource("Material_BiteSteel")
 
 [node name="Headblock2" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.0)
-size = Vector3(0.24, 0.95, 0.36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.525, 0.0)
+size = Vector3(0.32, 1.05, 0.38)
 material = SubResource("Material_Carriage")
 
-[node name="HeadblockFace2" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.245, 0.54, 0.0)
-size = Vector3(0.05, 0.72, 0.28)
+[node name="HeadblockFace2Left" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, 0.525, -0.09)
+size = Vector3(0.045, 1.0, 0.15)
+material = SubResource("Material_BiteSteel")
+
+[node name="HeadblockFace2Right" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, 0.525, 0.09)
+size = Vector3(0.045, 1.0, 0.15)
 material = SubResource("Material_BiteSteel")
 
 [node name="Headblock3" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.7)
-size = Vector3(0.24, 0.95, 0.36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.525, 0.9)
+size = Vector3(0.32, 1.05, 0.38)
 material = SubResource("Material_Carriage")
 
-[node name="HeadblockFace3" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
-transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.245, 0.54, 0.7)
-size = Vector3(0.05, 0.72, 0.28)
+[node name="HeadblockFace3Left" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, 0.525, 0.81)
+size = Vector3(0.045, 1.0, 0.15)
+material = SubResource("Material_BiteSteel")
+
+[node name="HeadblockFace3Right" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/CSGCombiner3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.262, 0.525, 0.99)
+size = Vector3(0.045, 1.0, 0.15)
 material = SubResource("Material_BiteSteel")
 
 [node name="DogPivot1" type="Node3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175, 0.8, -0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 1.08, -0.9)
 
-[node name="DogBase" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0, 0)
-size = Vector3(0.3, 0.08, 0.12)
-material = SubResource("Material_Knees")
+[node name="DogSlideBar" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, -0.18, 0)
+size = Vector3(0.1, 0.52, 0.035)
+material = SubResource("Material_Hydraulics")
 
-[node name="DogTip" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.05, 0)
-size = Vector3(0.12, 0.18, 0.14)
-material = SubResource("Material_Knees")
+[node name="HookUpperShank" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, -0.18, 0)
+size = Vector3(0.06, 0.14, 0.04)
+material = SubResource("Material_Dogs")
 
-[node name="BiteToothUpper" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0.38, -0.025, 0)
-size = Vector3(0.16, 0.035, 0.12)
-material = SubResource("Material_BiteSteel")
+[node name="HookUpperNose" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.255, 0)
+size = Vector3(0.2, 0.07, 0.045)
+material = SubResource("Material_Dogs")
 
-[node name="BiteToothLower" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(0.573576, -0.819152, 0, 0.819152, 0.573576, 0, 0, 0, 1, 0.37, -0.115, 0)
-size = Vector3(0.13, 0.032, 0.1)
-material = SubResource("Material_BiteSteel")
+[node name="HookLowerShank" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, -0.37, 0)
+size = Vector3(0.06, 0.14, 0.04)
+material = SubResource("Material_Dogs")
 
-[node name="DogHydraulicRod" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.12, -0.11, 0)
-radius = 0.018
-height = 0.28
-material = SubResource("Material_BiteSteel")
+[node name="HookLowerNose" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.445, 0)
+size = Vector3(0.2, 0.07, 0.045)
+material = SubResource("Material_Dogs")
 
-[node name="CollisionBase" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0, 0)
-shape = SubResource("Shape_DogBase")
+[node name="DogSlideCollision" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, -0.18, 0)
+shape = SubResource("Shape_DogSlide")
 
-[node name="CollisionTip" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.05, 0)
+[node name="CollisionHookUpper" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.255, 0)
+shape = SubResource("Shape_DogTip")
+
+[node name="CollisionHookLower" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot1"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.445, 0)
 shape = SubResource("Shape_DogTip")
 
 [node name="DogPivot2" type="Node3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175, 0.8, 0.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 1.08, 0.0)
 
-[node name="DogBase" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0, 0)
-size = Vector3(0.3, 0.08, 0.12)
-material = SubResource("Material_Knees")
+[node name="DogSlideBar" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, -0.18, 0)
+size = Vector3(0.1, 0.52, 0.035)
+material = SubResource("Material_Hydraulics")
 
-[node name="DogTip" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.05, 0)
-size = Vector3(0.12, 0.18, 0.14)
-material = SubResource("Material_Knees")
+[node name="HookUpperShank" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, -0.18, 0)
+size = Vector3(0.06, 0.14, 0.04)
+material = SubResource("Material_Dogs")
 
-[node name="BiteToothUpper" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0.38, -0.025, 0)
-size = Vector3(0.16, 0.035, 0.12)
-material = SubResource("Material_BiteSteel")
+[node name="HookUpperNose" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.255, 0)
+size = Vector3(0.2, 0.07, 0.045)
+material = SubResource("Material_Dogs")
 
-[node name="BiteToothLower" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(0.573576, -0.819152, 0, 0.819152, 0.573576, 0, 0, 0, 1, 0.37, -0.115, 0)
-size = Vector3(0.13, 0.032, 0.1)
-material = SubResource("Material_BiteSteel")
+[node name="HookLowerShank" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, -0.37, 0)
+size = Vector3(0.06, 0.14, 0.04)
+material = SubResource("Material_Dogs")
 
-[node name="DogHydraulicRod" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.12, -0.11, 0)
-radius = 0.018
-height = 0.28
-material = SubResource("Material_BiteSteel")
+[node name="HookLowerNose" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.445, 0)
+size = Vector3(0.2, 0.07, 0.045)
+material = SubResource("Material_Dogs")
 
-[node name="CollisionBase" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0, 0)
-shape = SubResource("Shape_DogBase")
+[node name="DogSlideCollision" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, -0.18, 0)
+shape = SubResource("Shape_DogSlide")
 
-[node name="CollisionTip" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.05, 0)
+[node name="CollisionHookUpper" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.255, 0)
+shape = SubResource("Shape_DogTip")
+
+[node name="CollisionHookLower" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot2"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.445, 0)
 shape = SubResource("Shape_DogTip")
 
 [node name="DogPivot3" type="Node3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175, 0.8, 0.7)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, 1.08, 0.9)
 
-[node name="DogBase" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0, 0)
-size = Vector3(0.3, 0.08, 0.12)
-material = SubResource("Material_Knees")
+[node name="DogSlideBar" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, -0.18, 0)
+size = Vector3(0.1, 0.52, 0.035)
+material = SubResource("Material_Hydraulics")
 
-[node name="DogTip" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.05, 0)
-size = Vector3(0.12, 0.18, 0.14)
-material = SubResource("Material_Knees")
+[node name="HookUpperShank" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, -0.18, 0)
+size = Vector3(0.06, 0.14, 0.04)
+material = SubResource("Material_Dogs")
 
-[node name="BiteToothUpper" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(0.707107, -0.707107, 0, 0.707107, 0.707107, 0, 0, 0, 1, 0.38, -0.025, 0)
-size = Vector3(0.16, 0.035, 0.12)
-material = SubResource("Material_BiteSteel")
+[node name="HookUpperNose" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.255, 0)
+size = Vector3(0.2, 0.07, 0.045)
+material = SubResource("Material_Dogs")
 
-[node name="BiteToothLower" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(0.573576, -0.819152, 0, 0.819152, 0.573576, 0, 0, 0, 1, 0.37, -0.115, 0)
-size = Vector3(0.13, 0.032, 0.1)
-material = SubResource("Material_BiteSteel")
+[node name="HookLowerShank" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.105, -0.37, 0)
+size = Vector3(0.06, 0.14, 0.04)
+material = SubResource("Material_Dogs")
 
-[node name="DogHydraulicRod" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0.12, -0.11, 0)
-radius = 0.018
-height = 0.28
-material = SubResource("Material_BiteSteel")
+[node name="HookLowerNose" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.445, 0)
+size = Vector3(0.2, 0.07, 0.045)
+material = SubResource("Material_Dogs")
 
-[node name="CollisionBase" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.15, 0, 0)
-shape = SubResource("Shape_DogBase")
+[node name="DogSlideCollision" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, -0.18, 0)
+shape = SubResource("Shape_DogSlide")
 
-[node name="CollisionTip" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.05, 0)
+[node name="CollisionHookUpper" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.255, 0)
 shape = SubResource("Shape_DogTip")
 
-[node name="KneePivot1" type="Node3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.15, -0.7)
-
-[node name="KneeBase" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0, 0)
-size = Vector3(0.4, 0.08, 0.15)
-material = SubResource("Material_Knees")
-
-[node name="KneeTip" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.15, 0)
-size = Vector3(0.12, 0.46, 0.18)
-material = SubResource("Material_Knees")
-
-[node name="KneeClampPad" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -0.46, 0.32, 0)
-size = Vector3(0.08, 0.32, 0.22)
-material = SubResource("Material_BiteSteel")
-
-[node name="KneeHydraulicBody" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.12, -0.11, 0)
-radius = 0.035
-height = 0.28
-material = SubResource("Material_Hydraulics")
-
-[node name="KneeHydraulicRod" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.35, -0.11, 0)
-radius = 0.018
-height = 0.32
-material = SubResource("Material_BiteSteel")
-
-[node name="CollisionBase" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0, 0)
-shape = SubResource("Shape_KneeBase")
-
-[node name="CollisionTip" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/KneePivot1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.15, 0)
-shape = SubResource("Shape_KneeTip")
-
-[node name="KneePivot2" type="Node3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.15, 0.0)
-
-[node name="KneeBase" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0, 0)
-size = Vector3(0.4, 0.08, 0.15)
-material = SubResource("Material_Knees")
-
-[node name="KneeTip" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.15, 0)
-size = Vector3(0.12, 0.46, 0.18)
-material = SubResource("Material_Knees")
-
-[node name="KneeClampPad" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -0.46, 0.32, 0)
-size = Vector3(0.08, 0.32, 0.22)
-material = SubResource("Material_BiteSteel")
-
-[node name="KneeHydraulicBody" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.12, -0.11, 0)
-radius = 0.035
-height = 0.28
-material = SubResource("Material_Hydraulics")
-
-[node name="KneeHydraulicRod" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.35, -0.11, 0)
-radius = 0.018
-height = 0.32
-material = SubResource("Material_BiteSteel")
-
-[node name="CollisionBase" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0, 0)
-shape = SubResource("Shape_KneeBase")
-
-[node name="CollisionTip" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/KneePivot2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.15, 0)
-shape = SubResource("Shape_KneeTip")
-
-[node name="KneePivot3" type="Node3D" parent="HeadrigCarriage/KneesAssembly"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, 0.15, 0.7)
-
-[node name="KneeBase" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0, 0)
-size = Vector3(0.4, 0.08, 0.15)
-material = SubResource("Material_Knees")
-
-[node name="KneeTip" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.15, 0)
-size = Vector3(0.12, 0.46, 0.18)
-material = SubResource("Material_Knees")
-
-[node name="KneeClampPad" type="CSGBox3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, -0.46, 0.32, 0)
-size = Vector3(0.08, 0.32, 0.22)
-material = SubResource("Material_BiteSteel")
-
-[node name="KneeHydraulicBody" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.12, -0.11, 0)
-radius = 0.035
-height = 0.28
-material = SubResource("Material_Hydraulics")
-
-[node name="KneeHydraulicRod" type="CSGCylinder3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.35, -0.11, 0)
-radius = 0.018
-height = 0.32
-material = SubResource("Material_BiteSteel")
-
-[node name="CollisionBase" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.2, 0, 0)
-shape = SubResource("Shape_KneeBase")
-
-[node name="CollisionTip" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/KneePivot3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4, 0.15, 0)
-shape = SubResource("Shape_KneeTip")
+[node name="CollisionHookLower" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/DogPivot3"]
+transform = Transform3D(0.965926, 0.258819, 0, -0.258819, 0.965926, 0, 0, 0, 1, 0.17, -0.445, 0)
+shape = SubResource("Shape_DogTip")
 
 [node name="LogDetector" type="Area3D" parent="HeadrigCarriage/KneesAssembly"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0.4, 0)

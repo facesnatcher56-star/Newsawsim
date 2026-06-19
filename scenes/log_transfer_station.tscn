@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://log_transfer_station"]
+
+[ext_resource type="Script" path="res://scripts/log_transfer_station.gd" id="1_xferstn"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_catch"]
+size = Vector3(2.4, 0.8, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="Mat_CatchZone"]
+transparency = 1
+shading_mode = 2
+albedo_color = Color(0, 1, 0, 0.22)
+cull_mode = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_catch"]
+size = Vector3(2.4, 0.8, 0.5)
+
+[node name="LogTransferStation" type="Node3D"]
+script = ExtResource("1_xferstn")
+catch_zone = NodePath("CatchZone")
+
+[node name="CatchZone" type="Area3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CatchZone"]
+position = Vector3(0, 0.3, -0.25)
+shape = SubResource("BoxShape3D_catch")
+
+[node name="DebugMesh" type="MeshInstance3D" parent="CatchZone"]
+position = Vector3(0, 0.3, -0.25)
+mesh = SubResource("BoxMesh_catch")
+material_override = SubResource("Mat_CatchZone")

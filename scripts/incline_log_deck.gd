@@ -18,13 +18,25 @@ extends Node3D
 @export var lugs_per_track:    int   = 4
 @export var lug_spacing:       float = 1.5
 @export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
-@export var running:           bool  = true
+@export var running:           bool  = false
+## Assign an Area3D in the scene for the bottom trigger (visible/movable in editor).
+## If left empty, one is built automatically at runtime.
+@export var load_zone: Area3D
+## Assign an Area3D in the scene for the top trigger (visible/movable in editor).
+## If left empty, one is built automatically at runtime.
+@export var top_zone: Area3D
+
+signal log_reached_top(log: RigidBody3D)
 
 # ── Geometry constants ───────────────────────────────────────────────────────
 const PLATE_T       := 0.12
-const LUG_W         := 0.30
-const LUG_H         := 0.25
-const LUG_D         := 0.15
+const LUG_W         := 0.125
+const LUG_H         := 0.27
+const LUG_D         := 0.12
+const LUG_BASE_H    := 0.055
+const LUG_BASE_D    := 0.27
+const LUG_POST_W    := 0.11
+const LUG_POST_D    := 0.11
 const RAIL_T        := 0.06
 const RAIL_H        := 0.22
 const STRINGER_W    := 0.08
@@ -50,6 +62,7 @@ const RACE_WALL_T   := 0.010
 const RACE_WALL_H   := 0.038
 
 # ── Runtime state ────────────────────────────────────────────────────────────
+var _start_delay_timer: float = 0.0   # counts down before chain starts
 var _slope_root:    Node3D
 
 # Lugs (physics)
@@ -78,8 +91,8 @@ var _loop_len:   float   # full chain loop length per track
 
 func _ready() -> void:
 	_cycle_len = float(lugs_per_track) * lug_spacing
-	_surface_y =  PLATE_T * 0.5 + LUG_H * 0.5
-	_hidden_y  = -(PLATE_T * 0.5 + LUG_H * 0.5 + 0.06)
+	_surface_y = PLATE_T * 0.5
+	_hidden_y  = -(PLATE_T * 0.5 + LUG_H + LUG_BASE_H + 0.08)
 	_spr_cy    = PLATE_T * 0.5 - SPROCKET_R        # sprocket centre just below surface
 	_loop_len  = 2.0 * incline_length + 2.0 * PI * SPROCKET_R
 
@@ -92,6 +105,20 @@ func _ready() -> void:
 	_spawn_chain_links()
 	_update_chain_links()   # set initial positions in editor too
 	_spawn_lugs()
+
+	if not Engine.is_editor_hint():
+		# Force off at runtime regardless of exported value — LoadZone starts it.
+		running = false
+		if load_zone == null:
+			_build_load_zone()
+			load_zone = get_node_or_null("SlopeRoot/LoadZone")
+		if load_zone != null:
+			load_zone.body_entered.connect(_on_load_zone_body_entered)
+		if top_zone == null:
+			_build_top_zone()
+			top_zone = get_node_or_null("SlopeRoot/TopZone")
+		if top_zone != null:
+			top_zone.body_entered.connect(_on_top_zone_body_entered)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -402,16 +429,13 @@ func _update_chain_links() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _spawn_lugs() -> void:
-	var lug_mesh  := BoxMesh.new()
-	lug_mesh.size = Vector3(LUG_W, LUG_H, LUG_D)
-
 	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.34, 0.30, 0.26)
-	mat.metallic     = 0.88
-	mat.roughness    = 0.42
+	mat.albedo_color = Color(0.105, 0.10, 0.09)
+	mat.metallic     = 0.82
+	mat.roughness    = 0.58
 
 	var lug_shape := BoxShape3D.new()
-	lug_shape.size = Vector3(LUG_W, LUG_H, LUG_D)
+	lug_shape.size = Vector3(LUG_POST_W, LUG_H, LUG_POST_D)
 
 	for xi in range(track_x_positions.size()):
 		var tx: float = track_x_positions[xi]
@@ -422,13 +446,11 @@ func _spawn_lugs() -> void:
 			lug.name     = "Lug_%d_%d" % [xi, j]
 			lug.sync_to_physics = true
 
-			var mi := MeshInstance3D.new()
-			mi.mesh = lug_mesh
-			mi.material_override = mat
-			lug.add_child(mi)
+			_build_log_pusher_lug(lug, mat)
 
 			var cs    := CollisionShape3D.new()
 			cs.shape  = lug_shape
+			cs.position = Vector3(0.0, LUG_BASE_H + LUG_H * 0.5, 0.055)
 			cs.disabled = slot0 >= incline_length
 			lug.add_child(cs)
 
@@ -440,6 +462,46 @@ func _spawn_lugs() -> void:
 			_lug_track_x.append(tx)
 			_slot.append(slot0)
 			_slot_visible.append(slot0 < incline_length)
+
+
+func _build_log_pusher_lug(lug: AnimatableBody3D, material: Material) -> void:
+	var visuals := Node3D.new()
+	visuals.name = "FabricatedPusher"
+	lug.add_child(visuals)
+
+	# Wide chain shoe and heel plate anchor the pusher to the moving chain.
+	_add_lug_box(visuals, "ChainShoe", Vector3(LUG_W, LUG_BASE_H, LUG_BASE_D),
+		Vector3(0.0, LUG_BASE_H * 0.5, -0.045), Vector3.ZERO, material)
+	_add_lug_box(visuals, "HeelPlate", Vector3(LUG_W * 0.90, 0.07, 0.09),
+		Vector3(0.0, 0.065, -0.125), Vector3.ZERO, material)
+
+	# Broad upright face contacts the log. It sits toward uphill travel (+Z).
+	_add_lug_box(visuals, "PusherPost", Vector3(LUG_POST_W, LUG_H, LUG_POST_D),
+		Vector3(0.0, LUG_BASE_H + LUG_H * 0.5, 0.055), Vector3.ZERO, material)
+	# Two trailing braces give the lug the triangular, fabricated profile.
+	var brace_angle := deg_to_rad(32.0)
+	for brace_x in [-0.035, 0.035]:
+		_add_lug_box(visuals, "RearBrace", Vector3(0.025, 0.225, 0.055),
+			Vector3(brace_x, 0.145, -0.04), Vector3(brace_angle, 0.0, 0.0), material)
+
+
+func _add_lug_box(
+	parent: Node3D,
+	part_name: String,
+	size: Vector3,
+	part_position: Vector3,
+	part_rotation: Vector3,
+	material: Material
+) -> void:
+	var mesh := BoxMesh.new()
+	mesh.size = size
+	var part := MeshInstance3D.new()
+	part.name = part_name
+	part.mesh = mesh
+	part.material_override = material
+	part.position = part_position
+	part.rotation = part_rotation
+	parent.add_child(part)
 
 
 func _set_lug_position(lug: AnimatableBody3D, tx: float, slot: float) -> void:
@@ -456,7 +518,16 @@ func _set_lug_position(lug: AnimatableBody3D, tx: float, slot: float) -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _process(delta: float) -> void:
-	if Engine.is_editor_hint() or not running:
+	if Engine.is_editor_hint():
+		return
+
+	if _start_delay_timer > 0.0:
+		_start_delay_timer -= delta
+		if _start_delay_timer <= 0.0:
+			set_running(true)
+			print("[INCLINE] Chain started.")
+
+	if not running:
 		return
 
 	_chain_travel += chain_speed * delta
@@ -486,3 +557,46 @@ func _physics_process(delta: float) -> void:
 
 func set_running(on: bool) -> void:
 	running = on
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  TRIGGER ZONES
+# ─────────────────────────────────────────────────────────────────────────────
+
+func _build_load_zone() -> void:
+	# Area at the bottom of the incline — any log landing here starts the chain.
+	var zone := Area3D.new()
+	zone.name = "LoadZone"
+	var cs    := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(incline_width, 0.7, 1.4)
+	cs.shape    = shape
+	cs.position = Vector3(0.0, 0.35, -incline_length * 0.5 + 0.7)
+	zone.add_child(cs)
+	_slope_root.add_child(zone)
+
+
+func _on_load_zone_body_entered(body: Node3D) -> void:
+	if body.is_in_group("logs") and not running and _start_delay_timer <= 0.0:
+		_start_delay_timer = 2.0
+		print("[INCLINE] Log landed — starting chain in 2s.")
+
+
+func _build_top_zone() -> void:
+	# Thin zone at the very tip — only emits the signal so the transfer station
+	# knows which log to kick. The transfer station stops the chain, not us.
+	var zone := Area3D.new()
+	zone.name = "TopZone"
+	var cs    := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(incline_width, 0.8, 0.5)
+	cs.shape    = shape
+	cs.position = Vector3(0.0, 0.4, incline_length * 0.5 - 0.2)
+	zone.add_child(cs)
+	_slope_root.add_child(zone)
+
+
+func _on_top_zone_body_entered(body: Node3D) -> void:
+	if body.is_in_group("logs"):
+		log_reached_top.emit(body as RigidBody3D)
+		print("[INCLINE] Log reached top — signalling transfer station.")
