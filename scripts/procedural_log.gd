@@ -130,7 +130,7 @@ func _update_csg_cut_position() -> void:
 				var cut_z = 0.245 - cuts_on_current_face * 0.05
 				cut_box.position = Vector3(0.0, 0.0, cut_z + 0.5)
 
-func cut_board(saw_pos: Vector3) -> void:
+func cut_board(_saw_pos: Vector3) -> void:
 	if board_count <= 0:
 		return
 	

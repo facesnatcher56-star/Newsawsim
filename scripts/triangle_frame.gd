@@ -55,16 +55,16 @@ func _add_beam(st: SurfaceTool, start: Vector3, end: Vector3) -> void:
 	
 	# Transform vertices to align with the triangle edge
 	var mid_point = (start + end) / 2.0
-	var basis = Basis()
+	var l_basis = Basis()
 	var up = dir
 	var right = up.cross(Vector3.FORWARD).normalized()
 	if right.length() < 0.1: right = up.cross(Vector3.RIGHT).normalized()
 	var forward = right.cross(up).normalized()
-	basis = Basis(right, up, forward)
+	l_basis = Basis(right, up, forward)
 	
 	for i in range(mesh_data.get_vertex_count()):
 		var v = mesh_data.get_vertex(i)
-		v = (basis * v) + mid_point
+		v = (l_basis * v) + mid_point
 		mesh_data.set_vertex(i, v)
 	
 	# Commit back to surface tool

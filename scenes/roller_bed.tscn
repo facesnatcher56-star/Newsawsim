@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cu6kodccm1rqk"]
+
+[ext_resource type="Script" uid="uid://dtecixxvibn1h" path="res://scripts/roller_bed.gd" id="1_roller_bed"]
+
+[node name="RollerBed" type="StaticBody3D" unique_id=220690297]
+constant_linear_velocity = Vector3(0, 0, -2)
+script = ExtResource("1_roller_bed")

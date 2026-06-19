@@ -17,9 +17,6 @@ func _ready() -> void:
 	if parent:
 		_conveyor = parent.get_parent()
 		
-	if Engine.is_editor_hint():
-		# Position links once in their default layout in the editor
-		_update_positions(0.0)
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
@@ -114,8 +111,8 @@ func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
 		y = 0.95 - R * cos(theta)
 		rot_x = theta - PI
 		
-	var basis = Basis(Vector3(1, 0, 0), rot_x)
-	return Transform3D(basis, Vector3(0.0, y, z))
+	var l_basis = Basis(Vector3(1, 0, 0), rot_x)
+	return Transform3D(l_basis, Vector3(0.0, y, z))
 
 func _collect_and_sort_chains() -> void:
 	_chains.clear()

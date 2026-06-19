@@ -19,16 +19,18 @@ extends Node3D
 @export var lug_spacing:       float = 1.5
 @export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
 @export var running:           bool  = false
+## Reference to the headrig carriage to check for backpressure.
+@export var carriage: AnimatableBody3D
 ## Maximum logs the deck can carry simultaneously before it's considered full.
 @export var max_logs_on_deck:  int   = 2
 ## Assign an Area3D in the scene for the bottom trigger (visible/movable in editor).
-## If left empty, one is built automatically at runtime.
 @export var load_zone: Area3D
 ## Assign an Area3D in the scene for the top trigger (visible/movable in editor).
-## If left empty, one is built automatically at runtime.
 @export var top_zone: Area3D
+## Assign an Area3D in the scene for the deck tracking (visible/movable in editor).
+@export var deck_area: Area3D
 
-signal log_reached_top(log: RigidBody3D)
+signal log_reached_top(l_node: RigidBody3D)
 
 # ── Geometry constants ───────────────────────────────────────────────────────
 const PLATE_T       := 0.12
@@ -92,6 +94,9 @@ var _hidden_y:   float
 var _spr_cy:     float   # sprocket centre Y in slope-local space
 var _loop_len:   float   # full chain loop length per track
 
+# Step-advance: >0 means limited advance remaining; 0 means free-run
+var _step_remaining: float = 0.0
+
 
 func _ready() -> void:
 	_cycle_len = float(lugs_per_track) * lug_spacing
@@ -100,31 +105,45 @@ func _ready() -> void:
 	_spr_cy    = PLATE_T * 0.5 - SPROCKET_R        # sprocket centre just below surface
 	_loop_len  = 2.0 * incline_length + 2.0 * PI * SPROCKET_R
 
-	_slope_root = Node3D.new()
-	_slope_root.name = "SlopeRoot"
+	if _slope_root == null:
+		_slope_root = get_node_or_null("SlopeRoot")
+	
+	if _slope_root == null:
+		_slope_root = Node3D.new()
+		_slope_root.name = "SlopeRoot"
+		add_child(_slope_root)
+		if Engine.is_editor_hint():
+			_slope_root.owner = get_tree().edited_scene_root
+			
 	_slope_root.rotation_degrees.x = -incline_angle_deg
-	add_child(_slope_root)
 
+	# Always build the frame/visuals as they are procedural based on exports
 	_build_frame()
 	_spawn_chain_links()
-	_update_chain_links()   # set initial positions in editor too
+	_update_chain_links()
 	_spawn_lugs()
+
+	# Resolve zones
+	load_zone = _slope_root.get_node_or_null("LoadZone")
+	top_zone = _slope_root.get_node_or_null("TopZone")
+	deck_area = _slope_root.get_node_or_null("DeckArea")
 
 	if not Engine.is_editor_hint():
 		# Force off at runtime regardless of exported value — LoadZone starts it.
 		running = false
-		if load_zone == null:
-			_build_load_zone()
-			load_zone = get_node_or_null("SlopeRoot/LoadZone")
 		if load_zone != null:
-			load_zone.body_entered.connect(_on_load_zone_body_entered)
-		if top_zone == null:
-			_build_top_zone()
-			top_zone = get_node_or_null("SlopeRoot/TopZone")
+			if not load_zone.body_entered.is_connected(_on_load_zone_body_entered):
+				load_zone.body_entered.connect(_on_load_zone_body_entered)
 		if top_zone != null:
-			top_zone.body_entered.connect(_on_top_zone_body_entered)
-			top_zone.body_exited.connect(_on_top_zone_body_exited)
-		_build_deck_area()
+			if not top_zone.body_entered.is_connected(_on_top_zone_body_entered):
+				top_zone.body_entered.connect(_on_top_zone_body_entered)
+			if not top_zone.body_exited.is_connected(_on_top_zone_body_exited):
+				top_zone.body_exited.connect(_on_top_zone_body_exited)
+		if deck_area != null:
+			if not deck_area.body_entered.is_connected(_on_deck_area_body_entered):
+				deck_area.body_entered.connect(_on_deck_area_body_entered)
+			if not deck_area.body_exited.is_connected(_on_deck_area_body_exited):
+				deck_area.body_exited.connect(_on_deck_area_body_exited)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -533,6 +552,11 @@ func _process(delta: float) -> void:
 			set_running(true)
 
 	if not running:
+		if not _on_deck.is_empty() and not is_blocked_at_top() and _is_headrig_free():
+			set_running(true)
+		return
+
+	if is_blocked_at_top():
 		return
 
 	_chain_travel += chain_speed * delta
@@ -549,8 +573,21 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint() or not running:
 		return
 
+	if is_blocked_at_top():
+		return
+
+	var advance := chain_speed * delta
+	if _step_remaining > 0.0:
+		if _is_headrig_free():
+			_step_remaining = 0.0  # headrig freed mid-step — switch to free run
+		else:
+			advance = minf(advance, _step_remaining)
+			_step_remaining -= advance
+			if _step_remaining <= 0.0:
+				running = false
+
 	for i in range(_lugs.size()):
-		_slot[i] = fmod(_slot[i] + chain_speed * delta, _cycle_len)
+		_slot[i] = fmod(_slot[i] + advance, _cycle_len)
 
 		var on_surface := _slot[i] < incline_length
 		if on_surface != _slot_visible[i]:
@@ -560,25 +597,65 @@ func _physics_process(delta: float) -> void:
 		_set_lug_position(_lugs[i], _lug_track_x[i], _slot[i])
 
 
+func _is_headrig_free() -> bool:
+	if not is_instance_valid(carriage):
+		return true
+	if not ("clamped_log" in carriage) or not ("current_progress" in carriage):
+		return true
+	return (carriage.clamped_log == null) and ((carriage.current_progress as float) < 0.01)
+
+
 func set_running(on: bool) -> void:
 	if on and _on_deck.is_empty():
 		return   # nothing on the deck — don't spin the chain
 	running = on
 	if on:
-		for log: RigidBody3D in _on_deck.values():
-			if is_instance_valid(log):
-				log.axis_lock_angular_y = true
-				log.axis_lock_angular_z = true
+		_step_remaining = 0.0 if _is_headrig_free() else lug_spacing
+		for l_node: RigidBody3D in _on_deck.values():
+			if is_instance_valid(l_node):
+				l_node.axis_lock_angular_y = true
+				l_node.axis_lock_angular_z = true
 
 
-func _unlock_log(log: RigidBody3D) -> void:
-	log.axis_lock_angular_y = false
-	log.axis_lock_angular_z = false
+func _unlock_log(l_node: RigidBody3D) -> void:
+	l_node.axis_lock_angular_y = false
+	l_node.axis_lock_angular_z = false
 
 
 ## Returns true when the deck can physically accept another log from the kicker.
 func has_room() -> bool:
+	if not is_instance_valid(carriage):
+		return _on_deck.size() < max_logs_on_deck
+	
+	# If we are blocked at the top, we don't have room for more
+	if is_blocked_at_top():
+		return false
+		
 	return _on_deck.size() < max_logs_on_deck
+
+
+## Returns true if a log is at the top and the carriage is not ready.
+func is_blocked_at_top() -> bool:
+	if not is_instance_valid(carriage) or top_zone == null:
+		return false
+	
+	var logs_at_top := false
+	for body in top_zone.get_overlapping_bodies():
+		if body.is_in_group("logs"):
+			logs_at_top = true
+			break
+	
+	if not logs_at_top:
+		return false
+		
+	# Carriage is considered "busy" if it's not waiting or already has a log.
+	# Accessing properties from headrig_carriage.gd
+	var carriage_busy := true
+	if "current_state" in carriage and "clamped_log" in carriage:
+		# State.WAITING_FOR_LOG is 0
+		carriage_busy = (carriage.current_state != 0) or (carriage.clamped_log != null)
+	
+	return carriage_busy
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -586,6 +663,9 @@ func has_room() -> bool:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _build_deck_area() -> void:
+	# Skip if already exists (added in scene editor)
+	if _slope_root.has_node("DeckArea"):
+		return
 	# Area spanning the full incline surface — tracks every log currently on the deck.
 	var zone := Area3D.new()
 	zone.name = "DeckArea"
@@ -596,8 +676,9 @@ func _build_deck_area() -> void:
 	cs.position = Vector3(0.0, 0.5, 0.0)
 	zone.add_child(cs)
 	_slope_root.add_child(zone)
-	zone.body_entered.connect(_on_deck_area_body_entered)
-	zone.body_exited.connect(_on_deck_area_body_exited)
+	if Engine.is_editor_hint():
+		zone.owner = get_tree().edited_scene_root
+		cs.owner = get_tree().edited_scene_root
 
 
 func _on_deck_area_body_entered(body: Node3D) -> void:
@@ -613,6 +694,9 @@ func _on_deck_area_body_exited(body: Node3D) -> void:
 
 
 func _build_load_zone() -> void:
+	# Skip if already exists (added in scene editor)
+	if _slope_root.has_node("LoadZone"):
+		return
 	# Area at the bottom of the incline — any log landing here starts the chain.
 	var zone := Area3D.new()
 	zone.name = "LoadZone"
@@ -623,6 +707,9 @@ func _build_load_zone() -> void:
 	cs.position = Vector3(0.0, 0.35, -incline_length * 0.5 + 0.7)
 	zone.add_child(cs)
 	_slope_root.add_child(zone)
+	if Engine.is_editor_hint():
+		zone.owner = get_tree().edited_scene_root
+		cs.owner = get_tree().edited_scene_root
 
 
 func _on_load_zone_body_entered(body: Node3D) -> void:
@@ -632,6 +719,9 @@ func _on_load_zone_body_entered(body: Node3D) -> void:
 
 
 func _build_top_zone() -> void:
+	# Skip if already exists (added in scene editor)
+	if _slope_root.has_node("TopZone"):
+		return
 	# Thin zone at the very tip — only emits the signal so the transfer station
 	# knows which log to kick. The transfer station stops the chain, not us.
 	var zone := Area3D.new()
@@ -643,15 +733,18 @@ func _build_top_zone() -> void:
 	cs.position = Vector3(0.0, 0.4, incline_length * 0.5 - 0.2)
 	zone.add_child(cs)
 	_slope_root.add_child(zone)
+	if Engine.is_editor_hint():
+		zone.owner = get_tree().edited_scene_root
+		cs.owner = get_tree().edited_scene_root
 
 
 func _on_top_zone_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs"):
-		var log := body as RigidBody3D
-		_unlock_log(log)
-		if _active_log == log:
+		var l_node := body as RigidBody3D
+		_unlock_log(l_node)
+		if _active_log == l_node:
 			_active_log = null
-		log_reached_top.emit(log)
+		log_reached_top.emit(l_node)
 
 
 func _on_top_zone_body_exited(body: Node3D) -> void:

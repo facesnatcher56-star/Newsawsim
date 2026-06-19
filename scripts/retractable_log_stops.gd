@@ -116,16 +116,16 @@ func _physics_process(delta: float) -> void:
 				
 		StopState.RETRACTING:
 			if _conveyor:
-				_conveyor.speed = run_speed
+				_conveyor.speed = 0.0
 			_dump_logs_toward_waste_conveyor(delta)
 			_move_stops_toward(retracted_rotation_deg, delta)
 			if is_equal_approx(_current_rot, retracted_rotation_deg):
 				_state = StopState.RETRACTED
 				_timer = retracted_time
-				
+
 		StopState.RETRACTED:
 			if _conveyor:
-				_conveyor.speed = run_speed
+				_conveyor.speed = 0.0
 			_dump_logs_toward_waste_conveyor(delta)
 			_timer -= delta
 			# Wait until timer completes and the log has cleared the trigger area
@@ -165,8 +165,8 @@ func _move_stops_toward(target_rot: float, delta: float) -> void:
 	_current_rot = move_toward(_current_rot, target_rot, rotation_speed * delta)
 	_set_stop_rotation(_current_rot)
 
-func _set_stop_rotation(rotation_degrees: float) -> void:
-	var rotation_radians := deg_to_rad(rotation_degrees)
+func _set_stop_rotation(p_rotation_degrees: float) -> void:
+	var rotation_radians := deg_to_rad(p_rotation_degrees)
 	# Move the physics body directly so PhysicsServer receives the transform;
 	# rotate the separate visual branch to exactly the same angle.
 	if stop_body:

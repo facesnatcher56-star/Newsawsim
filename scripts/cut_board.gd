@@ -6,6 +6,10 @@ extends RigidBody3D
 @export var lifetime: float = 20.0
 
 func _ready() -> void:
+	# Thin lumber can move farther than its thickness in one physics step.
+	# Continuous collision detection prevents tunneling into roller geometry.
+	continuous_cd = true
+
 	# Add to a group if needed
 	add_to_group("cut_boards")
 	

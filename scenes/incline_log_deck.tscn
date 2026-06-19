@@ -1,6 +1,36 @@
-[gd_scene format=3 uid="uid://incline_log_deck"]
+[gd_scene load_steps=5 format=3 uid="uid://incline_log_deck"]
 
 [ext_resource type="Script" path="res://scripts/incline_log_deck.gd" id="1_incldeck"]
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_load"]
+size = Vector3(2.4, 0.7, 1.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_top"]
+size = Vector3(2.4, 0.8, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
+size = Vector3(2.8, 1.2, 5.0)
+
 [node name="InclineLogDeck" type="Node3D"]
 script = ExtResource("1_incldeck")
+
+[node name="SlopeRoot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.927184, 0.374607, 0, -0.374607, 0.927184, 0, 0, 0)
+
+[node name="LoadZone" type="Area3D" parent="SlopeRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SlopeRoot/LoadZone"]
+shape = SubResource("BoxShape3D_load")
+
+[node name="TopZone" type="Area3D" parent="SlopeRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 2.3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SlopeRoot/TopZone"]
+shape = SubResource("BoxShape3D_top")
+
+[node name="DeckArea" type="Area3D" parent="SlopeRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SlopeRoot/DeckArea"]
+shape = SubResource("BoxShape3D_deck")

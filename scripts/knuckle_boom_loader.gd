@@ -117,8 +117,16 @@ func _physics_process(delta: float) -> void:
 			target_claw = claw_open_angle
 			has_set_actual_drop_angles = false
 			
-			# Check if conveyor intake is empty
-			if not _is_log_in_area(conveyor_zone):
+			# Check if conveyor intake is empty and not blocked
+			var intake_ready := not _is_log_in_area(conveyor_zone)
+			if intake_ready:
+				var intake_node = conveyor_zone.get_parent()
+				if intake_node and intake_node.has_method("is_full") and intake_node.is_full():
+					intake_ready = false
+				elif intake_node and intake_node.get("speed") == 0.0:
+					intake_ready = false
+
+			if intake_ready:
 				# Check if log bunk is empty
 				if not _is_log_in_area(bunk_zone) and not _has_active_log():
 					_spawn_new_log()

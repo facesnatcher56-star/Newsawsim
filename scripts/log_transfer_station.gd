@@ -211,10 +211,10 @@ func _set_arm_angle(deg: float) -> void:
 #  SIGNALS
 # ─────────────────────────────────────────────────────────────────────────────
 
-func _on_log_reached_top(log: RigidBody3D) -> void:
+func _on_log_reached_top(l_node: RigidBody3D) -> void:
 	if _state != KickerState.IDLE or _waiting_log != null:
 		return
-	_waiting_log = log
+	_waiting_log = l_node
 
 
 func _on_catch_zone_body_entered(body: Node3D) -> void:

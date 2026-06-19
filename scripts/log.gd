@@ -1,3 +1,4 @@
+# (adding a comment to force re-parse)
 extends RigidBody3D
 
 # Log with bark and board cutting mechanics
@@ -14,6 +15,8 @@ extends RigidBody3D
 var max_boards: int = 4
 var cuts_on_current_face: int = 0
 var current_cut_face: int = 0
+
+const CUT_DEPTH_PER_PASS: float = 0.05
 
 # Positions of processing stations (approximate world coordinates)
 const DEBARKER_RING_POS: Vector3 = Vector3(0.3, 1.4, 1.25)
@@ -51,17 +54,17 @@ func _create_bark() -> void:
 		return
 	if has_node("Bark"):
 		return
-	var bark = MeshInstance3D.new()
-	bark.name = "Bark"
+	var bark_node = MeshInstance3D.new()
+	bark_node.name = "Bark"
 	# Use a simple BoxMesh sized to the log's collision shape (assumes uniform size)
 	var box = BoxMesh.new()
 	box.size = Vector3(0.32, 1.9, 0.35)  # Approximate size from existing BoxShape3D_o3d8n
-	bark.mesh = box
+	bark_node.mesh = box
 	# Brown bark material
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.4, 0.25, 0.1)
-	bark.material_override = mat
-	add_child(bark)
+	bark_node.material_override = mat
+	add_child(bark_node)
 
 # A continuous, visual-only shell hides the seams between functional bark
 # sections. The sections still control peeling and spawn the physical scraps.
@@ -121,17 +124,17 @@ func _create_boards() -> void:
 	boards_root.name = "Boards"
 	add_child(boards_root)
 	for i in range(board_count):
-		var board = MeshInstance3D.new()
-		board.name = "Board_%d" % i
+		var board_node = MeshInstance3D.new()
+		board_node.name = "Board_%d" % i
 		var plane = BoxMesh.new()
 		plane.size = Vector3(0.3, 0.02, 0.6)  # Thin board
-		board.mesh = plane
+		board_node.mesh = plane
 		var mat = StandardMaterial3D.new()
 		mat.albedo_color = Color(0.8, 0.7, 0.5)
-		board.material_override = mat
+		board_node.material_override = mat
 		# Position boards along the log length
-		board.transform.origin = Vector3(0, 0.9 - i * 0.3, 0)
-		boards_root.add_child(board)
+		board_node.transform.origin = Vector3(0, 0.9 - i * 0.3, 0)
+		boards_root.add_child(board_node)
 
 func _process(delta: float) -> void:
 	if bark_enabled:
@@ -165,7 +168,7 @@ func _update_bark_peeling() -> void:
 	var debarker_pos = _get_debarker_position()
 	var remaining_sections := 0
 	var coat_changed := false
-	for section in bark_sections:
+	for section: Node3D in bark_sections:
 		if not is_instance_valid(section):
 			continue
 		if section.visible:
@@ -205,9 +208,9 @@ func _spawn_bark_piece(pos: Vector3) -> void:
 	if bark_scene:
 		var bark = bark_scene.instantiate()
 		# Prevent collision between the bark piece and any log in the scene to avoid physics glitches
-		for log_body in get_tree().get_nodes_in_group("logs"):
-			if log_body is RigidBody3D:
-				bark.add_collision_exception_with(log_body)
+		for l_node in get_tree().get_nodes_in_group("logs"):
+			if l_node is RigidBody3D:
+				bark.add_collision_exception_with(l_node)
 		
 		# Add to the main scene tree root first so we can set global_position safely
 		get_parent().add_child(bark)
@@ -269,7 +272,7 @@ func _update_csg_cut_position() -> void:
 	if wood_core is CSGShape3D:
 		if cut_box_face_a == null or cut_box_face_b == null:
 			_setup_csg_cut()
-		var cut_depth := cuts_on_current_face * 0.05
+		var cut_depth := cuts_on_current_face * CUT_DEPTH_PER_PASS
 		if current_cut_face == 0 and cut_box_face_a:
 			var cut_z := 0.245 - cut_depth
 			cut_box_face_a.position = Vector3(0.0, 0.0, cut_z + 0.5)
@@ -279,30 +282,44 @@ func _update_csg_cut_position() -> void:
 			cut_box_face_b.position = Vector3(0.0, 0.0, cut_z - 0.5)
 			pass
 
-func cut_board(saw_pos: Vector3) -> void:
+func cut_board(_saw_pos: Vector3) -> void:
 	if board_count <= 0:
 		return
 	
 	# The first cut on every face removes the curved roundback/slab.
+	var is_roundback: bool = cuts_on_current_face == 0
 	var prefab_path = "res://scenes/cut_board.tscn"
-	if cuts_on_current_face == 0:
+	if is_roundback:
 		prefab_path = "res://scenes/cut_slab.tscn"
 		
 	# Spawn physical board
 	var board_scene = load(prefab_path)
 	if board_scene:
-		var board = board_scene.instantiate()
-		get_parent().add_child(board)
+		var board_node = board_scene.instantiate()
+		get_parent().add_child(board_node)
 		
 		# Spawn at saw's global position but aligned with log
 		# OutfeedConveyor belt is at Z = 5.44. Let's spawn at Z = 5.7 to land cleanly on the belt.
-		board.global_position = Vector3(global_position.x, global_position.y, 5.7)
+		board_node.global_position = Vector3(global_position.x, global_position.y, 5.7)
 		
 		# Organic tumble off
-		board.linear_velocity = Vector3(0.0, -0.5, -0.8)
-		board.angular_velocity = Vector3(randf_range(-1.0, 1.0), 0.0, randf_range(-1.0, 1.0))
+		board_node.linear_velocity = Vector3(0.0, -0.5, -1.1)
+		if is_roundback:
+			# A long slab naturally rolls about its length; strong end-over-end spin
+			# made it balance on an unrealistic narrow side.
+			board_node.angular_velocity = Vector3(
+				randf_range(-2.5, 2.5),
+				randf_range(-0.15, 0.15),
+				randf_range(-0.15, 0.15)
+			)
+		else:
+			board_node.angular_velocity = Vector3(
+				randf_range(-1.0, 1.0),
+				0.0,
+				randf_range(-1.0, 1.0)
+			)
 		
-		board.add_collision_exception_with(self)
+		board_node.add_collision_exception_with(self)
 		pass
 		
 	board_count -= 1
@@ -318,13 +335,16 @@ func start_new_cut_face() -> void:
 func get_current_radius() -> float:
 	return 0.245
 
+func get_cut_depth_per_pass() -> float:
+	return CUT_DEPTH_PER_PASS
+
 func _report_contacts() -> void:
-	var contacts := get_colliding_bodies()
-	var speed := linear_velocity.length()
-	if contacts.is_empty() and speed > 0.05:
+	var contacts: Array[Node3D] = get_colliding_bodies()
+	var current_speed: float = linear_velocity.length()
+	if contacts.is_empty() and current_speed > 0.05:
 		return
 	print("[TRACE] pos=%v  vel=%.3f  sleep=%s  contacts=%d" % [
-		global_position, speed, sleeping, contacts.size()])
-	for body in contacts:
-		var path := String(body.get_path()) if body is Node else "unknown"
+		global_position, current_speed, sleeping, contacts.size()])
+	for body: Node3D in contacts:
+		var path: String = String(body.get_path()) if body is Node else "unknown"
 		print("  >> %s" % path)

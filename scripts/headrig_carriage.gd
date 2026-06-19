@@ -84,6 +84,7 @@ var clamp_duration: float = 0.8 # duration for each stage
 var has_cut_this_pass: bool = false
 var cuts_on_current_face: int = 0
 var has_flipped_log: bool = false
+var seated_face_cut_depth: float = 0.0
 var log_roll_angle: float = 0.0
 var flip_timer: float = 0.0
 var flip_start_roll: float = 0.0
@@ -163,6 +164,7 @@ func _physics_process(delta: float) -> void:
 					log_roll_angle = 0.0
 					cuts_on_current_face = 0
 					has_flipped_log = false
+					seated_face_cut_depth = 0.0
 					log_relative_transform = Transform3D(_get_log_relative_basis(), Vector3(log_seat_x + log_radius, log_seat_y + log_radius, 0.0))
 					
 					_update_clamped_log_transform()
@@ -262,6 +264,7 @@ func _physics_process(delta: float) -> void:
 			_update_clamped_log_transform()
 			if flip_timer >= flip_duration:
 				log_roll_angle = flip_target_roll
+				seated_face_cut_depth = float(cuts_on_current_face) * _get_cut_depth_per_pass()
 				has_flipped_log = true
 				cuts_on_current_face = 0
 				if clamped_log != null and clamped_log.has_method("start_new_cut_face"):
@@ -369,13 +372,13 @@ func _get_knees_target_x() -> float:
 	if clamped_log == null or not is_instance_valid(clamped_log):
 		return knees_retracted_x
 	var cut_index = cuts_on_current_face + 1 # Next cut on the current face (1-indexed)
-	var cut_z = 0.245 - cut_index * 0.05
+	var log_radius = clamped_log.get_current_radius() if clamped_log.has_method("get_current_radius") else 0.245
+	var cut_z = log_radius - cut_index * _get_cut_depth_per_pass()
 	
-	# The log center follows the moving knees at log_seat_x + log_radius.
+	# The log center follows the moving knees at log_seat_x + its seated extent.
 	# The cut plane (log local Z = cut_z) aligns with carriage local X_cut = X_log_center + cut_z.
 	# Advance the setworks until that plane meets the physical bandsaw blade.
-	var log_radius = clamped_log.get_current_radius() if clamped_log.has_method("get_current_radius") else 0.245
-	return saw_cut_plane_x - log_seat_x - log_radius - cut_z
+	return saw_cut_plane_x - log_seat_x - _get_log_seat_extent() - cut_z
 
 func _should_flip_log_at_home() -> bool:
 	if clamped_log == null or not is_instance_valid(clamped_log):
@@ -396,12 +399,25 @@ func _get_log_relative_basis() -> Basis:
 	var roll_basis := Basis(Vector3.RIGHT, log_roll_angle)
 	return (base_basis * roll_basis).scaled(Vector3(1.0, 1.0, log_scale_z))
 
+func _get_cut_depth_per_pass() -> float:
+	if clamped_log != null and is_instance_valid(clamped_log) and clamped_log.has_method("get_cut_depth_per_pass"):
+		return clamped_log.get_cut_depth_per_pass()
+	return 0.05
+
+func _get_log_seat_extent() -> float:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return 0.245
+	var log_radius: float = clamped_log.get_current_radius()
+	if not has_flipped_log:
+		return log_radius
+	return maxf(log_radius - seated_face_cut_depth, 0.0)
+
 func _update_clamped_log_transform() -> void:
 	if clamped_log == null or not is_instance_valid(clamped_log):
 		return
 	
 	var log_radius = clamped_log.get_current_radius()
-	log_relative_transform.origin.x = log_seat_x + log_radius
+	log_relative_transform.origin.x = log_seat_x + _get_log_seat_extent()
 	log_relative_transform.origin.y = log_seat_y + log_radius
 	
 	log_relative_transform.basis = _get_log_relative_basis()
