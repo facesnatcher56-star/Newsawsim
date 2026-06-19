@@ -19,6 +19,8 @@ extends Node3D
 @export var lug_spacing:       float = 1.5
 @export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
 @export var running:           bool  = false
+## Maximum logs the deck can carry simultaneously before it's considered full.
+@export var max_logs_on_deck:  int   = 2
 ## Assign an Area3D in the scene for the bottom trigger (visible/movable in editor).
 ## If left empty, one is built automatically at runtime.
 @export var load_zone: Area3D
@@ -64,6 +66,8 @@ const RACE_WALL_H   := 0.038
 # ── Runtime state ────────────────────────────────────────────────────────────
 var _start_delay_timer: float = 0.0   # counts down before chain starts
 var _slope_root:    Node3D
+var _active_log:    RigidBody3D       # log that triggered the current chain run
+var _on_deck:       Dictionary = {}   # instance_id → RigidBody3D, all logs currently on incline
 
 # Lugs (physics)
 var _lugs:          Array[AnimatableBody3D] = []
@@ -119,6 +123,8 @@ func _ready() -> void:
 			top_zone = get_node_or_null("SlopeRoot/TopZone")
 		if top_zone != null:
 			top_zone.body_entered.connect(_on_top_zone_body_entered)
+			top_zone.body_exited.connect(_on_top_zone_body_exited)
+		_build_deck_area()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -555,12 +561,56 @@ func _physics_process(delta: float) -> void:
 
 
 func set_running(on: bool) -> void:
+	if on and _on_deck.is_empty():
+		return   # nothing on the deck — don't spin the chain
 	running = on
+	if on:
+		for log: RigidBody3D in _on_deck.values():
+			if is_instance_valid(log):
+				log.axis_lock_angular_y = true
+				log.axis_lock_angular_z = true
+
+
+func _unlock_log(log: RigidBody3D) -> void:
+	log.axis_lock_angular_y = false
+	log.axis_lock_angular_z = false
+
+
+## Returns true when the deck can physically accept another log from the kicker.
+func has_room() -> bool:
+	return _on_deck.size() < max_logs_on_deck
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  TRIGGER ZONES
 # ─────────────────────────────────────────────────────────────────────────────
+
+func _build_deck_area() -> void:
+	# Area spanning the full incline surface — tracks every log currently on the deck.
+	var zone := Area3D.new()
+	zone.name = "DeckArea"
+	var cs    := CollisionShape3D.new()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(incline_width + 0.4, 1.2, incline_length)
+	cs.shape    = shape
+	cs.position = Vector3(0.0, 0.5, 0.0)
+	zone.add_child(cs)
+	_slope_root.add_child(zone)
+	zone.body_entered.connect(_on_deck_area_body_entered)
+	zone.body_exited.connect(_on_deck_area_body_exited)
+
+
+func _on_deck_area_body_entered(body: Node3D) -> void:
+	if body.is_in_group("logs") and body is RigidBody3D:
+		_on_deck[body.get_instance_id()] = body as RigidBody3D
+
+
+func _on_deck_area_body_exited(body: Node3D) -> void:
+	if body.is_in_group("logs"):
+		_on_deck.erase(body.get_instance_id())
+		if _on_deck.is_empty():
+			running = false   # chain off — nothing left to carry
+
 
 func _build_load_zone() -> void:
 	# Area at the bottom of the incline — any log landing here starts the chain.
@@ -577,6 +627,7 @@ func _build_load_zone() -> void:
 
 func _on_load_zone_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs") and not running and _start_delay_timer <= 0.0:
+		_active_log = body as RigidBody3D
 		_start_delay_timer = 2.0
 
 
@@ -596,4 +647,16 @@ func _build_top_zone() -> void:
 
 func _on_top_zone_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs"):
-		log_reached_top.emit(body as RigidBody3D)
+		var log := body as RigidBody3D
+		_unlock_log(log)
+		if _active_log == log:
+			_active_log = null
+		log_reached_top.emit(log)
+
+
+func _on_top_zone_body_exited(body: Node3D) -> void:
+	# Log was kicked sideways off the incline — remove from deck tracking.
+	if body.is_in_group("logs"):
+		_on_deck.erase(body.get_instance_id())
+		if _on_deck.is_empty():
+			running = false

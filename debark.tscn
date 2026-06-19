@@ -621,6 +621,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -2.24)
 rotation_speed = 45.0
 deck_start_delay = 5.0
 dump_target_path = NodePath("../../DebarkInfeedConveyor")
+downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
 
 [node name="OppositeDebarkDeckTest" parent="." unique_id=258696570 instance=ExtResource("33_chain_deck")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.277256, 0.22059476, -0.832212)
@@ -1001,6 +1002,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -2.24)
 rotation_speed = 45.0
 deck_start_delay = 5.0
 dump_target_path = NodePath("../../DebarkInfeedConveyor")
+downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
 
 [node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("3")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.254882, 0.45677352, 2.118968)
@@ -1014,6 +1016,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 0.5, 1.3315182)
 script = ExtResource("17_kick")
 kick_direction = Vector3(-1, 0, 0)
+incline_path = NodePath("../../InclineLogDeck")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WasteConveyor3/KickerZone" unique_id=1703927785]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00360322, 0, 0.93274593)
@@ -1432,7 +1435,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -0.9, 2)
 shape = SubResource("BoxShape3D_ground")
 
 [node name="Visuals" type="CSGBox3D" parent="Ground" unique_id=100000042]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0036153793, 0.014199495, -0.0017499924)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.004368782, 0.015743732, -0.0020723343)
 size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ground")
 

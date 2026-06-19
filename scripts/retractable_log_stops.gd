@@ -24,6 +24,10 @@ enum StopState {
 @export var settle_height_above_bottom: float = 0.4
 @export var settle_vertical_speed: float = 0.18
 @export var settle_time: float = 0.3
+## Optional: path to the WasteConveyor3/KickerZone (or any kicker with is_blocked).
+## When the kicker is blocked (incline full), we hold here rather than dumping
+## another log into the debarker infeed.
+@export var downstream_kicker_path: NodePath
 
 @onready var moving_stops: Node3D = $MovingStops
 @onready var stop_body: AnimatableBody3D = $MovingStops/StopBody
@@ -36,6 +40,7 @@ var _timer: float = 0.0
 var _current_rot: float = 0.0
 var _conveyor: Node3D = null
 var _dump_target: Node3D = null
+var _downstream_kicker: Node = null
 var _dumping_logs: Array[RigidBody3D] = []
 var _deck_logs: Array[RigidBody3D] = []
 var _dump_target_run_speed: float = 0.0
@@ -47,6 +52,8 @@ func _ready() -> void:
 	_dump_target = get_node_or_null(dump_target_path) as Node3D
 	if _dump_target and "speed" in _dump_target:
 		_dump_target_run_speed = _dump_target.speed
+	if downstream_kicker_path:
+		_downstream_kicker = get_node_or_null(downstream_kicker_path)
 	
 	if Engine.is_editor_hint():
 		_set_stop_rotation(_current_rot)
@@ -104,7 +111,7 @@ func _physics_process(delta: float) -> void:
 			if _conveyor:
 				_conveyor.speed = 0.0
 			_timer -= delta
-			if _timer <= 0.0:
+			if _timer <= 0.0 and _downstream_clear():
 				_state = StopState.RETRACTING
 				
 		StopState.RETRACTING:
@@ -311,3 +318,10 @@ func _has_reached_dump_target(body: RigidBody3D) -> bool:
 	var offset = body.global_position - _dump_target.global_position
 	var target_height = _dump_target.global_position.y + 0.45
 	return Vector2(offset.x, offset.z).length() < 0.35 and body.global_position.y >= target_height
+
+
+func _downstream_clear() -> bool:
+	if _downstream_kicker == null:
+		return true
+	# The kicker sets is_blocked when a log is waiting and the incline is full.
+	return not _downstream_kicker.get("is_blocked")
