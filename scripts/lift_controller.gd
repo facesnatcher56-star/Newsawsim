@@ -67,26 +67,10 @@ func _physics_process(delta: float) -> void:
 			run_lifts = true
 	else:
 		# No logs in system, reset delay state
-		if delay_completed or delay_timer > 0.0:
 		delay_timer = 0.0
 		delay_completed = false
 		run_lifts = false
 	
 	# Update all lifts: Run ONLY if run_lifts is true
 	for lift in lifts:
-		# --- DEEP PHYSICS DIAGNOSTIC ---
-		if Engine.get_frames_drawn() % 30 == 0:
-			for log_body in logs:
-				if log_body is RigidBody3D:
-					var dist = lift.global_position.distance_to(log_body.global_position)
-					if dist < 1.0:
-						
-						# Check if their collision layers/masks actually match
-						if (lift.collision_layer & log_body.collision_mask) == 0:
-		# --- END DIAGNOSTIC ---
-		
-		if lift.is_paused != (!run_lifts):
-			if run_lifts:
-			else:
-		
 		lift.is_paused = !run_lifts

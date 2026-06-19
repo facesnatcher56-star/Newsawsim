@@ -97,7 +97,7 @@ func _physics_process(delta: float) -> void:
 					_conveyor.speed = 0.0
 				else:
 					if not is_equal_approx(_conveyor.speed, run_speed):
-					_conveyor.speed = run_speed
+						_conveyor.speed = run_speed
 					_carry_logs_with_chains(deck_logs, delta)
 					
 		StopState.HOLDING_LOG:

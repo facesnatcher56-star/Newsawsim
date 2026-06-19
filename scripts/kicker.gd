@@ -9,7 +9,7 @@ var is_kicking: bool = false
 
 func _physics_process(delta: float) -> void:
 	var bodies = get_overlapping_bodies()
-	var rigid_bodies: Array = []
+	var rigid_bodies: Array[RigidBody3D] = []
 	for body in bodies:
 		if body is RigidBody3D:
 			rigid_bodies.append(body)
@@ -29,8 +29,8 @@ func _physics_process(delta: float) -> void:
 		var target_kick_vel := global_kick_dir * kick_speed
 
 		for log_body in rigid_bodies:
-			var current_kick_vel := global_kick_dir * log_body.linear_velocity.dot(global_kick_dir)
-			var other_vel := log_body.linear_velocity - current_kick_vel
+			var current_kick_vel: Vector3 = global_kick_dir * log_body.linear_velocity.dot(global_kick_dir)
+			var other_vel: Vector3 = log_body.linear_velocity - current_kick_vel
 			log_body.linear_velocity = current_kick_vel.lerp(target_kick_vel, kick_damping * delta) + other_vel.lerp(Vector3.ZERO, kick_damping * delta)
 	else:
 		if is_kicking:
