@@ -246,268 +246,268 @@ material = SubResource("Material_Enclosure")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 0.22059476, 5.068916)
 
 [node name="ChainLinkLO00" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -2.24)
-
-[node name="ChainLinkLO01" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="1"]
 transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, -0.9, 0.9441601, -2.4399147)
 
+[node name="ChainLinkLO01" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="1"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -2.24)
+
 [node name="ChainLinkLO02" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.92)
 
 [node name="ChainLinkLO03" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="3"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.6)
 
 [node name="ChainLinkLO04" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -2.24)
-
-[node name="ChainLinkLO05" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="5"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.92)
-
-[node name="ChainLinkLO06" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.28)
-
-[node name="ChainLinkLO07" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.6)
-
-[node name="ChainLinkLO08" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.96)
-
-[node name="ChainLinkLO09" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.64)
-
-[node name="ChainLinkLO10" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.32)
-
-[node name="ChainLinkLO12" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.32)
-
-[node name="ChainLinkLO13" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.64)
-
-[node name="ChainLinkLO14" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.96)
-
-[node name="ChainLinkLO15" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="15"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.28)
-
-[node name="ChainLinkLO16" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.6)
-
-[node name="ChainLinkLO17" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.92)
-
-[node name="ChainLinkLO18" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 2.24)
-
-[node name="ChainLinkLO19" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.9, 0.95583993, 2.4399147)
-
-[node name="ChainLinkLO20" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 2.24)
-
-[node name="ChainLinkLO21" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="21"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.92)
-
-[node name="ChainLinkLO22" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="22"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.28)
 
-[node name="ChainLinkLO23" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="23"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.6)
-
-[node name="ChainLinkLO24" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="24"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.28)
-
-[node name="ChainLinkLO25" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.96)
-
-[node name="ChainLinkLO26" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.64)
-
-[node name="ChainLinkLO27" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="27"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.32)
-
-[node name="ChainLinkLO28" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="28"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0)
-
-[node name="ChainLinkLO29" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="29"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.32)
-
-[node name="ChainLinkLO30" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="30"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.64)
-
-[node name="ChainLinkLO31" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="31"]
+[node name="ChainLinkLO05" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="5"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.96)
 
+[node name="ChainLinkLO06" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.64)
+
+[node name="ChainLinkLO07" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="7"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.32)
+
+[node name="ChainLinkLO08" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="8"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0)
+
+[node name="ChainLinkLO09" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="9"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.32)
+
+[node name="ChainLinkLO10" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="10"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.64)
+
+[node name="ChainLinkLO11" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="11"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.96)
+
+[node name="ChainLinkLO12" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="12"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.28)
+
+[node name="ChainLinkLO13" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="13"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.6)
+
+[node name="ChainLinkLO14" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="14"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.92)
+
+[node name="ChainLinkLO15" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="15"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 2.24)
+
+[node name="ChainLinkLO16" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="16"]
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.9, 0.95583993, 2.4399147)
+
+[node name="ChainLinkLO17" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 2.24)
+
+[node name="ChainLinkLO18" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.92)
+
+[node name="ChainLinkLO19" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.6)
+
+[node name="ChainLinkLO20" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.28)
+
+[node name="ChainLinkLO21" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.96)
+
+[node name="ChainLinkLO22" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.64)
+
+[node name="ChainLinkLO23" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.32)
+
+[node name="ChainLinkLO25" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.32)
+
+[node name="ChainLinkLO26" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.64)
+
+[node name="ChainLinkLO27" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.96)
+
+[node name="ChainLinkLO28" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.28)
+
+[node name="ChainLinkLO29" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.6)
+
+[node name="ChainLinkLO30" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.92)
+
+[node name="ChainLinkLO31" parent="DebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -2.24)
+
 [node name="ChainLinkLI00" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, -0.3, 0.9441601, -2.4399147)
 
 [node name="ChainLinkLI01" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.6)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -2.24)
 
 [node name="ChainLinkLI02" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.28)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.92)
 
 [node name="ChainLinkLI03" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.96)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.6)
 
 [node name="ChainLinkLI04" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.28)
 
 [node name="ChainLinkLI05" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.96)
+
+[node name="ChainLinkLI06" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.64)
 
 [node name="ChainLinkLI07" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.32)
 
 [node name="ChainLinkLI08" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0)
 
 [node name="ChainLinkLI09" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.32)
 
 [node name="ChainLinkLI10" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.64)
 
 [node name="ChainLinkLI11" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.6)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.96)
 
 [node name="ChainLinkLI12" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.28)
 
 [node name="ChainLinkLI13" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.6)
 
 [node name="ChainLinkLI14" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.3, 0.95583993, 2.4399147)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.92)
 
 [node name="ChainLinkLI15" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="15"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 2.24)
 
 [node name="ChainLinkLI16" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.92)
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.3, 0.95583993, 2.4399147)
 
 [node name="ChainLinkLI17" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 2.24)
 
 [node name="ChainLinkLI18" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.92)
 
 [node name="ChainLinkLI19" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.6)
 
 [node name="ChainLinkLI20" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.28)
 
 [node name="ChainLinkLI21" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="21"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.96)
 
 [node name="ChainLinkLI22" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="22"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.64)
 
 [node name="ChainLinkLI23" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="23"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.32)
-
-[node name="ChainLinkLI24" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="24"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.32)
 
 [node name="ChainLinkLI25" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.32)
 
 [node name="ChainLinkLI26" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.64)
 
 [node name="ChainLinkLI27" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="27"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.96)
 
 [node name="ChainLinkLI28" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="28"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.28)
 
 [node name="ChainLinkLI29" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="29"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.6)
 
 [node name="ChainLinkLI30" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="30"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.92)
 
 [node name="ChainLinkLI31" parent="DebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="31"]
-transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, -0.3, 0.9441601, -2.4399147)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -2.24)
 
 [node name="ChainLinkRI00" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.96)
-
-[node name="ChainLinkRI01" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.28)
-
-[node name="ChainLinkRI02" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.6)
-
-[node name="ChainLinkRI03" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.92)
-
-[node name="ChainLinkRI04" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 2.24)
-
-[node name="ChainLinkRI05" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="5"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.3, 0.95583993, 2.4399147)
-
-[node name="ChainLinkRI06" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="6"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 2.24)
-
-[node name="ChainLinkRI07" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.92)
-
-[node name="ChainLinkRI08" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.32)
-
-[node name="ChainLinkRI09" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.64)
-
-[node name="ChainLinkRI10" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.6)
-
-[node name="ChainLinkRI11" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="11"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.28)
-
-[node name="ChainLinkRI12" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.96)
-
-[node name="ChainLinkRI13" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.64)
-
-[node name="ChainLinkRI14" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0)
-
-[node name="ChainLinkRI15" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="15"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.92)
-
-[node name="ChainLinkRI16" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.32)
-
-[node name="ChainLinkRI17" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.28)
-
-[node name="ChainLinkRI18" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.96)
-
-[node name="ChainLinkRI19" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -2.24)
-
-[node name="ChainLinkRI20" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.6)
-
-[node name="ChainLinkRI21" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="21"]
 transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, 0.3, 0.9441601, -2.4399147)
 
+[node name="ChainLinkRI01" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="1"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -2.24)
+
+[node name="ChainLinkRI02" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="2"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.92)
+
+[node name="ChainLinkRI03" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="3"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.6)
+
+[node name="ChainLinkRI04" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="4"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.28)
+
+[node name="ChainLinkRI05" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="5"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.96)
+
+[node name="ChainLinkRI06" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.64)
+
+[node name="ChainLinkRI07" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="7"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.32)
+
+[node name="ChainLinkRI08" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="8"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0)
+
+[node name="ChainLinkRI09" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="9"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.32)
+
+[node name="ChainLinkRI10" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="10"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.64)
+
+[node name="ChainLinkRI11" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="11"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.96)
+
+[node name="ChainLinkRI12" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="12"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.28)
+
+[node name="ChainLinkRI13" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="13"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.6)
+
+[node name="ChainLinkRI14" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="14"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.92)
+
+[node name="ChainLinkRI15" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="15"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 2.24)
+
+[node name="ChainLinkRI16" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="16"]
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.3, 0.95583993, 2.4399147)
+
+[node name="ChainLinkRI17" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 2.24)
+
+[node name="ChainLinkRI18" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.92)
+
+[node name="ChainLinkRI19" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.6)
+
+[node name="ChainLinkRI20" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.28)
+
+[node name="ChainLinkRI21" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.96)
+
 [node name="ChainLinkRI22" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.64)
+
+[node name="ChainLinkRI23" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="23"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.32)
 
-[node name="ChainLinkRI24" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="24"]
+[node name="ChainLinkRI25" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="25"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.32)
 
-[node name="ChainLinkRI25" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.64)
-
 [node name="ChainLinkRI26" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.64)
 
 [node name="ChainLinkRI27" parent="DebarkDeckTest/Visuals/Chains/RightInnerLinks" index="27"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.96)
@@ -525,97 +525,97 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -1.92)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -2.24)
 
 [node name="ChainLinkRO00" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.32)
+transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, 0.9, 0.9441601, -2.4399147)
 
 [node name="ChainLinkRO01" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="1"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -2.24)
 
 [node name="ChainLinkRO02" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, 0.9, 0.9441601, -2.4399147)
-
-[node name="ChainLinkRO03" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="3"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0)
-
-[node name="ChainLinkRO04" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.6)
-
-[node name="ChainLinkRO05" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="5"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.92)
 
-[node name="ChainLinkRO06" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="6"]
+[node name="ChainLinkRO03" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="3"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.6)
+
+[node name="ChainLinkRO04" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="4"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.28)
+
+[node name="ChainLinkRO05" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="5"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.96)
 
+[node name="ChainLinkRO06" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.64)
+
 [node name="ChainLinkRO07" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.32)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.32)
 
 [node name="ChainLinkRO08" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.64)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0)
 
 [node name="ChainLinkRO09" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.96)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.32)
 
 [node name="ChainLinkRO10" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.28)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.64)
 
 [node name="ChainLinkRO11" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="11"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.6)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.96)
 
 [node name="ChainLinkRO12" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.92)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.28)
 
 [node name="ChainLinkRO13" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 2.24)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.6)
 
 [node name="ChainLinkRO14" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.9, 0.95583993, 2.4399147)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.92)
 
 [node name="ChainLinkRO15" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="15"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 2.24)
 
 [node name="ChainLinkRO16" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.9, 0.95583993, 2.4399147)
 
 [node name="ChainLinkRO17" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 2.24)
 
 [node name="ChainLinkRO18" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.92)
 
 [node name="ChainLinkRO19" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.6)
 
 [node name="ChainLinkRO20" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.28)
+
+[node name="ChainLinkRO21" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.96)
 
 [node name="ChainLinkRO22" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="22"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.64)
 
 [node name="ChainLinkRO23" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="23"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.92)
-
-[node name="ChainLinkRO24" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="24"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.32)
 
 [node name="ChainLinkRO25" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.32)
 
 [node name="ChainLinkRO26" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.64)
 
 [node name="ChainLinkRO27" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="27"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.96)
 
 [node name="ChainLinkRO28" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="28"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.6)
-
-[node name="ChainLinkRO29" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="29"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.28)
 
+[node name="ChainLinkRO29" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.6)
+
 [node name="ChainLinkRO30" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="30"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.92)
 
 [node name="ChainLinkRO31" parent="DebarkDeckTest/Visuals/Chains/RightOuterLinks" index="31"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -2.24)
 
 [node name="RetractableStops" parent="DebarkDeckTest" index="4"]
 rotation_speed = 45.0
@@ -626,268 +626,268 @@ dump_target_path = NodePath("../../DebarkInfeedConveyor")
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.277256, 0.22059476, -0.832212)
 
 [node name="ChainLinkLO00" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -2.24)
-
-[node name="ChainLinkLO01" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="1"]
 transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, -0.9, 0.9441601, -2.4399147)
 
+[node name="ChainLinkLO01" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="1"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -2.24)
+
 [node name="ChainLinkLO02" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.92)
 
 [node name="ChainLinkLO03" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="3"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.6)
 
 [node name="ChainLinkLO04" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -2.24)
-
-[node name="ChainLinkLO05" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="5"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.92)
-
-[node name="ChainLinkLO06" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="6"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.28)
-
-[node name="ChainLinkLO07" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.6)
-
-[node name="ChainLinkLO08" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.96)
-
-[node name="ChainLinkLO09" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.64)
-
-[node name="ChainLinkLO10" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.32)
-
-[node name="ChainLinkLO12" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.32)
-
-[node name="ChainLinkLO13" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.64)
-
-[node name="ChainLinkLO14" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.96)
-
-[node name="ChainLinkLO15" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="15"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.28)
-
-[node name="ChainLinkLO16" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.6)
-
-[node name="ChainLinkLO17" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.92)
-
-[node name="ChainLinkLO18" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 2.24)
-
-[node name="ChainLinkLO19" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.9, 0.95583993, 2.4399147)
-
-[node name="ChainLinkLO20" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 2.24)
-
-[node name="ChainLinkLO21" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="21"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.92)
-
-[node name="ChainLinkLO22" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="22"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -1.28)
 
-[node name="ChainLinkLO23" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="23"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.6)
-
-[node name="ChainLinkLO24" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="24"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.28)
-
-[node name="ChainLinkLO25" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.96)
-
-[node name="ChainLinkLO26" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.64)
-
-[node name="ChainLinkLO27" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="27"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.32)
-
-[node name="ChainLinkLO28" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="28"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0)
-
-[node name="ChainLinkLO29" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="29"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.32)
-
-[node name="ChainLinkLO30" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="30"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.64)
-
-[node name="ChainLinkLO31" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="31"]
+[node name="ChainLinkLO05" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="5"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.96)
 
+[node name="ChainLinkLO06" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.64)
+
+[node name="ChainLinkLO07" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="7"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, -0.32)
+
+[node name="ChainLinkLO08" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="8"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0)
+
+[node name="ChainLinkLO09" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="9"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.32)
+
+[node name="ChainLinkLO10" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="10"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.64)
+
+[node name="ChainLinkLO11" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="11"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 0.96)
+
+[node name="ChainLinkLO12" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="12"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.28)
+
+[node name="ChainLinkLO13" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="13"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.6)
+
+[node name="ChainLinkLO14" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="14"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 1.92)
+
+[node name="ChainLinkLO15" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="15"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.9, 0.75, 2.24)
+
+[node name="ChainLinkLO16" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="16"]
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.9, 0.95583993, 2.4399147)
+
+[node name="ChainLinkLO17" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 2.24)
+
+[node name="ChainLinkLO18" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.92)
+
+[node name="ChainLinkLO19" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.6)
+
+[node name="ChainLinkLO20" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 1.28)
+
+[node name="ChainLinkLO21" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.96)
+
+[node name="ChainLinkLO22" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.64)
+
+[node name="ChainLinkLO23" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="23"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, 0.32)
+
+[node name="ChainLinkLO25" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="25"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.32)
+
+[node name="ChainLinkLO26" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="26"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.64)
+
+[node name="ChainLinkLO27" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="27"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -0.96)
+
+[node name="ChainLinkLO28" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="28"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.28)
+
+[node name="ChainLinkLO29" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.6)
+
+[node name="ChainLinkLO30" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="30"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -1.92)
+
+[node name="ChainLinkLO31" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftOuterLinks" index="31"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 1.15, -2.24)
+
 [node name="ChainLinkLI00" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.92)
+transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, -0.3, 0.9441601, -2.4399147)
 
 [node name="ChainLinkLI01" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.6)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -2.24)
 
 [node name="ChainLinkLI02" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.28)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.92)
 
 [node name="ChainLinkLI03" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.96)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.6)
 
 [node name="ChainLinkLI04" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.28)
 
 [node name="ChainLinkLI05" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="5"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.96)
+
+[node name="ChainLinkLI06" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.64)
 
 [node name="ChainLinkLI07" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.32)
 
 [node name="ChainLinkLI08" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0)
 
 [node name="ChainLinkLI09" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.32)
 
 [node name="ChainLinkLI10" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.64)
 
 [node name="ChainLinkLI11" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="11"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.6)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.96)
 
 [node name="ChainLinkLI12" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.28)
 
 [node name="ChainLinkLI13" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.6)
 
 [node name="ChainLinkLI14" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.3, 0.95583993, 2.4399147)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.92)
 
 [node name="ChainLinkLI15" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="15"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 2.24)
 
 [node name="ChainLinkLI16" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.92)
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, -0.3, 0.95583993, 2.4399147)
 
 [node name="ChainLinkLI17" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 2.24)
 
 [node name="ChainLinkLI18" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.92)
 
 [node name="ChainLinkLI19" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.6)
 
 [node name="ChainLinkLI20" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 1.28)
 
 [node name="ChainLinkLI21" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="21"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.96)
 
 [node name="ChainLinkLI22" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="22"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.64)
 
 [node name="ChainLinkLI23" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="23"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.32)
-
-[node name="ChainLinkLI24" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="24"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, 0.32)
 
 [node name="ChainLinkLI25" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.32)
 
 [node name="ChainLinkLI26" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.64)
 
 [node name="ChainLinkLI27" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="27"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -0.96)
 
 [node name="ChainLinkLI28" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="28"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.28)
 
 [node name="ChainLinkLI29" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="29"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -1.92)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.6)
 
 [node name="ChainLinkLI30" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="30"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, -0.3, 0.75, -2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -1.92)
 
 [node name="ChainLinkLI31" parent="OppositeDebarkDeckTest/Visuals/Chains/LeftInnerLinks" index="31"]
-transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, -0.3, 0.9441601, -2.4399147)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 1.15, -2.24)
 
 [node name="ChainLinkRI00" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.96)
-
-[node name="ChainLinkRI01" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.28)
-
-[node name="ChainLinkRI02" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.6)
-
-[node name="ChainLinkRI03" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.92)
-
-[node name="ChainLinkRI04" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 2.24)
-
-[node name="ChainLinkRI05" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="5"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.3, 0.95583993, 2.4399147)
-
-[node name="ChainLinkRI06" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="6"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 2.24)
-
-[node name="ChainLinkRI07" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.92)
-
-[node name="ChainLinkRI08" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.32)
-
-[node name="ChainLinkRI09" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.64)
-
-[node name="ChainLinkRI10" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.6)
-
-[node name="ChainLinkRI11" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="11"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.28)
-
-[node name="ChainLinkRI12" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.96)
-
-[node name="ChainLinkRI13" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.64)
-
-[node name="ChainLinkRI14" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0)
-
-[node name="ChainLinkRI15" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="15"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.92)
-
-[node name="ChainLinkRI16" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.32)
-
-[node name="ChainLinkRI17" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.28)
-
-[node name="ChainLinkRI18" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.96)
-
-[node name="ChainLinkRI19" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -2.24)
-
-[node name="ChainLinkRI20" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.6)
-
-[node name="ChainLinkRI21" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="21"]
 transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, 0.3, 0.9441601, -2.4399147)
 
+[node name="ChainLinkRI01" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="1"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -2.24)
+
+[node name="ChainLinkRI02" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="2"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.92)
+
+[node name="ChainLinkRI03" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="3"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.6)
+
+[node name="ChainLinkRI04" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="4"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -1.28)
+
+[node name="ChainLinkRI05" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="5"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.96)
+
+[node name="ChainLinkRI06" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.64)
+
+[node name="ChainLinkRI07" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="7"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, -0.32)
+
+[node name="ChainLinkRI08" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="8"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0)
+
+[node name="ChainLinkRI09" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="9"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.32)
+
+[node name="ChainLinkRI10" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="10"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.64)
+
+[node name="ChainLinkRI11" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="11"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 0.96)
+
+[node name="ChainLinkRI12" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="12"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.28)
+
+[node name="ChainLinkRI13" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="13"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.6)
+
+[node name="ChainLinkRI14" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="14"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 1.92)
+
+[node name="ChainLinkRI15" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="15"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.3, 0.75, 2.24)
+
+[node name="ChainLinkRI16" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="16"]
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.3, 0.95583993, 2.4399147)
+
+[node name="ChainLinkRI17" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="17"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 2.24)
+
+[node name="ChainLinkRI18" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="18"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.92)
+
+[node name="ChainLinkRI19" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="19"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.6)
+
+[node name="ChainLinkRI20" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 1.28)
+
+[node name="ChainLinkRI21" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.96)
+
 [node name="ChainLinkRI22" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="22"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.64)
+
+[node name="ChainLinkRI23" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="23"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.32)
 
-[node name="ChainLinkRI24" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="24"]
+[node name="ChainLinkRI25" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="25"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.32)
 
-[node name="ChainLinkRI25" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.64)
-
 [node name="ChainLinkRI26" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.64)
 
 [node name="ChainLinkRI27" parent="OppositeDebarkDeckTest/Visuals/Chains/RightInnerLinks" index="27"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -0.96)
@@ -905,97 +905,97 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -1.92)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.15, -2.24)
 
 [node name="ChainLinkRO00" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="0"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.32)
+transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, 0.9, 0.9441601, -2.4399147)
 
 [node name="ChainLinkRO01" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="1"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -2.24)
 
 [node name="ChainLinkRO02" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="2"]
-transform = Transform3D(1, 0, 0, 0, -0.029199546, 0.9995736, 0, -0.9995736, -0.029199546, 0.9, 0.9441601, -2.4399147)
-
-[node name="ChainLinkRO03" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="3"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0)
-
-[node name="ChainLinkRO04" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="4"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.6)
-
-[node name="ChainLinkRO05" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="5"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.92)
 
-[node name="ChainLinkRO06" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="6"]
+[node name="ChainLinkRO03" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="3"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.6)
+
+[node name="ChainLinkRO04" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="4"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.28)
+
+[node name="ChainLinkRO05" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="5"]
 transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.96)
 
+[node name="ChainLinkRO06" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="6"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.64)
+
 [node name="ChainLinkRO07" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="7"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.32)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.32)
 
 [node name="ChainLinkRO08" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="8"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.64)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0)
 
 [node name="ChainLinkRO09" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="9"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.96)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.32)
 
 [node name="ChainLinkRO10" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="10"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.28)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.64)
 
 [node name="ChainLinkRO11" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="11"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.6)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 0.96)
 
 [node name="ChainLinkRO12" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="12"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.92)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.28)
 
 [node name="ChainLinkRO13" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="13"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 2.24)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.6)
 
 [node name="ChainLinkRO14" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="14"]
-transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.9, 0.95583993, 2.4399147)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 1.92)
 
 [node name="ChainLinkRO15" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="15"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 2.24)
+transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, 2.24)
 
 [node name="ChainLinkRO16" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="16"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.92)
+transform = Transform3D(1, 0, 0, 0, 0.029199753, -0.9995736, 0, 0.9995736, 0.029199753, 0.9, 0.95583993, 2.4399147)
 
 [node name="ChainLinkRO17" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="17"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.6)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 2.24)
 
 [node name="ChainLinkRO18" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="18"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.92)
 
 [node name="ChainLinkRO19" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="19"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.96)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.6)
 
 [node name="ChainLinkRO20" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="20"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 1.28)
+
+[node name="ChainLinkRO21" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="21"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.96)
 
 [node name="ChainLinkRO22" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="22"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.64)
 
 [node name="ChainLinkRO23" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="23"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.92)
-
-[node name="ChainLinkRO24" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="24"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -2.24)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, 0.32)
 
 [node name="ChainLinkRO25" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="25"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.32)
 
 [node name="ChainLinkRO26" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="26"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -0.64)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.64)
 
 [node name="ChainLinkRO27" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="27"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.96)
 
 [node name="ChainLinkRO28" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="28"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.6)
-
-[node name="ChainLinkRO29" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="29"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.28)
 
+[node name="ChainLinkRO29" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="29"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.6)
+
 [node name="ChainLinkRO30" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="30"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -0.32)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -1.92)
 
 [node name="ChainLinkRO31" parent="OppositeDebarkDeckTest/Visuals/Chains/RightOuterLinks" index="31"]
-transform = Transform3D(1, 0, 0, 0, -1, -8.742278e-08, 0, 8.742278e-08, -1, 0.9, 0.75, -1.28)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 1.15, -2.24)
 
 [node name="RetractableStops" parent="OppositeDebarkDeckTest" index="4"]
 rotation_speed = 45.0
@@ -1181,13 +1181,16 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.277
 [node name="Rod3" parent="HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" index="8"]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.05206108, -0.37672853, 0.8999996)
 
-[node name="CollisionHeadblock1" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly" index="0"]
+[node name="KneesAssembly" parent="HeadrigRailSystemInstance/HeadrigCarriage" index="9"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45, 0, 0)
+
+[node name="CollisionHeadblock1" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/HeadblockStopBody" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50293875, -0.14672852, -0.8999996)
 
-[node name="CollisionHeadblock2" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly" index="1"]
+[node name="CollisionHeadblock2" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/HeadblockStopBody" index="1"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50293875, -0.14672852, 0)
 
-[node name="CollisionHeadblock3" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly" index="2"]
+[node name="CollisionHeadblock3" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/HeadblockStopBody" index="2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50293875, -0.14672852, 0.8999996)
 
 [node name="Headblock1" parent="HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" index="0"]
@@ -1523,6 +1526,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05609107, 0, 0)
 [node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("31_loader")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, 4.05)
 
+[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
+emitting = false
+
 [node name="DebarkerEnclosure" type="Node3D" parent="." unique_id=1270012400]
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="DebarkerEnclosure" unique_id=1270012401]
@@ -1582,4 +1588,5 @@ incline_length = 3.0
 [editable path="WasteConveyor3"]
 [editable path="HeadrigRailSystemInstance"]
 [editable path="KnuckleBoomLoader"]
+[editable path="KnuckleBoomLoaderOpposite"]
 [editable path="InclineLogDeck"]

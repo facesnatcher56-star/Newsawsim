@@ -35,6 +35,8 @@ enum State {
 @export var wheel_radius: float = 0.18
 @export var knees_retracted_x: float = -0.45
 @export var setworks_slide_speed: float = 0.65
+## Physical bandsaw blade plane in carriage-local X coordinates.
+@export var saw_cut_plane_x: float = 0.824416
 ## X offset from KneesAssembly origin to log center (pushes log against headblock face).
 @export var log_seat_x: float = 0.285
 ## Y offset from KneesAssembly origin to log center (raises log off platform). Tune this until log sits on platform with dogs gripping from above.
@@ -88,6 +90,7 @@ var flip_start_roll: float = 0.0
 var flip_target_roll: float = 0.0
 var wheel_angle: float = 0.0
 var last_carriage_position: Vector3
+var active_cut_knees_x: float = 0.0
 
 func _ready() -> void:
 	start_pos = position
@@ -98,6 +101,7 @@ func _ready() -> void:
 	_set_dog_height(dog_released_y)
 	if knees_assembly != null:
 		knees_assembly.position.x = knees_retracted_x
+	active_cut_knees_x = knees_retracted_x
 	_update_setworks_hydraulics()
 	print("[HEADRIG CARRIAGE] Initialized at: ", start_pos, " traveling to: ", target_pos)
 
@@ -134,10 +138,19 @@ func _physics_process(delta: float) -> void:
 			# Stage 1: Close knees to push the log against the backstops, slide knees forward to target cut position
 			_animate_dogs(dog_released_y, delta)
 			var target_x = _get_knees_target_x()
+			active_cut_knees_x = maxf(target_x, knees_retracted_x)
 			if knees_assembly != null:
-				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, setworks_slide_speed * delta)
+				knees_assembly.position.x = move_toward(
+					knees_assembly.position.x,
+					active_cut_knees_x,
+					setworks_slide_speed * delta
+				)
 			clamp_timer -= delta
-			if clamp_timer <= 0.0:
+			var knees_at_cut := knees_assembly == null or is_equal_approx(
+				knees_assembly.position.x,
+				active_cut_knees_x
+			)
+			if clamp_timer <= 0.0 and knees_at_cut:
 				clamp_timer = clamp_duration
 				current_state = State.CLAMPING_STAGE_2
 				print("[HEADRIG CARRIAGE] Log pushed. Starting Stage 2 (dogging).")
@@ -163,6 +176,13 @@ func _physics_process(delta: float) -> void:
 				current_state = State.MOVING_FORWARD
 				
 		State.MOVING_FORWARD:
+			# The saw is local +X. Hold the latched cut setting during the pass.
+			if knees_assembly != null:
+				knees_assembly.position.x = move_toward(
+					knees_assembly.position.x,
+					active_cut_knees_x,
+					setworks_slide_speed * delta
+				)
 			# Automated speed control: slow down to 35% of normal speed as we pass the bandsaw (global X 17.5 to 20.5)
 			var current_speed = speed
 			if global_position.x > 17.5 and global_position.x < 20.5:
@@ -274,13 +294,14 @@ func _physics_process(delta: float) -> void:
 		State.ADVANCING_LOG:
 			# Advance knees forward to expose next board thickness
 			var target_x = _get_knees_target_x()
+			active_cut_knees_x = maxf(target_x, knees_retracted_x)
 			if knees_assembly != null:
-				knees_assembly.position.x = move_toward(knees_assembly.position.x, target_x, setworks_slide_speed * delta)
+				knees_assembly.position.x = move_toward(knees_assembly.position.x, active_cut_knees_x, setworks_slide_speed * delta)
 				
 			# Keep log attached as it is advanced
 			_update_clamped_log_transform()
 					
-			if knees_assembly == null or abs(knees_assembly.position.x - target_x) < 0.001:
+			if knees_assembly == null or abs(knees_assembly.position.x - active_cut_knees_x) < 0.001:
 				has_cut_this_pass = false
 				current_state = State.MOVING_FORWARD
 				print("[HEADRIG CARRIAGE] Log advanced to ", target_x, ". Starting pass.")
@@ -367,13 +388,11 @@ func _get_knees_target_x() -> float:
 	var cut_index = cuts_on_current_face + 1 # Next cut on the current face (1-indexed)
 	var cut_z = 0.245 - cut_index * 0.05
 	
-	# The saw blade is located at carriage local X = 0.4215 (global Z = 6.13).
-	# The log center is at: X_log_center = knees_assembly.position.x + 0.175 + log_radius.
+	# The log center follows the moving knees at log_seat_x + log_radius.
 	# The cut plane (log local Z = cut_z) aligns with carriage local X_cut = X_log_center + cut_z.
-	# We want X_cut = 0.4215, which means:
-	# knees_assembly.position.x + log_seat_x + log_radius + cut_z = 0.4215 (saw blade)
+	# Advance the setworks until that plane meets the physical bandsaw blade.
 	var log_radius = clamped_log.get_current_radius() if clamped_log.has_method("get_current_radius") else 0.245
-	return 0.4215 - log_seat_x - log_radius - cut_z
+	return saw_cut_plane_x - log_seat_x - log_radius - cut_z
 
 func _should_flip_log_at_home() -> bool:
 	if clamped_log == null or not is_instance_valid(clamped_log):

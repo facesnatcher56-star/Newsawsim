@@ -268,16 +268,22 @@ height = 0.05
 material = SubResource("Material_BiteSteel")
 
 [node name="KneesAssembly" type="Node3D" parent="HeadrigCarriage"]
+position = Vector3(-0.45, 0, 0)
 
-[node name="CollisionHeadblock1" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly"]
+[node name="HeadblockStopBody" type="AnimatableBody3D" parent="HeadrigCarriage/KneesAssembly"]
+sync_to_physics = true
+collision_layer = 1
+collision_mask = 1
+
+[node name="CollisionHeadblock1" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/HeadblockStopBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, -0.9)
 shape = SubResource("Shape_Headblock")
 
-[node name="CollisionHeadblock2" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly"]
+[node name="CollisionHeadblock2" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/HeadblockStopBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.0)
 shape = SubResource("Shape_Headblock")
 
-[node name="CollisionHeadblock3" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly"]
+[node name="CollisionHeadblock3" type="CollisionShape3D" parent="HeadrigCarriage/KneesAssembly/HeadblockStopBody"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.5, 0.9)
 shape = SubResource("Shape_Headblock")
 
