@@ -35,18 +35,13 @@ func _ready() -> void:
 	if parent:
 		_conveyor = parent.get_parent()
 	if not Engine.is_editor_hint():
-		_build_all.call_deferred()
-		_collect_and_sort_chains.call_deferred()
+		_build_runner_beds()
+		_build_chains()
+		_collect_and_sort_chains()
+		_build_shafts_and_sprockets.call_deferred(parent)
+		_build_bolts.call_deferred(parent)
 	else:
 		_collect_and_sort_chains()
-
-func _build_all() -> void:
-	_build_runner_beds()
-	_build_chains()
-	var visuals := get_parent()
-	if visuals:
-		_build_shafts_and_sprockets(visuals)
-		_build_bolts(visuals)
 
 func _build_runner_beds() -> void:
 	var m := BoxMesh.new()
