@@ -59,12 +59,14 @@ func _build_chains() -> void:
 		container.name = TRACK_NAMES[i]
 		add_child(container)
 		for li in num_links:
-			_build_link(container, li, TRACK_X[i])
+			_build_link(container, li, TRACK_X[i], loop_length)
 
-func _build_link(container: Node3D, idx: int, track_x: float) -> void:
+func _build_link(container: Node3D, idx: int, track_x: float, loop_length: float) -> void:
 	var link := Node3D.new()
 	link.name = "ChainLink%02d" % idx
-	link.position.x = track_x
+	var local_t := _get_loop_transform(idx * link_spacing, loop_length)
+	link.transform.basis = local_t.basis
+	link.position = Vector3(track_x, local_t.origin.y, local_t.origin.z)
 	container.add_child(link)
 	for sx: float in [-0.1, 0.1]:
 		var mi := MeshInstance3D.new()
