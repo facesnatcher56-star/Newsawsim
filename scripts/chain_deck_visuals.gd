@@ -31,12 +31,14 @@ func _ready() -> void:
 	_mat_bolts.albedo_color = Color(0.12, 0.12, 0.13)
 	_mat_bolts.metallic = 0.95
 	_mat_bolts.roughness = 0.3
-	if not Engine.is_editor_hint():
-		_build_all()
-	_collect_and_sort_chains()
 	var parent := get_parent()
 	if parent:
 		_conveyor = parent.get_parent()
+	if not Engine.is_editor_hint():
+		_build_all.call_deferred()
+		_collect_and_sort_chains.call_deferred()
+	else:
+		_collect_and_sort_chains()
 
 func _build_all() -> void:
 	_build_runner_beds()
@@ -65,11 +67,12 @@ func _build_chains() -> void:
 		container.name = TRACK_NAMES[i]
 		add_child(container)
 		for li in num_links:
-			_build_link(container, li)
+			_build_link(container, li, TRACK_X[i])
 
-func _build_link(container: Node3D, idx: int) -> void:
+func _build_link(container: Node3D, idx: int, track_x: float) -> void:
 	var link := Node3D.new()
 	link.name = "ChainLink%02d" % idx
+	link.position.x = track_x
 	container.add_child(link)
 	for sx: float in [-0.1, 0.1]:
 		var mi := MeshInstance3D.new()
@@ -230,4 +233,3 @@ func _collect_and_sort_chains() -> void:
 		if not links.is_empty():
 			links.sort_custom(func(a: Node3D, b: Node3D) -> bool: return a.name < b.name)
 			_chains[container.name] = links
-
