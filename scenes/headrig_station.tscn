@@ -1,0 +1,171 @@
+[gd_scene format=3 uid="uid://headrig_station"]
+
+[ext_resource type="PackedScene" path="res://scenes/headrig_rail_system.tscn" id="1"]
+[ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/marker_red.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/marker_blue.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/marker_green.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/marker_yellow.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://scenes/smooth_roller.tscn" id="7"]
+[ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://scripts/bandsaw_teeth.gd" id="8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_outfeed"]
+size = Vector3(1.2, 0.25, 6.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_outfeed_rail"]
+size = Vector3(0.1, 0.5, 6.8)
+
+[sub_resource type="StandardMaterial3D" id="Material_Outfeed"]
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Material_Bandsaw"]
+albedo_color = Color(0.2, 0.5, 0.3, 1)
+metallic = 0.5
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Material_Blade"]
+albedo_color = Color(0.7, 0.7, 0.75, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="Gradient" id="Gradient_LaserLine"]
+offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
+colors = PackedColorArray(0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="Texture_LaserLine"]
+gradient = SubResource("Gradient_LaserLine")
+width = 256
+height = 16
+fill_from = Vector2(0, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="HeadrigStation" type="Node3D"]
+
+[node name="HeadrigRailSystemInstance" parent="." unique_id=100000003 instance=ExtResource("1")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.1, 0.70538116, 6.551477)
+
+[node name="HeadrigConveyor" type="StaticBody3D" parent="." unique_id=100000010]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 22.7, 0.395, 5.794979)
+script = ExtResource("2")
+speed = 2.0
+direction = Vector3(1, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="HeadrigConveyor" unique_id=100000011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.40293884, -0.6467285, 0)
+shape = SubResource("BoxShape3D_outfeed")
+
+[node name="CollisionShapeLeft" type="CollisionShape3D" parent="HeadrigConveyor" unique_id=100000016]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0529389, -0.4967285, 0)
+shape = SubResource("BoxShape3D_outfeed_rail")
+
+[node name="Visuals" type="Node3D" parent="HeadrigConveyor" unique_id=100000012]
+
+[node name="Belt" type="CSGBox3D" parent="HeadrigConveyor/Visuals" unique_id=100000013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.40293884, -0.6467285, 0)
+size = Vector3(1.2, 0.2, 6.8)
+material = SubResource("Material_Outfeed")
+
+[node name="RailLeft" type="CSGBox3D" parent="HeadrigConveyor/Visuals" unique_id=100000014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0529389, -0.4967285, 0)
+size = Vector3(0.1, 0.5, 6.8)
+material = SubResource("Material_Outfeed")
+
+[node name="Bandsaw" type="Node3D" parent="." unique_id=100000020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, -0.083, 6.13)
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Bandsaw" unique_id=100000021]
+
+[node name="Column" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000022]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1532714, -1.0029387)
+size = Vector3(0.4, 3.6, 0.4)
+material = SubResource("Material_Bandsaw")
+
+[node name="TopHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000023]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6532714, -0.70293903)
+size = Vector3(0.6, 0.8, 1)
+material = SubResource("Material_Bandsaw")
+
+[node name="BottomHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.13880229, -0.70293903)
+size = Vector3(0.6, 1, 1)
+material = SubResource("Material_Bandsaw")
+
+[node name="Blade" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000025]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.2532715, -0.40293884)
+size = Vector3(0.02, 3, 0.1)
+material = SubResource("Material_Blade")
+
+[node name="BladeTeeth" type="Node3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4179535, -0.40299988)
+script = ExtResource("8")
+blade_speed = 8.0
+
+[node name="GuideArm" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000026]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.504502, -0.55293894)
+size = Vector3(0.15, 0.15, 0.3)
+material = SubResource("Material_Bandsaw")
+
+[node name="LaserSupportBracketCross" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000071]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9532714, -0.70293903)
+size = Vector3(0.15, 0.1, 0.6)
+material = SubResource("Material_Bandsaw")
+
+[node name="LaserSupportBracketLong" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.9532714, -0.40293884)
+size = Vector3(2.5, 0.1, 0.1)
+material = SubResource("Material_Bandsaw")
+
+[node name="LaserEmitterHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.8532715, -0.40293884)
+size = Vector3(2.5, 0.08, 0.08)
+material = SubResource("Material_Outfeed")
+
+[node name="LaserDecal" type="Decal" parent="Bandsaw" unique_id=100000075]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.0132715, -0.40293884)
+size = Vector3(2.5, 1.6, 0.006)
+texture_albedo = SubResource("Texture_LaserLine")
+texture_emission = SubResource("Texture_LaserLine")
+emission_energy = 8.0
+modulate = Color(0, 1, 0, 1)
+
+[node name="SmoothRoller" parent="." unique_id=894314069 instance=ExtResource("7")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 1.8345357, 2.114215)
+speed = 0.2
+
+[node name="SmoothRoller2" parent="." unique_id=894314070 instance=ExtResource("7")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.587456, 1.8345357, 2.114215)
+speed = 0.2
+
+[node name="MarkerRed" parent="." unique_id=1863297703 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 14.093609, 0.13435018, 2.9617114)
+
+[node name="MarkerBlue" parent="." unique_id=846704829 instance=ExtResource("4")]
+transform = Transform3D(0.9733949, 0, 0, 0, 0.9733949, 0, 0, 0, 0.9733949, 0.20140922, 0.6759634, 2.108987)
+
+[node name="MarkerGreen" parent="." unique_id=946960788 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.315865, 1, 5.7999115)
+
+[node name="MarkerYellow" parent="." unique_id=1125315634 instance=ExtResource("6")]
+transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 14.035736, 1.2746072, 4.368806)
+
+[node name="BandsawLight" type="SpotLight3D" parent="." unique_id=100000032]
+transform = Transform3D(1, 0, 0, 0, 0.25881898, 0.9659259, 0, -0.9659259, 0.25881898, 19, 1.8532715, 6.097061)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 5.0
+spot_range = 4.0
+spot_angle = 35.0
+
+[node name="LogLiftLight" type="SpotLight3D" parent="." unique_id=100000033]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 14.2, 3.2, 3.8)
+light_color = Color(0.95, 0.95, 1, 1)
+light_energy = 6.0
+spot_range = 6.0
+
+[node name="LogDeckLight" type="SpotLight3D" parent="." unique_id=100000034]
+transform = Transform3D(1, 0, 0, 0, 0.25881898, 0.9659259, 0, -0.9659259, 0.25881898, 14.1, 2.3532715, 5.797061)
+light_color = Color(1, 0.9, 0.8, 1)
+light_energy = 4.0
+spot_range = 6.0
+
+[editable path="HeadrigRailSystemInstance"]

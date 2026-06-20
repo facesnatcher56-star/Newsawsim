@@ -1,0 +1,160 @@
+[gd_scene format=3 uid="uid://log_feed_station"]
+
+[ext_resource type="PackedScene" path="res://scenes/chain_log_deck.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="3"]
+[ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://scripts/kicker.gd" id="4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape_kicker"]
+size = Vector3(1.0029297, 1, 0.973114)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_a"]
+size = Vector3(0.09484863, 0.625, 4.179199)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_bottom"]
+size = Vector3(0.81557465, 0.2510376, 4.0005493)
+
+[sub_resource type="StandardMaterial3D" id="Material_Ground"]
+albedo_color = Color(0.35, 0.35, 0.38, 1)
+roughness = 0.95
+
+[node name="LogFeedStation" type="Node3D"]
+
+[node name="DebarkDeckTest" parent="." unique_id=1006123449 instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 0.22059476, 5.068916)
+
+[node name="RetractableStops" parent="DebarkDeckTest" index="4" unique_id=1420736936]
+rotation_speed = 45.0
+deck_start_delay = 5.0
+dump_target_path = NodePath("")
+downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
+
+[node name="CollisionShape3D" parent="DebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(1006123449, 1464854583) index="0" unique_id=624450580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.60839957, 0, 0, -0.018068075)
+
+[node name="OppositeDebarkDeckTest" parent="." unique_id=258696570 instance=ExtResource("1")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.277256, 0.22059476, -0.832212)
+
+[node name="RetractableStops" parent="OppositeDebarkDeckTest" index="4" unique_id=1420736936]
+rotation_speed = 45.0
+deck_start_delay = 5.0
+dump_target_path = NodePath("")
+downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
+
+[node name="CollisionShape3D" parent="OppositeDebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(258696570, 1464854583) index="0" unique_id=624450580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13981593)
+
+[node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.254882, 0.45677352, 2.118968)
+speed = 0.8
+direction = Vector3(1, 0, 0)
+
+[node name="RailLeft" parent="WasteConveyor3/Visuals" index="1"]
+visible = false
+
+[node name="KickerZone" type="Area3D" parent="WasteConveyor3" unique_id=1449677283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 0.5, 1.3315182)
+script = ExtResource("4")
+kick_direction = Vector3(-1, 0, 0)
+incline_path = NodePath("")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="WasteConveyor3/KickerZone" unique_id=1703927785]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00360322, 0, 0.93274593)
+shape = SubResource("BoxShape_kicker")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor3" unique_id=2108579984]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09221268, 0.009726405, 0.03012085)
+shape = SubResource("BoxShape3D_conveyor_bottom")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor3" unique_id=251383393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("BoxShape3D_conveyor_side_a")
+
+[node name="LogBunk" type="Node3D" parent="." unique_id=471500047]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.9, -0.5)
+
+[node name="Base" type="CSGBox3D" parent="LogBunk" unique_id=1011912949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+size = Vector3(1.5, 0.1, 2.5)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftFront" type="CSGBox3D" parent="LogBunk" unique_id=1587174899]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftBack" type="CSGBox3D" parent="LogBunk" unique_id=2051296868]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightFront" type="CSGBox3D" parent="LogBunk" unique_id=2001313652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightBack" type="CSGBox3D" parent="LogBunk" unique_id=656102065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+
+[node name="LogBunkOpposite" type="Node3D" parent="." unique_id=1006123451]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.9, 4.05)
+
+[node name="Base" type="CSGBox3D" parent="LogBunkOpposite" unique_id=2011912949]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+size = Vector3(1.5, 0.1, 2.5)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1707792397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostLeftBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1243670428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1293653644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="PostRightBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=1656102065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
+size = Vector3(0.1, 1, 0.1)
+material = SubResource("Material_Ground")
+
+[node name="KnuckleBoomLoader" parent="." unique_id=100000048 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, -0.5)
+enabled = false
+
+[node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" index="0"]
+emitting = false
+
+[node name="CollisionShape3D" parent="KnuckleBoomLoader/ConveyorIntakeZone" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05609107, 0, 0)
+
+[node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, 4.05)
+
+[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
+emitting = false
+
+[node name="DebarkerDeckLight" type="SpotLight3D" parent="." unique_id=100000035]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0.28, 3, 1.6)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 4.0
+spot_range = 6.0
+
+[node name="LogDeckLight" type="SpotLight3D" parent="." unique_id=100000034]
+transform = Transform3D(1, 0, 0, 0, 0.25881898, 0.9659259, 0, -0.9659259, 0.25881898, 14.1, 2.3532715, 5.797061)
+light_color = Color(1, 0.9, 0.8, 1)
+light_energy = 4.0
+spot_range = 6.0
+
+[editable path="DebarkDeckTest"]
+[editable path="OppositeDebarkDeckTest"]
+[editable path="WasteConveyor3"]
+[editable path="KnuckleBoomLoader"]
+[editable path="KnuckleBoomLoaderOpposite"]

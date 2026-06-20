@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://incline_outfeed"]
+
+[ext_resource type="PackedScene" path="res://scenes/incline_log_deck.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/incline_chain_conveyor.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/semi_trailer.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://cu6kodccm1rqk" path="res://scenes/roller_bed.tscn" id="4"]
+
+[node name="InclineOutfeed" type="Node3D"]
+
+[node name="InclineLogDeck" parent="." unique_id=428629830 node_paths=PackedStringArray("carriage", "load_zone", "top_zone", "deck_area") instance=ExtResource("1")]
+transform = Transform3D(1, 0, 0, 0, 0.9724839, -0.23297013, 0, 0.23297013, 0.9724839, 14.081036, 0.13039482, 4.092802)
+incline_length = 3.0
+lugs_per_track = 8
+lug_spacing = 0.75
+carriage = NodePath("")
+max_logs_on_deck = 4
+load_zone = NodePath("SlopeRoot/LoadZone")
+top_zone = NodePath("SlopeRoot/TopZone")
+deck_area = NodePath("SlopeRoot/DeckArea")
+
+[node name="SlopeRoot" parent="InclineLogDeck" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.37460667, 0, -0.37460667, 0.9271841, 0, 0, 0)
+
+[node name="LoadZone" parent="InclineLogDeck/SlopeRoot" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.3433884, 0, 0, -1.4901161e-08, 0.22496797, 0, 0.25579172, -1.17174)
+
+[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/LoadZone" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99999094, 0, 0.3895898, -0.08651161)
+
+[node name="TopZone" parent="InclineLogDeck/SlopeRoot" index="1"]
+transform = Transform3D(1, 0, 0, 0, 0.45403758, 0, 0, 7.450581e-09, 0.98132765, 0, 0.20258033, 1.1297617)
+
+[node name="DeckArea" parent="InclineLogDeck/SlopeRoot" index="2"]
+transform = Transform3D(1, 0, 0, 0, 0.20432778, 7.450581e-09, 0, 1.8626451e-09, 0.4784084, 0, 0.1572035, -0.07479358)
+
+[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/DeckArea" index="0"]
+transform = Transform3D(0.99998146, 0, 0, 0, 0.9999908, -1.7881393e-06, 0, 4.4703484e-08, 0.99999547, 0, -3.5762787e-07, -0.3222046)
+
+[node name="InclineChainConveyor" parent="." unique_id=100000044 instance=ExtResource("2")]
+transform = Transform3D(-1, 0, 0, 0, 0.894427, 0.447214, 0, 0.447214, -0.894427, 5.165, 1.35, -5.75)
+
+[node name="SemiTrailer" parent="." unique_id=100000045 instance=ExtResource("3")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 5.165, -0.9, -9.75)
+
+[node name="RollerBed" parent="." unique_id=220690297 instance=ExtResource("4")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27.382435, -0.2590027, 5.360077)
+constant_linear_velocity = Vector3(2, 0, -8.742278e-08)
+roller_count = 4
+roller_length = 1.35
+roller_diameter = 0.31
+roller_spacing = 0.7000000000000001
+transport_direction = Vector3(0, 0, 1)
+
+[node name="InclineConveyorLight" type="SpotLight3D" parent="." unique_id=100000046]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 5.165, 4, -4)
+light_color = Color(0.9, 0.95, 1, 1)
+light_energy = 5.0
+spot_range = 7.0
+
+[node name="TrailerDischargeLight" type="SpotLight3D" parent="." unique_id=100000047]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.165, 5, -9.75)
+light_color = Color(1, 0.9, 0.8, 1)
+light_energy = 6.0
+spot_range = 8.0
+spot_angle = 40.0
+
+[editable path="InclineLogDeck"]

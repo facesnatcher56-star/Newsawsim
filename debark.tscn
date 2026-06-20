@@ -1,29 +1,11 @@
 [gd_scene format=3 uid="uid://bmvrfshlclq6b"]
 
-[ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="3"]
-[ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/marker_red.tscn" id="5"]
-[ext_resource type="PackedScene" path="res://scenes/marker_blue.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://scenes/marker_green.tscn" id="7"]
-[ext_resource type="PackedScene" path="res://scenes/marker_yellow.tscn" id="8"]
-[ext_resource type="PackedScene" uid="uid://c3mlf0h3g6a7r" path="res://scenes/grip_roller.tscn" id="10"]
-[ext_resource type="PackedScene" uid="uid://bo7hpjp2jfjyf" path="res://Prefabs/DebarkerRing.glb" id="11"]
-[ext_resource type="Script" uid="uid://b6manf5t3mmr0" path="res://scripts/rotator.gd" id="12"]
-[ext_resource type="PackedScene" path="res://scenes/smooth_roller.tscn" id="13"]
-[ext_resource type="PackedScene" uid="uid://hgio3urytp0y" path="res://Prefabs/Stop.glb" id="16_op6l5"]
-[ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://scripts/kicker.gd" id="17_kick"]
-[ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://scripts/free_fly_camera.gd" id="18_cam"]
-[ext_resource type="PackedScene" path="res://scenes/headrig_rail_system.tscn" id="22_headrig"]
-[ext_resource type="PackedScene" path="res://scenes/incline_log_deck.tscn" id="22_kwu31"]
-[ext_resource type="PackedScene" uid="uid://cu6kodccm1rqk" path="res://scenes/roller_bed.tscn" id="24_jhoeu"]
-[ext_resource type="PackedScene" path="res://scenes/vibratory_conveyor.tscn" id="27_vib"]
-[ext_resource type="Script" uid="uid://cky2nxbo88adw" path="res://scripts/sky_clouds.gd" id="28_clouds"]
-[ext_resource type="PackedScene" path="res://scenes/incline_chain_conveyor.tscn" id="29_incline"]
-[ext_resource type="PackedScene" path="res://scenes/semi_trailer.tscn" id="30_trailer"]
-[ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="31_loader"]
-[ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://scripts/bandsaw_teeth.gd" id="32_teeth"]
-[ext_resource type="PackedScene" path="res://scenes/chain_log_deck.tscn" id="33_chain_deck"]
-[ext_resource type="Script" uid="uid://b4djkbobf43ea" path="res://scripts/log_lock_zone.gd" id="34_lockzone"]
+[ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://scripts/free_fly_camera.gd" id="1_cam"]
+[ext_resource type="Script" uid="uid://cky2nxbo88adw" path="res://scripts/sky_clouds.gd" id="2_clouds"]
+[ext_resource type="PackedScene" uid="uid://qxhkdq0grc63" path="res://scenes/debarker_station.tscn" id="3_debark"]
+[ext_resource type="PackedScene" path="res://scenes/log_feed_station.tscn" id="4_logfeed"]
+[ext_resource type="PackedScene" path="res://scenes/headrig_station.tscn" id="5_headrig"]
+[ext_resource type="PackedScene" path="res://scenes/incline_outfeed.tscn" id="6_incline"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
@@ -34,78 +16,11 @@ ground_horizon_color = Color(0.647059, 0.74902, 0.85098, 1)
 [sub_resource type="Sky" id="Sky_sky"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
 
-[sub_resource type="Environment" id="1"]
+[sub_resource type="Environment" id="Env_1"]
 background_mode = 2
 sky = SubResource("Sky_sky")
 tonemap_mode = 2
 glow_enabled = true
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_debarker_lock"]
-size = Vector3(5.5, 1.5, 1.5)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_a"]
-size = Vector3(0.09484863, 0.625, 4.179199)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_b"]
-size = Vector3(0.14733887, 0.6220703, 4.107788)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_bottom"]
-size = Vector3(0.81557465, 0.2510376, 4.0005493)
-
-[sub_resource type="StandardMaterial3D" id="Material_MetalDetector"]
-albedo_color = Color(0.85, 0.7, 0.1, 1)
-metallic = 0.5
-roughness = 0.4
-
-[sub_resource type="StandardMaterial3D" id="Material_Outfeed"]
-albedo_color = Color(0.15, 0.15, 0.15, 1)
-roughness = 0.8
-
-[sub_resource type="StandardMaterial3D" id="Material_RedBulb_Off"]
-albedo_color = Color(0.5, 0.1, 0.1, 1)
-roughness = 0.2
-
-[sub_resource type="StandardMaterial3D" id="Material_GreenBulb_On"]
-shading_mode = 0
-albedo_color = Color(0.1, 0.9, 0.1, 1)
-
-[sub_resource type="StandardMaterial3D" id="Material_Enclosure"]
-albedo_color = Color(0.4, 0.42, 0.45, 1)
-metallic = 0.8
-roughness = 0.3
-
-[sub_resource type="BoxShape3D" id="BoxShape_kicker"]
-size = Vector3(1.0029297, 1, 0.973114)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_uviwe"]
-size = Vector3(1.7497559, 1.2641602, 0.28710938)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_outfeed"]
-size = Vector3(1.2, 0.25, 6.8)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_outfeed_rail"]
-size = Vector3(0.1, 0.5, 6.8)
-
-[sub_resource type="StandardMaterial3D" id="Material_Bandsaw"]
-albedo_color = Color(0.2, 0.5, 0.3, 1)
-metallic = 0.5
-roughness = 0.3
-
-[sub_resource type="StandardMaterial3D" id="Material_Blade"]
-albedo_color = Color(0.7, 0.7, 0.75, 1)
-metallic = 0.9
-roughness = 0.2
-
-[sub_resource type="Gradient" id="Gradient_LaserLine"]
-offsets = PackedFloat32Array(0, 0.1, 0.9, 1)
-colors = PackedColorArray(0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="Texture_LaserLine"]
-gradient = SubResource("Gradient_LaserLine")
-width = 256
-height = 16
-fill_from = Vector2(0, 0.5)
-fill_to = Vector2(1, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
 size = Vector3(60, 0.2, 60)
@@ -114,15 +29,10 @@ size = Vector3(60, 0.2, 60)
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
 
-[sub_resource type="StandardMaterial3D" id="Material_Glass"]
-transparency = 1
-shading_mode = 0
-albedo_color = Color(0.7, 0.8, 0.9, 0.15)
-
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
-environment = SubResource("1")
+environment = SubResource("Env_1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=522720136]
 transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602545, -0.50000024, -0.74999994, 0.43301257, 11.351148, 5, 0)
@@ -131,334 +41,7 @@ shadow_enabled = true
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
 transform = Transform3D(0.9999155, 0.0065011648, -0.011260356, 2.379199e-10, 0.86602557, 0.49999973, 0.013002336, -0.49995747, 0.8659524, -0.95701027, 4.322937, 7.9346704)
 current = true
-script = ExtResource("18_cam")
-
-[node name="GripRoller1" parent="." unique_id=305399781 instance=ExtResource("10")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 0.29016703, 2.114215)
-
-[node name="GripRoller2" parent="." unique_id=927016362 instance=ExtResource("10")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.587456, 0.29016703, 2.114215)
-
-[node name="GripRoller3" parent="." unique_id=732283271 instance=ExtResource("10")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.716435, 0.29016703, 2.114215)
-
-[node name="GripRoller4" parent="." unique_id=295887159 instance=ExtResource("10")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.6376386, 0.29016703, 2.114215)
-
-[node name="DebarkerRing" type="Node3D" parent="." unique_id=98748114]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.4, 1.25)
-
-[node name="Model" parent="DebarkerRing" unique_id=69417199 instance=ExtResource("11")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.8652086, -0.68601704, 0.82223344)
-script = ExtResource("12")
-speed = 3.0
-axis = Vector3(1, 0, 0)
-
-[node name="DebarkerLockZone" type="Area3D" parent="." unique_id=341098954]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.8, 2.115)
-script = ExtResource("34_lockzone")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="DebarkerLockZone" unique_id=578232783]
-shape = SubResource("BoxShape3D_debarker_lock")
-
-[node name="DebarkInfeedConveyor" parent="." unique_id=1866187276 instance=ExtResource("3")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.8440187, 0.49387634, 2.118352)
-speed = 0.8
-direction = Vector3(1, 0, 0)
-
-[node name="RailLeft" parent="DebarkInfeedConveyor/Visuals" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42723918, 0.14999998, 0)
-
-[node name="RailRight" parent="DebarkInfeedConveyor/Visuals" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4314506, 0.14999998, 1.1920929e-07)
-
-[node name="RailCollisionLeft" type="CollisionShape3D" parent="DebarkInfeedConveyor" unique_id=1053115872]
-transform = Transform3D(0.9183635, -0.39573786, -3.568445e-09, 0.39573786, 0.9183635, 1.7298252e-08, -3.568445e-09, -1.7298252e-08, 1, -0.32010317, 0.19883728, -0.18334925)
-shape = SubResource("BoxShape3D_conveyor_side_a")
-
-[node name="RailCollisionRight" type="CollisionShape3D" parent="DebarkInfeedConveyor" unique_id=1401006711]
-transform = Transform3D(0.9384026, 0.3455439, -2.6925093e-09, -0.3455439, 0.9384026, -1.5104202e-08, -2.6925093e-09, 1.5104202e-08, 1, 0.35591745, 0.1875, -0.012694836)
-shape = SubResource("BoxShape3D_conveyor_side_b")
-
-[node name="WasteConveyor2" parent="." unique_id=1270012316 instance=ExtResource("3")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.255, 0.45578635, 2.118159)
-speed = 0.8
-direction = Vector3(1, 0, 0)
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor2" unique_id=630403206]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.009726405, 0.03012085)
-shape = SubResource("BoxShape3D_conveyor_bottom")
-
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor2" unique_id=957500864]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
-shape = SubResource("BoxShape3D_conveyor_side_a")
-
-[node name="CollisionShape3D4" type="CollisionShape3D" parent="WasteConveyor2" unique_id=20960965]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5342386, 0.18896484, 0.08856225)
-shape = SubResource("BoxShape3D_conveyor_side_b")
-
-[node name="MetalDetector" type="Node3D" parent="WasteConveyor2" unique_id=1270012350]
-
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="WasteConveyor2/MetalDetector" unique_id=1270012351]
-
-[node name="LeftLeg" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012352]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.5, 0)
-size = Vector3(0.1, 1, 0.2)
-material = SubResource("Material_MetalDetector")
-
-[node name="RightLeg" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012353]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.5, 0)
-size = Vector3(0.1, 1, 0.2)
-material = SubResource("Material_MetalDetector")
-
-[node name="CrossBeam" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012354]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
-size = Vector3(1.4, 0.1, 0.2)
-material = SubResource("Material_MetalDetector")
-
-[node name="LightBase" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012355]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
-size = Vector3(0.2, 0.1, 0.1)
-material = SubResource("Material_Outfeed")
-
-[node name="RedBulb" type="CSGSphere3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012356]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 1.2, 0)
-radius = 0.04
-material = SubResource("Material_RedBulb_Off")
-
-[node name="GreenBulb" type="CSGSphere3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012357]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 1.2, 0)
-radius = 0.04
-material = SubResource("Material_GreenBulb_On")
-
-[node name="GreenLight" type="OmniLight3D" parent="WasteConveyor2/MetalDetector" unique_id=1270012358]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 1.25, 0)
-light_color = Color(0.2, 1, 0.2, 1)
-light_energy = 1.5
-omni_range = 1.5
-
-[node name="VibratoryConveyor" parent="." unique_id=198754162 instance=ExtResource("27_vib")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, -0.6, 0.5)
-direction = Vector3(0, 0, -1)
-
-[node name="LeftSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="7" unique_id=1270012410]
-transform = Transform3D(0.9946362, 0.103479415, 0, -0.103479415, 0.9946362, 0, 0, 0, 1, -1.3905001, 0.575, 1.504322)
-size = Vector3(1.815, 0.05, 1.5406445)
-material = SubResource("Material_Enclosure")
-
-[node name="RightSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="8" unique_id=1270012411]
-transform = Transform3D(0.99467367, -0.103035, 0, 0.103035, 0.99467367, 0, 0, 0, 1, 1.2750001, 0.5542878, 1.5226936)
-size = Vector3(1.589, 0.05, 1.5773877)
-material = SubResource("Material_Enclosure")
-
-[node name="VibEndCap" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="9" unique_id=1270012420]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0078125, 0.44149774, 2.28)
-size = Vector3(1.0585938, 0.8668579, 0.12)
-material = SubResource("Material_Enclosure")
-
-[node name="DebarkDeckTest" parent="." unique_id=1006123449 instance=ExtResource("33_chain_deck")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 0.22059476, 5.068916)
-
-[node name="RetractableStops" parent="DebarkDeckTest" index="4" unique_id=1420736936]
-rotation_speed = 45.0
-deck_start_delay = 5.0
-dump_target_path = NodePath("../../DebarkInfeedConveyor")
-downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
-
-[node name="CollisionShape3D" parent="DebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(1006123449, 1464854583) index="0" unique_id=624450580]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.60839957, 0, 0, -0.018068075)
-
-[node name="OppositeDebarkDeckTest" parent="." unique_id=258696570 instance=ExtResource("33_chain_deck")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.277256, 0.22059476, -0.832212)
-
-[node name="RetractableStops" parent="OppositeDebarkDeckTest" index="4" unique_id=1420736936]
-rotation_speed = 45.0
-deck_start_delay = 5.0
-dump_target_path = NodePath("../../DebarkInfeedConveyor")
-downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
-
-[node name="CollisionShape3D" parent="OppositeDebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(258696570, 1464854583) index="0" unique_id=624450580]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13981593)
-
-[node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("3")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.254882, 0.45677352, 2.118968)
-speed = 0.8
-direction = Vector3(1, 0, 0)
-
-[node name="RailLeft" parent="WasteConveyor3/Visuals" index="1"]
-visible = false
-
-[node name="KickerZone" type="Area3D" parent="WasteConveyor3" unique_id=1449677283]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 0.5, 1.3315182)
-script = ExtResource("17_kick")
-kick_direction = Vector3(-1, 0, 0)
-incline_path = NodePath("../../InclineLogDeck")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="WasteConveyor3/KickerZone" unique_id=1703927785]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00360322, 0, 0.93274593)
-shape = SubResource("BoxShape_kicker")
-
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor3" unique_id=2108579984]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.09221268, 0.009726405, 0.03012085)
-shape = SubResource("BoxShape3D_conveyor_bottom")
-
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor3" unique_id=251383393]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
-shape = SubResource("BoxShape3D_conveyor_side_a")
-
-[node name="MarkerRed" parent="." unique_id=1863297703 instance=ExtResource("5")]
-transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 14.093609, 0.13435018, 2.9617114)
-
-[node name="MarkerBlue" parent="." unique_id=846704829 instance=ExtResource("6")]
-transform = Transform3D(0.9733949, 0, 0, 0, 0.9733949, 0, 0, 0, 0.9733949, 0.20140922, 0.6759634, 2.108987)
-
-[node name="MarkerGreen" parent="." unique_id=946960788 instance=ExtResource("7")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.315865, 1, 5.7999115)
-
-[node name="MarkerYellow" parent="." unique_id=1125315634 instance=ExtResource("8")]
-transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 14.035736, 1.2746072, 4.368806)
-
-[node name="SmoothRoller" parent="." unique_id=894314069 instance=ExtResource("13")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 1.8345357, 2.114215)
-speed = 0.2
-
-[node name="SmoothRoller2" parent="." unique_id=894314070 instance=ExtResource("13")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.587456, 1.8345357, 2.114215)
-speed = 0.2
-
-[node name="Stop" type="StaticBody3D" parent="." unique_id=1741714093]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.780458, 1.2457577, 2.2462158)
-
-[node name="Model" parent="Stop" unique_id=958664101 instance=ExtResource("16_op6l5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36242676, 0, -0.054519653)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Stop" unique_id=1845640158]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, 0.1076355)
-shape = SubResource("BoxShape3D_uviwe")
-
-[node name="HeadrigRailSystemInstance" parent="." unique_id=100000003 instance=ExtResource("22_headrig")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.1, 0.70538116, 6.551477)
-
-[node name="HeadrigConveyor" type="StaticBody3D" parent="." unique_id=100000010]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 22.7, 0.395, 5.794979)
-script = ExtResource("4")
-speed = 2.0
-direction = Vector3(1, 0, 0)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="HeadrigConveyor" unique_id=100000011]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.40293884, -0.6467285, 0)
-shape = SubResource("BoxShape3D_outfeed")
-
-[node name="CollisionShapeLeft" type="CollisionShape3D" parent="HeadrigConveyor" unique_id=100000016]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0529389, -0.4967285, 0)
-shape = SubResource("BoxShape3D_outfeed_rail")
-
-[node name="Visuals" type="Node3D" parent="HeadrigConveyor" unique_id=100000012]
-
-[node name="Belt" type="CSGBox3D" parent="HeadrigConveyor/Visuals" unique_id=100000013]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.40293884, -0.6467285, 0)
-size = Vector3(1.2, 0.2, 6.8)
-material = SubResource("Material_Outfeed")
-
-[node name="RailLeft" type="CSGBox3D" parent="HeadrigConveyor/Visuals" unique_id=100000014]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0529389, -0.4967285, 0)
-size = Vector3(0.1, 0.5, 6.8)
-material = SubResource("Material_Outfeed")
-
-[node name="Bandsaw" type="Node3D" parent="." unique_id=100000020]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, -0.083, 6.13)
-
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="Bandsaw" unique_id=100000021]
-
-[node name="Column" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000022]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1532714, -1.0029387)
-size = Vector3(0.4, 3.6, 0.4)
-material = SubResource("Material_Bandsaw")
-
-[node name="TopHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000023]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6532714, -0.70293903)
-size = Vector3(0.6, 0.8, 1)
-material = SubResource("Material_Bandsaw")
-
-[node name="BottomHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000024]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.13880229, -0.70293903)
-size = Vector3(0.6, 1, 1)
-material = SubResource("Material_Bandsaw")
-
-[node name="Blade" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000025]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0, 1.2532715, -0.40293884)
-size = Vector3(0.02, 3, 0.1)
-material = SubResource("Material_Blade")
-
-[node name="BladeTeeth" type="Node3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000100]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4179535, -0.40299988)
-script = ExtResource("32_teeth")
-blade_speed = 8.0
-
-[node name="GuideArm" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000026]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.504502, -0.55293894)
-size = Vector3(0.15, 0.15, 0.3)
-material = SubResource("Material_Bandsaw")
-
-[node name="LaserSupportBracketCross" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000071]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9532714, -0.70293903)
-size = Vector3(0.15, 0.1, 0.6)
-material = SubResource("Material_Bandsaw")
-
-[node name="LaserSupportBracketLong" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000072]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.9532714, -0.40293884)
-size = Vector3(2.5, 0.1, 0.1)
-material = SubResource("Material_Bandsaw")
-
-[node name="LaserEmitterHousing" type="CSGBox3D" parent="Bandsaw/CSGCombiner3D" unique_id=100000073]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.8532715, -0.40293884)
-size = Vector3(2.5, 0.08, 0.08)
-material = SubResource("Material_Outfeed")
-
-[node name="LaserDecal" type="Decal" parent="Bandsaw" unique_id=100000075]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.25, 1.0132715, -0.40293884)
-size = Vector3(2.5, 1.6, 0.006)
-texture_albedo = SubResource("Texture_LaserLine")
-texture_emission = SubResource("Texture_LaserLine")
-emission_energy = 8.0
-modulate = Color(0, 1, 0, 1)
-
-[node name="DebarkerLight" type="SpotLight3D" parent="." unique_id=100000030]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.165, 2.8, 2.072)
-light_color = Color(0.85, 0.92, 1, 1)
-light_energy = 5.0
-spot_range = 6.0
-spot_angle = 40.0
-
-[node name="VibratorLight" type="OmniLight3D" parent="." unique_id=100000031]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, 0.2, 0.5)
-light_color = Color(1, 0.75, 0.45, 1)
-light_energy = 3.5
-
-[node name="BandsawLight" type="SpotLight3D" parent="." unique_id=100000032]
-transform = Transform3D(1, 0, 0, 0, 0.25881898, 0.9659259, 0, -0.9659259, 0.25881898, 19, 1.8532715, 6.097061)
-light_color = Color(0.9, 0.95, 1, 1)
-light_energy = 5.0
-spot_range = 4.0
-spot_angle = 35.0
-
-[node name="LogLiftLight" type="SpotLight3D" parent="." unique_id=100000033]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 14.2, 3.2, 3.8)
-light_color = Color(0.95, 0.95, 1, 1)
-light_energy = 6.0
-spot_range = 6.0
-
-[node name="LogDeckLight" type="SpotLight3D" parent="." unique_id=100000034]
-transform = Transform3D(1, 0, 0, 0, 0.25881898, 0.9659259, 0, -0.9659259, 0.25881898, 14.1, 2.3532715, 5.797061)
-light_color = Color(1, 0.9, 0.8, 1)
-light_energy = 4.0
-spot_range = 6.0
-
-[node name="DebarkerDeckLight" type="SpotLight3D" parent="." unique_id=100000035]
-transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 0.28, 3, 1.6)
-light_color = Color(0.9, 0.95, 1, 1)
-light_energy = 4.0
-spot_range = 6.0
+script = ExtResource("1_cam")
 
 [node name="Ground" type="StaticBody3D" parent="." unique_id=100000040]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -0.9, 2)
@@ -472,189 +55,36 @@ size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ground")
 
 [node name="SkyClouds" type="Node3D" parent="." unique_id=100000043]
-script = ExtResource("28_clouds")
+script = ExtResource("2_clouds")
 
-[node name="InclineChainConveyor" parent="." unique_id=100000044 instance=ExtResource("29_incline")]
-transform = Transform3D(-1, 0, 0, 0, 0.894427, 0.447214, 0, 0.447214, -0.894427, 5.165, 1.35, -5.75)
+[node name="DebarkerStation" parent="." unique_id=771215760 instance=ExtResource("3_debark")]
 
-[node name="SemiTrailer" parent="." unique_id=100000045 instance=ExtResource("30_trailer")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 5.165, -0.9, -9.75)
+[node name="LogFeedStation" parent="." unique_id=1362207346 instance=ExtResource("4_logfeed")]
 
-[node name="InclineConveyorLight" type="SpotLight3D" parent="." unique_id=100000046]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 5.165, 4, -4)
-light_color = Color(0.9, 0.95, 1, 1)
-light_energy = 5.0
-spot_range = 7.0
+[node name="RetractableStops" parent="LogFeedStation/DebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 1006123449) index="4" unique_id=1420736936]
+dump_target_path = NodePath("../../../DebarkerStation/DebarkInfeedConveyor")
 
-[node name="TrailerDischargeLight" type="SpotLight3D" parent="." unique_id=100000047]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.165, 5, -9.75)
-light_color = Color(1, 0.9, 0.8, 1)
-light_energy = 6.0
-spot_range = 8.0
-spot_angle = 40.0
+[node name="RetractableStops" parent="LogFeedStation/OppositeDebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 258696570) index="4" unique_id=1420736936]
+dump_target_path = NodePath("../../../DebarkerStation/DebarkInfeedConveyor")
 
-[node name="LogBunk" type="Node3D" parent="." unique_id=471500047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.9, -0.5)
+[node name="KickerZone" parent="LogFeedStation/WasteConveyor3" parent_id_path=PackedInt32Array(1362207346, 570863566) index="3" unique_id=1449677283]
+incline_path = NodePath("../../../InclineOutfeed/InclineLogDeck")
 
-[node name="Base" type="CSGBox3D" parent="LogBunk" unique_id=1011912949]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
-size = Vector3(1.5, 0.1, 2.5)
-material = SubResource("Material_Ground")
+[node name="HeadrigStation" parent="." unique_id=1393812162 instance=ExtResource("5_headrig")]
 
-[node name="PostLeftFront" type="CSGBox3D" parent="LogBunk" unique_id=1587174899]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
+[node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
 
-[node name="PostLeftBack" type="CSGBox3D" parent="LogBunk" unique_id=2051296868]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightFront" type="CSGBox3D" parent="LogBunk" unique_id=2001313652]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightBack" type="CSGBox3D" parent="LogBunk" unique_id=656102065]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-
-[node name="LogBunkOpposite" type="Node3D" parent="." unique_id=1006123451]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, -0.9, 4.05)
-
-[node name="Base" type="CSGBox3D" parent="LogBunkOpposite" unique_id=2011912949]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
-size = Vector3(1.5, 0.1, 2.5)
-material = SubResource("Material_Ground")
-
-[node name="PostLeftFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1707792397]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostLeftBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1243670428]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1293653644]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=1656102065]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="KnuckleBoomLoader" parent="." unique_id=100000048 instance=ExtResource("31_loader")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, -0.5)
-enabled = false
-
-[node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" index="0"]
-emitting = false
-
-[node name="CollisionShape3D" parent="KnuckleBoomLoader/ConveyorIntakeZone" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05609107, 0, 0)
-
-[node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("31_loader")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, -0.9, 4.05)
-
-[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
-emitting = false
-
-[node name="DebarkerEnclosure" type="Node3D" parent="." unique_id=1270012400]
-
-[node name="CSGCombiner3D" type="CSGCombiner3D" parent="DebarkerEnclosure" unique_id=1270012401]
-
-[node name="Roof" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012402]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 2.31, 2.114)
-size = Vector3(4.42, 0.08, 1.8)
-material = SubResource("Material_Enclosure")
-
-[node name="BackWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012403]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 1.254)
-size = Vector3(4.42, 2, 0.08)
-material = SubResource("Material_Enclosure")
-
-[node name="LeftEndWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012404]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.884, 1.3, 2.114)
-size = Vector3(0.08, 2, 1.8)
-material = SubResource("Material_Enclosure")
-
-[node name="LeftEndWallHole" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012405]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.884, 1.06, 2.114)
-operation = 2
-size = Vector3(0.2, 0.7, 0.7)
-
-[node name="RightEndWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012406]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.215, 1.3, 2.114)
-size = Vector3(0.08, 2, 1.8)
-material = SubResource("Material_Enclosure")
-
-[node name="RightEndWallHole" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012407]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.215, 1.06, 2.114)
-operation = 2
-size = Vector3(0.2, 0.7, 0.7)
-
-[node name="FrontWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012408]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
-size = Vector3(4.42, 2, 0.08)
-material = SubResource("Material_Enclosure")
-
-[node name="FrontWallWindowCutout" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012409]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
-operation = 2
-size = Vector3(3.6, 1.2, 0.2)
-
-[node name="WindowGlass" type="CSGBox3D" parent="DebarkerEnclosure" unique_id=1270012412]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
-size = Vector3(3.6, 1.2, 0.02)
-material = SubResource("Material_Glass")
-
-[node name="InclineLogDeck" parent="." unique_id=428629830 node_paths=PackedStringArray("carriage", "load_zone", "top_zone", "deck_area") instance=ExtResource("22_kwu31")]
-transform = Transform3D(1, 0, 0, 0, 0.9724839, -0.23297013, 0, 0.23297013, 0.9724839, 14.081036, 0.13039482, 4.092802)
-incline_length = 3.0
-lugs_per_track = 8
-lug_spacing = 0.75
-carriage = NodePath("../HeadrigRailSystemInstance/HeadrigCarriage")
-max_logs_on_deck = 4
-load_zone = NodePath("SlopeRoot/LoadZone")
-top_zone = NodePath("SlopeRoot/TopZone")
-deck_area = NodePath("SlopeRoot/DeckArea")
-
-[node name="SlopeRoot" parent="InclineLogDeck" index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.37460667, 0, -0.37460667, 0.9271841, 0, 0, 0)
-
-[node name="LoadZone" parent="InclineLogDeck/SlopeRoot" index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.3433884, 0, 0, -1.4901161e-08, 0.22496797, 0, 0.25579172, -1.17174)
-
-[node name="TopZone" parent="InclineLogDeck/SlopeRoot" index="1"]
-transform = Transform3D(1, 0, 0, 0, 0.45403758, 0, 0, 7.450581e-09, 0.98132765, 0, 0.20258033, 1.1297617)
-
-[node name="DeckArea" parent="InclineLogDeck/SlopeRoot" index="2"]
-transform = Transform3D(1, 0, 0, 0, 0.20432778, 7.450581e-09, 0, 1.8626451e-09, 0.4784084, 0, 0.1572035, -0.07479358)
-
-[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/DeckArea" index="0"]
-transform = Transform3D(0.99998146, 0, 0, 0, 0.9999908, -1.7881393e-06, 0, 4.4703484e-08, 0.99999547, 0, -3.5762787e-07, -0.3222046)
-
-[node name="RollerBed" parent="." unique_id=220690297 instance=ExtResource("24_jhoeu")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27.382435, -0.2590027, 5.360077)
-constant_linear_velocity = Vector3(2, 0, -8.742278e-08)
-roller_count = 4
-roller_length = 1.35
-roller_diameter = 0.31
-roller_spacing = 0.7000000000000001
-transport_direction = Vector3(0, 0, 1)
-
-[editable path="DebarkInfeedConveyor"]
-[editable path="WasteConveyor2"]
-[editable path="VibratoryConveyor"]
-[editable path="DebarkDeckTest"]
-[editable path="OppositeDebarkDeckTest"]
-[editable path="WasteConveyor3"]
-[editable path="HeadrigRailSystemInstance"]
-[editable path="KnuckleBoomLoader"]
-[editable path="KnuckleBoomLoaderOpposite"]
-[editable path="InclineLogDeck"]
+[editable path="DebarkerStation"]
+[editable path="DebarkerStation/DebarkInfeedConveyor"]
+[editable path="DebarkerStation/WasteConveyor2"]
+[editable path="DebarkerStation/VibratoryConveyor"]
+[editable path="LogFeedStation"]
+[editable path="LogFeedStation/DebarkDeckTest"]
+[editable path="LogFeedStation/OppositeDebarkDeckTest"]
+[editable path="LogFeedStation/WasteConveyor3"]
+[editable path="LogFeedStation/KnuckleBoomLoader"]
+[editable path="LogFeedStation/KnuckleBoomLoaderOpposite"]
+[editable path="HeadrigStation"]
+[editable path="HeadrigStation/HeadrigRailSystemInstance"]
+[editable path="InclineOutfeed"]
+[editable path="InclineOutfeed/InclineLogDeck"]

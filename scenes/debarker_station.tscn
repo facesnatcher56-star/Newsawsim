@@ -1,0 +1,251 @@
+[gd_scene format=3 uid="uid://qxhkdq0grc63"]
+
+[ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://c3mlf0h3g6a7r" path="res://scenes/grip_roller.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bo7hpjp2jfjyf" path="res://Prefabs/DebarkerRing.glb" id="3"]
+[ext_resource type="Script" uid="uid://b6manf5t3mmr0" path="res://scripts/rotator.gd" id="4"]
+[ext_resource type="PackedScene" uid="uid://hgio3urytp0y" path="res://Prefabs/Stop.glb" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/vibratory_conveyor.tscn" id="6"]
+[ext_resource type="Script" uid="uid://b4djkbobf43ea" path="res://scripts/log_lock_zone.gd" id="7"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_a"]
+size = Vector3(0.09484863, 0.625, 3.8378906)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_b"]
+size = Vector3(0.14733887, 0.6220703, 4.107788)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_debarker_lock"]
+size = Vector3(5.5, 1.5, 1.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_bottom"]
+size = Vector3(0.81557465, 0.2510376, 4.0005493)
+
+[sub_resource type="StandardMaterial3D" id="Material_MetalDetector"]
+albedo_color = Color(0.85, 0.7, 0.1, 1)
+metallic = 0.5
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Material_Outfeed"]
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Material_RedBulb_Off"]
+albedo_color = Color(0.5, 0.1, 0.1, 1)
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Material_GreenBulb_On"]
+shading_mode = 0
+albedo_color = Color(0.1, 0.9, 0.1, 1)
+
+[sub_resource type="StandardMaterial3D" id="Material_Enclosure"]
+albedo_color = Color(0.4, 0.42, 0.45, 1)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uviwe"]
+size = Vector3(1.7497559, 1.2641602, 0.28710938)
+
+[sub_resource type="StandardMaterial3D" id="Material_Glass"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.7, 0.8, 0.9, 0.15)
+
+[node name="DebarkerStation" type="Node3D" unique_id=1728840254]
+
+[node name="DebarkInfeedConveyor" parent="." unique_id=1866187276 instance=ExtResource("1")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.8440187, 0.49387634, 2.118352)
+speed = 0.8
+direction = Vector3(1, 0, 0)
+
+[node name="RailLeft" parent="DebarkInfeedConveyor/Visuals" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42723918, 0.14999998, 0)
+
+[node name="RailRight" parent="DebarkInfeedConveyor/Visuals" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4314506, 0.14999998, 1.1920929e-07)
+
+[node name="RailCollisionLeft" type="CollisionShape3D" parent="DebarkInfeedConveyor" unique_id=1053115872]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("BoxShape3D_conveyor_side_a")
+
+[node name="RailCollisionRight" type="CollisionShape3D" parent="DebarkInfeedConveyor" unique_id=1401006711]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("BoxShape3D_conveyor_side_b")
+
+[node name="GripRoller1" parent="." unique_id=305399781 instance=ExtResource("2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 0.29016703, 2.114215)
+
+[node name="GripRoller2" parent="." unique_id=927016362 instance=ExtResource("2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.587456, 0.29016703, 2.114215)
+
+[node name="GripRoller3" parent="." unique_id=732283271 instance=ExtResource("2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 5.716435, 0.29016703, 2.114215)
+
+[node name="GripRoller4" parent="." unique_id=295887159 instance=ExtResource("2")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 6.6376386, 0.29016703, 2.114215)
+
+[node name="DebarkerRing" type="Node3D" parent="." unique_id=98748114]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 1.4, 1.25)
+
+[node name="Model" parent="DebarkerRing" unique_id=69417199 instance=ExtResource("3")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.8652086, -0.68601704, 0.82223344)
+script = ExtResource("4")
+speed = 3.0
+axis = Vector3(1, 0, 0)
+
+[node name="DebarkerLockZone" type="Area3D" parent="." unique_id=341098954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0.8, 2.115)
+script = ExtResource("7")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DebarkerLockZone" unique_id=578232783]
+shape = SubResource("BoxShape3D_debarker_lock")
+
+[node name="WasteConveyor2" parent="." unique_id=1270012316 instance=ExtResource("1")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.255, 0.45578635, 2.118159)
+speed = 0.8
+direction = Vector3(1, 0, 0)
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor2" unique_id=630403206]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.009726405, 0.03012085)
+shape = SubResource("BoxShape3D_conveyor_bottom")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="WasteConveyor2" unique_id=957500864]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
+shape = SubResource("BoxShape3D_conveyor_side_a")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="WasteConveyor2" unique_id=20960965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5342386, 0.18896484, 0.08856225)
+shape = SubResource("BoxShape3D_conveyor_side_b")
+
+[node name="MetalDetector" type="Node3D" parent="WasteConveyor2" unique_id=1270012350]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="WasteConveyor2/MetalDetector" unique_id=1270012351]
+
+[node name="LeftLeg" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.5, 0)
+size = Vector3(0.1, 1, 0.2)
+material = SubResource("Material_MetalDetector")
+
+[node name="RightLeg" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012353]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.5, 0)
+size = Vector3(0.1, 1, 0.2)
+material = SubResource("Material_MetalDetector")
+
+[node name="CrossBeam" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012354]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+size = Vector3(1.4, 0.1, 0.2)
+material = SubResource("Material_MetalDetector")
+
+[node name="LightBase" type="CSGBox3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012355]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+size = Vector3(0.2, 0.1, 0.1)
+material = SubResource("Material_Outfeed")
+
+[node name="RedBulb" type="CSGSphere3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 1.2, 0)
+radius = 0.04
+material = SubResource("Material_RedBulb_Off")
+
+[node name="GreenBulb" type="CSGSphere3D" parent="WasteConveyor2/MetalDetector/CSGCombiner3D" unique_id=1270012357]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 1.2, 0)
+radius = 0.04
+material = SubResource("Material_GreenBulb_On")
+
+[node name="GreenLight" type="OmniLight3D" parent="WasteConveyor2/MetalDetector" unique_id=1270012358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 1.25, 0)
+light_color = Color(0.2, 1, 0.2, 1)
+light_energy = 1.5
+omni_range = 1.5
+
+[node name="VibratoryConveyor" parent="." unique_id=198754162 instance=ExtResource("6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, -0.6, 0.5)
+direction = Vector3(0, 0, -1)
+
+[node name="LeftSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="7" unique_id=1270012410]
+transform = Transform3D(0.9946362, 0.103479415, 0, -0.103479415, 0.9946362, 0, 0, 0, 1, -1.3905001, 0.575, 1.504322)
+size = Vector3(1.815, 0.05, 1.5406445)
+material = SubResource("Material_Enclosure")
+
+[node name="RightSlopedPlate" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="8" unique_id=1270012411]
+transform = Transform3D(0.99467367, -0.103035, 0, 0.103035, 0.99467367, 0, 0, 0, 1, 1.2750001, 0.5542878, 1.5226936)
+size = Vector3(1.589, 0.05, 1.5773877)
+material = SubResource("Material_Enclosure")
+
+[node name="VibEndCap" type="CSGBox3D" parent="VibratoryConveyor/Visuals" index="9" unique_id=1270012420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0078125, 0.44149774, 2.28)
+size = Vector3(1.0585938, 0.8668579, 0.12)
+material = SubResource("Material_Enclosure")
+
+[node name="Stop" type="StaticBody3D" parent="." unique_id=1741714093]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 15.780458, 1.2457577, 2.2462158)
+
+[node name="Model" parent="Stop" unique_id=958664101 instance=ExtResource("5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36242676, 0, -0.054519653)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stop" unique_id=1845640158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.491354, -0.13208008, 0.1076355)
+shape = SubResource("BoxShape3D_uviwe")
+
+[node name="DebarkerEnclosure" type="Node3D" parent="." unique_id=1270012400]
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="DebarkerEnclosure" unique_id=1270012401]
+
+[node name="Roof" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 2.31, 2.114)
+size = Vector3(4.42, 0.08, 1.8)
+material = SubResource("Material_Enclosure")
+
+[node name="BackWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012403]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 1.254)
+size = Vector3(4.42, 2, 0.08)
+material = SubResource("Material_Enclosure")
+
+[node name="LeftEndWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012404]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.884, 1.3, 2.114)
+size = Vector3(0.08, 2, 1.8)
+material = SubResource("Material_Enclosure")
+
+[node name="LeftEndWallHole" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012405]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.884, 1.06, 2.114)
+operation = 2
+size = Vector3(0.2, 0.7, 0.7)
+
+[node name="RightEndWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012406]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.215, 1.3, 2.114)
+size = Vector3(0.08, 2, 1.8)
+material = SubResource("Material_Enclosure")
+
+[node name="RightEndWallHole" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012407]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.215, 1.06, 2.114)
+operation = 2
+size = Vector3(0.2, 0.7, 0.7)
+
+[node name="FrontWall" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
+size = Vector3(4.42, 2, 0.08)
+material = SubResource("Material_Enclosure")
+
+[node name="FrontWallWindowCutout" type="CSGBox3D" parent="DebarkerEnclosure/CSGCombiner3D" unique_id=1270012409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
+operation = 2
+size = Vector3(3.6, 1.2, 0.2)
+
+[node name="WindowGlass" type="CSGBox3D" parent="DebarkerEnclosure" unique_id=1270012412]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.05, 1.3, 2.974)
+size = Vector3(3.6, 1.2, 0.02)
+material = SubResource("Material_Glass")
+
+[node name="DebarkerLight" type="SpotLight3D" parent="." unique_id=100000030]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.165, 2.8, 2.072)
+light_color = Color(0.85, 0.92, 1, 1)
+light_energy = 5.0
+spot_range = 6.0
+spot_angle = 40.0
+
+[node name="VibratorLight" type="OmniLight3D" parent="." unique_id=100000031]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.165, 0.2, 0.5)
+light_color = Color(1, 0.75, 0.45, 1)
+light_energy = 3.5
+
+[editable path="DebarkInfeedConveyor"]
+[editable path="WasteConveyor2"]
+[editable path="VibratoryConveyor"]
