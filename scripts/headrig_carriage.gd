@@ -94,6 +94,7 @@ var last_carriage_position: Vector3
 var active_cut_knees_x: float = 0.0
 
 func _ready() -> void:
+	add_to_group("headrig_carriage")
 	start_pos = position
 	target_pos = start_pos + travel_axis.normalized() * travel_distance
 	last_carriage_position = global_position

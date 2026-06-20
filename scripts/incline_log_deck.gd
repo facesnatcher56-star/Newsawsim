@@ -129,6 +129,11 @@ func _ready() -> void:
 	deck_area = _slope_root.get_node_or_null("DeckArea")
 
 	if not Engine.is_editor_hint():
+		# Resolve carriage by group lookup if not wired via export.
+		if not is_instance_valid(carriage):
+			var found := get_tree().get_nodes_in_group("headrig_carriage")
+			if found.size() > 0:
+				carriage = found[0] as AnimatableBody3D
 		# Force off at runtime regardless of exported value — LoadZone starts it.
 		running = false
 		if load_zone != null:

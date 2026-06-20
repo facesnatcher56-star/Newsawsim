@@ -8,7 +8,7 @@ extends RigidBody3D
 
 @export var bark_enabled: bool = true
 @export var board_count: int = 4  # Number of cuttable boards attached to the log
-@export var debarker_node_path: NodePath = "../DebarkerRing/Model"
+@export var debarker_node_path: NodePath = "../DebarkerStation/DebarkerRing/Model"
 @export var debarker_peel_radius: float = 0.04
 @export var debarker_alignment_radius: float = 0.85
 
@@ -19,7 +19,7 @@ var current_cut_face: int = 0
 const CUT_DEPTH_PER_PASS: float = 0.05
 
 # Positions of processing stations (approximate world coordinates)
-const DEBARKER_RING_POS: Vector3 = Vector3(0.3, 1.4, 1.25)
+const DEBARKER_RING_POS: Vector3 = Vector3(5.165, 0.714, 2.072)
 const BANDSaw_POS: Vector3 = Vector3(19, -0.083, 6.13)  # Position of the Bandsaw node
 const PROCESS_RADIUS: float = 0.5  # Proximity radius to trigger processing
 
