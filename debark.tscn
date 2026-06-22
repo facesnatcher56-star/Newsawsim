@@ -340,6 +340,17 @@ shape = SubResource("Shape_Detector")
 
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
 
+[node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99998295, 0, -0.07921165, -0.30083942)
+
+[node name="RollerBed" parent="InclineOutfeed" index="3" unique_id=220690297]
+flip_max_angle = 56.0
+flip_speed_deg = 45.0
+plate_length = 1.4500000000000002
+plate_y_offset = 0.12
+stop_gate_length = 1.4500000000000002
+auto_flip_on_stop = true
+
 [editable path="DebarkerStation"]
 [editable path="DebarkerStation/DebarkInfeedConveyor"]
 [editable path="DebarkerStation/WasteConveyor2"]

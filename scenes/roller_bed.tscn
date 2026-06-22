@@ -3,5 +3,7 @@
 [ext_resource type="Script" uid="uid://dtecixxvibn1h" path="res://scripts/roller_bed.gd" id="1_roller_bed"]
 
 [node name="RollerBed" type="StaticBody3D" unique_id=220690297]
-constant_linear_velocity = Vector3(0, 0, -2)
+transform = Transform3D(0.9999875, 0, -0.005009085, 0, 1, 0, 0.005009085, 0, 0.9999875, 0, 0, 0)
+constant_linear_velocity = Vector3(0.01001817, 0, -1.999975)
 script = ExtResource("1_roller_bed")
+auto_flip_on_stop = null

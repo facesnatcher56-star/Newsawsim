@@ -94,8 +94,7 @@ var _hidden_y:   float
 var _spr_cy:     float   # sprocket centre Y in slope-local space
 var _loop_len:   float   # full chain loop length per track
 
-# Step-advance: >0 means limited advance remaining; 0 means free-run
-var _step_remaining: float = 0.0
+
 
 
 func _ready() -> void:
@@ -559,19 +558,24 @@ func _process(delta: float) -> void:
 	if not running:
 		if not _on_deck.is_empty() and not is_blocked_at_top() and _is_headrig_free():
 			set_running(true)
+		
+		# Proactively check for logs in load zone to start delay timer
+		if _start_delay_timer <= 0.0 and not is_blocked_at_top():
+			if load_zone != null:
+				var logs_in_load_zone := false
+				for body in load_zone.get_overlapping_bodies():
+					if body.is_in_group("logs") and body is RigidBody3D:
+						logs_in_load_zone = true
+						_active_log = body as RigidBody3D
+						break
+				if logs_in_load_zone:
+					_start_delay_timer = 2.0
 		return
 
 	if is_blocked_at_top():
 		return
 
-	_chain_travel += chain_speed * delta
 	_update_chain_links()
-
-	# Spin sprockets: angular velocity matches chain surface speed
-	var ang_vel := chain_speed / SPROCKET_R
-	for sp in _sprocket_nodes:
-		if is_instance_valid(sp):
-			sp.rotate(Vector3.RIGHT, ang_vel * delta)
 
 
 func _physics_process(delta: float) -> void:
@@ -582,14 +586,27 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var advance := chain_speed * delta
-	if _step_remaining > 0.0:
-		if _is_headrig_free():
-			_step_remaining = 0.0  # headrig freed mid-step — switch to free run
-		else:
-			advance = minf(advance, _step_remaining)
-			_step_remaining -= advance
-			if _step_remaining <= 0.0:
-				running = false
+
+	# Check if we should stop at the next alignment.
+	# We want to stop at the next alignment if:
+	# 1. The headrig carriage is busy (not free).
+	# 2. OR the deck is empty (no logs left to carry).
+	var should_stop_at_align := not _is_headrig_free() or _on_deck.is_empty()
+
+	if should_stop_at_align and _slot.size() > 0:
+		var rem := fmod(_slot[0], lug_spacing)
+		var dist_to_align := lug_spacing - rem
+		if advance >= dist_to_align:
+			advance = dist_to_align
+			set_running(false)
+
+	_chain_travel += advance
+
+	# Spin sprockets: angular velocity matches chain surface speed
+	var ang_vel := advance / SPROCKET_R
+	for sp in _sprocket_nodes:
+		if is_instance_valid(sp):
+			sp.rotate(Vector3.RIGHT, ang_vel)
 
 	for i in range(_lugs.size()):
 		_slot[i] = fmod(_slot[i] + advance, _cycle_len)
@@ -602,34 +619,59 @@ func _physics_process(delta: float) -> void:
 		_set_lug_position(_lugs[i], _lug_track_x[i], _slot[i])
 
 
-func _is_headrig_free() -> bool:
+func _get_carriage() -> AnimatableBody3D:
 	if not is_instance_valid(carriage):
+		if not Engine.is_editor_hint():
+			var found := get_tree().get_nodes_in_group("headrig_carriage")
+			if found.size() > 0:
+				carriage = found[0] as AnimatableBody3D
+	return carriage
+
+
+func _is_headrig_free() -> bool:
+	var carriage_ref = _get_carriage()
+	if not is_instance_valid(carriage_ref):
 		return true
-	if not ("clamped_log" in carriage) or not ("current_progress" in carriage):
+	if not ("clamped_log" in carriage_ref) or not ("current_progress" in carriage_ref):
 		return true
-	return (carriage.clamped_log == null) and ((carriage.current_progress as float) < 0.01)
+	return (carriage_ref.clamped_log == null) and ((carriage_ref.current_progress as float) < 0.01)
 
 
 func set_running(on: bool) -> void:
 	if on and _on_deck.is_empty():
-		return   # nothing on the deck — don't spin the chain
+		var has_log_in_load_zone := false
+		if load_zone != null:
+			for body in load_zone.get_overlapping_bodies():
+				if body.is_in_group("logs") and body is RigidBody3D:
+					has_log_in_load_zone = true
+					break
+		if not has_log_in_load_zone:
+			return   # nothing on the deck or in load zone — don't spin the chain
 	running = on
 	if on:
-		_step_remaining = 0.0 if _is_headrig_free() else lug_spacing
 		for l_node: RigidBody3D in _on_deck.values():
 			if is_instance_valid(l_node):
+				l_node.freeze = false
 				l_node.axis_lock_angular_y = true
 				l_node.axis_lock_angular_z = true
+				l_node.axis_lock_linear_x = true
+	else:
+		for l_node: RigidBody3D in _on_deck.values():
+			if is_instance_valid(l_node):
+				l_node.freeze = true
 
 
 func _unlock_log(l_node: RigidBody3D) -> void:
+	l_node.freeze = false
 	l_node.axis_lock_angular_y = false
 	l_node.axis_lock_angular_z = false
+	l_node.axis_lock_linear_x = false
 
 
 ## Returns true when the deck can physically accept another log from the kicker.
 func has_room() -> bool:
-	if not is_instance_valid(carriage):
+	var carriage_ref = _get_carriage()
+	if not is_instance_valid(carriage_ref):
 		return _on_deck.size() < max_logs_on_deck
 	
 	# If we are blocked at the top, we don't have room for more
@@ -641,7 +683,8 @@ func has_room() -> bool:
 
 ## Returns true if a log is at the top and the carriage is not ready.
 func is_blocked_at_top() -> bool:
-	if not is_instance_valid(carriage) or top_zone == null:
+	var carriage_ref = _get_carriage()
+	if not is_instance_valid(carriage_ref) or top_zone == null:
 		return false
 	
 	var logs_at_top := false
@@ -656,9 +699,9 @@ func is_blocked_at_top() -> bool:
 	# Carriage is considered "busy" if it's not waiting or already has a log.
 	# Accessing properties from headrig_carriage.gd
 	var carriage_busy := true
-	if "current_state" in carriage and "clamped_log" in carriage:
+	if "current_state" in carriage_ref and "clamped_log" in carriage_ref:
 		# State.WAITING_FOR_LOG is 0
-		carriage_busy = (carriage.current_state != 0) or (carriage.clamped_log != null)
+		carriage_busy = (carriage_ref.current_state != 0) or (carriage_ref.clamped_log != null)
 	
 	return carriage_busy
 
@@ -688,14 +731,18 @@ func _build_deck_area() -> void:
 
 func _on_deck_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs") and body is RigidBody3D:
-		_on_deck[body.get_instance_id()] = body as RigidBody3D
+		var l_node := body as RigidBody3D
+		_on_deck[l_node.get_instance_id()] = l_node
+		if running:
+			l_node.freeze = false
+			l_node.axis_lock_angular_y = true
+			l_node.axis_lock_angular_z = true
+			l_node.axis_lock_linear_x = true
 
 
 func _on_deck_area_body_exited(body: Node3D) -> void:
 	if body.is_in_group("logs"):
 		_on_deck.erase(body.get_instance_id())
-		if _on_deck.is_empty():
-			running = false   # chain off — nothing left to carry
 
 
 func _build_load_zone() -> void:
@@ -756,5 +803,3 @@ func _on_top_zone_body_exited(body: Node3D) -> void:
 	# Log was kicked sideways off the incline — remove from deck tracking.
 	if body.is_in_group("logs"):
 		_on_deck.erase(body.get_instance_id())
-		if _on_deck.is_empty():
-			running = false

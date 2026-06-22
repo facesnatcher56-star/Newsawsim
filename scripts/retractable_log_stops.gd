@@ -267,7 +267,11 @@ func _suppress_upward_rebound() -> void:
 			body.linear_velocity.y = 0.0
 
 func _dumped_logs_are_seated() -> bool:
-	if _dump_target == null or _dumping_logs.is_empty():
+	if _dump_target == null:
+		print("DEBUG SEATED: _dump_target is null!")
+		return false
+	if _dumping_logs.is_empty():
+		print("DEBUG SEATED: _dumping_logs is empty!")
 		return false
 	var maximum_center_height = _get_bottom_surface_height() + settle_height_above_bottom
 	var valid_log_found := false
@@ -276,9 +280,13 @@ func _dumped_logs_are_seated() -> bool:
 			continue
 		valid_log_found = true
 		if body.global_position.y > maximum_center_height:
+			print("DEBUG SEATED: Log Y (", body.global_position.y, ") > maximum_center_height (", maximum_center_height, ")")
 			return false
 		if abs(body.linear_velocity.y) > settle_vertical_speed:
+			print("DEBUG SEATED: Log vel Y (", body.linear_velocity.y, ") > settle_vertical_speed (", settle_vertical_speed, ")")
 			return false
+	if not valid_log_found:
+		print("DEBUG SEATED: No valid logs found!")
 	return valid_log_found
 
 func _is_log_on_deck() -> bool:
@@ -321,7 +329,33 @@ func _has_reached_dump_target(body: RigidBody3D) -> bool:
 
 
 func _downstream_clear() -> bool:
-	if _downstream_kicker == null:
-		return true
-	# The kicker sets is_blocked when a log is waiting and the incline is full.
-	return not _downstream_kicker.get("is_blocked")
+	if _downstream_kicker != null and _downstream_kicker.get("is_blocked"):
+		return false
+
+	if _dump_target != null:
+		var debarker_station = _dump_target.get_parent()
+		if debarker_station != null:
+			# Check DebarkInfeedConveyor (our dump target itself)
+			var infeed_area = _dump_target.get_node_or_null("LogArea") as Area3D
+			if infeed_area != null:
+				for body in infeed_area.get_overlapping_bodies():
+					if body.is_in_group("logs") and body is RigidBody3D:
+						return false
+			
+			# Check DebarkerLockZone
+			var lock_zone = debarker_station.get_node_or_null("DebarkerLockZone") as Area3D
+			if lock_zone != null:
+				for body in lock_zone.get_overlapping_bodies():
+					if body.is_in_group("logs") and body is RigidBody3D:
+						return false
+						
+			# Check WasteConveyor2
+			var conveyor2 = debarker_station.get_node_or_null("WasteConveyor2")
+			if conveyor2 != null:
+				var conveyor2_area = conveyor2.get_node_or_null("LogArea") as Area3D
+				if conveyor2_area != null:
+					for body in conveyor2_area.get_overlapping_bodies():
+						if body.is_in_group("logs") and body is RigidBody3D:
+							return false
+
+	return true
