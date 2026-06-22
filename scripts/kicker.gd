@@ -6,6 +6,9 @@ extends Area3D
 ## Optional: path to the InclineLogDeck. When set, the kick is held until the
 ## deck has room (backpressure from a full incline).
 @export var incline_path: NodePath
+## When true, the KickerShaft sibling physically sweeps the log via
+## AnimatableBody3D — no velocity injection. The arm does the pushing.
+@export var use_physical_arm: bool = false
 
 var original_speed: float = -1.0
 var is_kicking: bool = false
@@ -13,10 +16,13 @@ var is_kicking: bool = false
 var is_blocked: bool = false
 
 var _incline: Node = null
+var _shaft: Node3D = null
 
 func _ready() -> void:
 	if incline_path:
 		_incline = get_node_or_null(incline_path)
+	if use_physical_arm:
+		_shaft = get_parent().get_node_or_null("KickerShaft")
 
 func _physics_process(delta: float) -> void:
 	var bodies = get_overlapping_bodies()
@@ -34,14 +40,18 @@ func _physics_process(delta: float) -> void:
 				if original_speed < 0:
 					original_speed = parent.speed
 				parent.speed = 0.0
-			if parent and parent.has_method("kick"):
-				parent.kick()
+			if use_physical_arm:
+				if is_instance_valid(_shaft) and _shaft.has_method("kick"):
+					_shaft.kick()
+			else:
+				if parent and parent.has_method("kick"):
+					parent.kick()
 			is_kicking = true
 
 		var can_kick: bool = _incline == null or _incline.has_room()
 		is_blocked = not can_kick
 
-		if can_kick:
+		if can_kick and not use_physical_arm:
 			var global_kick_dir := global_transform.basis * kick_direction.normalized()
 			var target_kick_vel := global_kick_dir * kick_speed
 			for log_body in rigid_bodies:

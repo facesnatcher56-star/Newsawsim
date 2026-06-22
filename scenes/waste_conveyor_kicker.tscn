@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://scripts/conveyor.gd" id="1_conv"]
 [ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://scripts/kicker.gd" id="2_kick"]
+[ext_resource type="Script" path="res://scripts/waste_kicker_arm.gd" id="3_arm"]
 
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bottom"]
@@ -104,6 +105,7 @@ material = SubResource("StandardMaterial3D_black_metal")
 
 [node name="KickerShaft" type="Node3D" parent="." unique_id=834760892]
 transform = Transform3D(-0.95301104, -0.30293548, -8.331489e-08, -0.30293548, 0.95301104, -2.6483468e-08, 8.742279e-08, 2.1451046e-16, -1, -0.5934924, -0.1701366, 0)
+script = ExtResource("3_arm")
 
 [node name="ShaftVisual" type="MeshInstance3D" parent="KickerShaft" unique_id=373651069]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
@@ -123,6 +125,7 @@ mesh = SubResource("BoxMesh_lower_arm")
 
 [node name="UpperArmBody_0" type="AnimatableBody3D" parent="KickerShaft/ArmPivot_0" unique_id=931538699]
 transform = Transform3D(-0.16401473, -0.98645866, 0, 0.98645866, -0.16401473, 0, 0, 0, 1, 0.5073388, 0.43557096, 0)
+sync_to_physics = true
 
 [node name="Collision" type="CollisionShape3D" parent="KickerShaft/ArmPivot_0/UpperArmBody_0" unique_id=839016093]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31806642, 0)
@@ -145,6 +148,7 @@ mesh = SubResource("BoxMesh_lower_arm")
 
 [node name="UpperArmBody_1" type="AnimatableBody3D" parent="KickerShaft/ArmPivot_1" unique_id=1076809619]
 transform = Transform3D(-0.16401473, -0.98645866, 0, 0.98645866, -0.16401473, 0, 0, 0, 1, 0.5073388, 0.43557096, 0)
+sync_to_physics = true
 
 [node name="Collision" type="CollisionShape3D" parent="KickerShaft/ArmPivot_1/UpperArmBody_1" unique_id=240708081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31806642, 0)
@@ -168,6 +172,7 @@ mesh = SubResource("BoxMesh_lower_arm")
 
 [node name="UpperArmBody_2" type="AnimatableBody3D" parent="KickerShaft/ArmPivot_2" unique_id=375820458]
 transform = Transform3D(-0.16401473, -0.98645866, 0, 0.98645866, -0.16401473, 0, 0, 0, 1, 0.5073388, 0.43557096, 0)
+sync_to_physics = true
 
 [node name="Collision" type="CollisionShape3D" parent="KickerShaft/ArmPivot_2/UpperArmBody_2" unique_id=1254633233]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.31806642, 0)
@@ -181,6 +186,7 @@ mesh = SubResource("BoxMesh_upper_arm")
 [node name="KickerZone" type="Area3D" parent="." unique_id=182965496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 script = ExtResource("2_kick")
+use_physical_arm = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="KickerZone" unique_id=1639818572]
 shape = SubResource("BoxShape3D_zone")
