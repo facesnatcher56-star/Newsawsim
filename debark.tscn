@@ -135,7 +135,10 @@ dump_target_path = NodePath("../../../DebarkerStation/DebarkInfeedConveyor")
 [node name="RetractableStops" parent="LogFeedStation/OppositeDebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 258696570) index="4" unique_id=1420736936]
 dump_target_path = NodePath("../../../DebarkerStation/DebarkInfeedConveyor")
 
-[node name="KickerZone" parent="LogFeedStation/WasteConveyor3" parent_id_path=PackedInt32Array(1362207346, 570863566) index="3" unique_id=1449677283]
+[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/UpperArmBody_0" parent_id_path=PackedInt32Array(1362207346, 570863566, 931538699) index="1" unique_id=1652576944]
+transform = Transform3D(0.9965946, -0.08246034, 7.160126e-09, 0.08246034, 0.9965946, -8.886829e-10, -7.0624626e-09, 1.4761241e-09, 1, -0.022989273, 0.9070299, 0)
+
+[node name="KickerZone" parent="LogFeedStation/WasteConveyor3" parent_id_path=PackedInt32Array(1362207346, 570863566) index="4" unique_id=182965496]
 incline_path = NodePath("../../../InclineOutfeed/InclineLogDeck")
 
 [node name="HeadrigStation" parent="." unique_id=1393812162 instance=ExtResource("5_headrig")]

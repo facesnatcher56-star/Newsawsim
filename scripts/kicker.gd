@@ -34,6 +34,8 @@ func _physics_process(delta: float) -> void:
 				if original_speed < 0:
 					original_speed = parent.speed
 				parent.speed = 0.0
+			if parent and parent.has_method("kick"):
+				parent.kick()
 			is_kicking = true
 
 		var can_kick: bool = _incline == null or _incline.has_room()
