@@ -11,6 +11,8 @@ extends Node3D
 @export var kick_duration: float = 0.5
 ## Seconds for the retract stroke.
 @export var retract_duration: float = 0.8
+## Debug only: auto-triggers kick() on scene start for testing.
+@export var debug_kick_on_ready: bool = false
 
 var _home_rotation_z: float = 0.0
 var _is_kicking: bool = false
@@ -28,6 +30,8 @@ func _ready() -> void:
 		for child in pivot.get_children():
 			if child is AnimatableBody3D:
 				child.sync_to_physics = true
+	if debug_kick_on_ready:
+		kick.call_deferred()
 
 func kick() -> void:
 	if _is_kicking:
