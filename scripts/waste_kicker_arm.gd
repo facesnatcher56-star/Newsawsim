@@ -23,7 +23,9 @@ const LOWER_ARM_LENGTH := 0.66866636
 var _lower_arms: Array[Node3D] = []
 var _upper_bodies: Array[AnimatableBody3D] = []
 var _lower_arm_home_rots: Array[float] = []
-var _upper_body_home_tforms: Array[Transform3D] = []
+var _upper_body_home_bases: Array[Basis] = []
+var _upper_body_home_positions: Array[Vector3] = []
+var _pin_to_upper_offsets: Array[Vector3] = []
 var _shaft_axis: Vector3
 
 var _is_kicking := false
@@ -50,12 +52,16 @@ func _ready() -> void:
 		_lower_arms.append(lower)
 		_upper_bodies.append(upper)
 
-	# Wait one physics frame so global_transforms are fully resolved
-	await get_tree().physics_frame
-
+	# Capture editor-defined home state immediately — no physics frame needed.
+	# The editor positions are the authority for where the arms should rest.
 	for i in _lower_arms.size():
 		_lower_arm_home_rots.append(_lower_arms[i].rotation.z)
-		_upper_body_home_tforms.append(_upper_bodies[i].global_transform)
+		_upper_body_home_bases.append(_upper_bodies[i].global_transform.basis)
+		_upper_body_home_positions.append(_upper_bodies[i].global_transform.origin)
+		# Offset from the lower arm tip (pin joint) to the upper arm origin.
+		# Stored so position tracking works regardless of exact scene geometry.
+		var pin_home := _lower_arms[i].to_global(Vector3(0.0, LOWER_ARM_LENGTH, 0.0))
+		_pin_to_upper_offsets.append(_upper_bodies[i].global_transform.origin - pin_home)
 		_upper_bodies[i].sync_to_physics = true
 
 	if debug_kick_on_ready:
@@ -74,18 +80,24 @@ func kick() -> void:
 		  .set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 	_tween.finished.connect(func(): _is_kicking = false, CONNECT_ONE_SHOT)
 
+func _physics_process(_delta: float) -> void:
+	if Engine.is_editor_hint() or _lower_arms.is_empty():
+		return
+	if not _is_kicking:
+		_apply_fraction(0.0)
+
 func _apply_fraction(f: float) -> void:
 	var shaft_rad := deg_to_rad(kick_angle_deg) * f
 	var tip_rad   := deg_to_rad(upper_tip_deg) * f
 
 	for i in _lower_arms.size():
-		# Lower arm is shaft-welded: rotates exactly with the shaft
+		# Lower arm: rotates with the shaft
 		_lower_arms[i].rotation.z = _lower_arm_home_rots[i] + shaft_rad
 
-		# Pin joint in world space = tip of the lower arm
+		# Pin world position = lower arm tip, with stored offset to upper arm origin
 		var pin_world := _lower_arms[i].to_global(Vector3(0.0, LOWER_ARM_LENGTH, 0.0))
+		var upper_pos := pin_world + _pin_to_upper_offsets[i]
 
-		# Upper arm: origin sits at the pin, body tips by roller-guide amount
-		# around the shaft axis — independent of lower arm rotation
-		var tipped_basis := _upper_body_home_tforms[i].basis.rotated(_shaft_axis, tip_rad)
-		_upper_bodies[i].global_transform = Transform3D(tipped_basis, pin_world)
+		# Upper arm: tracks pin position, tips by roller-guide amount
+		var tipped_basis := _upper_body_home_bases[i].rotated(_shaft_axis, tip_rad)
+		_upper_bodies[i].global_transform = Transform3D(tipped_basis, upper_pos)
