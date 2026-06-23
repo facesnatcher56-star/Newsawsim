@@ -92,7 +92,7 @@ func _start_log_trace(bodies: Array[RigidBody3D]) -> void:
 
 
 func _trace_log(log_body: RigidBody3D, tick: int) -> void:
-	if not is_instance_valid(log_body) or tick > 60:
+	if not is_instance_valid(log_body) or tick > 200:
 		return
 	await get_tree().create_timer(0.05).timeout
 	if not is_instance_valid(log_body):
