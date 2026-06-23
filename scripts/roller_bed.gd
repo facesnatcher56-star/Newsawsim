@@ -106,6 +106,21 @@ extends StaticBody3D
 		plate_color = value
 		_queue_rebuild()
 
+@export_range(0.01, 1.0, 0.01) var plate_width: float = 0.18:
+	set(value):
+		plate_width = value
+		_queue_rebuild()
+
+@export_range(0.01, 0.5, 0.01) var connecting_bar_width: float = 0.08:
+	set(value):
+		connecting_bar_width = value
+		_queue_rebuild()
+
+@export_range(0.01, 0.2, 0.01) var connecting_bar_thickness: float = 0.03:
+	set(value):
+		connecting_bar_thickness = value
+		_queue_rebuild()
+
 @export_category("Stop Gate")
 @export var stop_gate_present: bool = true:
 	set(value):
@@ -172,10 +187,9 @@ var _target_flip_angle_deg: float = 0.0
 var _current_stop_gate_y: float = 0.0
 var _target_stop_gate_y: float = 0.0
 
-var _flipper_plates: Array[AnimatableBody3D] = []
+var _flip_table_node: AnimatableBody3D = null
+var _flip_table_base_transform: Transform3D = Transform3D.IDENTITY
 var _stop_gate_node: AnimatableBody3D = null
-
-var _plate_base_transforms: Array[Transform3D] = []
 var _stop_gate_base_transform: Transform3D = Transform3D.IDENTITY
 
 var _roller_visuals: Array[MeshInstance3D] = []
@@ -307,12 +321,9 @@ func _apply_plate_rotations() -> void:
 	var angle_rad: float = deg_to_rad(_current_flip_angle_deg)
 	var actual_angle: float = angle_rad * (1.0 if flip_pivot_on_right else -1.0)
 	
-	for i in range(_flipper_plates.size()):
-		var plate := _flipper_plates[i]
-		if is_instance_valid(plate):
-			var base_transform := _plate_base_transforms[i]
-			var rotated_basis := base_transform.basis.rotated(base_transform.basis.z.normalized(), actual_angle)
-			plate.transform = Transform3D(rotated_basis, base_transform.origin)
+	if is_instance_valid(_flip_table_node):
+		var rotated_basis := _flip_table_base_transform.basis.rotated(_flip_table_base_transform.basis.z.normalized(), actual_angle)
+		_flip_table_node.transform = Transform3D(rotated_basis, _flip_table_base_transform.origin)
 
 
 func _apply_stop_gate_position() -> void:
@@ -455,8 +466,8 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 		remove_child(old_plates_container)
 		old_plates_container.queue_free()
 
-	_flipper_plates.clear()
-	_plate_base_transforms.clear()
+	_flip_table_node = null
+	_flip_table_base_transform = Transform3D.IDENTITY
 
 	if not flip_table_present:
 		return
@@ -468,7 +479,6 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 	if roller_count > 1:
 		var center_offset: float = float(roller_count - 1) * 0.5
 		var pivot_dir: float = 1.0 if flip_pivot_on_right else -1.0
-		var plate_width: float = maxf((roller_spacing - roller_diameter) - 0.04, 0.02)
 
 		var plate_mesh := BoxMesh.new()
 		plate_mesh.size = Vector3(plate_length, plate_thickness, plate_width)
@@ -482,31 +492,61 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 		plate_shape.size = Vector3(plate_length, plate_thickness, plate_width)
 
 		var plate_basis := Basis(roller_axis, local_up, travel)
+		var pivot_pos := roller_axis * (pivot_dir * roller_length * 0.5) + local_up * plate_y_offset
+		var table_transform := Transform3D(plate_basis, pivot_pos)
 
+		var table_body := AnimatableBody3D.new()
+		table_body.name = "FlipTable"
+		table_body.sync_to_physics = true
+		table_body.transform = table_transform
+		plates_container.add_child(table_body)
+		
+		_flip_table_node = table_body
+		_flip_table_base_transform = table_transform
+
+		var gap_z_offsets: Array[float] = []
 		for index: int in range(roller_count - 1):
 			var gap_offset: float = (float(index) + 0.5 - center_offset) * roller_spacing
-			var plate_transform := Transform3D(plate_basis, travel * gap_offset + roller_axis * (pivot_dir * plate_length * 0.5) + local_up * plate_y_offset)
-			
-			var plate_body := AnimatableBody3D.new()
-			plate_body.name = "FlipperPlate%02d" % index
-			plate_body.transform = plate_transform
-			plates_container.add_child(plate_body)
-			_flipper_plates.append(plate_body)
-			_plate_base_transforms.append(plate_transform)
+			gap_z_offsets.append(gap_offset)
 
-			var child_transform := Transform3D(Basis.IDENTITY, Vector3(-pivot_dir * plate_length * 0.5, 0, 0))
+			var child_transform := Transform3D(Basis.IDENTITY, Vector3(-pivot_dir * plate_length * 0.5, 0.0, gap_offset))
 
 			var visual := MeshInstance3D.new()
-			visual.name = "Visual"
+			visual.name = "VisualArm%02d" % index
 			visual.mesh = plate_mesh
 			visual.transform = child_transform
-			plate_body.add_child(visual)
+			table_body.add_child(visual)
 
 			var collision := CollisionShape3D.new()
-			collision.name = "Collision"
+			collision.name = "CollisionArm%02d" % index
 			collision.shape = plate_shape
 			collision.transform = child_transform
-			plate_body.add_child(collision)
+			table_body.add_child(collision)
+
+		# Add the connecting bar at the far end of the arms
+		var bar_z_length: float = gap_z_offsets.back() - gap_z_offsets.front() + plate_width
+		
+		var bar_mesh := BoxMesh.new()
+		bar_mesh.size = Vector3(connecting_bar_width, connecting_bar_thickness, bar_z_length)
+		bar_mesh.material = plate_mat
+		
+		var bar_shape := BoxShape3D.new()
+		bar_shape.size = bar_mesh.size
+
+		var bar_local_pos := Vector3(-pivot_dir * (plate_length - connecting_bar_width * 0.5), 0.0, 0.0)
+		var bar_transform := Transform3D(Basis.IDENTITY, bar_local_pos)
+
+		var bar_visual := MeshInstance3D.new()
+		bar_visual.name = "ConnectingBarVisual"
+		bar_visual.mesh = bar_mesh
+		bar_visual.transform = bar_transform
+		table_body.add_child(bar_visual)
+
+		var bar_collision := CollisionShape3D.new()
+		bar_collision.name = "ConnectingBarCollision"
+		bar_collision.shape = bar_shape
+		bar_collision.transform = bar_transform
+		table_body.add_child(bar_collision)
 
 
 func _rebuild_stop_gate(travel: Vector3, roller_axis: Vector3, local_up: Vector3, radius: float) -> void:
