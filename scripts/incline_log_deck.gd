@@ -616,7 +616,7 @@ func _physics_process(delta: float) -> void:
 	# We want to stop at the next alignment if:
 	# 1. The headrig carriage is busy (not free).
 	# 2. OR the deck is empty (no logs left to carry).
-	var should_stop_at_align := not _is_headrig_free() or _on_deck.is_empty()
+	var should_stop_at_align := not _is_headrig_free() and not _on_deck.is_empty()
 
 	if should_stop_at_align and _slot.size() > 0:
 		var rem := fmod(_slot[0], lug_spacing)
