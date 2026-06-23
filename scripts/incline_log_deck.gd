@@ -561,7 +561,7 @@ func _process(delta: float) -> void:
 		# Jog one alignment step whenever the top zone just cleared —
 		# positions the next lug at the load zone ready for the incoming log.
 		if _was_blocked_at_top and not blocked_now:
-			set_running(true)
+			set_running(true, true)
 		# Also restart freely when headrig is free and deck has logs.
 		elif not _on_deck.is_empty() and not blocked_now and _is_headrig_free():
 			set_running(true)
@@ -647,8 +647,8 @@ func _is_headrig_free() -> bool:
 	return (carriage_ref.clamped_log == null) and ((carriage_ref.current_progress as float) < 0.01)
 
 
-func set_running(on: bool) -> void:
-	if on and _on_deck.is_empty():
+func set_running(on: bool, force: bool = false) -> void:
+	if on and not force and _on_deck.is_empty():
 		var has_log_in_load_zone := false
 		if load_zone != null:
 			for body in load_zone.get_overlapping_bodies():
