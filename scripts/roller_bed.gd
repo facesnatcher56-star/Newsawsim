@@ -172,6 +172,10 @@ var _rebuild_queued: bool = false
 
 var _sweep_body: AnimatableBody3D = null
 var _sweep_lugs: Array[Node3D] = []
+var _sweep_sprockets: Array[MeshInstance3D] = []
+var _sweep_chain_nodes: Array[Node3D] = []
+var _sweep_chain_gzipped: Array[float] = []
+var _sweep_chain_slots: Array[float] = []
 var _sweep_travel: float = 0.0
 var _sweep_active: bool = false
 var _sweep_sensor: Area3D = null
@@ -247,14 +251,8 @@ func _physics_process(delta: float) -> void:
 		if _sweep_travel >= loop_len:
 			_sweep_travel = 0.0
 			_sweep_active = false
-			
-		var center_offset := float(roller_count - 1) * 0.5
-		for i in range(_sweep_lugs.size()):
-			var lug = _sweep_lugs[i]
-			if is_instance_valid(lug):
-				var gz = (float(i) + 0.5 - center_offset) * roller_spacing if roller_count > 1 else 0.0
-				var xf := _get_sweep_loop_xform(_sweep_travel, gz)
-				lug.transform = xf
+		
+		_update_sweep_visuals(_sweep_travel)
 
 
 func _process(delta: float) -> void:
@@ -607,6 +605,10 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 
 	_sweep_body = null
 	_sweep_lugs.clear()
+	_sweep_sprockets.clear()
+	_sweep_chain_nodes.clear()
+	_sweep_chain_gzipped.clear()
+	_sweep_chain_slots.clear()
 	_sweep_sensor = null
 	_sweep_active = false
 	_sweep_travel = 0.0
@@ -626,6 +628,7 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	var X_start := -roller_length * 0.5 - 0.15
 	var X_end := roller_length * 0.5 + 0.15
 	var L_span := X_end - X_start
+	var loop_len := 2.0 * L_span + 2.0 * PI * R
 
 	var mat_metal := StandardMaterial3D.new()
 	mat_metal.albedo_color = Color(0.22, 0.24, 0.25)
@@ -636,6 +639,11 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	mat_lug.albedo_color = Color(0.9, 0.75, 0.1)
 	mat_lug.metallic = 0.3
 	mat_lug.roughness = 0.4
+
+	var mat_chain := StandardMaterial3D.new()
+	mat_chain.albedo_color = Color(0.15, 0.15, 0.17)
+	mat_chain.metallic = 0.9
+	mat_chain.roughness = 0.4
 
 	var center_offset := float(roller_count - 1) * 0.5
 	var gap_z_offsets: Array[float] = []
@@ -652,31 +660,36 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	for gz in gap_z_offsets:
 		var gap_pos := travel * gz
 		
+		# Left Sprocket
 		var sp_l := MeshInstance3D.new()
 		var sp_l_mesh := CylinderMesh.new()
 		sp_l_mesh.top_radius = R
 		sp_l_mesh.bottom_radius = R
 		sp_l_mesh.height = 0.03
-		sp_l_mesh.radial_segments = 12
+		sp_l_mesh.radial_segments = 10
 		sp_l.mesh = sp_l_mesh
 		sp_l.material_override = mat_metal
-		sp_l.transform = Transform3D(Basis(Vector3.FORWARD, PI/2), gap_pos + Vector3(X_start, Y_center, 0.0))
+		sp_l.transform = Transform3D(Basis(Vector3.RIGHT, PI/2), gap_pos + Vector3(X_start, Y_center, 0.0))
 		sweep_statics.add_child(sp_l)
+		_sweep_sprockets.append(sp_l)
 
+		# Right Sprocket
 		var sp_r := MeshInstance3D.new()
 		var sp_r_mesh := CylinderMesh.new()
 		sp_r_mesh.top_radius = R
 		sp_r_mesh.bottom_radius = R
 		sp_r_mesh.height = 0.03
-		sp_r_mesh.radial_segments = 12
+		sp_r_mesh.radial_segments = 10
 		sp_r.mesh = sp_r_mesh
 		sp_r.material_override = mat_metal
-		sp_r.transform = Transform3D(Basis(Vector3.FORWARD, PI/2), gap_pos + Vector3(X_end, Y_center, 0.0))
+		sp_r.transform = Transform3D(Basis(Vector3.RIGHT, PI/2), gap_pos + Vector3(X_end, Y_center, 0.0))
 		sweep_statics.add_child(sp_r)
+		_sweep_sprockets.append(sp_r)
 
+		# Guide Bar
 		var guide := MeshInstance3D.new()
 		var guide_mesh := BoxMesh.new()
-		guide_mesh.size = Vector3(L_span, 0.04, 0.05)
+		guide_mesh.size = Vector3(L_span, 0.03, 0.04)
 		guide.mesh = guide_mesh
 		guide.material_override = mat_metal
 		guide.transform = Transform3D(Basis.IDENTITY, gap_pos + Vector3(0.0, Y_center, 0.0))
@@ -688,11 +701,16 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	sweep_container.add_child(sweep_body)
 	_sweep_body = sweep_body
 
+	# Triangle lug (PrismMesh with left_to_right = 1.0)
 	var lug_mesh := PrismMesh.new()
-	lug_mesh.size = Vector3(lug_base_length, lug_height, 0.06)
+	lug_mesh.size = Vector3(lug_base_length, lug_height, 0.05)
+	lug_mesh.left_to_right = 1.0
+
+	var plate_mesh := BoxMesh.new()
+	plate_mesh.size = Vector3(lug_base_length + 0.03, 0.008, 0.055)
 
 	var lug_shape := BoxShape3D.new()
-	lug_shape.size = Vector3(lug_base_length, lug_height, 0.06)
+	lug_shape.size = Vector3(lug_base_length, lug_height, 0.05)
 
 	for i in range(gap_z_offsets.size()):
 		var gz = gap_z_offsets[i]
@@ -703,18 +721,70 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 		sweep_body.add_child(lug_root)
 		_sweep_lugs.append(lug_root)
 
+		var plate_mi := MeshInstance3D.new()
+		plate_mi.name = "MountingPlate"
+		plate_mi.mesh = plate_mesh
+		plate_mi.material_override = mat_lug
+		plate_mi.position = Vector3(0.0, 0.004, 0.0)
+		lug_root.add_child(plate_mi)
+
 		var mi := MeshInstance3D.new()
 		mi.name = "Mesh"
 		mi.mesh = lug_mesh
 		mi.material_override = mat_lug
-		mi.position = Vector3(0.0, lug_height * 0.5, 0.0)
+		mi.position = Vector3(0.0, 0.008 + lug_height * 0.5, 0.0)
 		lug_root.add_child(mi)
 
 		var col := CollisionShape3D.new()
 		col.name = "Collision"
 		col.shape = lug_shape
-		col.position = Vector3(0.0, lug_height * 0.5, 0.0)
+		col.position = Vector3(0.0, 0.008 + lug_height * 0.5, 0.0)
 		lug_root.add_child(col)
+
+	# Spawn visual chain links
+	const SWEEP_PITCH := 0.12
+	var n_links := int(ceil(loop_len / SWEEP_PITCH)) + 2
+
+	var link_plate_mesh := BoxMesh.new()
+	link_plate_mesh.size = Vector3(SWEEP_PITCH * 0.85, 0.024, 0.005)
+
+	var link_roller_mesh := CylinderMesh.new()
+	link_roller_mesh.top_radius = 0.015
+	link_roller_mesh.bottom_radius = 0.015
+	link_roller_mesh.height = 0.035
+	link_roller_mesh.radial_segments = 6
+
+	for i in range(gap_z_offsets.size()):
+		var gz = gap_z_offsets[i]
+		for j in range(n_links):
+			var slot_pos := float(j) * SWEEP_PITCH
+			
+			var link := Node3D.new()
+			link.name = "ChainLink_%d_%d" % [i, j]
+			
+			var lp := MeshInstance3D.new()
+			lp.mesh = link_plate_mesh
+			lp.material_override = mat_chain
+			lp.position = Vector3(0.0, 0.0, -0.016)
+			link.add_child(lp)
+
+			var rp := MeshInstance3D.new()
+			rp.mesh = link_plate_mesh
+			rp.material_override = mat_chain
+			rp.position = Vector3(0.0, 0.0, 0.016)
+			link.add_child(rp)
+
+			var ro := MeshInstance3D.new()
+			ro.mesh = link_roller_mesh
+			ro.material_override = mat_chain
+			ro.rotation_degrees.x = 90.0
+			link.add_child(ro)
+
+			sweep_container.add_child(link)
+			
+			_sweep_chain_nodes.append(link)
+			_sweep_chain_gzipped.append(gz)
+			_sweep_chain_slots.append(slot_pos)
 
 	var last_roller_pos := travel * (center_offset * roller_spacing)
 	var sensor := Area3D.new()
@@ -732,13 +802,38 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 
 	sensor.body_entered.connect(_on_sweep_sensor_body_entered)
 	
-	# Initial positioning of the lugs to home
+	_update_sweep_visuals(0.0)
+
+
+func _update_sweep_visuals(p_travel: float) -> void:
+	var R := 0.08
+	var X_start := -roller_length * 0.5 - 0.15
+	var X_end := roller_length * 0.5 + 0.15
+	var L_span := X_end - X_start
+	var loop_len := 2.0 * L_span + 2.0 * PI * R
+	
+	# Update lugs
+	var center_offset := float(roller_count - 1) * 0.5
 	for i in range(_sweep_lugs.size()):
 		var lug = _sweep_lugs[i]
 		if is_instance_valid(lug):
 			var gz = (float(i) + 0.5 - center_offset) * roller_spacing if roller_count > 1 else 0.0
-			var xf := _get_sweep_loop_xform(0.0, gz)
+			var xf := _get_sweep_loop_xform(p_travel, gz)
 			lug.transform = xf
+
+	# Update chain links
+	for i in range(_sweep_chain_nodes.size()):
+		var node = _sweep_chain_nodes[i]
+		if is_instance_valid(node):
+			var slot = fposmod(_sweep_chain_slots[i] + p_travel, loop_len)
+			var xf := _get_sweep_loop_xform(slot, _sweep_chain_gzipped[i])
+			node.transform = xf
+
+	# Spin sprockets
+	var ang_rad := -p_travel / R
+	for sp in _sweep_sprockets:
+		if is_instance_valid(sp):
+			sp.rotation.y = ang_rad
 
 
 func _get_sweep_loop_xform(d: float, gz: float) -> Transform3D:
