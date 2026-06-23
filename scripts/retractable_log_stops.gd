@@ -96,6 +96,13 @@ func _physics_process(delta: float) -> void:
 			# release and retract cycle before the chains begin moving.
 			if _conveyor:
 				var deck_logs := _get_deck_logs()
+				# Re-enforce axis locks every frame so stop arm sweeps or other
+				# physics interactions can't leave a log free to roll.
+				for body in deck_logs:
+					if is_instance_valid(body):
+						body.axis_lock_angular_x = true
+						body.axis_lock_angular_y = true
+						body.axis_lock_angular_z = true
 				if deck_logs.is_empty():
 					_deck_start_timer = -1.0
 					_conveyor.speed = 0.0

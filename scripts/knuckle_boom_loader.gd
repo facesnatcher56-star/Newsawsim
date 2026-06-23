@@ -375,7 +375,6 @@ func _release_log() -> void:
 		if is_instance_valid(clamped_log):
 			clamped_log.freeze = false
 			clamped_log.linear_velocity = Vector3.ZERO
-			clamped_log.angular_velocity = Vector3.ZERO
 		clamped_log = null
 
 func _update_hydraulics() -> void:
