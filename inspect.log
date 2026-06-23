@@ -3,18 +3,31 @@ Carriage Global Basis:
   X: (-0.0, 0.0, -1.0)
   Y: (0.0, 1.0, 0.0)
   Z: (1.0, 0.0, -0.0)
-Carriage KneesAssembly elements (world space):
-  CollisionHeadblock1 -> local: (0.1, 0.5, -0.7) | world: (13.4, 1.355381, 6.451477)
-  CollisionHeadblock2 -> local: (0.1, 0.5, 0.0) | world: (14.1, 1.355381, 6.451477)
-  CollisionHeadblock3 -> local: (0.1, 0.5, 0.7) | world: (14.8, 1.355381, 6.451477)
-  CSGCombiner3D -> local: (0.0, 0.0, 0.0) | world: (14.1, 0.855381, 6.551477)
-  DogPivot1 -> local: (0.175, 0.8, -0.7) | world: (13.4, 1.655381, 6.376477)
-  DogPivot2 -> local: (0.175, 0.8, 0.0) | world: (14.1, 1.655381, 6.376477)
-  DogPivot3 -> local: (0.175, 0.8, 0.7) | world: (14.8, 1.655381, 6.376477)
-  KneePivot1 -> local: (0.4, 0.15, -0.7) | world: (13.4, 1.005381, 6.151477)
-  KneePivot2 -> local: (0.4, 0.15, 0.0) | world: (14.1, 1.005381, 6.151477)
-  KneePivot3 -> local: (0.4, 0.15, 0.7) | world: (14.8, 1.005381, 6.151477)
-  LogDetector -> local: (0.2, 0.4, 0.0) | world: (14.1, 1.255381, 6.351477)
+Carriage Wheels and Axles detail:
+  WheelFL -> pos: (-0.35, -0.06, -0.7) | scale: (1.0, 1.0, 1.0)
+    Tread (CSGCylinder3D) -> pos: (0.0, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.18000000715256 | height: 0.10999999940395
+    InnerFlange (CSGCylinder3D) -> pos: (0.065, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.21500000357628 | height: 0.02500000037253
+    RotationMarker (CSGBox3D) -> pos: (-0.062, 0.09, 0.0) | scale: (1.0, 1.0, 1.0)
+  WheelFR -> pos: (0.25, -0.06, -0.7) | scale: (1.0, 1.0, 1.0)
+    Tread (CSGCylinder3D) -> pos: (0.0, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.18000000715256 | height: 0.10999999940395
+    InnerFlange (CSGCylinder3D) -> pos: (-0.065, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.21500000357628 | height: 0.02500000037253
+    RotationMarker (CSGBox3D) -> pos: (0.062, 0.09, 0.0) | scale: (1.0, 1.0, 1.0)
+  WheelRL -> pos: (-0.35, -0.06, 0.7) | scale: (1.0, 1.0, 1.0)
+    Tread (CSGCylinder3D) -> pos: (0.0, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.18000000715256 | height: 0.10999999940395
+    InnerFlange (CSGCylinder3D) -> pos: (0.065, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.21500000357628 | height: 0.02500000037253
+    RotationMarker (CSGBox3D) -> pos: (-0.062, 0.09, 0.0) | scale: (1.0, 1.0, 1.0)
+  WheelRR -> pos: (0.25, -0.06, 0.7) | scale: (1.0, 1.0, 1.0)
+    Tread (CSGCylinder3D) -> pos: (0.0, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.18000000715256 | height: 0.10999999940395
+    InnerFlange (CSGCylinder3D) -> pos: (-0.065, 0.0, 0.0) | scale: (1.0, 1.0, 1.0)
+      radius: 0.21500000357628 | height: 0.02500000037253
+    RotationMarker (CSGBox3D) -> pos: (0.062, 0.09, 0.0) | scale: (1.0, 1.0, 1.0)
 Incline Global Position: (14.2198, 0.696827, 3.36551)
 Incline Global Basis: 
   X: (-1.2, 0.0, 0.0)

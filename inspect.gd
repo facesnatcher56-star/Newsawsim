@@ -24,16 +24,17 @@ func _init():
 		file.store_line("  Y: " + str(carriage_global_transform.basis.y))
 		file.store_line("  Z: " + str(carriage_global_transform.basis.z))
 		
-		var knees = carriage.get_node_or_null("KneesAssembly")
-		if not knees:
-			file.store_line("KneesAssembly not found")
-		else:
-			file.store_line("Carriage KneesAssembly elements (world space):")
-			for child in knees.get_children():
-				if child is Node3D:
-					var child_global_pos = carriage_global_transform * child.position
-					file.store_line("  " + child.name + " -> local: " + str(child.position) + " | world: " + str(child_global_pos))
-					
+		# Dump wheels and axles in detail
+		file.store_line("Carriage Wheels and Axles detail:")
+		for part_name in ["WheelFL", "WheelFR", "WheelRL", "WheelRR"]:
+			var part = carriage.get_node_or_null(part_name)
+			if part:
+				file.store_line("  " + part_name + " -> pos: " + str(part.position) + " | scale: " + str(part.scale))
+				for child in part.get_children():
+					file.store_line("    " + child.name + " (" + child.get_class() + ") -> pos: " + str(child.position) + " | scale: " + str(child.scale))
+					if child.has_method("get_radius"):
+						file.store_line("      radius: " + str(child.radius) + " | height: " + str(child.height))
+
 	if not incline:
 		file.store_line("Incline not found")
 	else:
