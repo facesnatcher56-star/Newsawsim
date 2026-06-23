@@ -29,6 +29,7 @@ var _pin_to_upper_offsets: Array[Vector3] = []
 var _shaft_axis: Vector3
 
 var _is_kicking := false
+var _retracting := false
 var _tween: Tween = null
 
 func _ready() -> void:
@@ -73,12 +74,27 @@ func kick() -> void:
 	_is_kicking = true
 	if _tween:
 		_tween.kill()
+	_retracting = false
 	_tween = create_tween().set_process_mode(Tween.TWEEN_PROCESS_PHYSICS)
 	_tween.tween_method(_apply_fraction, 0.0, 1.0, kick_duration) \
 		  .set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	_tween.tween_callback(_begin_retract)
 	_tween.tween_method(_apply_fraction, 1.0, 0.0, retract_duration) \
 		  .set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	_tween.finished.connect(func(): _is_kicking = false, CONNECT_ONE_SHOT)
+	_tween.tween_callback(_end_retract)
+
+func _begin_retract() -> void:
+	_retracting = true
+	for b in _upper_bodies:
+		if is_instance_valid(b):
+			b.sync_to_physics = false
+
+func _end_retract() -> void:
+	_retracting = false
+	_is_kicking = false
+	for b in _upper_bodies:
+		if is_instance_valid(b):
+			b.sync_to_physics = true
 
 func _physics_process(_delta: float) -> void:
 	if Engine.is_editor_hint() or _lower_arms.is_empty():
