@@ -556,7 +556,7 @@ func _process(delta: float) -> void:
 			set_running(true)
 
 	if not running:
-		if not _on_deck.is_empty() and not is_blocked_at_top() and _is_headrig_free():
+		if not _on_deck.is_empty() and not is_blocked_at_top():
 			set_running(true)
 		
 		# Proactively check for logs in load zone to start delay timer
