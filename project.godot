@@ -15,9 +15,20 @@ run/main_scene="res://debark.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+MCPGameBridge="res://addons/godot_mcp/game_bridge/mcp_game_bridge.gd"
+
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/global_transform_inspector/plugin.cfg")
+enabled=PackedStringArray("res://addons/global_transform_inspector/plugin.cfg", "res://addons/godot_mcp/plugin.cfg")
+
+[godot_mcp]
+
+bind_mode=0
+custom_bind_ip=""
+port_override_enabled=false
+port_override=6550
 
 [physics]
 

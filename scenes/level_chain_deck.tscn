@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bwgu11eymlmjr"]
+
+[ext_resource type="Script" uid="uid://dkk4kcyh1w5q6" path="res://scripts/level_chain_deck.gd" id="1_lvldeck"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_load"]
+size = Vector3(2.4, 0.7, 1.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_top"]
+size = Vector3(2.4, 0.8, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
+size = Vector3(2.8, 1.2, 5)
+
+[node name="LevelChainDeck" type="Node3D" unique_id=347498683 node_paths=PackedStringArray("load_zone", "top_zone", "deck_area")]
+script = ExtResource("1_lvldeck")
+ramp_lowered = false
+ramp_length = 0.6
+load_zone = NodePath("DeckRoot/LoadZone")
+top_zone = NodePath("DeckRoot/TopZone")
+deck_area = NodePath("DeckRoot/DeckArea")
+
+[node name="DeckRoot" type="Node3D" parent="." unique_id=1508617407]
+
+[node name="LoadZone" type="Area3D" parent="DeckRoot" unique_id=2021739285]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.8)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeckRoot/LoadZone" unique_id=1007098130]
+shape = SubResource("BoxShape3D_load")
+
+[node name="TopZone" type="Area3D" parent="DeckRoot" unique_id=545168320]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 2.3)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeckRoot/TopZone" unique_id=1003672773]
+shape = SubResource("BoxShape3D_top")
+
+[node name="DeckArea" type="Area3D" parent="DeckRoot" unique_id=52173801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeckRoot/DeckArea" unique_id=630669493]
+shape = SubResource("BoxShape3D_deck")
