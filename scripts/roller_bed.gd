@@ -878,17 +878,17 @@ func _get_sweep_loop_xform(d: float, gz: float) -> Transform3D:
 		var theta := (d - L_span) / R
 		x = X_end + R * sin(theta)
 		y = Y_center + R * cos(theta)
-		rot_z = -theta
+		rot_z = theta
 	elif d < 2.0 * L_span + PI * R:
 		var d_ret := d - (L_span + PI * R)
 		x = X_end - d_ret
 		y = Y_bot
-		rot_z = -PI
+		rot_z = PI
 	else:
 		var theta := (d - (2.0 * L_span + PI * R)) / R
 		x = X_start - R * sin(theta)
 		y = Y_center - R * cos(theta)
-		rot_z = -PI - theta
+		rot_z = PI + theta
 
 	return Transform3D(Basis(Vector3.FORWARD, rot_z), Vector3(x, y, gz))
 
