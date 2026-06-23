@@ -57,6 +57,7 @@ func _physics_process(delta: float) -> void:
 				if not _arm_fired and is_instance_valid(_shaft) and _shaft.has_method("kick"):
 					_shaft.kick()
 					_arm_fired = true
+					_start_log_trace(rigid_bodies)
 			else:
 				var global_kick_dir := global_transform.basis * kick_direction.normalized()
 				var target_kick_vel := global_kick_dir * kick_speed
@@ -75,3 +76,29 @@ func _physics_process(delta: float) -> void:
 			_arm_fired = false
 
 
+func _start_log_trace(bodies: Array[RigidBody3D]) -> void:
+	for log_body in bodies:
+		if not is_instance_valid(log_body):
+			continue
+		log_body.contact_monitor = true
+		log_body.max_contacts_reported = 8
+		print("[KICK TRACE] Arm fired — log at %v" % log_body.global_position)
+		_trace_log(log_body, 0)
+
+
+func _trace_log(log_body: RigidBody3D, tick: int) -> void:
+	if not is_instance_valid(log_body) or tick > 16:
+		return
+	await get_tree().create_timer(0.3).timeout
+	if not is_instance_valid(log_body):
+		return
+	var vel := log_body.linear_velocity
+	var contacts := log_body.get_colliding_bodies()
+	print("[KICK TRACE] t=%.1fs  pos=%v  vel=%.3f  contacts=%d" % [
+		tick * 0.3, log_body.global_position, vel.length(), contacts.size()])
+	for c in contacts:
+		print("  >> %s" % c.get_path())
+	if vel.length() < 0.05 and tick > 2:
+		print("[KICK TRACE] LOG STOPPED MOVING")
+		return
+	_trace_log(log_body, tick + 1)
