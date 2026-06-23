@@ -63,13 +63,14 @@ func _physics_process(delta: float) -> void:
 					_shaft.kick()
 					_arm_fired = true
 					_start_log_trace(rigid_bodies)
-			else:
-				var global_kick_dir := global_transform.basis * kick_direction.normalized()
-				var target_kick_vel := global_kick_dir * kick_speed
-				for log_body in rigid_bodies:
-					var current_kick_vel: Vector3 = global_kick_dir * log_body.linear_velocity.dot(global_kick_dir)
-					var other_vel: Vector3 = log_body.linear_velocity - current_kick_vel
-					log_body.linear_velocity = current_kick_vel.lerp(target_kick_vel, kick_damping * delta) + other_vel.lerp(Vector3.ZERO, kick_damping * delta)
+			# Always apply velocity injection so a stationary log gets moving —
+			# the arm sweep alone doesn't reach the log when it's been sitting still.
+			var global_kick_dir := global_transform.basis * kick_direction.normalized()
+			var target_kick_vel := global_kick_dir * kick_speed
+			for log_body in rigid_bodies:
+				var current_kick_vel: Vector3 = global_kick_dir * log_body.linear_velocity.dot(global_kick_dir)
+				var other_vel: Vector3 = log_body.linear_velocity - current_kick_vel
+				log_body.linear_velocity = current_kick_vel.lerp(target_kick_vel, kick_damping * delta) + other_vel.lerp(Vector3.ZERO, kick_damping * delta)
 		# else: hold — incline not ready, conveyor already stopped
 	else:
 		is_blocked = false
