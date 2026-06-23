@@ -174,7 +174,10 @@ size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ground")
 
 [node name="LevelChainDeck" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
-transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 17.210676, 0.6162147, -0.7624996)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 17.210676, 0.31136364, -0.5233791)
+running = true
+ramp_lowered = false
+ramp_angle_down_deg = 10.0
 
 [node name="RollerBed2" parent="Ground" unique_id=220690297 instance=ExtResource("3_n1fx5")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20.133934, 0.5778615, 3.4099998)
@@ -531,18 +534,19 @@ constant_linear_velocity = Vector3(1, 0, -4.371139e-08)
 speed = 1.0
 roller_color = Color(0.34901962, 0.6745098, 0.2784314, 1)
 flip_max_angle = 56.0
-flip_speed_deg = 45.0
+flip_hold_time = 2.0
+flip_speed_deg = 35.0
 plate_length = 1.41
 plate_y_offset = 0.12
 plate_width = 0.43
 connecting_bar_width = 0.25
 connecting_bar_thickness = 0.04
-stop_gate_present = false
 stop_gate_length = 1.4500000000000002
 
 [node name="CutBoard" parent="InclineOutfeed" unique_id=551924559 instance=ExtResource("9_55ft6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.950111, -0.10672854, 5.4494033)
 
+[editable path="Ground/LevelChainDeck"]
 [editable path="Ground/SweepRoller"]
 [editable path="DebarkerStation"]
 [editable path="DebarkerStation/DebarkInfeedConveyor"]

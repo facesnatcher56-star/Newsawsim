@@ -208,6 +208,8 @@ var _sweep_sensor: Area3D = null
 
 func _ready() -> void:
 	_rebuild()
+	if not Engine.is_editor_hint():
+		flip_table_enabled = false
 
 func _physics_process(delta: float) -> void:
 	# Re-evaluate this so rotating the whole bed also rotates its transport velocity.
