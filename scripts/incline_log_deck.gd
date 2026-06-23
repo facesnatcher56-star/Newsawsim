@@ -70,6 +70,7 @@ var _start_delay_timer: float = 0.0   # counts down before chain starts
 var _slope_root:    Node3D
 var _active_log:    RigidBody3D       # log that triggered the current chain run
 var _on_deck:       Dictionary = {}   # instance_id → RigidBody3D, all logs currently on incline
+var _was_blocked_at_top: bool = false # detects top-zone cleared transition
 
 # Lugs (physics)
 var _lugs:          Array[AnimatableBody3D] = []
@@ -555,12 +556,18 @@ func _process(delta: float) -> void:
 		if _start_delay_timer <= 0.0:
 			set_running(true)
 
+	var blocked_now := is_blocked_at_top()
 	if not running:
-		if not _on_deck.is_empty() and not is_blocked_at_top():
+		# Restart when top zone just cleared (headrig took the log) — advance
+		# one alignment step to bring lugs to the next stopping position.
+		if not _on_deck.is_empty() and _was_blocked_at_top and not blocked_now:
 			set_running(true)
-		
+		# Also restart freely when headrig is free and deck has logs.
+		elif not _on_deck.is_empty() and not blocked_now and _is_headrig_free():
+			set_running(true)
+
 		# Proactively check for logs in load zone to start delay timer
-		if _start_delay_timer <= 0.0 and not is_blocked_at_top():
+		if _start_delay_timer <= 0.0 and not blocked_now:
 			if load_zone != null:
 				var logs_in_load_zone := false
 				for body in load_zone.get_overlapping_bodies():
@@ -570,7 +577,10 @@ func _process(delta: float) -> void:
 						break
 				if logs_in_load_zone:
 					_start_delay_timer = 2.0
+		_was_blocked_at_top = blocked_now
 		return
+
+	_was_blocked_at_top = blocked_now
 
 	if is_blocked_at_top():
 		return
