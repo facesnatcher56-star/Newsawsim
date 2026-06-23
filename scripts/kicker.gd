@@ -74,9 +74,4 @@ func _physics_process(delta: float) -> void:
 			is_kicking = false
 			_arm_fired = false
 
-			# Activate tracer on the boom log when it leaves the WasteConveyor3 kick zone
-			if get_parent().name == "WasteConveyor3":
-				for body in get_tree().get_nodes_in_group("logs"):
-					if body.has_meta("boom_log") and body.has_method("enable_trace"):
-						body.enable_trace()
-						break
+

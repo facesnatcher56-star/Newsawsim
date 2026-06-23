@@ -72,6 +72,10 @@ var _active_log:    RigidBody3D       # log that triggered the current chain run
 var _on_deck:       Dictionary = {}   # instance_id → RigidBody3D, all logs currently on incline
 var _was_blocked_at_top: bool = false # detects top-zone cleared transition
 
+# ── Lug tracer ───────────────────────────────────────────────────────────────
+var _lug_trace_start: Array[Vector3] = []
+var _lug_trace_done: bool = false
+
 # Lugs (physics)
 var _lugs:          Array[AnimatableBody3D] = []
 var _lug_shapes:    Array[CollisionShape3D] = []
@@ -149,6 +153,14 @@ func _ready() -> void:
 				deck_area.body_entered.connect(_on_deck_area_body_entered)
 			if not deck_area.body_exited.is_connected(_on_deck_area_body_exited):
 				deck_area.body_exited.connect(_on_deck_area_body_exited)
+		# Lug tracer — record and mark starting positions of top-surface lugs.
+		for i in _lugs.size():
+			if _slot[i] < incline_length:
+				_lug_trace_start.append(_lugs[i].global_position)
+				_spawn_trace_sphere(_lugs[i].global_position, Color.GREEN)
+		print("[LUG TRACE] Start positions (%d lugs on surface):" % _lug_trace_start.size())
+		for p in _lug_trace_start:
+			print("  START  %.3f, %.3f, %.3f" % [p.x, p.y, p.z])
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -562,6 +574,9 @@ func _process(delta: float) -> void:
 		# positions the next lug at the load zone ready for the incoming log.
 		if _was_blocked_at_top and not blocked_now:
 			set_running(true, true)
+			if not _lug_trace_done:
+				_lug_trace_done = true
+				_compare_lug_positions()
 		# Also restart freely when headrig is free and deck has logs.
 		elif not _on_deck.is_empty() and not blocked_now and _is_headrig_free():
 			set_running(true)
@@ -793,3 +808,42 @@ func _on_top_zone_body_exited(body: Node3D) -> void:
 	# Log was kicked sideways off the incline — remove from deck tracking.
 	if body.is_in_group("logs"):
 		_on_deck.erase(body.get_instance_id())
+
+
+# ── Lug tracer helpers ───────────────────────────────────────────────────────
+
+func _spawn_trace_sphere(world_pos: Vector3, color: Color) -> void:
+	var mi := MeshInstance3D.new()
+	var sphere := SphereMesh.new()
+	sphere.radius = 0.06
+	sphere.height = 0.12
+	mi.mesh = sphere
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mi.material_override = mat
+	mi.global_position = world_pos
+	get_tree().root.add_child(mi)
+
+
+func _compare_lug_positions() -> void:
+	# Called right when the first post-headrig jog is triggered.
+	# Waits one physics frame for the chain to actually move, then compares.
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var after: Array[Vector3] = []
+	for i in _lugs.size():
+		if _slot[i] < incline_length:
+			after.append(_lugs[i].global_position)
+			_spawn_trace_sphere(_lugs[i].global_position, Color.RED)
+	print("[LUG TRACE] After first jog (%d lugs on surface):" % after.size())
+	for j in after.size():
+		var a := after[j]
+		print("  AFTER  %.3f, %.3f, %.3f" % [a.x, a.y, a.z])
+	if _lug_trace_start.size() == after.size():
+		print("[LUG TRACE] Delta from start:")
+		for j in after.size():
+			var d := after[j] - _lug_trace_start[j]
+			print("  DELTA  %.4f, %.4f, %.4f  (len=%.4f)" % [d.x, d.y, d.z, d.length()])
+	else:
+		print("[LUG TRACE] Different lug count — start=%d  after=%d" % [_lug_trace_start.size(), after.size()])

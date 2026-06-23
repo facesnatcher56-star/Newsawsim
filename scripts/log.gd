@@ -26,16 +26,6 @@ const PROCESS_RADIUS: float = 0.5  # Proximity radius to trigger processing
 var bark_sections: Array[Node3D] = []
 var bark_coat: CSGCylinder3D = null
 
-var _trace_active: bool = false
-var _trace_timer: float = 0.0
-const _TRACE_INTERVAL: float = 0.4
-
-func enable_trace() -> void:
-	_trace_active = true
-	contact_monitor = true
-	max_contacts_reported = 16
-	print("[TRACE] Boom log tracking active — watching for incline hang-ups.")
-
 func _ready() -> void:
 	add_to_group("logs")
 	if board_count <= 0:
@@ -141,12 +131,6 @@ func _process(delta: float) -> void:
 		_update_bark_peeling()
 	if not freeze and board_count > 0 and global_transform.origin.distance_to(BANDSaw_POS) < PROCESS_RADIUS:
 		cut_board(BANDSaw_POS)
-
-	if _trace_active:
-		_trace_timer -= delta
-		if _trace_timer <= 0.0:
-			_trace_timer = _TRACE_INTERVAL
-			_report_contacts()
 
 func _remove_bark() -> void:
 	if bark_enabled and $Bark:
@@ -338,13 +322,4 @@ func get_current_radius() -> float:
 func get_cut_depth_per_pass() -> float:
 	return CUT_DEPTH_PER_PASS
 
-func _report_contacts() -> void:
-	var contacts: Array[Node3D] = get_colliding_bodies()
-	var current_speed: float = linear_velocity.length()
-	if contacts.is_empty() and current_speed > 0.05:
-		return
-	print("[TRACE] pos=%v  vel=%.3f  sleep=%s  contacts=%d" % [
-		global_position, current_speed, sleeping, contacts.size()])
-	for body: Node3D in contacts:
-		var path: String = String(body.get_path()) if body is Node else "unknown"
-		print("  >> %s" % path)
+
