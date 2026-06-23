@@ -6,8 +6,8 @@
 ##     independently, NOT rotating as a rigid unit with the lower arm.
 extends Node3D
 
-## How far the shaft rotates during the kick. Flip sign if arms go wrong way.
-@export var kick_angle_deg: float = 75.0
+## How far the shaft rotates during the kick. Negative sweeps toward log (home=0 contacts log).
+@export var kick_angle_deg: float = -75.0
 ## How much the upper arm tips during the kick (roller guide constraint effect).
 ## Flip sign if arm tips away from the log instead of toward it.
 @export var upper_tip_deg: float = 30.0

@@ -57,20 +57,20 @@ func _physics_process(delta: float) -> void:
 		if can_kick:
 			if use_physical_arm:
 				# Fire arm once when the incline has room.
+				# Log moves only from physical arm contact — no velocity injection.
 				if not _arm_fired and is_instance_valid(_shaft) and _shaft.has_method("kick"):
 					if _shaft.has_method("prime"):
 						_shaft.prime()
 					_shaft.kick()
 					_arm_fired = true
 					_start_log_trace(rigid_bodies)
-			# Always apply velocity injection so a stationary log gets moving —
-			# the arm sweep alone doesn't reach the log when it's been sitting still.
-			var global_kick_dir := global_transform.basis * kick_direction.normalized()
-			var target_kick_vel := global_kick_dir * kick_speed
-			for log_body in rigid_bodies:
-				var current_kick_vel: Vector3 = global_kick_dir * log_body.linear_velocity.dot(global_kick_dir)
-				var other_vel: Vector3 = log_body.linear_velocity - current_kick_vel
-				log_body.linear_velocity = current_kick_vel.lerp(target_kick_vel, kick_damping * delta) + other_vel.lerp(Vector3.ZERO, kick_damping * delta)
+			else:
+				var global_kick_dir := global_transform.basis * kick_direction.normalized()
+				var target_kick_vel := global_kick_dir * kick_speed
+				for log_body in rigid_bodies:
+					var current_kick_vel: Vector3 = global_kick_dir * log_body.linear_velocity.dot(global_kick_dir)
+					var other_vel: Vector3 = log_body.linear_velocity - current_kick_vel
+					log_body.linear_velocity = current_kick_vel.lerp(target_kick_vel, kick_damping * delta) + other_vel.lerp(Vector3.ZERO, kick_damping * delta)
 		# else: hold — incline not ready, conveyor already stopped
 	else:
 		is_blocked = false

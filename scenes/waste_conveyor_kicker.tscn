@@ -46,6 +46,7 @@ size = Vector3(0.8, 0.8, 1)
 [node name="WasteConveyorKicker" type="StaticBody3D" unique_id=1858429857]
 script = ExtResource("1_conv")
 speed = 1.5
+kicker_enabled = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=2061922085]
 shape = SubResource("BoxShape3D_bottom")
@@ -105,6 +106,7 @@ material = SubResource("StandardMaterial3D_black_metal")
 [node name="KickerShaft" type="Node3D" parent="." unique_id=834760892]
 transform = Transform3D(-0.95301104, -0.30293548, -8.331489e-08, -0.30293548, 0.95301104, -2.6483468e-08, 8.742279e-08, 2.1451046e-16, -1, -0.5934924, -0.1701366, 0)
 script = ExtResource("3_arm")
+debug_kick_on_ready = true
 
 [node name="ShaftVisual" type="MeshInstance3D" parent="KickerShaft" unique_id=373651069]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
