@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://qxhkdq0grc63"]
 
+[ext_resource type="Script" uid="uid://cksu808ecggkk" path="res://scripts/chain_trough_conveyor.gd" id="2_5ghiq"]
+[ext_resource type="PackedScene" uid="uid://b7rvsxnjb6skt" path="res://scenes/chain_trough_conveyor.tscn" id="8_trough"]
 [ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://c3mlf0h3g6a7r" path="res://scenes/grip_roller.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://bo7hpjp2jfjyf" path="res://Prefabs/DebarkerRing.glb" id="3"]
@@ -52,26 +54,19 @@ albedo_color = Color(0.7, 0.8, 0.9, 0.15)
 
 [node name="DebarkerStation" type="Node3D" unique_id=1728840254]
 
-[node name="DebarkInfeedConveyor" parent="." unique_id=1866187276 instance=ExtResource("1")]
+[node name="DebarkInfeedConveyor" parent="." unique_id=1866187276 instance=ExtResource("8_trough")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.8440187, 0.49387634, 2.118352)
+constant_linear_velocity = Vector3(0.8, 0, 0)
+script = ExtResource("2_5ghiq")
 speed = 0.8
 direction = Vector3(1, 0, 0)
+link_spacing = 0.15
 downstream_conveyor = NodePath("../WasteConveyor2")
-stop_when_downstream_full = true
+conveyor_length = 4.0
 
-[node name="RailLeft" parent="DebarkInfeedConveyor/Visuals" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42723918, 0.14999998, 0)
 
-[node name="RailRight" parent="DebarkInfeedConveyor/Visuals" index="2"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4314506, 0.14999998, 1.1920929e-07)
 
-[node name="RailCollisionLeft" type="CollisionShape3D" parent="DebarkInfeedConveyor" unique_id=1053115872]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5181761, 0.1875, -0.0126950145)
-shape = SubResource("BoxShape3D_conveyor_side_a")
 
-[node name="RailCollisionRight" type="CollisionShape3D" parent="DebarkInfeedConveyor" unique_id=1401006711]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5181761, 0.1875, -0.0126950145)
-shape = SubResource("BoxShape3D_conveyor_side_b")
 
 [node name="GripRoller1" parent="." unique_id=305399781 instance=ExtResource("2")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 0.29016703, 2.114215)

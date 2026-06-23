@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/log_feed_station.tscn" id="4_logfeed"]
 [ext_resource type="PackedScene" path="res://scenes/headrig_station.tscn" id="5_headrig"]
 [ext_resource type="PackedScene" path="res://scenes/incline_outfeed.tscn" id="6_incline"]
+[ext_resource type="PackedScene" uid="uid://dmko1r1aasdqt" path="res://scenes/simple_chain_deck.tscn" id="8_yfjmh"]
 [ext_resource type="PackedScene" path="res://scenes/cut_board.tscn" id="9_55ft6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
@@ -32,6 +33,23 @@ size = Vector3(60, 0.2, 60)
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_yfjmh"]
+size = Vector3(0.4, 0.05, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_enqqo"]
+size = Vector3(0.43031737, 0.05, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fjvqp"]
+size = Vector3(0.43031737, 0.05, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_f8ugb"]
+size = Vector3(1.13, 0.8, 4.05)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
+albedo_color = Color(0.24, 0.26, 0.28, 1)
+metallic = 0.8
+roughness = 0.45
+
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(1.05, 0.25, 4.05)
 
@@ -43,6 +61,34 @@ albedo_color = Color(0.2, 0.2, 0.2, 1)
 
 [sub_resource type="StandardMaterial3D" id="3"]
 albedo_color = Color(0.4, 0.3, 0.2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_deck"]
+size = Vector3(3, 0.16, 4.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape_rail"]
+size = Vector3(0.14, 0.38, 4.2)
+
+[sub_resource type="StandardMaterial3D" id="Material_Frame"]
+albedo_color = Color(0.34, 0.36, 0.38, 1)
+metallic = 0.85
+roughness = 0.35
+
+[sub_resource type="BoxShape3D" id="BoxShape_deck_area"]
+size = Vector3(3, 0.6, 4.2)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_trigger"]
+size = Vector3(2.9, 0.7, 0.36)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_horn"]
+size = Vector3(0.18, 0.35, 0.1)
+
+[sub_resource type="BoxShape3D" id="BoxShape_stop_heel"]
+size = Vector3(0.18, 0.25, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="Material_Stop"]
+albedo_color = Color(0.95, 0.45, 0.05, 1)
+metallic = 0.6
+roughness = 0.35
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bottom"]
 size = Vector3(1.05, 0.25, 4.05)
@@ -61,7 +107,7 @@ albedo_color = Color(0.15, 0.15, 0.15, 1)
 metallic = 0.8
 roughness = 0.45
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yfjmh"]
 albedo_color = Color(0.9882353, 1, 0.2784314, 1)
 metallic = 0.8
 roughness = 0.45
@@ -79,6 +125,58 @@ size = Vector3(0.08, 0.63613284, 0.08)
 
 [sub_resource type="BoxMesh" id="BoxMesh_upper_arm"]
 size = Vector3(0.08, 0.63613284, 0.08)
+
+[sub_resource type="StandardMaterial3D" id="Material_Pedestal"]
+albedo_color = Color(0.2, 0.2, 0.22, 1)
+metallic = 0.8
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Material_Cabin"]
+albedo_color = Color(0.1, 0.4, 0.2, 1)
+metallic = 0.5
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Material_Chrome"]
+albedo_color = Color(0.85, 0.85, 0.88, 1)
+metallic = 1.0
+roughness = 0.05
+
+[sub_resource type="StandardMaterial3D" id="Material_Smoke"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.12, 0.12, 0.12, 0.75)
+
+[sub_resource type="SphereMesh" id="SphereMesh_smoke"]
+material = SubResource("Material_Smoke")
+radius = 0.12
+height = 0.24
+
+[sub_resource type="Curve" id="Curve_smoke_scale"]
+_data = [Vector2(0, 0.2), 0.0, 2.0, 0, 0, Vector2(1, 1.5), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_smoke_color"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(0.08, 0.08, 0.08, 0.8, 0.15, 0.15, 0.15, 0.5, 0.2, 0.2, 0.2, 0)
+
+[sub_resource type="StandardMaterial3D" id="Material_Boom"]
+albedo_color = Color(0.85, 0.6, 0.1, 1)
+metallic = 0.4
+roughness = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Material_Grapple"]
+albedo_color = Color(0.15, 0.15, 0.15, 1)
+metallic = 0.8
+roughness = 0.3
+
+[sub_resource type="BoxShape3D" id="Shape_GrappleArea"]
+size = Vector3(0.8, 0.8, 1.2)
+
+[sub_resource type="BoxShape3D" id="Shape_ConveyorZone"]
+size = Vector3(1.5, 1.5, 2.5)
+
+[sub_resource type="BoxShape3D" id="Shape_BunkZone"]
+size = Vector3(1.5, 1.5, 2.5)
 
 [sub_resource type="BoxShape3D" id="Shape_Rail"]
 size = Vector3(0.1, 0.15, 14)
@@ -158,7 +256,7 @@ transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
-transform = Transform3D(0.9911114, 0.06651744, -0.11521168, 2.5923308e-09, 0.86602557, 0.4999997, 0.13303497, -0.4955553, 0.8583278, 27.56322, 2.046875, 9.095499)
+transform = Transform3D(-0.28279364, 0.4795901, -0.8306751, 6.284508e-09, 0.8660256, 0.4999997, 0.95918083, 0.14139673, -0.24490651, 31.562243, 2.046875, 5.5056553)
 current = true
 script = ExtResource("1_cam")
 
@@ -216,20 +314,31 @@ script = ExtResource("2_clouds")
 
 [node name="DebarkerStation" parent="." unique_id=771215760 instance=ExtResource("3_debark")]
 
-[node name="CollisionShape3D" parent="DebarkerStation/DebarkInfeedConveyor" parent_id_path=PackedInt32Array(771215760, 1866187276) index="0"]
-shape = SubResource("1")
+[node name="DebarkInfeedConveyor" parent="DebarkerStation" index="0" unique_id=1866187276]
+constant_linear_velocity = Vector3(0.2, 0, 0)
+speed = 0.2
+conveyor_width = 0.8
 
-[node name="CollisionShape3D" parent="DebarkerStation/DebarkInfeedConveyor/LogArea" index="0"]
-shape = SubResource("4")
+[node name="CollisionBottom" parent="DebarkerStation/DebarkInfeedConveyor" index="0" unique_id=32245668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
+shape = SubResource("BoxShape3D_yfjmh")
 
-[node name="Belt" parent="DebarkerStation/DebarkInfeedConveyor/Visuals" index="0"]
-material = SubResource("2")
+[node name="CollisionLeft" parent="DebarkerStation/DebarkInfeedConveyor" index="1" unique_id=426988166]
+transform = Transform3D(0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 0, 0, 1, -0.39499998, 0.08592999, 0)
+shape = SubResource("BoxShape3D_enqqo")
 
-[node name="RailLeft" parent="DebarkerStation/DebarkInfeedConveyor/Visuals" index="1"]
-material = SubResource("3")
+[node name="CollisionRight" parent="DebarkerStation/DebarkInfeedConveyor" index="2" unique_id=558373768]
+transform = Transform3D(0.9063077, -0.42261824, 0, 0.42261824, 0.9063077, 0, 0, 0, 1, 0.39499998, 0.08592999, 0)
+shape = SubResource("BoxShape3D_fjvqp")
 
-[node name="RailRight" parent="DebarkerStation/DebarkInfeedConveyor/Visuals" index="2"]
-material = SubResource("3")
+[node name="CollisionShape3D" parent="DebarkerStation/DebarkInfeedConveyor/LogArea" parent_id_path=PackedInt32Array(771215760, 1866187276, 1655586341) index="0" unique_id=2087271807]
+shape = SubResource("BoxShape3D_f8ugb")
+
+[node name="LeftWall" parent="DebarkerStation/DebarkInfeedConveyor" index="4" unique_id=1514265469]
+material = SubResource("StandardMaterial3D_metal")
+
+[node name="RightWall" parent="DebarkerStation/DebarkInfeedConveyor" index="5" unique_id=43193196]
+material = SubResource("StandardMaterial3D_metal")
 
 [node name="CollisionShape3D" parent="DebarkerStation/WasteConveyor2" parent_id_path=PackedInt32Array(771215760, 1270012316) index="0"]
 shape = SubResource("1")
@@ -248,11 +357,174 @@ material = SubResource("3")
 
 [node name="LogFeedStation" parent="." unique_id=1362207346 instance=ExtResource("4_logfeed")]
 
+[node name="CollisionShape3D" parent="LogFeedStation/DebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 1006123449) index="0" unique_id=290170045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1670221, 0)
+shape = SubResource("BoxShape_deck")
+
+[node name="CollisionShape3D2" parent="LogFeedStation/DebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 1006123449) index="1" unique_id=153311293]
+shape = SubResource("BoxShape_rail")
+
+[node name="CollisionShape3D3" parent="LogFeedStation/DebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 1006123449) index="2" unique_id=172370940]
+shape = SubResource("BoxShape_rail")
+
+[node name="Bed" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="0" unique_id=160777505]
+material = SubResource("Material_Frame")
+
+[node name="RailLeft" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="1" unique_id=743821586]
+material = SubResource("Material_Frame")
+
+[node name="RailRight" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="2" unique_id=169071732]
+material = SubResource("Material_Frame")
+
+[node name="InfeedEndBeam" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="3" unique_id=152922853]
+material = SubResource("Material_Frame")
+
+[node name="LegFrontLeft" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="4" unique_id=1764497902]
+material = SubResource("Material_Frame")
+
+[node name="LegFrontRight" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="5" unique_id=281776672]
+material = SubResource("Material_Frame")
+
+[node name="LegBackLeft" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="6" unique_id=765536662]
+material = SubResource("Material_Frame")
+
+[node name="LegBackRight" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="7" unique_id=1215159519]
+material = SubResource("Material_Frame")
+
+[node name="FootFrontLeft" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="8" unique_id=207201352]
+material = SubResource("Material_Frame")
+
+[node name="FootFrontRight" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="9" unique_id=1287113502]
+material = SubResource("Material_Frame")
+
+[node name="FootBackLeft" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="10" unique_id=1174085982]
+material = SubResource("Material_Frame")
+
+[node name="FootBackRight" parent="LogFeedStation/DebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 940157034) index="11" unique_id=1923075305]
+material = SubResource("Material_Frame")
+
 [node name="RetractableStops" parent="LogFeedStation/DebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 1006123449) index="4" unique_id=1420736936]
 dump_target_path = NodePath("../../../DebarkerStation/DebarkInfeedConveyor")
 
+[node name="CollisionShape3D" parent="LogFeedStation/DebarkDeckTest/RetractableStops/DeckArea" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1671479672) index="0" unique_id=738689580]
+shape = SubResource("BoxShape_deck_area")
+
+[node name="CollisionShape3D" parent="LogFeedStation/DebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1464854583) index="0" unique_id=624450580]
+shape = SubResource("BoxShape_stop_trigger")
+
+[node name="CollisionShapeLeftHorn" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1994157482) index="0" unique_id=2062223573]
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeLeftHeel" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1994157482) index="1" unique_id=464685795]
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeCenterHorn" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1994157482) index="2" unique_id=1942127516]
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeCenterHeel" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1994157482) index="3" unique_id=1204601460]
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeRightHorn" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1994157482) index="4" unique_id=606467824]
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeRightHeel" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 1006123449, 1994157482) index="5" unique_id=1730101913]
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="TorqueTube" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 864868304) index="0" unique_id=1746375133]
+material = SubResource("Material_Frame")
+
+[node name="ArmLeft" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 864868304) index="1" unique_id=1189316862]
+material = SubResource("Material_Stop")
+
+[node name="ArmCenter" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 864868304) index="2" unique_id=293187346]
+material = SubResource("Material_Stop")
+
+[node name="ArmRight" parent="LogFeedStation/DebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 1006123449, 864868304) index="3" unique_id=391199014]
+material = SubResource("Material_Stop")
+
+[node name="CollisionShape3D" parent="LogFeedStation/OppositeDebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 258696570) index="0" unique_id=290170045]
+shape = SubResource("BoxShape_deck")
+
+[node name="CollisionShape3D2" parent="LogFeedStation/OppositeDebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 258696570) index="1" unique_id=153311293]
+shape = SubResource("BoxShape_rail")
+
+[node name="CollisionShape3D3" parent="LogFeedStation/OppositeDebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 258696570) index="2" unique_id=172370940]
+shape = SubResource("BoxShape_rail")
+
+[node name="Bed" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="0" unique_id=160777505]
+material = SubResource("Material_Frame")
+
+[node name="RailLeft" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="1" unique_id=743821586]
+material = SubResource("Material_Frame")
+
+[node name="RailRight" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="2" unique_id=169071732]
+material = SubResource("Material_Frame")
+
+[node name="InfeedEndBeam" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="3" unique_id=152922853]
+material = SubResource("Material_Frame")
+
+[node name="LegFrontLeft" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="4" unique_id=1764497902]
+material = SubResource("Material_Frame")
+
+[node name="LegFrontRight" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="5" unique_id=281776672]
+material = SubResource("Material_Frame")
+
+[node name="LegBackLeft" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="6" unique_id=765536662]
+material = SubResource("Material_Frame")
+
+[node name="LegBackRight" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="7" unique_id=1215159519]
+material = SubResource("Material_Frame")
+
+[node name="FootFrontLeft" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="8" unique_id=207201352]
+material = SubResource("Material_Frame")
+
+[node name="FootFrontRight" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="9" unique_id=1287113502]
+material = SubResource("Material_Frame")
+
+[node name="FootBackLeft" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="10" unique_id=1174085982]
+material = SubResource("Material_Frame")
+
+[node name="FootBackRight" parent="LogFeedStation/OppositeDebarkDeckTest/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 940157034) index="11" unique_id=1923075305]
+material = SubResource("Material_Frame")
+
 [node name="RetractableStops" parent="LogFeedStation/OppositeDebarkDeckTest" parent_id_path=PackedInt32Array(1362207346, 258696570) index="4" unique_id=1420736936]
 dump_target_path = NodePath("../../../DebarkerStation/DebarkInfeedConveyor")
+
+[node name="CollisionShape3D" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/DeckArea" parent_id_path=PackedInt32Array(1362207346, 258696570, 1671479672) index="0" unique_id=738689580]
+shape = SubResource("BoxShape_deck_area")
+
+[node name="CollisionShape3D" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(1362207346, 258696570, 1464854583) index="0" unique_id=624450580]
+shape = SubResource("BoxShape_stop_trigger")
+
+[node name="CollisionShapeLeftHorn" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 258696570, 1994157482) index="0" unique_id=2062223573]
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeLeftHeel" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 258696570, 1994157482) index="1" unique_id=464685795]
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeCenterHorn" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 258696570, 1994157482) index="2" unique_id=1942127516]
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeCenterHeel" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 258696570, 1994157482) index="3" unique_id=1204601460]
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="CollisionShapeRightHorn" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 258696570, 1994157482) index="4" unique_id=606467824]
+shape = SubResource("BoxShape_stop_horn")
+
+[node name="CollisionShapeRightHeel" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/StopBody" parent_id_path=PackedInt32Array(1362207346, 258696570, 1994157482) index="5" unique_id=1730101913]
+shape = SubResource("BoxShape_stop_heel")
+
+[node name="TorqueTube" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 864868304) index="0" unique_id=1746375133]
+material = SubResource("Material_Frame")
+
+[node name="ArmLeft" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 864868304) index="1" unique_id=1189316862]
+material = SubResource("Material_Stop")
+
+[node name="ArmCenter" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 864868304) index="2" unique_id=293187346]
+material = SubResource("Material_Stop")
+
+[node name="ArmRight" parent="LogFeedStation/OppositeDebarkDeckTest/RetractableStops/MovingStops/Visuals" parent_id_path=PackedInt32Array(1362207346, 258696570, 864868304) index="3" unique_id=391199014]
+material = SubResource("Material_Stop")
 
 [node name="CollisionShape3D" parent="LogFeedStation/WasteConveyor3" parent_id_path=PackedInt32Array(1362207346, 570863566) index="0" unique_id=2061922085]
 shape = SubResource("BoxShape3D_bottom")
@@ -279,11 +551,11 @@ material = SubResource("StandardMaterial3D_black_metal")
 kick_duration = 4.0
 
 [node name="ShaftVisual" parent="LogFeedStation/WasteConveyor3/KickerShaft" index="0" unique_id=373651069]
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("CylinderMesh_shaft")
 
 [node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/LowerArm" parent_id_path=PackedInt32Array(1362207346, 570863566, 822765290) index="0" unique_id=1189437979]
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("BoxMesh_lower_arm")
 
 [node name="Collision" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/UpperArmBody_0" parent_id_path=PackedInt32Array(1362207346, 570863566, 931538699) index="0" unique_id=839016093]
@@ -291,33 +563,193 @@ shape = SubResource("BoxShape3D_upper_arm")
 
 [node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/UpperArmBody_0" parent_id_path=PackedInt32Array(1362207346, 570863566, 931538699) index="1" unique_id=1652576944]
 transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1, 0, 0.31806642, 0)
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("BoxMesh_upper_arm")
 
 [node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_1/LowerArm" parent_id_path=PackedInt32Array(1362207346, 570863566, 806818957) index="0" unique_id=466556993]
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("BoxMesh_lower_arm")
 
 [node name="Collision" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_1/UpperArmBody_1" parent_id_path=PackedInt32Array(1362207346, 570863566, 1076809619) index="0" unique_id=240708081]
 shape = SubResource("BoxShape3D_upper_arm")
 
 [node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_1/UpperArmBody_1" parent_id_path=PackedInt32Array(1362207346, 570863566, 1076809619) index="1" unique_id=567105919]
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("BoxMesh_upper_arm")
 
 [node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_2/LowerArm" parent_id_path=PackedInt32Array(1362207346, 570863566, 1988639691) index="0" unique_id=1535913954]
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("BoxMesh_lower_arm")
 
 [node name="Collision" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_2/UpperArmBody_2" parent_id_path=PackedInt32Array(1362207346, 570863566, 375820458) index="0" unique_id=1254633233]
 shape = SubResource("BoxShape3D_upper_arm")
 
 [node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_2/UpperArmBody_2" parent_id_path=PackedInt32Array(1362207346, 570863566, 375820458) index="1" unique_id=1700181950]
-material_override = SubResource("StandardMaterial3D_metal")
+material_override = SubResource("StandardMaterial3D_yfjmh")
 mesh = SubResource("BoxMesh_upper_arm")
 
 [node name="KickerZone" parent="LogFeedStation/WasteConveyor3" parent_id_path=PackedInt32Array(1362207346, 570863566) index="4" unique_id=182965496]
 incline_path = NodePath("../../../InclineOutfeed/InclineLogDeck")
+
+[node name="Pedestal" parent="LogFeedStation/KnuckleBoomLoader" parent_id_path=PackedInt32Array(1362207346, 100000048) index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="BaseCSG" parent="LogFeedStation/KnuckleBoomLoader/Turret" index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="Cabin" parent="LogFeedStation/KnuckleBoomLoader/Turret" index="1"]
+material = SubResource("Material_Cabin")
+
+[node name="EngineBay" parent="LogFeedStation/KnuckleBoomLoader/Turret" index="2"]
+material = SubResource("Material_Pedestal")
+
+[node name="ExhaustStack" parent="LogFeedStation/KnuckleBoomLoader/Turret" index="3"]
+material = SubResource("Material_Chrome")
+
+[node name="ExhaustSmoke" parent="LogFeedStation/KnuckleBoomLoader/Turret/ExhaustStack" index="0"]
+mesh = SubResource("SphereMesh_smoke")
+scale_amount_curve = SubResource("Curve_smoke_scale")
+color_ramp = SubResource("Gradient_smoke_color")
+
+[node name="BracketBaseMain" parent="LogFeedStation/KnuckleBoomLoader/Turret" index="4"]
+material = SubResource("Material_Pedestal")
+
+[node name="Barrel" parent="LogFeedStation/KnuckleBoomLoader/Turret/HydraulicMainBase" index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="MainBoomCSG" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot" index="0"]
+material = SubResource("Material_Boom")
+
+[node name="BracketRodMain" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot" index="1"]
+material = SubResource("Material_Boom")
+
+[node name="Rod" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/HydraulicMainRod" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="BracketBaseOuter" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot" index="3"]
+material = SubResource("Material_Boom")
+
+[node name="Barrel" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/HydraulicOuterBase" index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="OuterBoomCSG" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot" index="0"]
+material = SubResource("Material_Boom")
+
+[node name="BracketRodOuter" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot" index="1"]
+material = SubResource("Material_Boom")
+
+[node name="Rod" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/HydraulicOuterRod" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="GrappleBase" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="CollisionShape3D" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/GrappleArea" index="0"]
+shape = SubResource("Shape_GrappleArea")
+
+[node name="Upper" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="Middle" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft" index="1"]
+material = SubResource("Material_Grapple")
+
+[node name="Tip" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft" index="2"]
+material = SubResource("Material_Grapple")
+
+[node name="Upper" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="Middle" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight" index="1"]
+material = SubResource("Material_Grapple")
+
+[node name="Tip" parent="LogFeedStation/KnuckleBoomLoader/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight" index="2"]
+material = SubResource("Material_Grapple")
+
+[node name="CollisionShape3D" parent="LogFeedStation/KnuckleBoomLoader/ConveyorIntakeZone" index="0"]
+shape = SubResource("Shape_ConveyorZone")
+
+[node name="CollisionShape3D" parent="LogFeedStation/KnuckleBoomLoader/BunkZone" index="0"]
+shape = SubResource("Shape_BunkZone")
+
+[node name="Pedestal" parent="LogFeedStation/KnuckleBoomLoaderOpposite" parent_id_path=PackedInt32Array(1362207346, 1006123450) index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="BaseCSG" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret" index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="Cabin" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret" index="1"]
+material = SubResource("Material_Cabin")
+
+[node name="EngineBay" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret" index="2"]
+material = SubResource("Material_Pedestal")
+
+[node name="ExhaustStack" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret" index="3"]
+material = SubResource("Material_Chrome")
+
+[node name="ExhaustSmoke" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
+mesh = SubResource("SphereMesh_smoke")
+scale_amount_curve = SubResource("Curve_smoke_scale")
+color_ramp = SubResource("Gradient_smoke_color")
+
+[node name="BracketBaseMain" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret" index="4"]
+material = SubResource("Material_Pedestal")
+
+[node name="Barrel" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/HydraulicMainBase" index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="MainBoomCSG" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot" index="0"]
+material = SubResource("Material_Boom")
+
+[node name="BracketRodMain" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot" index="1"]
+material = SubResource("Material_Boom")
+
+[node name="Rod" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/HydraulicMainRod" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="BracketBaseOuter" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot" index="3"]
+material = SubResource("Material_Boom")
+
+[node name="Barrel" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/HydraulicOuterBase" index="0"]
+material = SubResource("Material_Pedestal")
+
+[node name="OuterBoomCSG" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot" index="0"]
+material = SubResource("Material_Boom")
+
+[node name="BracketRodOuter" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot" index="1"]
+material = SubResource("Material_Boom")
+
+[node name="Rod" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/HydraulicOuterRod" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="GrappleBase" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="CollisionShape3D" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/GrappleArea" index="0"]
+shape = SubResource("Shape_GrappleArea")
+
+[node name="Upper" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="Middle" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft" index="1"]
+material = SubResource("Material_Grapple")
+
+[node name="Tip" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawLeftPivot/ClawLeft" index="2"]
+material = SubResource("Material_Grapple")
+
+[node name="Upper" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight" index="0"]
+material = SubResource("Material_Grapple")
+
+[node name="Middle" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight" index="1"]
+material = SubResource("Material_Grapple")
+
+[node name="Tip" parent="LogFeedStation/KnuckleBoomLoaderOpposite/Turret/MainBoomPivot/OuterBoomPivot/GrapplePivot/ClawRightPivot/ClawRight" index="2"]
+material = SubResource("Material_Grapple")
+
+[node name="CollisionShape3D" parent="LogFeedStation/KnuckleBoomLoaderOpposite/ConveyorIntakeZone" index="0"]
+shape = SubResource("Shape_ConveyorZone")
+
+[node name="CollisionShape3D" parent="LogFeedStation/KnuckleBoomLoaderOpposite/BunkZone" index="0"]
+shape = SubResource("Shape_BunkZone")
 
 [node name="HeadrigStation" parent="." unique_id=1393812162 instance=ExtResource("5_headrig")]
 
@@ -519,10 +951,23 @@ shape = SubResource("Shape_DogTip")
 [node name="CollisionShape3D" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/LogDetector" parent_id_path=PackedInt32Array(1393812162, 100000003, 623844403) index="0" unique_id=1055094244]
 shape = SubResource("Shape_Detector")
 
-[node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
+[node name="SimpleChainDeck" parent="HeadrigStation/HeadrigConveyor/Visuals" parent_id_path=PackedInt32Array(1393812162, 100000012) index="2" unique_id=1183748203 instance=ExtResource("8_yfjmh")]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.022561, -0.69253397, -10.447376)
+running = true
 
-[node name="SlopeRoot" parent="InclineOutfeed/InclineLogDeck" parent_id_path=PackedInt32Array(371482520, 428629830) index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.3746067, 0, -0.3746067, 0.9271841, 0, 0, 0)
+[node name="LoadZone" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.844449)
+
+[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/LoadZone" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.53637695)
+
+[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/TopZone" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.76068115)
+
+[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/DeckArea" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07299805)
+
+[node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
 
 [node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone" index="0"]
 transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99998295, 0, -0.07921165, -0.30083942)
@@ -547,7 +992,10 @@ plate_y_offset = 0.12
 plate_width = 0.43
 connecting_bar_width = 0.25
 connecting_bar_thickness = 0.04
+stop_gate_present = false
 stop_gate_length = 1.4500000000000002
+stop_gate_raised = false
+auto_flip_on_stop = false
 
 [node name="CutBoard" parent="InclineOutfeed" unique_id=551924559 instance=ExtResource("9_55ft6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.950111, -0.10672854, 5.4494033)
@@ -566,5 +1014,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.950111, -0.10672854, 5.449
 [editable path="LogFeedStation/KnuckleBoomLoaderOpposite"]
 [editable path="HeadrigStation"]
 [editable path="HeadrigStation/HeadrigRailSystemInstance"]
+[editable path="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck"]
 [editable path="InclineOutfeed"]
 [editable path="InclineOutfeed/InclineLogDeck"]

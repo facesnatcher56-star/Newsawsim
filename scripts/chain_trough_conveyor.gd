@@ -168,9 +168,18 @@ func _process(delta: float) -> void:
 			_rebuild_everything()
 		return
 
-	# Animate chain links and sprockets
-	var current_speed = 0.0 if _is_stopped_by_backpressure else speed
-	var scroll_speed = current_speed * direction.normalized().z
+	# Animate chain links and sprockets — always run at the editor-set speed,
+	# regardless of backpressure (backpressure only stops log physics, not animation).
+	# Chains are laid out along the local Z axis, so scroll speed is derived
+	# from the Z component of direction. If direction has no Z component
+	# (e.g. direction = Vector3(1,0,0) for X-aligned conveyors), fall back
+	# to the X component, then default to positive speed.
+	var dir_norm := direction.normalized()
+	var scroll_speed = speed * dir_norm.z
+	if is_zero_approx(scroll_speed):
+		scroll_speed = speed * dir_norm.x
+	if is_zero_approx(scroll_speed):
+		scroll_speed = speed
 	if not is_zero_approx(scroll_speed):
 		_travel_distance += scroll_speed * delta
 		_update_chain_positions(_travel_distance)

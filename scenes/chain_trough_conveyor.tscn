@@ -6,12 +6,12 @@
 size = Vector3(0.4, 0.05, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_j8uv6"]
-size = Vector3(0.430317, 0.05, 4)
+size = Vector3(0.43031737, 0.05, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ixebn"]
-size = Vector3(0.430317, 0.05, 4)
+size = Vector3(0.43031737, 0.05, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_8ia1y"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0t1bu"]
 size = Vector3(1.13, 0.8, 4.05)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
@@ -23,28 +23,25 @@ roughness = 0.45
 constant_linear_velocity = Vector3(0, 0, 1.5)
 script = ExtResource("1_trough")
 direction = Vector3(0, 0, 1)
-conveyor_width = 1.2
-link_spacing = 0.24
-shaft_rotation_retracted = 0.0
-shaft_rotation_extended = 95.0
+link_spacing = 0.15
 
 [node name="CollisionBottom" type="CollisionShape3D" parent="." unique_id=32245668]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
 shape = SubResource("BoxShape3D_4fx5w")
 
 [node name="CollisionLeft" type="CollisionShape3D" parent="." unique_id=426988166]
-transform = Transform3D(0.906308, 0.422618, 0, -0.422618, 0.906308, 0, 0, 0, 1, -0.395, 0.08593, 0)
+transform = Transform3D(0.9063079, 0.42261833, 0, -0.42261833, 0.9063079, 0, 0, 0, 1, -0.39499998, 0.08592999, 0)
 shape = SubResource("BoxShape3D_j8uv6")
 
 [node name="CollisionRight" type="CollisionShape3D" parent="." unique_id=558373768]
-transform = Transform3D(0.906308, -0.422618, 0, 0.422618, 0.906308, 0, 0, 0, 1, 0.395, 0.08593, 0)
+transform = Transform3D(0.9063079, -0.42261833, 0, 0.42261833, 0.9063079, 0, 0, 0, 1, 0.39499998, 0.08592999, 0)
 shape = SubResource("BoxShape3D_ixebn")
 
 [node name="LogArea" type="Area3D" parent="." unique_id=1655586341]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LogArea" unique_id=2087271807]
-shape = SubResource("BoxShape3D_8ia1y")
+shape = SubResource("BoxShape3D_0t1bu")
 
 [node name="LeftWall" type="CSGBox3D" parent="." unique_id=1514265469]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.59, 0.18, 0)

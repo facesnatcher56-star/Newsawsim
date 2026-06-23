@@ -30,6 +30,9 @@ enum State {
 @export var outer_boom_pickup_angle: float = -1.501
 @export var outer_boom_drop_angle: float = -1.030
 
+## How far above the deck surface to release the log, letting it drop naturally.
+## Prevents the grapple from pushing the log through the deck.
+@export var release_height_above_deck: float = 0.15
 @export var claw_open_angle: float = -0.8
 @export var claw_closed_angle: float = -0.20
 
@@ -219,8 +222,27 @@ func _physics_process(delta: float) -> void:
 					if col_shape and col_shape.shape is CapsuleShape3D:
 						log_radius = col_shape.shape.radius
 					
-					var landing_y = deck.global_position.y + 1.15 + log_radius
-					if clamped_log.global_position.y <= landing_y:
+					# Dynamically find the deck collision shape and compute the actual
+					# surface height instead of using a hard-coded offset.
+					var deck_surface_y := 0.0
+					var found_surface := false
+					for child in deck.get_children():
+						var cs := child as CollisionShape3D
+						if cs != null and cs.shape is BoxShape3D:
+							var box := cs.shape as BoxShape3D
+							deck_surface_y = deck.global_position.y + cs.position.y + box.size.y * 0.5
+							found_surface = true
+							break
+					if not found_surface:
+						# Fallback: assume deck origin is at its base and use old heuristic.
+						deck_surface_y = deck.global_position.y + 1.15
+					
+					# The log center rests at surface + radius when settled on the deck.
+					var landing_y = deck_surface_y + log_radius
+					# Release slightly above so the log drops via gravity,
+					# preventing the grapple from pushing it through the deck.
+					var release_y = landing_y + release_height_above_deck
+					if clamped_log.global_position.y <= release_y:
 						reached_conveyor = true
 						actual_mb_drop_angle = main_boom_pivot.rotation.z
 						actual_ob_drop_angle = outer_boom_pivot.rotation.z
@@ -240,9 +262,13 @@ func _physics_process(delta: float) -> void:
 			target_ob_z = actual_ob_drop_angle if has_set_actual_drop_angles else outer_boom_drop_angle
 			target_claw = claw_open_angle
 			
+			# Release the log immediately so it drops naturally via gravity
+			# rather than being pinned to the deck surface by the grapple.
+			if clamped_log != null and is_instance_valid(clamped_log):
+				_release_log()
+			
 			timer -= delta
 			if timer <= 0.0:
-				_release_log()
 				current_state = State.RETRACT_BOOM
 				
 		State.RETRACT_BOOM:
