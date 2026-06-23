@@ -822,8 +822,9 @@ func _spawn_trace_sphere(world_pos: Vector3, color: Color) -> void:
 	mat.albedo_color = color
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	mi.material_override = mat
-	mi.global_position = world_pos
-	get_tree().root.add_child(mi)
+	var pos := world_pos
+	get_tree().root.add_child.call_deferred(mi)
+	mi.set_deferred("global_position", pos)
 
 
 func _compare_lug_positions() -> void:
