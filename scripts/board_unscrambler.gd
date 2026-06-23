@@ -27,20 +27,22 @@ var _mat_floor: StandardMaterial3D
 # X = horizontal (left = entry, right = exit), Y = vertical.
 # A closed polygon is formed by appending the INNER (bottom) edge in reverse.
 const _OUTER: Array[Vector2] = [
-	Vector2(-1.50,  0.00),  # entry far left
-	Vector2(-0.60,  0.00),  # before V-notch
-	Vector2(-0.44, -0.28),  # notch descends
-	Vector2(-0.22, -0.28),  # notch bottom flat
-	Vector2(-0.04,  0.02),  # back up from notch
-	Vector2( 0.22,  0.36),  # curve begins
-	Vector2( 0.50,  0.72),  # curve mid
-	Vector2( 0.78,  0.98),  # curve upper
-	Vector2( 1.00,  1.10),  # entry to exit flat
-	Vector2( 2.50,  1.10),  # exit far right
+	Vector2(-1.50,  0.00),  # [0]  entry far left
+	Vector2(-0.60,  0.00),  # [1]  before V-notch
+	Vector2(-0.44, -0.28),  # [2]  notch descends
+	Vector2(-0.22, -0.28),  # [3]  notch bottom flat
+	Vector2(-0.04,  0.02),  # [4]  back up from notch
+	Vector2( 0.22,  0.36),  # [5]  curve begins
+	Vector2( 0.50,  0.72),  # [6]  curve mid
+	# [7-11] circular arc (R=0.40) — tangent-continuous from the 43° sweep
+	# to a perfectly horizontal exit.  Center = (1.052, 0.687).
+	Vector2( 0.780, 0.980), # [7]  arc entry  (matches prev sweep angle)
+	Vector2( 0.839, 1.026), # [8]  arc 1/4
+	Vector2( 0.904, 1.059), # [9]  arc 2/4
+	Vector2( 0.977, 1.080), # [10] arc 3/4
+	Vector2( 1.052, 1.087), # [11] arc exit / flat starts here
+	Vector2( 2.50,  1.087), # [12] exit far right
 ]
-# Plate thickness in 2D = offset perpendicular to each segment.
-# Approximate by offsetting uniformly downward along Y; close enough for
-# a fabricated steel plate with consistent thickness.
 const _INNER_OFFSETS: Array[Vector2] = [
 	Vector2(-1.50, -0.16),
 	Vector2(-0.60, -0.16),
@@ -49,9 +51,12 @@ const _INNER_OFFSETS: Array[Vector2] = [
 	Vector2(-0.04, -0.15),
 	Vector2( 0.22,  0.19),
 	Vector2( 0.50,  0.55),
-	Vector2( 0.78,  0.81),
-	Vector2( 1.00,  0.93),
-	Vector2( 2.50,  0.93),
+	Vector2( 0.780, 0.812),
+	Vector2( 0.839, 0.856),
+	Vector2( 0.904, 0.889),
+	Vector2( 0.977, 0.910),
+	Vector2( 1.052, 0.917),
+	Vector2( 2.50,  0.917),
 ]
 
 func _ready() -> void:
@@ -116,11 +121,12 @@ func _build_cross_members() -> void:
 		Vector2(-1.20, -0.08),   # entry zone bottom
 		Vector2(-0.33, -0.36),   # inside the V-notch
 		Vector2( 0.36,  0.54),   # mid curve
-		Vector2( 0.89,  1.04),   # top of curve
-		Vector2( 1.75,  1.01),   # exit flat mid
+		Vector2( 0.91,  1.03),   # upper curve / arc zone
+		Vector2( 1.78,  1.083),  # exit flat mid
 	]
 	for bp in beam_positions:
-		_add_beam(bp * s, Vector3(0.06, 0.06, machine_width - plate_thickness * 2.0))
+		# +plate_thickness so beams extend into the side plates — no gap
+		_add_beam(bp * s, Vector3(0.06, 0.06, machine_width + plate_thickness))
 
 
 func _add_beam(profile_pos: Vector2, size: Vector3) -> void:
@@ -146,11 +152,12 @@ func _build_working_surface() -> void:
 	# Thin steel tray panels that follow the profile segments
 	var segments: Array[Array] = [
 		# [from_outer_index, to_outer_index]
-		[0, 1],   # entry flat
-		[1, 3],   # V-notch
-		[3, 5],   # bottom of notch rising
-		[5, 8],   # main upward curve
-		[8, 9],   # exit flat
+		[0, 1],    # entry flat
+		[1, 3],    # V-notch
+		[3, 5],    # bottom of notch rising
+		[5, 7],    # lower sweep
+		[7, 11],   # arc transition (rounded curve)
+		[11, 12],  # exit flat
 	]
 	for seg in segments:
 		var a: Vector2 = _OUTER[seg[0]] * s
@@ -164,7 +171,8 @@ func _build_working_surface() -> void:
 
 		var tray := CSGBox3D.new()
 		tray.name = "Surface"
-		tray.size = Vector3(length, 0.010, machine_width - plate_thickness * 2.2)
+		# +plate_thickness so trays extend into the side plates — no gap
+		tray.size = Vector3(length, 0.010, machine_width + plate_thickness)
 		tray.position = Vector3(mid.x, mid.y, machine_width * 0.5)
 		tray.rotation.z = angle
 		tray.material = _mat_floor
