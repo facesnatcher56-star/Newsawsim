@@ -12,6 +12,7 @@ extends Node3D
 @export var chain_speed:       float = 0.55
 @export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
 @export var running:           bool  = false
+@export var reverse_direction: bool  = false
 @export var stoppers_extended: bool  = true
 @export var stopper_height:    float = 0.35
 @export var stopper_speed:     float = 1.2
@@ -50,7 +51,7 @@ const SPROCKET_SEGS  := 10      # polygon segments → gear silhouette
 const CHAIN_SPAN     := 0.10    # X gap between inner faces of side plates
 const CHAIN_PLATE_W  := 0.014   # side plate X thickness
 const CHAIN_PLATE_H  := 0.042   # side plate height
-const CHAIN_PLATE_D  := 0.195   # side plate depth (along chain, < pitch)
+const CHAIN_PLATE_D  := 0.25    # side plate depth (along chain, slightly > pitch for overlap)
 const CHAIN_ROLLER_R := 0.024   # cross-pin / roller radius
 const CHAIN_PITCH    := 0.24    # centre-to-centre link spacing along chain
 
@@ -67,7 +68,6 @@ var _start_delay_timer: float = 0.0
 var _deck_root:      Node3D
 var _active_log:     RigidBody3D
 var _on_deck:        Dictionary = {}
-var _was_blocked_at_top: bool = false
 
 # Chain links (visuals)
 var _chain_nodes:    Array[Node3D]  = []
@@ -125,6 +125,12 @@ func _ready() -> void:
 	load_zone = _deck_root.get_node_or_null("LoadZone")
 	top_zone = _deck_root.get_node_or_null("TopZone")
 	deck_area = _deck_root.get_node_or_null("DeckArea")
+
+	# Setup or hide editor-only labels
+	if Engine.is_editor_hint():
+		_setup_editor_labels()
+	else:
+		_hide_editor_labels()
 
 	if not Engine.is_editor_hint():
 		# Resolve carriage by group lookup if not wired via export
@@ -226,9 +232,15 @@ func _build_support_tubes(frame: StaticBody3D) -> void:
 		# Collision shape for log physics support
 		var col := CollisionShape3D.new()
 		var bs := BoxShape3D.new()
-		bs.size = size
+		# Top of chain links is DECK_SURFACE_Y + CHAIN_PLATE_H * 0.5
+		# Bottom of support tube is -0.052 - TUBE_H * 0.5
+		var col_top := DECK_SURFACE_Y + CHAIN_PLATE_H * 0.5
+		var col_bottom := -0.052 - TUBE_H * 0.5
+		var col_h := col_top - col_bottom
+		var col_y := col_bottom + col_h * 0.5
+		bs.size = Vector3(TUBE_W, col_h, deck_length)
 		col.shape = bs
-		col.position = Vector3(tx, -0.052, 0.0)
+		col.position = Vector3(tx, col_y, 0.0)
 		frame.add_child(col)
 
 
@@ -706,7 +718,40 @@ func _process(delta: float) -> void:
 			_ramp_body.rotation_degrees.x = move_toward(_ramp_body.rotation_degrees.x, target_rot, ramp_speed * delta)
 		return
 
+	# Auto-control ramp based on load zone occupancy
+	if load_zone != null:
+		var has_any := false
+		for b in load_zone.get_overlapping_bodies():
+			if _is_log_or_board(b):
+				has_any = true
+				break
+		ramp_lowered = not has_any
+
+	if _start_delay_timer > 0.0:
+		_start_delay_timer -= delta
+		if _start_delay_timer <= 0.0:
+			set_running(true)
+
+	var blocked_now := is_blocked_at_top()
 	if not running:
+		# Restart freely when not blocked at top and deck has items
+		if not _on_deck.is_empty() and not blocked_now:
+			set_running(true)
+
+		# Proactively check for logs or boards in load zone to start delay timer
+		if _start_delay_timer <= 0.0 and not blocked_now:
+			if load_zone != null:
+				var items_in_load_zone := false
+				for body in load_zone.get_overlapping_bodies():
+					if _is_log_or_board(body) and body is RigidBody3D:
+						items_in_load_zone = true
+						_active_log = body as RigidBody3D
+						break
+				if items_in_load_zone:
+					_start_delay_timer = 2.0
+		return
+
+	if blocked_now:
 		return
 
 	_update_chain_links()
@@ -726,24 +771,28 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
+	var blocked_now := is_blocked_at_top()
+	var dir_sign := -1.0 if reverse_direction else 1.0
+	var eff_speed := chain_speed * dir_sign
+
 	# Update physical constant_linear_velocity on the frame body for friction drive
 	if is_instance_valid(_frame_body):
-		var vel := Vector3(0.0, 0.0, chain_speed if running else 0.0)
-		_frame_body.constant_linear_velocity = vel
+		var vel := Vector3(0.0, 0.0, eff_speed if (running and not blocked_now) else 0.0)
+		_frame_body.constant_linear_velocity = global_transform.basis * vel
 
 	# Update physical constant_linear_velocity on the ramp for sliding assistance
 	if is_instance_valid(_ramp_body):
-		if running and ramp_lowered:
+		if running and not blocked_now and ramp_lowered:
 			var rot_rad := _ramp_body.rotation.x
 			var vel_dir := Vector3(0.0, -sin(rot_rad), cos(rot_rad))
-			_ramp_body.constant_linear_velocity = vel_dir * chain_speed
+			_ramp_body.constant_linear_velocity = global_transform.basis * (vel_dir * eff_speed)
 		else:
 			_ramp_body.constant_linear_velocity = Vector3.ZERO
 
-	if not running:
+	if not running or blocked_now:
 		return
 
-	var advance := chain_speed * delta
+	var advance := eff_speed * delta
 	_chain_travel += advance
 
 	# Spin sprockets
@@ -775,7 +824,7 @@ func _is_headrig_free() -> bool:
 	return (carriage_ref.clamped_log == null) and ((carriage_ref.current_progress as float) < 0.01)
 
 
-func set_running(on: bool, force: bool = false) -> void:
+func set_running(on: bool, _force: bool = false) -> void:
 	running = on
 	if on:
 		for l_node: RigidBody3D in _on_deck.values():
@@ -789,16 +838,21 @@ func set_running(on: bool, force: bool = false) -> void:
 			if is_instance_valid(l_node):
 				l_node.freeze = true
 
+	var dir_sign := -1.0 if reverse_direction else 1.0
+	var eff_speed := chain_speed * dir_sign
+
 	# Update velocity immediately
 	if is_instance_valid(_frame_body):
-		var vel := Vector3(0.0, 0.0, chain_speed if running else 0.0)
-		_frame_body.constant_linear_velocity = vel
+		var blocked_now := is_blocked_at_top()
+		var vel := Vector3(0.0, 0.0, eff_speed if (running and not blocked_now) else 0.0)
+		_frame_body.constant_linear_velocity = global_transform.basis * vel
 
 	if is_instance_valid(_ramp_body):
-		if running and ramp_lowered:
+		var blocked_now := is_blocked_at_top()
+		if running and not blocked_now and ramp_lowered:
 			var rot_rad := _ramp_body.rotation.x
 			var vel_dir := Vector3(0.0, -sin(rot_rad), cos(rot_rad))
-			_ramp_body.constant_linear_velocity = vel_dir * chain_speed
+			_ramp_body.constant_linear_velocity = global_transform.basis * (vel_dir * eff_speed)
 		else:
 			_ramp_body.constant_linear_velocity = Vector3.ZERO
 
@@ -815,6 +869,8 @@ func has_room() -> bool:
 
 
 func is_blocked_at_top() -> bool:
+	if not stoppers_extended:
+		return false
 	if top_zone == null:
 		return false
 	for body in top_zone.get_overlapping_bodies():
@@ -840,9 +896,11 @@ func _on_deck_area_body_exited(body: Node3D) -> void:
 
 
 func _on_load_zone_body_entered(body: Node3D) -> void:
-	if _is_log_or_board(body) and not running and _start_delay_timer <= 0.0:
-		_active_log = body as RigidBody3D
-		_start_delay_timer = 2.0
+	if _is_log_or_board(body):
+		ramp_lowered = false
+		if not running and _start_delay_timer <= 0.0:
+			_active_log = body as RigidBody3D
+			_start_delay_timer = 2.0
 
 
 func _on_top_zone_body_entered(body: Node3D) -> void:
@@ -863,3 +921,39 @@ func _is_log_or_board(body: Node) -> bool:
 	if not is_instance_valid(body):
 		return false
 	return body.is_in_group("logs") or body.is_in_group("cut_boards")
+
+
+func _setup_editor_labels() -> void:
+	var zones = {
+		"LoadZone": "Load Zone",
+		"TopZone": "Top Zone",
+		"DeckArea": "Deck Area"
+	}
+	if _deck_root == null:
+		return
+	for zone_name in zones:
+		var zone = _deck_root.get_node_or_null(zone_name)
+		if zone != null:
+			var label = zone.get_node_or_null("EditorLabel") as Label3D
+			if label == null:
+				label = Label3D.new()
+				label.name = "EditorLabel"
+				label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+				label.double_sided = false
+				label.font_size = 48
+				label.outline_size = 10
+				label.position = Vector3(0, 0.5, 0)
+				label.modulate = Color(0.0, 0.7, 1.0) # cyan/blue
+				zone.add_child(label)
+			label.text = zones[zone_name]
+
+
+func _hide_editor_labels() -> void:
+	if _deck_root == null:
+		return
+	for zone_name in ["LoadZone", "TopZone", "DeckArea"]:
+		var zone = _deck_root.get_node_or_null(zone_name)
+		if zone != null:
+			var label = zone.get_node_or_null("EditorLabel")
+			if label != null:
+				label.hide()

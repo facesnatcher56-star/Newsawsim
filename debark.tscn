@@ -175,9 +175,15 @@ material = SubResource("Material_Ground")
 
 [node name="LevelChainDeck" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 17.210676, 0.31136364, -0.5233791)
+chain_speed = 0.2
 running = true
-ramp_lowered = false
-ramp_angle_down_deg = 10.0
+ramp_angle_down_deg = 30.0
+ramp_angle_up_deg = 70.0
+ramp_speed = 40.0
+max_logs_on_deck = 10
+
+[node name="CollisionShape3D" parent="Ground/LevelChainDeck/DeckRoot/LoadZone" parent_id_path=PackedInt32Array(347498683, 2021739285) index="0" unique_id=1007098130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.8200016)
 
 [node name="RollerBed2" parent="Ground" unique_id=220690297 instance=ExtResource("3_n1fx5")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20.133934, 0.5778615, 3.4099998)
