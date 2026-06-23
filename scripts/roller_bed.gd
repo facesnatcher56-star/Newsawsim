@@ -533,7 +533,7 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 		var bar_shape := BoxShape3D.new()
 		bar_shape.size = bar_mesh.size
 
-		var bar_local_pos := Vector3(-pivot_dir * connecting_bar_width * 0.5, 0.0, 0.0)
+		var bar_local_pos := Vector3(pivot_dir * connecting_bar_width * 0.5, 0.0, 0.0)
 		var bar_transform := Transform3D(Basis.IDENTITY, bar_local_pos)
 
 		var bar_visual := MeshInstance3D.new()
