@@ -13,8 +13,12 @@ extends StaticBody3D
 
 ## If assigned, this conveyor will stop if the downstream conveyor is full or blocked.
 @export var downstream_conveyor: StaticBody3D
+## Group name to find the downstream conveyor at runtime (cross-scene alternative to downstream_conveyor).
+@export var downstream_group: String = ""
 ## Area3D at the end of THIS conveyor to detect if a log is waiting to move off.
 @export var exit_sensor: Area3D
+## When true, stops this conveyor as soon as downstream is busy — no exit sensor needed.
+@export var stop_when_downstream_full: bool = false
 ## When true, logs inside LogArea have their rotation and lateral drift locked.
 @export var lock_logs: bool = false
 
@@ -40,6 +44,7 @@ var _kicker_pivots_rollers: Array[Node3D] = []
 var _is_stopped_by_backpressure: bool = false
 var _actual_speed: float = 5.0
 var _log_area: Area3D = null
+var _downstream_cached: Node = null
 
 func _ready() -> void:
 	_actual_speed = speed
@@ -58,17 +63,21 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var blocked = false
-	if is_instance_valid(downstream_conveyor):
-		# Check if downstream is full or stopped
-		var downstream_busy = false
-		if downstream_conveyor.has_method("is_full") and downstream_conveyor.is_full():
+	var ds := _get_downstream()
+	if is_instance_valid(ds):
+		var downstream_busy := false
+		if ds.has_method("is_full") and ds.is_full():
 			downstream_busy = true
-		elif downstream_conveyor.get("speed") == 0.0 or downstream_conveyor.get("_is_stopped_by_backpressure") == true:
+		elif ds.get("speed") == 0.0 or ds.get("_is_stopped_by_backpressure") == true:
 			downstream_busy = true
-			
-		# If downstream is busy and we have a log at our exit, we must stop.
-		if downstream_busy and is_instance_valid(exit_sensor) and exit_sensor.has_overlapping_bodies():
-			blocked = true
+
+		if downstream_busy:
+			if stop_when_downstream_full:
+				blocked = true
+			elif is_instance_valid(exit_sensor) and exit_sensor.has_overlapping_bodies():
+				blocked = true
+			elif _log_area != null and _log_area.has_overlapping_bodies():
+				blocked = true
 	
 	if blocked != _is_stopped_by_backpressure:
 		_is_stopped_by_backpressure = blocked
@@ -86,7 +95,22 @@ func _physics_process(delta: float) -> void:
 		_process_kicker(delta)
 
 func is_full() -> bool:
-	return is_instance_valid(exit_sensor) and exit_sensor.has_overlapping_bodies()
+	if is_instance_valid(exit_sensor):
+		return exit_sensor.has_overlapping_bodies()
+	if _log_area != null:
+		return _log_area.has_overlapping_bodies()
+	return false
+
+func _get_downstream() -> Node:
+	if is_instance_valid(downstream_conveyor):
+		return downstream_conveyor
+	if not downstream_group.is_empty():
+		if not is_instance_valid(_downstream_cached):
+			for n in get_tree().get_nodes_in_group(downstream_group):
+				_downstream_cached = n
+				break
+		return _downstream_cached
+	return null
 
 func _update_velocity() -> void:
 	var current_speed = 0.0 if _is_stopped_by_backpressure else speed

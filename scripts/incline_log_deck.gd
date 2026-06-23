@@ -559,7 +559,7 @@ func _set_lug_position(lug: AnimatableBody3D, tx: float, slot: float) -> void:
 #  LOOPS
 # ─────────────────────────────────────────────────────────────────────────────
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 

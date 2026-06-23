@@ -40,7 +40,7 @@ downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
 [node name="CollisionShape3D" parent="OppositeDebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(258696570, 1464854583) index="0" unique_id=624450580]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13981593)
 
-[node name="WasteConveyor3" parent="." unique_id=570863566 instance=ExtResource("5")]
+[node name="WasteConveyor3" parent="." unique_id=570863566 groups=["kicker_outfeed"] instance=ExtResource("5")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 13.254882, 0.45677352, 2.118968)
 speed = 0.8
 direction = Vector3(1, 0, 0)
