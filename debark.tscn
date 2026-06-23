@@ -169,12 +169,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, -0.9, 2)
 shape = SubResource("BoxShape3D_ground")
 
 [node name="Visuals" type="CSGBox3D" parent="Ground" unique_id=100000042]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.023434639, 0.14415765, -0.103325844)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.023434639, -0.50329757, -0.103325844)
 size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ground")
 
 [node name="LevelChainDeck" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
-transform = Transform3D(-0.99958485, 0, -0.028811432, 0, 1, 0, 0.028811432, 0, -0.99958485, 17.210676, 0.6162147, -0.5673585)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 17.210676, 0.6162147, -0.7624996)
 
 [node name="RollerBed2" parent="Ground" unique_id=220690297 instance=ExtResource("3_n1fx5")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 20.133934, 0.5778615, 3.4099998)
@@ -535,7 +535,8 @@ flip_speed_deg = 45.0
 plate_length = 1.41
 plate_y_offset = 0.12
 plate_width = 0.43
-connecting_bar_width = 0.29000000000000004
+connecting_bar_width = 0.25
+connecting_bar_thickness = 0.04
 stop_gate_present = false
 stop_gate_length = 1.4500000000000002
 
