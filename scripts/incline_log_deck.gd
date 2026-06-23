@@ -570,9 +570,10 @@ func _process(delta: float) -> void:
 
 	var blocked_now := is_blocked_at_top()
 	if not running:
-		# Jog one alignment step whenever the top zone just cleared —
-		# positions the next lug at the load zone ready for the incoming log.
-		if _was_blocked_at_top and not blocked_now:
+		# Jog one alignment step when top zone clears AND headrig is free —
+		# headrig being free means it finished its cycle and released the log,
+		# not just moved it temporarily out of the zone mid-cut.
+		if _was_blocked_at_top and not blocked_now and _is_headrig_free():
 			set_running(true, true)
 			if not _lug_trace_done:
 				_lug_trace_done = true
