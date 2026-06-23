@@ -151,6 +151,17 @@ extends StaticBody3D
 @export_range(0.05, 0.5, 0.01) var lug_height: float = 0.15
 @export_range(0.05, 0.5, 0.01) var lug_base_length: float = 0.12
 
+## When true the sweep triggers automatically when a log/board enters the sensor area.
+@export var auto_sweep: bool = true
+
+## Moves the sweep trigger sensor along the bed relative to the last roller.
+## Negative values move the sensor toward the entry end (sweep triggers sooner/earlier).
+## Positive values move it past the end (sweep triggers later).
+@export_range(-10.0, 2.0, 0.05, "or_less") var sweep_trigger_offset: float = 0.0:
+	set(value):
+		sweep_trigger_offset = value
+		_queue_rebuild()
+
 enum FlipState { FLAT, FLIPPING, HOLDING, RETRACTING }
 var _flip_state: FlipState = FlipState.FLAT
 var _flip_timer: float = 0.0
@@ -170,8 +181,8 @@ var _stop_gate_base_transform: Transform3D = Transform3D.IDENTITY
 var _roller_visuals: Array[MeshInstance3D] = []
 var _rebuild_queued: bool = false
 
-var _sweep_body: AnimatableBody3D = null
-var _sweep_lugs: Array[Node3D] = []
+var _sweep_lugs: Array[AnimatableBody3D] = []
+var _sweep_lug_push_areas: Array[Area3D] = []
 var _sweep_sprockets: Array[MeshInstance3D] = []
 var _sweep_chain_nodes: Array[Node3D] = []
 var _sweep_chain_gzipped: Array[float] = []
@@ -239,20 +250,15 @@ func _physics_process(delta: float) -> void:
 			_current_stop_gate_y = move_toward(_current_stop_gate_y, _target_stop_gate_y, stop_gate_speed * delta)
 			_apply_stop_gate_position()
 
-	# 3. Sweep Chain animation
-	if sweep_chain_present and _sweep_active and is_instance_valid(_sweep_body):
-		var R := 0.08
-		var X_start := -roller_length * 0.5 - 0.15
-		var X_end := roller_length * 0.5 + 0.15
-		var L_span := X_end - X_start
-		var loop_len = 2.0 * L_span + 2.0 * PI * R
-		
+	# 3. Sweep Chain animation (lug bodies must move in _physics_process for sync_to_physics)
+	if sweep_chain_present and _sweep_active and not _sweep_lugs.is_empty():
 		_sweep_travel += sweep_speed * delta
-		if _sweep_travel >= loop_len:
+		if _sweep_travel >= _sweep_loop_length():
 			_sweep_travel = 0.0
 			_sweep_active = false
-		
+
 		_update_sweep_visuals(_sweep_travel)
+		_apply_sweep_push(delta)
 
 
 func _process(delta: float) -> void:
@@ -320,6 +326,21 @@ func get_bed_length() -> float:
 	if roller_count <= 1:
 		return roller_diameter
 	return float(roller_count - 1) * roller_spacing + roller_diameter
+
+
+const SWEEP_SPROCKET_R := 0.08
+
+
+func _sweep_loop_span() -> float:
+	return roller_length + 0.30
+
+
+func _sweep_loop_length() -> float:
+	return 2.0 * _sweep_loop_span() + 2.0 * PI * SWEEP_SPROCKET_R
+
+
+func _is_sweep_on_top_run(d: float) -> bool:
+	return fposmod(d, _sweep_loop_length()) < _sweep_loop_span()
 
 func _queue_rebuild() -> void:
 	if not is_inside_tree() or _rebuild_queued:
@@ -603,8 +624,8 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 		remove_child(old_sensor)
 		old_sensor.queue_free()
 
-	_sweep_body = null
 	_sweep_lugs.clear()
+	_sweep_lug_push_areas.clear()
 	_sweep_sprockets.clear()
 	_sweep_chain_nodes.clear()
 	_sweep_chain_gzipped.clear()
@@ -620,10 +641,9 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	sweep_container.name = "GeneratedSweepSystem"
 	add_child(sweep_container)
 
-	var R := 0.08
+	var R := SWEEP_SPROCKET_R
 	var Y_top := radius - 0.02
 	var Y_center := Y_top - R
-	var Y_bot := Y_center - R
 
 	var X_start := -roller_length * 0.5 - 0.15
 	var X_end := roller_length * 0.5 + 0.15
@@ -659,8 +679,7 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 
 	for gz in gap_z_offsets:
 		var gap_pos := travel * gz
-		
-		# Left Sprocket
+
 		var sp_l := MeshInstance3D.new()
 		var sp_l_mesh := CylinderMesh.new()
 		sp_l_mesh.top_radius = R
@@ -669,11 +688,10 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 		sp_l_mesh.radial_segments = 10
 		sp_l.mesh = sp_l_mesh
 		sp_l.material_override = mat_metal
-		sp_l.transform = Transform3D(Basis(Vector3.RIGHT, PI/2), gap_pos + Vector3(X_start, Y_center, 0.0))
+		sp_l.transform = Transform3D(Basis(Vector3.RIGHT, PI / 2.0), gap_pos + Vector3(X_start, Y_center, 0.0))
 		sweep_statics.add_child(sp_l)
 		_sweep_sprockets.append(sp_l)
 
-		# Right Sprocket
 		var sp_r := MeshInstance3D.new()
 		var sp_r_mesh := CylinderMesh.new()
 		sp_r_mesh.top_radius = R
@@ -682,11 +700,10 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 		sp_r_mesh.radial_segments = 10
 		sp_r.mesh = sp_r_mesh
 		sp_r.material_override = mat_metal
-		sp_r.transform = Transform3D(Basis(Vector3.RIGHT, PI/2), gap_pos + Vector3(X_end, Y_center, 0.0))
+		sp_r.transform = Transform3D(Basis(Vector3.RIGHT, PI / 2.0), gap_pos + Vector3(X_end, Y_center, 0.0))
 		sweep_statics.add_child(sp_r)
 		_sweep_sprockets.append(sp_r)
 
-		# Guide Bar
 		var guide := MeshInstance3D.new()
 		var guide_mesh := BoxMesh.new()
 		guide_mesh.size = Vector3(L_span, 0.03, 0.04)
@@ -694,12 +711,6 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 		guide.material_override = mat_metal
 		guide.transform = Transform3D(Basis.IDENTITY, gap_pos + Vector3(0.0, Y_center, 0.0))
 		sweep_statics.add_child(guide)
-
-	var sweep_body := AnimatableBody3D.new()
-	sweep_body.name = "MovingLugs"
-	sweep_body.sync_to_physics = true
-	sweep_container.add_child(sweep_body)
-	_sweep_body = sweep_body
 
 	# Triangle lug (PrismMesh with left_to_right = 1.0)
 	var lug_mesh := PrismMesh.new()
@@ -712,34 +723,45 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	var lug_shape := BoxShape3D.new()
 	lug_shape.size = Vector3(lug_base_length, lug_height, 0.05)
 
+	var lug_collision_y := 0.008 + lug_height * 0.5
+
 	for i in range(gap_z_offsets.size()):
-		var gz = gap_z_offsets[i]
-		
-		var lug_root := Node3D.new()
-		lug_root.name = "Lug_%d" % i
-		lug_root.position = Vector3(X_start, Y_top, gz)
-		sweep_body.add_child(lug_root)
-		_sweep_lugs.append(lug_root)
+		var lug := AnimatableBody3D.new()
+		lug.name = "Lug_%d" % i
+		lug.sync_to_physics = true
+		sweep_container.add_child(lug)
+		_sweep_lugs.append(lug)
 
 		var plate_mi := MeshInstance3D.new()
 		plate_mi.name = "MountingPlate"
 		plate_mi.mesh = plate_mesh
 		plate_mi.material_override = mat_lug
 		plate_mi.position = Vector3(0.0, 0.004, 0.0)
-		lug_root.add_child(plate_mi)
+		lug.add_child(plate_mi)
 
 		var mi := MeshInstance3D.new()
 		mi.name = "Mesh"
 		mi.mesh = lug_mesh
 		mi.material_override = mat_lug
-		mi.position = Vector3(0.0, 0.008 + lug_height * 0.5, 0.0)
-		lug_root.add_child(mi)
+		mi.position = Vector3(0.0, lug_collision_y, 0.0)
+		lug.add_child(mi)
 
 		var col := CollisionShape3D.new()
 		col.name = "Collision"
 		col.shape = lug_shape
-		col.position = Vector3(0.0, 0.008 + lug_height * 0.5, 0.0)
-		lug_root.add_child(col)
+		col.position = Vector3(0.0, lug_collision_y, 0.0)
+		lug.add_child(col)
+
+		var push_area := Area3D.new()
+		push_area.name = "PushArea"
+		push_area.monitoring = true
+		push_area.monitorable = false
+		var push_col := CollisionShape3D.new()
+		push_col.shape = lug_shape
+		push_col.position = col.position
+		push_area.add_child(push_col)
+		lug.add_child(push_area)
+		_sweep_lug_push_areas.append(push_area)
 
 	# Spawn visual chain links
 	const SWEEP_PITCH := 0.12
@@ -755,7 +777,7 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 	link_roller_mesh.radial_segments = 6
 
 	for i in range(gap_z_offsets.size()):
-		var gz = gap_z_offsets[i]
+		var gz := gap_z_offsets[i]
 		for j in range(n_links):
 			var slot_pos := float(j) * SWEEP_PITCH
 			
@@ -786,7 +808,7 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 			_sweep_chain_gzipped.append(gz)
 			_sweep_chain_slots.append(slot_pos)
 
-	var last_roller_pos := travel * (center_offset * roller_spacing)
+	var last_roller_pos := travel * (center_offset * roller_spacing + sweep_trigger_offset)
 	var sensor := Area3D.new()
 	sensor.name = "SweepSensor"
 	sensor.transform = Transform3D(Basis.IDENTITY, last_roller_pos + local_up * (radius + 0.15))
@@ -806,30 +828,25 @@ func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vect
 
 
 func _update_sweep_visuals(p_travel: float) -> void:
-	var R := 0.08
+	var R := SWEEP_SPROCKET_R
 	var X_start := -roller_length * 0.5 - 0.15
 	var X_end := roller_length * 0.5 + 0.15
 	var L_span := X_end - X_start
 	var loop_len := 2.0 * L_span + 2.0 * PI * R
-	
-	# Update lugs
+
 	var center_offset := float(roller_count - 1) * 0.5
 	for i in range(_sweep_lugs.size()):
-		var lug = _sweep_lugs[i]
+		var lug := _sweep_lugs[i]
 		if is_instance_valid(lug):
-			var gz = (float(i) + 0.5 - center_offset) * roller_spacing if roller_count > 1 else 0.0
-			var xf := _get_sweep_loop_xform(p_travel, gz)
-			lug.transform = xf
+			var gz := (float(i) + 0.5 - center_offset) * roller_spacing if roller_count > 1 else 0.0
+			lug.transform = _get_sweep_loop_xform(p_travel, gz)
 
-	# Update chain links
 	for i in range(_sweep_chain_nodes.size()):
 		var node = _sweep_chain_nodes[i]
 		if is_instance_valid(node):
-			var slot = fposmod(_sweep_chain_slots[i] + p_travel, loop_len)
-			var xf := _get_sweep_loop_xform(slot, _sweep_chain_gzipped[i])
-			node.transform = xf
+			var slot := fposmod(_sweep_chain_slots[i] + p_travel, loop_len)
+			node.transform = _get_sweep_loop_xform(slot, _sweep_chain_gzipped[i])
 
-	# Spin sprockets
 	var ang_rad := -p_travel / R
 	for sp in _sweep_sprockets:
 		if is_instance_valid(sp):
@@ -837,7 +854,7 @@ func _update_sweep_visuals(p_travel: float) -> void:
 
 
 func _get_sweep_loop_xform(d: float, gz: float) -> Transform3D:
-	var R := 0.08
+	var R := SWEEP_SPROCKET_R
 	var Y_top := (roller_diameter * 0.5) - 0.02
 	var Y_center := Y_top - R
 	var Y_bot := Y_center - R
@@ -846,7 +863,7 @@ func _get_sweep_loop_xform(d: float, gz: float) -> Transform3D:
 	var X_end := roller_length * 0.5 + 0.15
 	var L_span := X_end - X_start
 
-	var loop_len = 2.0 * L_span + 2.0 * PI * R
+	var loop_len := 2.0 * L_span + 2.0 * PI * R
 	d = fposmod(d, loop_len)
 
 	var x: float
@@ -876,14 +893,52 @@ func _get_sweep_loop_xform(d: float, gz: float) -> Transform3D:
 	return Transform3D(Basis(Vector3.FORWARD, rot_z), Vector3(x, y, gz))
 
 
+func _apply_sweep_push(delta: float) -> void:
+	if not _sweep_active or not _is_sweep_on_top_run(_sweep_travel):
+		return
+
+	var travel := _local_travel_direction()
+	var roller_axis := travel.cross(Vector3.UP).normalized()
+	var push_dir := (global_transform.basis * roller_axis).normalized()
+	var target_vel := push_dir * sweep_speed
+	var accel := sweep_speed * 4.0
+
+	for area in _sweep_lug_push_areas:
+		if not is_instance_valid(area):
+			continue
+		for body in area.get_overlapping_bodies():
+			if not (body is RigidBody3D):
+				continue
+			if not (body.is_in_group("logs") or body.is_in_group("cut_boards")):
+				continue
+			if body.freeze:
+				continue
+			body.sleeping = false
+			var horizontal_velocity := Vector3(body.linear_velocity.x, 0.0, body.linear_velocity.z)
+			var target_horizontal := Vector3(target_vel.x, 0.0, target_vel.z)
+			horizontal_velocity = horizontal_velocity.move_toward(target_horizontal, accel * delta)
+			body.linear_velocity = Vector3(
+				horizontal_velocity.x,
+				body.linear_velocity.y,
+				horizontal_velocity.z
+			)
+
+
 func _on_sweep_sensor_body_entered(body: Node) -> void:
 	if Engine.is_editor_hint():
 		return
-	if not sweep_chain_present:
+	if not sweep_chain_present or not auto_sweep:
 		return
 	if _sweep_active:
 		return
-	
+
 	if body is RigidBody3D and (body.is_in_group("logs") or body.is_in_group("cut_boards")):
 		_sweep_active = true
 		_sweep_travel = 0.0
+
+
+func trigger_sweep() -> void:
+	if not sweep_chain_present or _sweep_active:
+		return
+	_sweep_active = true
+	_sweep_travel = 0.0
