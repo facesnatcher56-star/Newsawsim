@@ -564,7 +564,7 @@ func _process(_delta: float) -> void:
 		return
 
 	if _start_delay_timer > 0.0:
-		_start_delay_timer -= delta
+		_start_delay_timer -= _delta
 		if _start_delay_timer <= 0.0:
 			set_running(true)
 
