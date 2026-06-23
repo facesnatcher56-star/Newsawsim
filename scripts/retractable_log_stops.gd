@@ -253,7 +253,9 @@ func _on_trigger_area_body_entered(body: Node3D) -> void:
 	if body is RigidBody3D and body.is_in_group("logs"):
 		if not _dumping_logs.has(body):
 			_dumping_logs.append(body)
-			_set_dump_target_speed(0.0)
+			# Do NOT stop the infeed here — the previous log may still be
+			# travelling through it. Keep the belt running so it clears.
+			# The infeed is stopped in RETRACTING once downstream is clear.
 			_state = StopState.HOLDING_LOG
 			_timer = hold_time
 
