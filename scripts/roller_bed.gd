@@ -492,7 +492,7 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 		plate_shape.size = Vector3(plate_length, plate_thickness, plate_width)
 
 		var plate_basis := Basis(roller_axis, local_up, travel)
-		var pivot_pos := roller_axis * (pivot_dir * roller_length * 0.5) + local_up * plate_y_offset
+		var pivot_pos := roller_axis * (pivot_dir * (roller_length * 0.5 + connecting_bar_width)) + local_up * plate_y_offset
 		var table_transform := Transform3D(plate_basis, pivot_pos)
 
 		var table_body := AnimatableBody3D.new()
