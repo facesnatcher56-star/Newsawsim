@@ -492,7 +492,7 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 		plate_shape.size = Vector3(plate_length, plate_thickness, plate_width)
 
 		var plate_basis := Basis(roller_axis, local_up, travel)
-		var pivot_pos := roller_axis * (pivot_dir * (roller_length * 0.5 + connecting_bar_width * 0.5)) + local_up * plate_y_offset
+		var pivot_pos := roller_axis * (pivot_dir * (roller_length * 0.5 + connecting_bar_width)) + local_up * plate_y_offset
 		var table_transform := Transform3D(plate_basis, pivot_pos)
 
 		var table_body := AnimatableBody3D.new()
@@ -509,7 +509,7 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 			var gap_offset: float = (float(index) + 0.5 - center_offset) * roller_spacing
 			gap_z_offsets.append(gap_offset)
 
-			var child_transform := Transform3D(Basis.IDENTITY, Vector3(-pivot_dir * (connecting_bar_width * 0.5 + plate_length * 0.5), 0.0, gap_offset))
+			var child_transform := Transform3D(Basis.IDENTITY, Vector3(-pivot_dir * (connecting_bar_width + plate_length * 0.5), 0.0, gap_offset))
 
 			var visual := MeshInstance3D.new()
 			visual.name = "VisualArm%02d" % index
@@ -533,7 +533,7 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 		var bar_shape := BoxShape3D.new()
 		bar_shape.size = bar_mesh.size
 
-		var bar_local_pos := Vector3.ZERO
+		var bar_local_pos := Vector3(-pivot_dir * connecting_bar_width * 0.5, 0.0, 0.0)
 		var bar_transform := Transform3D(Basis.IDENTITY, bar_local_pos)
 
 		var bar_visual := MeshInstance3D.new()
