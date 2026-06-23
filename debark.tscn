@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bmvrfshlclq6b"]
 
 [ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://scripts/free_fly_camera.gd" id="1_cam"]
+[ext_resource type="PackedScene" uid="uid://bwgu11eymlmjr" path="res://scenes/level_chain_deck.tscn" id="2_1dclx"]
 [ext_resource type="Script" uid="uid://cky2nxbo88adw" path="res://scripts/sky_clouds.gd" id="2_clouds"]
 [ext_resource type="PackedScene" uid="uid://qxhkdq0grc63" path="res://scenes/debarker_station.tscn" id="3_debark"]
 [ext_resource type="PackedScene" path="res://scenes/log_feed_station.tscn" id="4_logfeed"]
@@ -169,6 +170,9 @@ shape = SubResource("BoxShape3D_ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.017430305, 0.015682697, -0.017086983)
 size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ground")
+
+[node name="LevelChainDeck" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
+transform = Transform3D(-0.99958485, 0, -0.028811432, 0, 1, 0, 0.028811432, 0, -0.99958485, 17.210676, 0.6162147, -0.5673585)
 
 [node name="SkyClouds" type="Node3D" parent="." unique_id=100000043]
 script = ExtResource("2_clouds")
@@ -479,6 +483,9 @@ shape = SubResource("Shape_DogTip")
 shape = SubResource("Shape_Detector")
 
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
+
+[node name="SlopeRoot" parent="InclineOutfeed/InclineLogDeck" parent_id_path=PackedInt32Array(371482520, 428629830) index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.3746067, 0, -0.3746067, 0.9271841, 0, 0, 0)
 
 [node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone" index="0"]
 transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99998295, 0, -0.07921165, -0.30083942)

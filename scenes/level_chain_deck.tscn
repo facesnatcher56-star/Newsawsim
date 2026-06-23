@@ -13,8 +13,9 @@ size = Vector3(2.8, 1.2, 5)
 
 [node name="LevelChainDeck" type="Node3D" unique_id=347498683 node_paths=PackedStringArray("load_zone", "top_zone", "deck_area")]
 script = ExtResource("1_lvldeck")
-ramp_lowered = false
 ramp_length = 0.6
+ramp_angle_down_deg = 0.0
+ramp_angle_up_deg = 30.0
 load_zone = NodePath("DeckRoot/LoadZone")
 top_zone = NodePath("DeckRoot/TopZone")
 deck_area = NodePath("DeckRoot/DeckArea")

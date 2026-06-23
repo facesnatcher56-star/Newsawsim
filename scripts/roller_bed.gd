@@ -48,7 +48,7 @@ extends StaticBody3D
 		_update_motion()
 
 @export_category("Appearance")
-@export var roller_color: Color = Color(0.34, 0.36, 0.40, 1.0):
+@export var roller_color: Color = Color(0.35, 0.45, 0.38, 1.0):
 	set(value):
 		roller_color = value
 		_queue_rebuild()
@@ -318,7 +318,24 @@ func _rebuild() -> void:
 	mesh.radial_segments = radial_segments
 	mesh.rings = 1
 
+	# Generate a procedural noise texture to make rotation visually obvious
+	var noise := FastNoiseLite.new()
+	noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+	noise.frequency = 0.08
+	
+	var noise_tex := NoiseTexture2D.new()
+	noise_tex.noise = noise
+	noise_tex.width = 256
+	noise_tex.height = 256
+	noise_tex.seamless = true
+	
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.70, 0.70, 0.70))
+	grad.set_color(1, Color(1.0, 1.0, 1.0))
+	noise_tex.color_ramp = grad
+
 	var material := StandardMaterial3D.new()
+	material.albedo_texture = noise_tex
 	material.albedo_color = roller_color
 	material.metallic = 0.85
 	material.roughness = 0.28
