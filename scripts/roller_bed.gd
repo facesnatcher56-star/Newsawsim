@@ -59,9 +59,17 @@ extends StaticBody3D
 		_queue_rebuild()
 
 @export_category("Flip Table")
+@export var flip_table_present: bool = true:
+	set(value):
+		flip_table_present = value
+		_queue_rebuild()
+
 @export var flip_table_enabled: bool = false:
 	set(value):
-		flip_table_enabled = value
+		if not flip_table_present:
+			flip_table_enabled = false
+		else:
+			flip_table_enabled = value
 		_update_flip_target()
 
 @export var flip_pivot_on_right: bool = false:
@@ -167,7 +175,7 @@ func _physics_process(delta: float) -> void:
 	match _flip_state:
 		FlipState.FLAT:
 			_target_flip_angle_deg = 0.0
-			if flip_table_enabled:
+			if flip_table_enabled and flip_table_present:
 				_flip_state = FlipState.FLIPPING
 		
 		FlipState.FLIPPING:
@@ -238,7 +246,7 @@ func _process(delta: float) -> void:
 
 
 func _update_flip_target() -> void:
-	_target_flip_angle_deg = flip_max_angle if flip_table_enabled else 0.0
+	_target_flip_angle_deg = flip_max_angle if (flip_table_enabled and flip_table_present) else 0.0
 	if Engine.is_editor_hint():
 		_current_flip_angle_deg = _target_flip_angle_deg
 		_apply_plate_rotations()
@@ -393,6 +401,9 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 	_flipper_plates.clear()
 	_plate_base_transforms.clear()
 
+	if not flip_table_present:
+		return
+
 	var plates_container := Node3D.new()
 	plates_container.name = "GeneratedPlates"
 	add_child(plates_container)
@@ -529,7 +540,7 @@ func _on_stop_gate_sensor_body_entered(body: Node) -> void:
 		return
 	
 	if body is RigidBody3D:
-		if _flip_state == FlipState.FLAT and not flip_table_enabled:
+		if _flip_state == FlipState.FLAT and not flip_table_enabled and flip_table_present:
 			flip_table_enabled = true
 
 func _local_travel_direction() -> Vector3:
