@@ -228,18 +228,37 @@ func _build_chains_and_flights() -> void:
 	var plate_h := 0.042 * scale_factor
 	var plate_w := 0.014 * scale_factor
 	var inner_z := 0.052 * scale_factor
+	var outer_z := inner_z + plate_w
 	var roller_r := 0.024 * scale_factor
-	var roller_h := 0.128 * scale_factor
+
+	# Calculate offset sidebar chain plate segments
+	var straight_len := plate_len * 0.5 - link_len * 0.05
+	var straight_center_x := (plate_len * 0.5 + link_len * 0.05) * 0.5
+
+	var dx := link_len * 0.1
+	var dz := outer_z - inner_z
+	var jog_len := sqrt(dx * dx + dz * dz)
+	var jog_ang := -atan2(dz, dx)
 
 	# Shared meshes for chain links
-	var box_m := BoxMesh.new()
-	box_m.size = Vector3(plate_len, plate_h, plate_w)
+	var straight_plate_mesh := BoxMesh.new()
+	straight_plate_mesh.size = Vector3(straight_len, plate_h, plate_w)
 
+	var jog_plate_mesh := BoxMesh.new()
+	jog_plate_mesh.size = Vector3(jog_len, plate_h, plate_w)
+
+	var roller_width := inner_z * 2.0 - plate_w
 	var cyl_m := CylinderMesh.new()
 	cyl_m.top_radius = roller_r
 	cyl_m.bottom_radius = roller_r
-	cyl_m.height = roller_h
+	cyl_m.height = roller_width
 	cyl_m.radial_segments = 8
+
+	var pin_m := CylinderMesh.new()
+	pin_m.top_radius = roller_r * 0.5
+	pin_m.bottom_radius = roller_r * 0.5
+	pin_m.height = outer_z * 2.0 + plate_w * 1.5
+	pin_m.radial_segments = 6
 
 	# Chain rails
 	for z in [za, zb]:
@@ -262,26 +281,77 @@ func _build_chains_and_flights() -> void:
 				link.add_to_group(_CHAIN_GROUP)
 				add_child(link)
 
-				# Left Plate
-				var lp := MeshInstance3D.new()
-				lp.mesh = box_m
-				lp.material_override = mat
-				lp.position = Vector3(0.0, 0.0, -inner_z)
-				link.add_child(lp)
+				# Left Plate (offset sidebar, positive Z)
+				var lp_in := MeshInstance3D.new()
+				lp_in.mesh = straight_plate_mesh
+				lp_in.material_override = mat
+				lp_in.position = Vector3(-straight_center_x, 0.0, inner_z)
+				link.add_child(lp_in)
 
-				# Right Plate
-				var rp := MeshInstance3D.new()
-				rp.mesh = box_m
-				rp.material_override = mat
-				rp.position = Vector3(0.0, 0.0, inner_z)
-				link.add_child(rp)
+				var lp_jog := MeshInstance3D.new()
+				lp_jog.mesh = jog_plate_mesh
+				lp_jog.material_override = mat
+				lp_jog.position = Vector3(0.0, 0.0, (inner_z + outer_z) * 0.5)
+				lp_jog.rotation.y = jog_ang
+				link.add_child(lp_jog)
 
-				# Roller
+				var lp_out := MeshInstance3D.new()
+				lp_out.mesh = straight_plate_mesh
+				lp_out.material_override = mat
+				lp_out.position = Vector3(straight_center_x, 0.0, outer_z)
+				link.add_child(lp_out)
+
+				# Right Plate (offset sidebar, negative Z)
+				var rp_in := MeshInstance3D.new()
+				rp_in.mesh = straight_plate_mesh
+				rp_in.material_override = mat
+				rp_in.position = Vector3(-straight_center_x, 0.0, -inner_z)
+				link.add_child(rp_in)
+
+				var rp_jog := MeshInstance3D.new()
+				rp_jog.mesh = jog_plate_mesh
+				rp_jog.material_override = mat
+				rp_jog.position = Vector3(0.0, 0.0, -(inner_z + outer_z) * 0.5)
+				rp_jog.rotation.y = -jog_ang
+				link.add_child(rp_jog)
+
+				var rp_out := MeshInstance3D.new()
+				rp_out.mesh = straight_plate_mesh
+				rp_out.material_override = mat
+				rp_out.position = Vector3(straight_center_x, 0.0, -outer_z)
+				link.add_child(rp_out)
+
+				# Joint Roller (narrow end at local_x = -link_len * 0.5)
 				var ro := MeshInstance3D.new()
 				ro.mesh = cyl_m
 				ro.material_override = mat
+				ro.position = Vector3(-link_len * 0.5, 0.0, 0.0)
 				ro.rotation.x = PI / 2.0
 				link.add_child(ro)
+
+				# Joint Pin
+				var pin := MeshInstance3D.new()
+				pin.mesh = pin_m
+				pin.material_override = mat
+				pin.position = Vector3(-link_len * 0.5, 0.0, 0.0)
+				pin.rotation.x = PI / 2.0
+				link.add_child(pin)
+
+				# If this is the last link of the segment, add a roller & pin at the end to cap it
+				if j == cnt - 1:
+					var ro_end := MeshInstance3D.new()
+					ro_end.mesh = cyl_m
+					ro_end.material_override = mat
+					ro_end.position = Vector3(link_len * 0.5, 0.0, 0.0)
+					ro_end.rotation.x = PI / 2.0
+					link.add_child(ro_end)
+
+					var pin_end := MeshInstance3D.new()
+					pin_end.mesh = pin_m
+					pin_end.material_override = mat
+					pin_end.position = Vector3(link_len * 0.5, 0.0, 0.0)
+					pin_end.rotation.x = PI / 2.0
+					link.add_child(pin_end)
 
 	# Shared mesh for flights (Square tubes)
 	var scaled_flight_dia = flight_diameter * s
