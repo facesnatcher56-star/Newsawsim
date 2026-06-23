@@ -321,5 +321,3 @@ func get_current_radius() -> float:
 
 func get_cut_depth_per_pass() -> float:
 	return CUT_DEPTH_PER_PASS
-
-
