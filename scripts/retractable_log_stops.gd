@@ -203,7 +203,7 @@ func _carry_logs_with_chains(deck_logs: Array[RigidBody3D], delta: float) -> voi
 
 func _dump_logs_toward_waste_conveyor(delta: float) -> void:
 	_prune_dumping_logs(false)
-	for body in _get_active_log_bodies():
+	for body in _dumping_logs:
 		var dump_direction = _get_dump_direction(body)
 		var target_horizontal_velocity = dump_direction * dump_speed
 		var horizontal_velocity = Vector3(body.linear_velocity.x, 0.0, body.linear_velocity.z)
