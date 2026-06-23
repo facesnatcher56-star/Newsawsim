@@ -187,6 +187,8 @@ transport_direction = Vector3(0, 0, 1)
 speed = 1.0
 flip_table_present = false
 stop_gate_present = false
+auto_sweep = true
+sweep_trigger_offset = 0.0
 
 [node name="SweepRoller" parent="Ground" unique_id=1553686795 instance=ExtResource("3_n1fx5")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 23.104225, 0.5778615, 3.4099998)
@@ -200,6 +202,7 @@ flip_table_present = false
 stop_gate_present = false
 sweep_chain_present = true
 sweep_speed = 4.0
+auto_sweep = true
 sweep_trigger_offset = -0.34999999999999964
 
 [node name="SkyClouds" type="Node3D" parent="." unique_id=100000043]
@@ -536,6 +539,8 @@ plate_length = 1.4500000000000002
 plate_y_offset = 0.12
 stop_gate_present = false
 stop_gate_length = 1.4500000000000002
+auto_sweep = true
+sweep_trigger_offset = 0.0
 
 [node name="CutBoard" parent="InclineOutfeed" unique_id=551924559 instance=ExtResource("9_55ft6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.950111, -0.10672854, 5.4494033)
