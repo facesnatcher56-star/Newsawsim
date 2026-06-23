@@ -105,8 +105,6 @@ shape = SubResource("BoxShape3D_debarker_lock")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 9.255, 0.45578635, 2.118159)
 speed = 0.8
 direction = Vector3(1, 0, 0)
-downstream_group = "kicker_outfeed"
-stop_when_downstream_full = true
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="WasteConveyor2" unique_id=630403206]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.009726405, 0.03012085)

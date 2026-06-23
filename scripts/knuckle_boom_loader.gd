@@ -374,8 +374,8 @@ func _release_log() -> void:
 	if clamped_log != null:
 		if is_instance_valid(clamped_log):
 			clamped_log.freeze = false
-			# Drop with zero linear velocity for smooth handoff
 			clamped_log.linear_velocity = Vector3.ZERO
+			clamped_log.angular_velocity = Vector3.ZERO
 		clamped_log = null
 
 func _update_hydraulics() -> void:
