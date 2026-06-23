@@ -68,6 +68,16 @@ func _ready() -> void:
 	if debug_kick_on_ready:
 		kick()
 
+func relax() -> void:
+	for b in _upper_bodies:
+		if is_instance_valid(b):
+			b.sync_to_physics = false
+
+func prime() -> void:
+	for b in _upper_bodies:
+		if is_instance_valid(b):
+			b.sync_to_physics = true
+
 func kick() -> void:
 	if _is_kicking:
 		return

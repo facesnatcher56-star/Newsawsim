@@ -45,6 +45,9 @@ func _physics_process(delta: float) -> void:
 				parent.speed = 0.0
 			if not use_physical_arm and parent and parent.has_method("kick"):
 				parent.kick()
+			# Relax arm bodies so the log sits on the belt naturally while waiting.
+			if use_physical_arm and is_instance_valid(_shaft) and _shaft.has_method("relax"):
+				_shaft.relax()
 			is_kicking = true
 			_arm_fired = false
 
@@ -55,6 +58,8 @@ func _physics_process(delta: float) -> void:
 			if use_physical_arm:
 				# Fire arm once when the incline has room.
 				if not _arm_fired and is_instance_valid(_shaft) and _shaft.has_method("kick"):
+					if _shaft.has_method("prime"):
+						_shaft.prime()
 					_shaft.kick()
 					_arm_fired = true
 					_start_log_trace(rigid_bodies)
