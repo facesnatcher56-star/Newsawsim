@@ -18,7 +18,7 @@ extends StaticBody3D
 
 @export var chain_spacing: float = 1.8:
 	set(v): chain_spacing = v; _rebuild()
-@export var flight_spacing: float = 0.35:
+@export var flight_spacing: float = 1.4:
 	set(v): flight_spacing = v; _rebuild()
 @export var flight_height: float = 0.1:
 	set(v): flight_height = v; _rebuild()
@@ -223,8 +223,8 @@ func _build_chains_and_flights() -> void:
 	# Scale factor based on custom chain_diameter compared to default level deck roller diameter (0.048).
 	var scale_factor: float = (chain_diameter / 0.048) * s
 
-	var link_len := 0.2032 * scale_factor
-	var plate_len := 0.25 * scale_factor
+	var link_len := 0.2032 * s
+	var plate_len := 0.25 * s
 	var plate_h := 0.042 * scale_factor
 	var plate_w := 0.014 * scale_factor
 	var inner_z := 0.052 * scale_factor
@@ -283,14 +283,22 @@ func _build_chains_and_flights() -> void:
 				ro.rotation.x = PI / 2.0
 				link.add_child(ro)
 
-	# Shared mesh for flights
+	# Shared mesh for flights (Square tubes)
 	var scaled_flight_dia = flight_diameter * s
 	var scaled_flight_h = flight_height * s
-	var flight_mesh_res := CylinderMesh.new()
-	flight_mesh_res.top_radius = scaled_flight_dia * 0.5
-	flight_mesh_res.bottom_radius = scaled_flight_dia * 0.5
-	flight_mesh_res.height = absf(zb - za) + (0.052 * 2.0 + 0.014) * scale_factor + 0.01
-	flight_mesh_res.radial_segments = 8
+	var flight_len := absf(zb - za) + (inner_z * 2.0 + plate_w) + 0.01
+	var flight_mesh_res := BoxMesh.new()
+	flight_mesh_res.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
+
+	# Bracket setup for attaching flights visually to chains
+	var contact_h: float = plate_h * 0.5 + scaled_flight_dia * 0.5
+	var bracket_m: BoxMesh = null
+	var bracket_y: float = 0.0
+	if scaled_flight_h > contact_h:
+		var bracket_h: float = scaled_flight_h - contact_h
+		bracket_m = BoxMesh.new()
+		bracket_m.size = Vector3(plate_len * 0.5, bracket_h, inner_z * 2.0)
+		bracket_y = (-scaled_flight_h + plate_h * 0.5 - scaled_flight_dia * 0.5) * 0.5
 
 	# Flights
 	var al2: Array[float] = [0.0]
@@ -309,15 +317,31 @@ func _build_chains_and_flights() -> void:
 		var pos := pts[s2].lerp(pts[s2 + 1], t)
 		var d2 := (pts[s2 + 1] - pts[s2]).normalized()
 		var n := Vector2(-d2.y, d2.x)
+		var ang := atan2(d2.y, d2.x)
 
 		var fl := MeshInstance3D.new()
 		fl.name = "Flight%d" % fi
 		fi += 1
 		fl.mesh = flight_mesh_res
 		fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, (za + zb) * 0.5)
-		fl.rotation.x = deg_to_rad(90.0)
+		fl.rotation = Vector3(0.0, 0.0, ang)
 		fl.material_override = mat
 		fl.add_to_group(_CHAIN_GROUP)
 		add_child(fl)
+
+		if bracket_m:
+			var b1 := MeshInstance3D.new()
+			b1.name = "BracketA"
+			b1.mesh = bracket_m
+			b1.material_override = mat
+			b1.position = Vector3(0.0, bracket_y, -chain_spacing * 0.5)
+			fl.add_child(b1)
+
+			var b2 := MeshInstance3D.new()
+			b2.name = "BracketB"
+			b2.mesh = bracket_m
+			b2.material_override = mat
+			b2.position = Vector3(0.0, bracket_y, chain_spacing * 0.5)
+			fl.add_child(b2)
 
 		fd += flight_spacing
