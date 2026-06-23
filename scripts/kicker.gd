@@ -92,18 +92,15 @@ func _start_log_trace(bodies: Array[RigidBody3D]) -> void:
 
 
 func _trace_log(log_body: RigidBody3D, tick: int) -> void:
-	if not is_instance_valid(log_body) or tick > 16:
+	if not is_instance_valid(log_body) or tick > 60:
 		return
-	await get_tree().create_timer(0.3).timeout
+	await get_tree().create_timer(0.05).timeout
 	if not is_instance_valid(log_body):
 		return
 	var vel := log_body.linear_velocity
 	var contacts := log_body.get_colliding_bodies()
-	print("[KICK TRACE] t=%.1fs  pos=%v  vel=%.3f  contacts=%d" % [
-		tick * 0.3, log_body.global_position, vel.length(), contacts.size()])
+	print("[KICK TRACE] t=%.2fs  pos=%v  vel=%.3f  contacts=%d" % [
+		tick * 0.05, log_body.global_position, vel.length(), contacts.size()])
 	for c in contacts:
 		print("  >> %s" % c.get_path())
-	if vel.length() < 0.05 and tick > 2:
-		print("[KICK TRACE] LOG STOPPED MOVING")
-		return
 	_trace_log(log_body, tick + 1)
