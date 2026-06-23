@@ -669,41 +669,21 @@ func _unlock_log(l_node: RigidBody3D) -> void:
 
 
 ## Returns true when the deck can physically accept another log from the kicker.
+## Only checks physical space — does not care if the headrig is busy.
 func has_room() -> bool:
-	var carriage_ref = _get_carriage()
-	if not is_instance_valid(carriage_ref):
-		return _on_deck.size() < max_logs_on_deck
-	
-	# If we are blocked at the top, we don't have room for more
 	if is_blocked_at_top():
 		return false
-		
 	return _on_deck.size() < max_logs_on_deck
 
 
-## Returns true if a log is at the top and the carriage is not ready.
+## Returns true if a log is physically sitting in the top zone.
 func is_blocked_at_top() -> bool:
-	var carriage_ref = _get_carriage()
-	if not is_instance_valid(carriage_ref) or top_zone == null:
+	if top_zone == null:
 		return false
-	
-	var logs_at_top := false
 	for body in top_zone.get_overlapping_bodies():
 		if body.is_in_group("logs"):
-			logs_at_top = true
-			break
-	
-	if not logs_at_top:
-		return false
-		
-	# Carriage is considered "busy" if it's not waiting or already has a log.
-	# Accessing properties from headrig_carriage.gd
-	var carriage_busy := true
-	if "current_state" in carriage_ref and "clamped_log" in carriage_ref:
-		# State.WAITING_FOR_LOG is 0
-		carriage_busy = (carriage_ref.current_state != 0) or (carriage_ref.clamped_log != null)
-	
-	return carriage_busy
+			return true
+	return false
 
 
 # ─────────────────────────────────────────────────────────────────────────────
