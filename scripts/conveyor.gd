@@ -45,11 +45,41 @@ var _is_stopped_by_backpressure: bool = false
 var _actual_speed: float = 5.0
 var _log_area: Area3D = null
 var _downstream_cached: Node = null
+var _belt_material: StandardMaterial3D = null
 
 func _ready() -> void:
 	_actual_speed = speed
 	_update_velocity()
 	_log_area = get_node_or_null("LogArea")
+	
+	var belt = get_node_or_null("Visuals/Belt")
+	if belt and (belt is CSGBox3D or belt is MeshInstance3D):
+		var mat = belt.material
+		if mat is StandardMaterial3D:
+			_belt_material = mat.duplicate()
+			
+			var noise := FastNoiseLite.new()
+			noise.noise_type = FastNoiseLite.TYPE_SIMPLEX
+			noise.frequency = 0.12
+			
+			var noise_tex := NoiseTexture2D.new()
+			noise_tex.noise = noise
+			noise_tex.width = 256
+			noise_tex.height = 256
+			noise_tex.seamless = true
+			
+			var grad := Gradient.new()
+			grad.set_color(0, Color(0.65, 0.65, 0.65))
+			grad.set_color(1, Color(1.0, 1.0, 1.0))
+			noise_tex.color_ramp = grad
+			
+			_belt_material.albedo_texture = noise_tex
+			_belt_material.albedo_color = Color(0.12, 0.12, 0.12, 1.0)
+			_belt_material.metallic = 0.1
+			_belt_material.roughness = 0.7
+			_belt_material.uv1_scale = Vector3(1.0, 1.0, 1.0)
+			
+			belt.material = _belt_material
 	
 	_build_kicker_hardware()
 	if _kicker_shaft_node:
@@ -235,3 +265,11 @@ func _build_kicker_hardware() -> void:
 						min_dist = dist
 						closest_roller = roller
 				_kicker_pivots_rollers.append(closest_roller)
+
+
+func _process(delta: float) -> void:
+	if not Engine.is_editor_hint() and _belt_material:
+		var current_speed = 0.0 if _is_stopped_by_backpressure else speed
+		# Scroll the UV offset along the belt length (local Z-axis)
+		var z_dir = direction.normalized().z
+		_belt_material.uv1_offset.z += current_speed * delta * z_dir * 0.25
