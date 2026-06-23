@@ -558,9 +558,9 @@ func _process(delta: float) -> void:
 
 	var blocked_now := is_blocked_at_top()
 	if not running:
-		# Restart when top zone just cleared (headrig took the log) — advance
-		# one alignment step to bring lugs to the next stopping position.
-		if not _on_deck.is_empty() and _was_blocked_at_top and not blocked_now:
+		# Jog one alignment step whenever the top zone just cleared —
+		# positions the next lug at the load zone ready for the incoming log.
+		if _was_blocked_at_top and not blocked_now:
 			set_running(true)
 		# Also restart freely when headrig is free and deck has logs.
 		elif not _on_deck.is_empty() and not blocked_now and _is_headrig_free():
