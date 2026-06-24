@@ -188,7 +188,7 @@ func _build_support_tubes(frame: StaticBody3D) -> void:
 
 		var col := CollisionShape3D.new()
 		var bs := BoxShape3D.new()
-		var col_top  := DECK_SURFACE_Y + CHAIN_PLATE_H * 0.5
+		var col_top  := DECK_SURFACE_Y + CHAIN_PLATE_H * 0.5 + 0.015
 		var col_bottom := -0.052 - TUBE_H * 0.5
 		var col_h   := col_top - col_bottom
 		var col_y   := col_bottom + col_h * 0.5
