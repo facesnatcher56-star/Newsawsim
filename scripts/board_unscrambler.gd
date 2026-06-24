@@ -26,7 +26,7 @@ extends StaticBody3D
 	set(v): flight_height = v; _rebuild()
 @export var chain_diameter: float = 0.048:
 	set(v): chain_diameter = v; _rebuild()
-@export var flight_diameter: float = 0.08:
+@export_range(0.01, 0.2, 0.005) var flight_diameter: float = 0.05:
 	set(v): flight_diameter = v; _rebuild()
 @export var chain_overhang: float = 0.35:
 	set(v): chain_overhang = v; _rebuild()
@@ -74,7 +74,7 @@ func _ready() -> void:
 	_rebuild()
 
 func _rebuild() -> void:
-	if Engine.is_editor_hint() and not is_inside_tree():
+	if not is_inside_tree():
 		return
 	for child in get_children():
 		child.queue_free()
@@ -132,7 +132,9 @@ func _build_cross_members() -> void:
 		Vector2( 1.78,  1.083),  # exit flat mid
 	]
 	for bp in beam_positions:
-		_add_beam(bp * s, Vector3(0.06, 0.06, machine_width + plate_thickness))
+		var pos := bp * s
+		pos.y -= 0.08 * s
+		_add_beam(pos, Vector3(0.06, 0.06, machine_width + plate_thickness))
 
 func _add_beam(profile_pos: Vector2, size: Vector3) -> void:
 	var box := CSGBox3D.new()
@@ -189,7 +191,7 @@ func _build_working_surface() -> void:
 		tray.material = _mat_floor
 		tray.use_collision = true
 
-		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 3) or (seg[0] == 3 and seg[1] == 5)
+		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 3)
 		var is_groove_needed: bool = (seg[0] >= 1)
 
 		if is_groove_needed:
@@ -207,22 +209,29 @@ func _build_working_surface() -> void:
 			for i in range(8):
 				chain_zs.append(start_z + i * s_dist)
 
-			for cz in chain_zs:
-				var slot := CSGBox3D.new()
-				slot.name = "Slot" if is_v_notch else "Groove"
-				slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
-				
-				if is_v_notch:
-					# Slot cuts all the way through the plate
-					slot.size = Vector3(length + 0.1, surface_thickness + 0.05, slot_w)
-					slot.position = Vector3(0.0, 0.0, cz - zc_center)
-				else:
-					# Groove only recedes the chain (depth = plate_h * 1.1)
+			if is_v_notch:
+				# Cut 4 small slots at the bottom end of the downhill slope for the flights and chains
+				var slot_len := 0.15 * s
+				for k in range(4):
+					var zc_k := start_z + (2 * k + 0.5) * s_dist
+					var slot := CSGBox3D.new()
+					slot.name = "Slot"
+					slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
+					var slot_w_flight := s_dist + 2.0 * outer_z + 0.02
+					slot.size = Vector3(slot_len, surface_thickness + 0.05, slot_w_flight)
+					# Position at the very bottom end of the downhill slope segment (local X end)
+					slot.position = Vector3(length * 0.5 - slot_len * 0.5, 0.0, zc_k - zc_center)
+					tray.add_child(slot)
+			else:
+				# Groove only recedes the chain (depth = plate_h * 1.1)
+				for cz in chain_zs:
+					var slot := CSGBox3D.new()
+					slot.name = "Groove"
+					slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
 					var groove_depth := plate_h * 1.1
 					slot.size = Vector3(length + 0.1, groove_depth, slot_w)
 					slot.position = Vector3(0.0, surface_thickness * 0.5 - groove_depth * 0.5, cz - zc_center)
-					
-				tray.add_child(slot)
+					tray.add_child(slot)
 
 		add_child(tray)
 
@@ -246,17 +255,21 @@ func _build_chains_and_flights() -> void:
 		Vector2( 1.00,  1.10),  # entry to exit flat
 		Vector2( 2.50,  1.10),  # exit far right
 		Vector2( 2.50 + chain_overhang, 1.10), # sprocket top
-		
-		# Return path underneath the working surface
-		Vector2( 2.50 + chain_overhang, 0.70), # sprocket bottom
-		Vector2( 1.00,  0.70),  # under exit flat
-		Vector2( 0.78,  0.58),  # under curve upper
-		Vector2( 0.50,  0.32),  # under curve mid
-		Vector2( 0.22, -0.04),  # under curve lower
-		Vector2(-0.04, -0.48),  # under notch rising
-		Vector2(-0.22, -0.48),  # under notch bottom
-		Vector2(-0.22, -0.28),  # close the loop
 	]
+
+	# Sample return path using quadratic Bezier curve to create natural droop
+	var p0 := Vector2(2.50 + chain_overhang, 0.70)
+	var p1 := Vector2(1.2, -0.9)
+	var p2 := Vector2(-0.22, -0.48)
+
+	var num_bezier_pts := 15
+	for i in range(num_bezier_pts):
+		var t := float(i) / float(num_bezier_pts - 1)
+		var pt := (1.0 - t) * (1.0 - t) * p0 + 2.0 * (1.0 - t) * t * p1 + t * t * p2
+		raw.append(pt)
+
+	# Finally close the loop
+	raw.append(Vector2(-0.22, -0.28))
 
 	# Arc-length param
 	var al: Array[float] = [0.0]
@@ -294,6 +307,20 @@ func _build_chains_and_flights() -> void:
 
 	var link_len := 0.2032 * s
 	var plate_len := 0.25 * s
+
+	# Cumulative distance along pts
+	var pts_al: Array[float] = [0.0]
+	for i in range(1, pts.size()):
+		pts_al.append(pts_al[pts_al.size() - 1] + pts[i].distance_to(pts[i - 1]))
+	var total_path_len := pts_al[pts_al.size() - 1]
+
+	var num_links := int(total_path_len / link_len)
+	var actual_step := total_path_len / float(num_links)
+
+	# Use actual_step for placing and sizing the link plates to avoid gaps
+	var effective_link_len := actual_step
+	var effective_plate_len := plate_len * (actual_step / link_len)
+
 	var plate_h := 0.042 * scale_factor
 	var plate_w := 0.014 * scale_factor
 	var inner_z := 0.052 * scale_factor
@@ -301,10 +328,10 @@ func _build_chains_and_flights() -> void:
 	var roller_r := 0.024 * scale_factor
 
 	# Calculate offset sidebar chain plate segments
-	var straight_len := plate_len * 0.5 - link_len * 0.05
-	var straight_center_x := (plate_len * 0.5 + link_len * 0.05) * 0.5
+	var straight_len := effective_plate_len * 0.5 - effective_link_len * 0.05
+	var straight_center_x := (effective_plate_len * 0.5 + effective_link_len * 0.05) * 0.5
 
-	var dx := link_len * 0.1
+	var dx := effective_link_len * 0.1
 	var dz := outer_z - inner_z
 	var jog_len := sqrt(dx * dx + dz * dz)
 	var jog_ang := -atan2(dz, dx)
@@ -334,121 +361,92 @@ func _build_chains_and_flights() -> void:
 	for i in range(8):
 		chain_zs.append(start_z + i * s_dist)
 	for z in chain_zs:
-		for i in range(pts.size() - 1):
-			var a := pts[i]
-			var b := pts[i + 1]
-			var seg := a.distance_to(b)
-			if seg < 0.001:
-				continue
-			var d := (b - a) / seg
+		for j in range(num_links):
+			var d_start := j * actual_step
+			var d_end := (j + 1) * actual_step
+			
+			var start_pt := _get_path_point_at_dist(d_start, pts, pts_al)
+			var end_pt := _get_path_point_at_dist(d_end, pts, pts_al)
+			
+			var p := (start_pt + end_pt) * 0.5
+			var d := (end_pt - start_pt).normalized()
 			var ang := atan2(d.y, d.x)
-			var cnt := maxi(1, int(seg / link_len))
-			var stp := seg / float(cnt)
-			for j in range(cnt):
-				var p := a + d * ((j + 0.5) * stp)
-				var link := Node3D.new()
-				link.name = "Link"
 
-				# Recede the chain inside the plates
-				var recede_dist := plate_h * 0.5
-				var n_dir := Vector2(-d.y, d.x)
-				var p_receded := p - n_dir * recede_dist
+			var link := Node3D.new()
+			link.name = "Link"
 
-				link.position = Vector3(p_receded.x, p_receded.y, z)
-				link.rotation.z = ang
-				link.add_to_group(_CHAIN_GROUP)
-				add_child(link)
+			# Recede the chain inside the plates
+			var recede_dist := plate_h * 0.5
+			var n_dir := Vector2(-d.y, d.x)
+			var p_receded := p - n_dir * recede_dist
 
-				# Left Plate (offset sidebar, positive Z)
-				var lp_in := MeshInstance3D.new()
-				lp_in.mesh = straight_plate_mesh
-				lp_in.material_override = mat
-				lp_in.position = Vector3(-straight_center_x, 0.0, inner_z)
-				link.add_child(lp_in)
+			link.position = Vector3(p_receded.x, p_receded.y, z)
+			link.rotation.z = ang
+			link.add_to_group(_CHAIN_GROUP)
+			add_child(link)
 
-				var lp_jog := MeshInstance3D.new()
-				lp_jog.mesh = jog_plate_mesh
-				lp_jog.material_override = mat
-				lp_jog.position = Vector3(0.0, 0.0, (inner_z + outer_z) * 0.5)
-				lp_jog.rotation.y = jog_ang
-				link.add_child(lp_jog)
+			# Left Plate (offset sidebar, positive Z)
+			var lp_in := MeshInstance3D.new()
+			lp_in.mesh = straight_plate_mesh
+			lp_in.material_override = mat
+			lp_in.position = Vector3(-straight_center_x, 0.0, inner_z)
+			link.add_child(lp_in)
 
-				var lp_out := MeshInstance3D.new()
-				lp_out.mesh = straight_plate_mesh
-				lp_out.material_override = mat
-				lp_out.position = Vector3(straight_center_x, 0.0, outer_z)
-				link.add_child(lp_out)
+			var lp_jog := MeshInstance3D.new()
+			lp_jog.mesh = jog_plate_mesh
+			lp_jog.material_override = mat
+			lp_jog.position = Vector3(0.0, 0.0, (inner_z + outer_z) * 0.5)
+			lp_jog.rotation.y = jog_ang
+			link.add_child(lp_jog)
 
-				# Right Plate (offset sidebar, negative Z)
-				var rp_in := MeshInstance3D.new()
-				rp_in.mesh = straight_plate_mesh
-				rp_in.material_override = mat
-				rp_in.position = Vector3(-straight_center_x, 0.0, -inner_z)
-				link.add_child(rp_in)
+			var lp_out := MeshInstance3D.new()
+			lp_out.mesh = straight_plate_mesh
+			lp_out.material_override = mat
+			lp_out.position = Vector3(straight_center_x, 0.0, outer_z)
+			link.add_child(lp_out)
 
-				var rp_jog := MeshInstance3D.new()
-				rp_jog.mesh = jog_plate_mesh
-				rp_jog.material_override = mat
-				rp_jog.position = Vector3(0.0, 0.0, -(inner_z + outer_z) * 0.5)
-				rp_jog.rotation.y = -jog_ang
-				link.add_child(rp_jog)
+			# Right Plate (offset sidebar, negative Z)
+			var rp_in := MeshInstance3D.new()
+			rp_in.mesh = straight_plate_mesh
+			rp_in.material_override = mat
+			rp_in.position = Vector3(-straight_center_x, 0.0, -inner_z)
+			link.add_child(rp_in)
 
-				var rp_out := MeshInstance3D.new()
-				rp_out.mesh = straight_plate_mesh
-				rp_out.material_override = mat
-				rp_out.position = Vector3(straight_center_x, 0.0, -outer_z)
-				link.add_child(rp_out)
+			var rp_jog := MeshInstance3D.new()
+			rp_jog.mesh = jog_plate_mesh
+			rp_jog.material_override = mat
+			rp_jog.position = Vector3(0.0, 0.0, -(inner_z + outer_z) * 0.5)
+			rp_jog.rotation.y = -jog_ang
+			link.add_child(rp_jog)
 
-				# Joint Roller (narrow end at local_x = -link_len * 0.5)
-				var ro := MeshInstance3D.new()
-				ro.mesh = cyl_m
-				ro.material_override = mat
-				ro.position = Vector3(-link_len * 0.5, 0.0, 0.0)
-				ro.rotation.x = PI / 2.0
-				link.add_child(ro)
+			var rp_out := MeshInstance3D.new()
+			rp_out.mesh = straight_plate_mesh
+			rp_out.material_override = mat
+			rp_out.position = Vector3(straight_center_x, 0.0, -outer_z)
+			link.add_child(rp_out)
 
-				# Joint Pin
-				var pin := MeshInstance3D.new()
-				pin.mesh = pin_m
-				pin.material_override = mat
-				pin.position = Vector3(-link_len * 0.5, 0.0, 0.0)
-				pin.rotation.x = PI / 2.0
-				link.add_child(pin)
+			# Joint Roller (narrow end at local_x = -effective_link_len * 0.5)
+			var ro := MeshInstance3D.new()
+			ro.mesh = cyl_m
+			ro.material_override = mat
+			ro.position = Vector3(-effective_link_len * 0.5, 0.0, 0.0)
+			ro.rotation.x = PI / 2.0
+			link.add_child(ro)
 
-				# If this is the last link of the segment, add a roller & pin at the end to cap it
-				if j == cnt - 1:
-					var ro_end := MeshInstance3D.new()
-					ro_end.mesh = cyl_m
-					ro_end.material_override = mat
-					ro_end.position = Vector3(link_len * 0.5, 0.0, 0.0)
-					ro_end.rotation.x = PI / 2.0
-					link.add_child(ro_end)
-
-					var pin_end := MeshInstance3D.new()
-					pin_end.mesh = pin_m
-					pin_end.material_override = mat
-					pin_end.position = Vector3(link_len * 0.5, 0.0, 0.0)
-					pin_end.rotation.x = PI / 2.0
-					link.add_child(pin_end)
+			# Joint Pin
+			var pin := MeshInstance3D.new()
+			pin.mesh = pin_m
+			pin.material_override = mat
+			pin.position = Vector3(-effective_link_len * 0.5, 0.0, 0.0)
+			pin.rotation.x = PI / 2.0
+			link.add_child(pin)
 
 	# Shared mesh for flights (Square tubes)
 	var scaled_flight_dia = flight_diameter * s
-	var scaled_flight_h = flight_height * s
-	var flight_len := 2.0 * s_dist - 0.02
+	var scaled_flight_h = scaled_flight_dia * 0.5
+	var flight_len := s_dist + 2.0 * outer_z
 	var flight_mesh_res := BoxMesh.new()
 	flight_mesh_res.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
-
-	# Bracket setup for attaching flights visually to chains
-	# Since the chains are receded by plate_h * 0.5, the top of the chains lies flush at the plate surface.
-	# The flights ride on top of the plate surface, so their contact threshold is when their bottom touches the surface.
-	var contact_h: float = scaled_flight_dia * 0.5
-	var bracket_m: BoxMesh = null
-	var bracket_y: float = 0.0
-	if scaled_flight_h > contact_h:
-		var bracket_h: float = scaled_flight_h - contact_h
-		bracket_m = BoxMesh.new()
-		bracket_m.size = Vector3(plate_len * 0.5, bracket_h, inner_z * 2.0)
-		bracket_y = - (scaled_flight_h + contact_h) * 0.5
 
 	# Flights
 	var al2: Array[float] = [0.0]
@@ -480,20 +478,16 @@ func _build_chains_and_flights() -> void:
 			fl.add_to_group(_CHAIN_GROUP)
 			add_child(fl)
 
-			if bracket_m:
-				var b1 := MeshInstance3D.new()
-				b1.name = "BracketA"
-				b1.mesh = bracket_m
-				b1.material_override = mat
-				b1.position = Vector3(0.0, bracket_y, -0.5 * s_dist)
-				fl.add_child(b1)
-
-				var b2 := MeshInstance3D.new()
-				b2.name = "BracketB"
-				b2.mesh = bracket_m
-				b2.material_override = mat
-				b2.position = Vector3(0.0, bracket_y, 0.5 * s_dist)
-				fl.add_child(b2)
-
 		fi += 1
 		fd += flight_spacing
+
+func _get_path_point_at_dist(dist: float, pts: Array[Vector2], pts_al: Array[float]) -> Vector2:
+	var total := pts_al[pts_al.size() - 1]
+	dist = fmod(dist, total)
+	if dist < 0.0:
+		dist += total
+	var idx := 0
+	while idx < pts_al.size() - 2 and pts_al[idx + 1] < dist:
+		idx += 1
+	var t := (dist - pts_al[idx]) / (pts_al[idx + 1] - pts_al[idx]) if pts_al[idx + 1] > pts_al[idx] else 0.0
+	return pts[idx].lerp(pts[idx + 1], clampf(t, 0.0, 1.0))
