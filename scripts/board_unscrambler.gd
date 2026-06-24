@@ -303,13 +303,12 @@ func _build_chains_and_flights() -> void:
 	pin_m.height = outer_z * 2.0 + plate_w * 1.5
 	pin_m.radial_segments = 6
 
-	# Chain rails (4 chains)
-	var chain_zs := [
-		zc - chain_spacing * 1.5,
-		zc - chain_spacing * 0.5,
-		zc + chain_spacing * 0.5,
-		zc + chain_spacing * 1.5
-	]
+	# Chain rails (8 chains total, 4 sets of twin chains)
+	var chain_zs: Array[float] = []
+	for k in range(4):
+		var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
+		chain_zs.append(zc_k - chain_spacing * 0.5)
+		chain_zs.append(zc_k + chain_spacing * 0.5)
 	for z in chain_zs:
 		for i in range(pts.size() - 1):
 			var a := pts[i]
