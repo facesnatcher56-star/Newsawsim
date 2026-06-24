@@ -1,12 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://sawmill_edger"]
+[gd_scene format=3 uid="uid://c35h6ymar3a40"]
 
-[ext_resource type="Script" path="res://scripts/sawmill_edger.gd" id="1_edger"]
+[ext_resource type="Script" uid="uid://dphvcoarcngwm" path="res://scripts/sawmill_edger.gd" id="1_edger"]
 
-[node name="SawmillEdger" type="StaticBody3D"]
+[node name="SawmillEdger" type="StaticBody3D" unique_id=1576143709]
 script = ExtResource("1_edger")
-bed_length = 4.8
-machine_width = 1.7
-working_height = 0.62
-saw_spacing = 0.82
-feed_roller_count = 7
-blade_radius = 0.38
+infeed_chain_extension = 4.0

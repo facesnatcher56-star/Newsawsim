@@ -42,6 +42,32 @@ extends StaticBody3D
 		show_waste_chutes = value
 		_queue_rebuild()
 
+@export_category("Infeed Centering")
+@export_range(0.0, 4.0, 0.05) var infeed_chain_extension: float = 1.85:
+	set(value):
+		infeed_chain_extension = maxf(value, 0.0)
+		_queue_rebuild()
+
+@export_range(0.02, 0.30, 0.01) var position_pin_radius: float = 0.045:
+	set(value):
+		position_pin_radius = maxf(value, 0.02)
+		_queue_rebuild()
+
+@export_range(0.05, 0.60, 0.01) var position_pin_height: float = 0.26:
+	set(value):
+		position_pin_height = maxf(value, 0.05)
+		_queue_rebuild()
+
+@export_range(0.05, 1.0, 0.01) var cushion_pin_extension: float = 0.46:
+	set(value):
+		cushion_pin_extension = maxf(value, 0.05)
+		_queue_rebuild()
+
+@export_range(2, 8, 1) var parking_ramp_stations: int = 4:
+	set(value):
+		parking_ramp_stations = clampi(value, 2, 8)
+		_queue_rebuild()
+
 var _rebuild_queued := false
 var _mat_frame: StandardMaterial3D
 var _mat_dark: StandardMaterial3D
@@ -52,6 +78,7 @@ var _mat_warning: StandardMaterial3D
 var _mat_wood: StandardMaterial3D
 var _mat_hydraulic: StandardMaterial3D
 var _mat_chain_grip: StandardMaterial3D
+var _mat_rubber: StandardMaterial3D
 
 @export_category("Editor Test")
 @export var run_editor_preview: bool = false:
@@ -88,6 +115,9 @@ var _infeed_chain_links: Array[Node3D] = []
 var _infeed_chain_bases: Array[Vector3] = []
 var _hold_down_rollers: Array[CSGCylinder3D] = []
 var _hold_down_stations: Array[Dictionary] = []
+var _parking_ramp_stations: Array[Dictionary] = []
+var _position_pin_stations: Array[Dictionary] = []
+var _cushion_pin_stations: Array[Dictionary] = []
 var _saw_blades: Array[CSGCylinder3D] = []
 var _saw_teeth_roots: Array[Node3D] = []
 var _sample_board: CSGBox3D
@@ -103,7 +133,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not run_editor_preview:
 		return
-	_preview_travel = fposmod(_preview_travel + preview_feed_speed * delta, bed_length + SAMPLE_BOARD_LENGTH)
+	_preview_travel = fposmod(_preview_travel + preview_feed_speed * delta, _preview_travel_length())
 	_apply_preview_motion(delta)
 
 
@@ -131,6 +161,9 @@ func _rebuild() -> void:
 	_infeed_chain_bases.clear()
 	_hold_down_rollers.clear()
 	_hold_down_stations.clear()
+	_parking_ramp_stations.clear()
+	_position_pin_stations.clear()
+	_cushion_pin_stations.clear()
 	_saw_blades.clear()
 	_saw_teeth_roots.clear()
 	_sample_board = null
@@ -156,6 +189,7 @@ func _make_materials() -> void:
 	_mat_wood = _mat(Color(0.78, 0.64, 0.42), 0.0, 0.78)
 	_mat_hydraulic = _mat(Color(0.86, 0.86, 0.88), 1.0, 0.12)
 	_mat_chain_grip = _mat(Color(0.42, 0.44, 0.44), 0.9, 0.22)
+	_mat_rubber = _mat(Color(0.03, 0.03, 0.035), 0.0, 0.55)
 
 
 func _mat(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:
@@ -213,7 +247,7 @@ func _build_feed_deck() -> void:
 func _build_infeed_chains() -> void:
 	var chain_top := _support_top_y()
 	var chain_y := chain_top - CHAIN_LINK_THICKNESS * 0.5
-	var chain_start := -bed_length * 0.5 + 0.34
+	var chain_start := _infeed_chain_start_x()
 	var chain_end := INFEED_CHAIN_END_X
 	var chain_length := chain_end - chain_start
 	if chain_length <= 0.4:
@@ -235,6 +269,101 @@ func _build_infeed_chains() -> void:
 			var link := _add_infeed_chain_link("InfeedChainLink" + lane_suffix + "_%02d" % (i + 1), Vector3(x, chain_y, z), i)
 			_infeed_chain_links.append(link)
 			_infeed_chain_bases.append(link.position)
+
+	var centering_start: float = chain_start
+	var centering_end: float = _centering_section_end_x()
+	_build_parking_ramps(centering_start, centering_end, chain_top)
+	_build_position_pins(centering_start, centering_end, chain_top)
+	_build_cushion_pins(centering_start, centering_end, chain_top)
+
+
+func _build_parking_ramps(chain_start: float, chain_end: float, chain_top: float) -> void:
+	var usable_length: float = chain_end - chain_start
+	if usable_length <= 0.4:
+		return
+
+	var station_count: int = maxi(parking_ramp_stations, 2)
+	var station_spacing: float = usable_length / float(station_count)
+	var ramp_x_size: float = minf(0.46, station_spacing * 0.62)
+	var ramp_y_size: float = 0.055
+	var ramp_z_size: float = 0.20
+	var parked_y: float = chain_top + ramp_y_size * 0.5 + 0.045
+	var retracted_y: float = chain_top - 0.16
+	var ramp_zs: Array[float] = [-SAMPLE_BOARD_WIDTH * 0.48, SAMPLE_BOARD_WIDTH * 0.48]
+
+	for i in range(station_count):
+		var x: float = chain_start + station_spacing * (float(i) + 0.5)
+		var station_nodes: Array[Node3D] = []
+		var station_bases: Array[Vector3] = []
+		for side_i in range(ramp_zs.size()):
+			var z: float = ramp_zs[side_i]
+			var suffix: String = "_%02d_%s" % [i + 1, "Front" if z < 0.0 else "Back"]
+			var ramp: CSGBox3D = _add_box("ParkingRamp" + suffix, Vector3(x, retracted_y, z), Vector3(ramp_x_size, ramp_y_size, ramp_z_size), _mat_hydraulic, Vector3(0.0, 0.0, 0.0))
+			station_nodes.append(ramp)
+			station_bases.append(Vector3(x, parked_y, z))
+			_add_cylinder("ParkingRampCylinder" + suffix, Vector3(x, working_height - 0.09, z), 0.025, 0.24, _mat_dark, Vector3.ZERO, 12)
+		_parking_ramp_stations.append({
+			"x": x,
+			"nodes": station_nodes,
+			"bases": station_bases,
+			"retracted_y": retracted_y,
+			"parked_y": parked_y,
+		})
+
+
+func _build_position_pins(chain_start: float, chain_end: float, chain_top: float) -> void:
+	var station_count: int = 4
+	var first_x: float = chain_start + 0.42
+	var last_x: float = chain_end - 0.36
+	if last_x <= first_x:
+		return
+
+	var front_z: float = -SAMPLE_BOARD_WIDTH * 0.72
+	var raised_y: float = chain_top + position_pin_height * 0.5 + 0.015
+	var retracted_y: float = chain_top - position_pin_height * 0.65
+	for i in range(station_count):
+		var x: float = lerpf(first_x, last_x, float(i) / float(station_count - 1))
+		var suffix: String = "_%02d" % (i + 1)
+		var pin: CSGCylinder3D = _add_cylinder("PositionPin" + suffix, Vector3(x, retracted_y, front_z), position_pin_radius, position_pin_height, _mat_warning, Vector3.ZERO, 20)
+		_add_cylinder("PositionPinSleeve" + suffix, Vector3(x, chain_top - 0.08, front_z), position_pin_radius * 1.25, 0.10, _mat_dark, Vector3.ZERO, 18)
+		_position_pin_stations.append({
+			"x": x,
+			"pin": pin,
+			"raised_y": raised_y,
+			"retracted_y": retracted_y,
+			"z": front_z,
+		})
+
+
+func _build_cushion_pins(chain_start: float, chain_end: float, chain_top: float) -> void:
+	var station_count: int = 4
+	var first_x: float = chain_start + 0.42
+	var last_x: float = chain_end - 0.36
+	if last_x <= first_x:
+		return
+
+	var back_z: float = SAMPLE_BOARD_WIDTH * 0.78
+	var pin_y: float = chain_top + 0.065
+	for i in range(station_count):
+		var x: float = lerpf(first_x, last_x, float(i) / float(station_count - 1))
+		var suffix: String = "_%02d" % (i + 1)
+		var body: Node3D = Node3D.new()
+		body.name = "CushionPinAssembly" + suffix
+		body.position = Vector3(x, pin_y, back_z)
+		add_child(body)
+
+		var barrel: CSGCylinder3D = _add_cylinder_child(body, "CushionCylinder", Vector3(0.0, 0.0, 0.13), 0.035, 0.26, _mat_dark, Vector3(PI * 0.5, 0.0, 0.0), 16)
+		var rod: CSGCylinder3D = _add_cylinder_child(body, "CushionRod", Vector3(0.0, 0.0, -0.08), 0.018, cushion_pin_extension, _mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 14)
+		var pad: CSGBox3D = _add_box_child(body, "CushionPad", Vector3(0.0, 0.0, -0.08 - cushion_pin_extension * 0.5), Vector3(0.16, 0.12, 0.045), _mat_rubber)
+		_cushion_pin_stations.append({
+			"x": x,
+			"body": body,
+			"barrel": barrel,
+			"rod": rod,
+			"pad": pad,
+			"base_z": back_z,
+			"extended": false,
+		})
 
 
 func _build_hold_downs() -> void:
@@ -330,6 +459,26 @@ func _support_top_y() -> float:
 	return working_height + 0.04 + FEED_ROLLER_RADIUS
 
 
+func _infeed_chain_start_x() -> float:
+	return -bed_length * 0.5 + 0.34 - infeed_chain_extension
+
+
+func _machine_infeed_entry_x() -> float:
+	return -bed_length * 0.5 + 0.34
+
+
+func _centering_section_end_x() -> float:
+	return _machine_infeed_entry_x() - 0.14
+
+
+func _preview_board_start_x() -> float:
+	return _infeed_chain_start_x() - SAMPLE_BOARD_LENGTH * 0.70
+
+
+func _preview_travel_length() -> float:
+	return bed_length + infeed_chain_extension + SAMPLE_BOARD_LENGTH * 1.4
+
+
 func _apply_preview_motion(delta: float) -> void:
 	var roller_step := (preview_feed_speed / maxf(FEED_ROLLER_RADIUS, 0.001)) * delta
 	_chain_preview_offset = fposmod(_chain_preview_offset + preview_feed_speed * delta, CHAIN_LINK_LENGTH)
@@ -345,14 +494,15 @@ func _apply_preview_motion(delta: float) -> void:
 			teeth_root.rotate_object_local(Vector3.FORWARD, -18.0 * delta)
 
 	if is_instance_valid(_sample_board):
-		var start_x := -bed_length * 0.5 - SAMPLE_BOARD_LENGTH * 0.45
+		var start_x: float = _preview_board_start_x()
 		_sample_board.position.x = start_x + _preview_travel
 		_sample_board.position.y = _board_center_y()
 		_update_hold_down_preview(delta, _sample_board.position.x)
+		_update_centering_preview(delta, _sample_board.position.x)
 
 
 func _update_infeed_chain_preview() -> void:
-	var chain_start := -bed_length * 0.5 + 0.34
+	var chain_start := _infeed_chain_start_x()
 	var chain_end := INFEED_CHAIN_END_X
 	var chain_length := chain_end - chain_start
 	if chain_length <= 0.0:
@@ -364,6 +514,70 @@ func _update_infeed_chain_preview() -> void:
 		var base := _infeed_chain_bases[i]
 		link.position = base
 		link.position.x = chain_start + fposmod((base.x - chain_start) + _chain_preview_offset, chain_length)
+
+
+func _update_centering_preview(delta: float, board_center_x: float) -> void:
+	var board_leading_x: float = board_center_x + SAMPLE_BOARD_LENGTH * 0.5
+	var board_trailing_x: float = board_center_x - SAMPLE_BOARD_LENGTH * 0.5
+	var board_on_centering_section: bool = board_leading_x > _infeed_chain_start_x() and board_trailing_x < _machine_infeed_entry_x()
+	var active_pin_indices: Array[int] = []
+	if board_on_centering_section:
+		active_pin_indices = _select_active_position_pins(board_leading_x, board_trailing_x)
+	var centering_active: bool = not active_pin_indices.is_empty()
+
+	if is_instance_valid(_sample_board):
+		if board_leading_x < _infeed_chain_start_x():
+			_sample_board.position.z = -SAMPLE_BOARD_WIDTH * 0.30
+		elif centering_active:
+			_sample_board.position.z = move_toward(_sample_board.position.z, 0.0, 0.28 * delta)
+
+	for station in _parking_ramp_stations:
+		var target_y: float = float(station["parked_y"]) if board_on_centering_section else float(station["retracted_y"])
+		var nodes: Array = station["nodes"]
+		for node in nodes:
+			var ramp: Node3D = node as Node3D
+			if is_instance_valid(ramp):
+				ramp.position.y = move_toward(ramp.position.y, target_y, 1.8 * delta)
+
+	for i in range(_position_pin_stations.size()):
+		var station: Dictionary = _position_pin_stations[i]
+		var pin: Node3D = station["pin"] as Node3D
+		if not is_instance_valid(pin):
+			continue
+		var target_y: float = float(station["raised_y"]) if active_pin_indices.has(i) else float(station["retracted_y"])
+		pin.position.y = move_toward(pin.position.y, target_y, 1.6 * delta)
+
+	for station in _cushion_pin_stations:
+		var body: Node3D = station["body"] as Node3D
+		if not is_instance_valid(body):
+			continue
+		var target_offset: float = -cushion_pin_extension if centering_active else 0.0
+		body.position.z = move_toward(body.position.z, float(station["base_z"]) + target_offset, 2.2 * delta)
+
+
+func _select_active_position_pins(board_leading_x: float, board_trailing_x: float) -> Array[int]:
+	var candidates: Array[Dictionary] = []
+	for i in range(_position_pin_stations.size()):
+		var station: Dictionary = _position_pin_stations[i]
+		var x: float = float(station["x"])
+		if x <= board_trailing_x + 0.08:
+			var dist_to_trailing: float = abs(x - board_trailing_x)
+			var dist_to_leading: float = abs(x - board_leading_x)
+			candidates.append({
+				"index": i,
+				"score": minf(dist_to_trailing, dist_to_leading),
+			})
+
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["score"]) < float(b["score"])
+	)
+
+	var selected: Array[int] = []
+	for candidate in candidates:
+		selected.append(int(candidate["index"]))
+		if selected.size() >= 2:
+			break
+	return selected
 
 
 func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
