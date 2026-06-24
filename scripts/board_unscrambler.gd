@@ -63,6 +63,7 @@ var _anim_links: Array[Node3D] = []
 var _anim_link_dists: Array[float] = []
 var _anim_link_zs: Array[float] = []
 var _anim_link_recede: float = 0.0  # perpendicular recede for chain links
+var _rebuild_pending: bool = false
 
 # ── Profile definition ───────────────────────────────────────────────────────
 # Points describe the OUTER (top) edge of one side plate.
@@ -103,6 +104,11 @@ func _ready() -> void:
 func _rebuild() -> void:
 	if not is_inside_tree():
 		return
+	if _rebuild_pending:
+		return
+	_rebuild_pending = true
+	await get_tree().process_frame
+	_rebuild_pending = false
 	for child in get_children():
 		child.queue_free()
 	_clear_animation_data()
