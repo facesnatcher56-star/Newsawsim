@@ -16,7 +16,7 @@ extends StaticBody3D
 @export var profile_scale: float = 1.0:
 	set(v): profile_scale = v; _rebuild()
 
-@export var chain_spacing: float = 0.8:
+@export var chain_spacing: float = 0.5:
 	set(v): chain_spacing = v; _rebuild()
 @export var set_gap: float = 0.1:
 	set(v): set_gap = v; _rebuild()
@@ -151,13 +151,15 @@ func _add_beam(profile_pos: Vector2, size: Vector3) -> void:
 
 func _build_working_surface() -> void:
 	var s := profile_scale
-	# Thin steel tray panels that follow the profile segments
+	# Thin steel tray panels that follow the profile segments segment-by-segment
 	var segments: Array[Array] = [
 		# [from_outer_index, to_outer_index]
 		[0, 1],   # entry flat
 		[1, 3],   # V-notch
 		[3, 5],   # bottom of notch rising
-		[5, 8],   # main upward curve
+		[5, 6],   # curve segment 1
+		[6, 7],   # curve segment 2
+		[7, 8],   # curve segment 3
 		[8, 9],   # exit flat
 	]
 	for seg in segments:
@@ -188,7 +190,7 @@ func _build_working_surface() -> void:
 		tray.use_collision = true
 
 		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 3) or (seg[0] == 3 and seg[1] == 5)
-		var is_groove_needed: bool = is_v_notch or (seg[0] == 5 and seg[1] == 8) or (seg[0] == 8 and seg[1] == 9)
+		var is_groove_needed: bool = (seg[0] >= 1)
 
 		if is_groove_needed:
 			var zc_center := machine_width * 0.5
@@ -197,13 +199,13 @@ func _build_working_surface() -> void:
 			var slot_w := (outer_z * 2.0 + 0.014 * scale_factor) * 1.15
 			var plate_h := 0.042 * scale_factor
 
-			var total_width := 4.0 * chain_spacing + 3.0 * set_gap
+			# Generate 8 evenly spaced chains
+			var s_dist := chain_spacing
+			var total_width := 7.0 * s_dist
 			var start_z := (machine_width - total_width) * 0.5
 			var chain_zs: Array[float] = []
-			for k in range(4):
-				var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
-				chain_zs.append(zc_k - chain_spacing * 0.5)
-				chain_zs.append(zc_k + chain_spacing * 0.5)
+			for i in range(8):
+				chain_zs.append(start_z + i * s_dist)
 
 			for cz in chain_zs:
 				var slot := CSGBox3D.new()
@@ -278,10 +280,11 @@ func _build_chains_and_flights() -> void:
 
 	var zw: float = machine_width
 	var zc := zw * 0.5
-	var total_width := 4.0 * chain_spacing + 3.0 * set_gap
+	var s_dist := chain_spacing
+	var total_width := 7.0 * s_dist
 	var start_z := (zw - total_width) * 0.5
 	var za := start_z
-	var zb := start_z + 3.0 * (chain_spacing + set_gap) + chain_spacing
+	var zb := start_z + 7.0 * s_dist
 
 	# Scale diameter, pitch and dimensions relative to Level Deck chain links
 	# Level deck references: pitch = 0.2032, plate length = 0.25, plate height = 0.042,
@@ -326,12 +329,10 @@ func _build_chains_and_flights() -> void:
 	pin_m.height = outer_z * 2.0 + plate_w * 1.5
 	pin_m.radial_segments = 6
 
-	# Chain rails (8 chains total, 4 sets of twin chains)
+	# Chain rails (8 chains total, evenly spaced)
 	var chain_zs: Array[float] = []
-	for k in range(4):
-		var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
-		chain_zs.append(zc_k - chain_spacing * 0.5)
-		chain_zs.append(zc_k + chain_spacing * 0.5)
+	for i in range(8):
+		chain_zs.append(start_z + i * s_dist)
 	for z in chain_zs:
 		for i in range(pts.size() - 1):
 			var a := pts[i]
@@ -433,7 +434,7 @@ func _build_chains_and_flights() -> void:
 	# Shared mesh for flights (Square tubes)
 	var scaled_flight_dia = flight_diameter * s
 	var scaled_flight_h = flight_height * s
-	var flight_len := chain_spacing + (inner_z * 2.0 + plate_w) + 0.01
+	var flight_len := 2.0 * s_dist - 0.02
 	var flight_mesh_res := BoxMesh.new()
 	flight_mesh_res.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
 
@@ -469,7 +470,7 @@ func _build_chains_and_flights() -> void:
 		var ang := atan2(d2.y, d2.x)
 
 		for k in range(4):
-			var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
+			var zc_k := start_z + (2 * k + 0.5) * s_dist
 			var fl := MeshInstance3D.new()
 			fl.name = "Flight_S%d_F%d" % [k, fi]
 			fl.mesh = flight_mesh_res
@@ -484,14 +485,14 @@ func _build_chains_and_flights() -> void:
 				b1.name = "BracketA"
 				b1.mesh = bracket_m
 				b1.material_override = mat
-				b1.position = Vector3(0.0, bracket_y, -chain_spacing * 0.5)
+				b1.position = Vector3(0.0, bracket_y, -0.5 * s_dist)
 				fl.add_child(b1)
 
 				var b2 := MeshInstance3D.new()
 				b2.name = "BracketB"
 				b2.mesh = bracket_m
 				b2.material_override = mat
-				b2.position = Vector3(0.0, bracket_y, chain_spacing * 0.5)
+				b2.position = Vector3(0.0, bracket_y, 0.5 * s_dist)
 				fl.add_child(b2)
 
 		fi += 1
