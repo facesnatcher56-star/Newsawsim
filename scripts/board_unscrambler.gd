@@ -242,9 +242,11 @@ func _build_working_surface() -> void:
 			continue
 		var angle := atan2(diff.y, diff.x)
 
-		# Make plates thicker (0.06m) so we can cut out grooves for the chains
-		var surface_thickness := 0.06 * s
-		var offset_dist := (surface_thickness - 0.010) * 0.5
+		# V-notch slopes use thin zero-offset panels so boards reach the true apex.
+		# All other segments use 60mm panels with offset to house chain grooves.
+		var in_v_notch: bool = (seg[0] == 1 or seg[0] == 2) and seg[1] == seg[0] + 1
+		var surface_thickness := (0.012 if in_v_notch else 0.06) * s
+		var offset_dist := 0.0 if in_v_notch else (surface_thickness - 0.010) * 0.5
 		var n_dir := Vector2(-sin(angle), cos(angle))
 
 		var tray := CSGBox3D.new()
