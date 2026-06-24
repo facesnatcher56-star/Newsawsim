@@ -139,6 +139,8 @@ extends StaticBody3D
 
 @export var auto_flip_on_stop: bool = true
 
+@export_range(0.05, 3.0, 0.05) var board_pass_gate_delay: float = 0.45
+
 @export_range(0.05, 1.0, 0.01) var stop_gate_height_offset: float = 0.15:
 	set(value):
 		stop_gate_height_offset = value
@@ -191,6 +193,9 @@ var _flip_table_node: AnimatableBody3D = null
 var _flip_table_base_transform: Transform3D = Transform3D.IDENTITY
 var _stop_gate_node: AnimatableBody3D = null
 var _stop_gate_base_transform: Transform3D = Transform3D.IDENTITY
+var _gate_board_bodies: Dictionary = {}
+var _gate_stop_bodies: Dictionary = {}
+var _gate_reopen_timer: float = 0.0
 
 var _roller_visuals: Array[MeshInstance3D] = []
 var _rebuild_queued: bool = false
@@ -257,6 +262,7 @@ func _physics_process(delta: float) -> void:
 
 	# 2. Stop Gate interpolation
 	if stop_gate_present and is_instance_valid(_stop_gate_node):
+		_update_auto_stop_gate(delta)
 		var radius: float = roller_diameter * 0.5
 		var raised_y: float = radius + stop_gate_height_offset
 		var retracted_y: float = -radius - 0.05
@@ -628,19 +634,74 @@ func _rebuild_stop_gate(travel: Vector3, roller_axis: Vector3, local_up: Vector3
 		sensor.add_child(sensor_shape)
 		
 		sensor.body_entered.connect(_on_stop_gate_sensor_body_entered)
+		sensor.body_exited.connect(_on_stop_gate_sensor_body_exited)
 
 
 func _on_stop_gate_sensor_body_entered(body: Node) -> void:
 	if Engine.is_editor_hint():
 		return
-	if not auto_flip_on_stop:
+	if not stop_gate_present:
 		return
-	if not stop_gate_raised or not stop_gate_present:
+	if not (body is RigidBody3D):
 		return
-	
-	if body is RigidBody3D:
-		if _flip_state == FlipState.FLAT and not flip_table_enabled and flip_table_present:
+
+	if _should_stop_for_flip(body):
+		_gate_stop_bodies[body.get_instance_id()] = body
+		stop_gate_raised = true
+		_gate_reopen_timer = 0.0
+		if auto_flip_on_stop and _flip_state == FlipState.FLAT and not flip_table_enabled and flip_table_present:
 			flip_table_enabled = true
+	elif _should_pass_gate(body):
+		_gate_board_bodies[body.get_instance_id()] = body
+		if _gate_stop_bodies.is_empty():
+			stop_gate_raised = false
+			_gate_reopen_timer = board_pass_gate_delay
+
+
+func _on_stop_gate_sensor_body_exited(body: Node) -> void:
+	if Engine.is_editor_hint():
+		return
+	if body == null:
+		return
+
+	_gate_board_bodies.erase(body.get_instance_id())
+	_gate_stop_bodies.erase(body.get_instance_id())
+	if _gate_stop_bodies.is_empty() and _gate_board_bodies.is_empty():
+		_gate_reopen_timer = board_pass_gate_delay
+
+
+func _update_auto_stop_gate(delta: float) -> void:
+	_prune_gate_tracking()
+	if not _gate_stop_bodies.is_empty():
+		stop_gate_raised = true
+		return
+	if not _gate_board_bodies.is_empty():
+		stop_gate_raised = false
+		_gate_reopen_timer = board_pass_gate_delay
+		return
+	if _gate_reopen_timer > 0.0:
+		_gate_reopen_timer -= delta
+		if _gate_reopen_timer <= 0.0:
+			stop_gate_raised = true
+
+
+func _prune_gate_tracking() -> void:
+	for id in _gate_board_bodies.keys():
+		var board_body: Node = _gate_board_bodies[id]
+		if not is_instance_valid(board_body):
+			_gate_board_bodies.erase(id)
+	for id in _gate_stop_bodies.keys():
+		var stop_body: Node = _gate_stop_bodies[id]
+		if not is_instance_valid(stop_body):
+			_gate_stop_bodies.erase(id)
+
+
+func _should_pass_gate(body: Node) -> bool:
+	return body.is_in_group("cut_boards") and not body.is_in_group("cut_slabs") and not body.is_in_group("logs")
+
+
+func _should_stop_for_flip(body: Node) -> bool:
+	return body.is_in_group("cut_slabs") or body.is_in_group("logs")
 
 func _local_travel_direction() -> Vector3:
 	var horizontal := Vector3(transport_direction.x, 0.0, transport_direction.z)

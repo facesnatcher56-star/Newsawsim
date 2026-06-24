@@ -282,25 +282,22 @@ func cut_board(_saw_pos: Vector3) -> void:
 		var board_node = board_scene.instantiate()
 		get_parent().add_child(board_node)
 		
-		# Spawn at saw's global position but aligned with log
-		# OutfeedConveyor belt is at Z = 5.44. Let's spawn at Z = 5.7 to land cleanly on the belt.
-		board_node.global_position = Vector3(global_position.x, global_position.y, 5.7)
+		# Spawn just past the saw and above the headrig outfeed so both faces
+		# drop onto the same conveyor after the log is flipped.
+		board_node.global_position = Vector3(_saw_pos.x, global_position.y + 0.08, 5.7)
 		
-		# Organic tumble off
-		board_node.linear_velocity = Vector3(0.0, -0.5, -1.1)
+		board_node.linear_velocity = Vector3(0.0, -0.25, -0.55)
 		if is_roundback:
-			# A long slab naturally rolls about its length; strong end-over-end spin
-			# made it balance on an unrealistic narrow side.
 			board_node.angular_velocity = Vector3(
-				randf_range(-2.5, 2.5),
+				randf_range(-1.2, 1.2),
 				randf_range(-0.15, 0.15),
 				randf_range(-0.15, 0.15)
 			)
 		else:
 			board_node.angular_velocity = Vector3(
-				randf_range(-1.0, 1.0),
+				randf_range(-0.5, 0.5),
 				0.0,
-				randf_range(-1.0, 1.0)
+				randf_range(-0.5, 0.5)
 			)
 		
 		board_node.add_collision_exception_with(self)

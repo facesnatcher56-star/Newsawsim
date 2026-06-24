@@ -12,6 +12,8 @@ func _ready() -> void:
 
 	# Add to a group if needed
 	add_to_group("cut_boards")
+	if scene_file_path.ends_with("cut_slab.tscn") or name.to_lower().contains("slab"):
+		add_to_group("cut_slabs")
 	
 	# Auto-destroy after lifetime to keep scene clean (disabled for now)
 	# get_tree().create_timer(lifetime).timeout.connect(queue_free)

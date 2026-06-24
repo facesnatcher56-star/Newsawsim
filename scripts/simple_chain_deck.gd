@@ -8,10 +8,30 @@ extends Node3D
 @export var deck_length:       float = 5.0
 @export var deck_width:        float = 2.4
 @export var chain_speed:       float = 0.55
+@export var chain_accel_speed: float = 2.0
 @export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
 @export var running:           bool  = false
 @export var reverse_direction: bool  = false
 @export var floor_y:           float = -1.0
+
+@export_group("Lugs")
+@export var lugs_enabled:      bool = false
+@export_range(0, 64, 1) var lug_count: int = 6
+@export var lug_radius:        float = 0.07
+@export var lug_height:        float = 0.34
+@export var lug_height_offset: float = 0.075
+@export var lug_color:         Color = Color.WHITE
+@export var lug_plate_size:    Vector3 = Vector3(0.22, 0.035, 0.22)
+@export var lug_plate_color:   Color = Color(0.62, 0.62, 0.58)
+
+@export_group("Zones")
+@export var load_zone_position: Vector3 = Vector3(0.0, 0.35, -1.8)
+@export var load_zone_size:     Vector3 = Vector3(2.4, 0.7, 0.35)
+@export var top_zone_position:  Vector3 = Vector3(0.0, 0.4, 2.3)
+@export var top_zone_size:      Vector3 = Vector3(2.4, 0.8, 0.5)
+@export var deck_area_position: Vector3 = Vector3(0.0, 0.5, 0.0)
+@export var deck_area_size:     Vector3 = Vector3(2.8, 1.2, 5.15)
+@export_group("")
 
 ## Reference to the headrig carriage to check for backpressure.
 @export var carriage: AnimatableBody3D
@@ -62,6 +82,7 @@ var _chain_nodes:    Array[Node3D]  = []
 var _chain_tx:       Array[float]   = []
 var _link_slot:      Array[float]   = []
 var _chain_travel:   float          = 0.0
+var _current_chain_speed: float      = 0.0
 
 # Sprocket nodes (for rotation animation)
 var _sprocket_nodes: Array[Node3D] = []
@@ -69,6 +90,7 @@ var _sprocket_nodes: Array[Node3D] = []
 # Derived
 var _spr_cy:      float
 var _loop_len:    float
+var _editor_build_signature: String = ""
 
 # Frame node reference (to control constant_linear_velocity)
 var _frame_body:     StaticBody3D
@@ -98,6 +120,8 @@ func _ready() -> void:
 	load_zone = _deck_root.get_node_or_null("LoadZone")
 	top_zone = _deck_root.get_node_or_null("TopZone")
 	deck_area = _deck_root.get_node_or_null("DeckArea")
+	_configure_zones()
+	_editor_build_signature = _make_editor_build_signature()
 
 	if Engine.is_editor_hint():
 		_setup_editor_labels()
@@ -148,6 +172,74 @@ func _clear_procedural_nodes() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 #  FRAME & PROCEDURAL MESHES
 # ─────────────────────────────────────────────────────────────────────────────
+
+func _configure_zones() -> void:
+	load_zone = _configure_zone("LoadZone", load_zone_position, load_zone_size)
+	top_zone = _configure_zone("TopZone", top_zone_position, top_zone_size)
+	deck_area = _configure_zone("DeckArea", deck_area_position, deck_area_size)
+
+
+func _configure_zone(zone_name: String, zone_position: Vector3, zone_size: Vector3) -> Area3D:
+	if _deck_root == null:
+		return null
+
+	var zone: Area3D = _deck_root.get_node_or_null(zone_name) as Area3D
+	if zone == null:
+		zone = Area3D.new()
+		zone.name = zone_name
+		_deck_root.add_child(zone)
+		if Engine.is_editor_hint():
+			zone.owner = get_tree().edited_scene_root
+
+	zone.position = zone_position
+
+	var col: CollisionShape3D = zone.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	if col == null:
+		col = CollisionShape3D.new()
+		col.name = "CollisionShape3D"
+		zone.add_child(col)
+		if Engine.is_editor_hint():
+			col.owner = get_tree().edited_scene_root
+
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(
+		maxf(zone_size.x, 0.01),
+		maxf(zone_size.y, 0.01),
+		maxf(zone_size.z, 0.01)
+	)
+	col.shape = shape
+	col.position = Vector3.ZERO
+	col.rotation = Vector3.ZERO
+	col.scale = Vector3.ONE
+
+	return zone
+
+
+func _make_editor_build_signature() -> String:
+	return "%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s" % [
+		deck_length,
+		floor_y,
+		track_x_positions,
+		lugs_enabled,
+		lug_count,
+		lug_radius,
+		lug_height,
+		lug_height_offset,
+		lug_color,
+		lug_plate_size,
+		lug_plate_color,
+		deck_width
+	]
+
+
+func _rebuild_deck_geometry() -> void:
+	_spr_cy = DECK_SURFACE_Y - SPROCKET_R
+	_loop_len = 2.0 * deck_length + 2.0 * PI * SPROCKET_R
+	_clear_procedural_nodes()
+	_build_frame()
+	_spawn_chain_links()
+	_update_chain_links()
+
 
 func _build_frame() -> void:
 	var frame := StaticBody3D.new()
@@ -260,7 +352,7 @@ func _build_split_legs(frame: StaticBody3D) -> void:
 
 	for tx in track_x_positions:
 		for end_z in [-deck_length * 0.5, deck_length * 0.5]:
-			var suffix := "Bot" if end_z < 0.0 else "Top"
+			var suffix: String = "Bot" if end_z < 0.0 else "Top"
 
 			var mi_l := MeshInstance3D.new()
 			mi_l.name = "LegColumn_%.2f_%s_L" % [tx, suffix]
@@ -311,7 +403,7 @@ func _build_sprockets(frame: StaticBody3D) -> void:
 
 	for end_idx in range(2):
 		var ez     := -deck_length * 0.5 if end_idx == 0 else deck_length * 0.5
-		var suffix := "Bot" if end_idx == 0 else "Top"
+		var suffix: String = "Bot" if end_idx == 0 else "Top"
 
 		var shaft := MeshInstance3D.new()
 		shaft.name = "DriveShaft_%s" % suffix
@@ -373,6 +465,36 @@ func _spawn_chain_links() -> void:
 	roller_mesh.height        = CHAIN_SPAN + CHAIN_PLATE_W * 2.0 + 0.01
 	roller_mesh.radial_segments = 6
 
+	var lug_mat := StandardMaterial3D.new()
+	lug_mat.albedo_color = lug_color
+	lug_mat.metallic     = 0.0
+	lug_mat.roughness    = 0.28
+
+	var lug_plate_mat := StandardMaterial3D.new()
+	lug_plate_mat.albedo_color = lug_plate_color
+	lug_plate_mat.metallic     = 0.85
+	lug_plate_mat.roughness    = 0.32
+
+	var lug_plate_mesh := BoxMesh.new()
+	lug_plate_mesh.size = Vector3(
+		maxf(lug_plate_size.x, 0.01),
+		maxf(lug_plate_size.y, 0.005),
+		maxf(lug_plate_size.z, 0.01)
+	)
+
+	var lug_plate_shape := BoxShape3D.new()
+	lug_plate_shape.size = lug_plate_mesh.size
+
+	var lug_mesh := CylinderMesh.new()
+	lug_mesh.top_radius = lug_radius
+	lug_mesh.bottom_radius = lug_radius
+	lug_mesh.height = lug_height
+	lug_mesh.radial_segments = 16
+
+	var lug_shape := CapsuleShape3D.new()
+	lug_shape.radius = lug_radius
+	lug_shape.height = maxf(lug_height, lug_radius * 2.0)
+
 	var inner_x := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W * 0.5
 
 	for xi in range(track_x_positions.size()):
@@ -380,7 +502,7 @@ func _spawn_chain_links() -> void:
 		for j in range(n_links):
 			var slot0 := float(j) * CHAIN_PITCH
 
-			var link := Node3D.new()
+			var link: AnimatableBody3D = AnimatableBody3D.new()
 			link.name = "ChainLink_%d_%d" % [xi, j]
 
 			var lp := MeshInstance3D.new()
@@ -401,11 +523,70 @@ func _spawn_chain_links() -> void:
 			ro.rotation_degrees.z = 90.0
 			link.add_child(ro)
 
+			if _should_link_have_lug(j, n_links):
+				_add_lug_to_link(link, lug_mesh, lug_shape, lug_mat, lug_plate_mesh, lug_plate_shape, lug_plate_mat)
+
 			_deck_root.add_child(link)
 
 			_chain_nodes.append(link)
 			_chain_tx.append(tx)
 			_link_slot.append(slot0)
+
+
+func _should_link_have_lug(link_index: int, n_links: int) -> bool:
+	if not lugs_enabled or lug_count <= 0:
+		return false
+
+	var top_spacing: float = deck_length / float(lug_count)
+	if top_spacing <= 0.01:
+		return false
+
+	var loop_lug_count: int = maxi(1, int(round(_loop_len / top_spacing)))
+	for lug_index in range(loop_lug_count):
+		var target_slot: float = float(lug_index) * top_spacing
+		var target_index: int = int(round(target_slot / CHAIN_PITCH)) % n_links
+		if link_index == target_index:
+			return true
+	return false
+
+
+func _add_lug_to_link(
+	link: AnimatableBody3D,
+	lug_mesh: Mesh,
+	lug_shape: Shape3D,
+	lug_mat: Material,
+	lug_plate_mesh: Mesh,
+	lug_plate_shape: Shape3D,
+	lug_plate_mat: Material
+) -> void:
+	var plate_y: float = lug_height_offset + lug_plate_size.y * 0.5
+	var lug_y: float = lug_height_offset + lug_plate_size.y + lug_height * 0.5
+
+	var plate := MeshInstance3D.new()
+	plate.name = "LugBasePlate"
+	plate.mesh = lug_plate_mesh
+	plate.material_override = lug_plate_mat
+	plate.position = Vector3(0.0, plate_y, 0.0)
+	link.add_child(plate)
+
+	var mi := MeshInstance3D.new()
+	mi.name = "LugMesh"
+	mi.mesh = lug_mesh
+	mi.material_override = lug_mat
+	mi.position = Vector3(0.0, lug_y, 0.0)
+	link.add_child(mi)
+
+	var plate_col := CollisionShape3D.new()
+	plate_col.name = "LugBasePlateCollision"
+	plate_col.shape = lug_plate_shape.duplicate()
+	plate_col.position = Vector3(0.0, plate_y, 0.0)
+	link.add_child(plate_col)
+
+	var col := CollisionShape3D.new()
+	col.name = "LugCollision"
+	col.shape = lug_shape.duplicate()
+	col.position = Vector3(0.0, lug_y, 0.0)
+	link.add_child(col)
 
 
 func _get_loop_xform(d: float) -> Transform3D:
@@ -452,8 +633,8 @@ func _update_chain_links() -> void:
 		var xf   := _get_loop_xform(slot)
 		var node := _chain_nodes[i]
 		if is_instance_valid(node):
-			node.position = Vector3(_chain_tx[i], xf.origin.y, xf.origin.z)
-			node.basis    = xf.basis
+			var local_xform: Transform3D = Transform3D(xf.basis, Vector3(_chain_tx[i], xf.origin.y, xf.origin.z))
+			node.global_transform = _deck_root.global_transform * local_xform
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -462,6 +643,12 @@ func _update_chain_links() -> void:
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
+		_configure_zones()
+		var build_signature := _make_editor_build_signature()
+		if build_signature != _editor_build_signature:
+			_editor_build_signature = build_signature
+			_rebuild_deck_geometry()
+			_setup_editor_labels()
 		return
 
 	if _start_delay_timer > 0.0:
@@ -487,6 +674,7 @@ func _process(delta: float) -> void:
 		return
 
 	if blocked_now:
+		_update_chain_links()
 		return
 
 	_update_chain_links()
@@ -497,17 +685,18 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var blocked_now := is_blocked_at_top()
-	var dir_sign := -1.0 if reverse_direction else 1.0
-	var eff_speed := chain_speed * dir_sign
+	var dir_sign: float = -1.0 if reverse_direction else 1.0
+	var target_speed: float = chain_speed * dir_sign if (running and not blocked_now) else 0.0
+	_current_chain_speed = move_toward(_current_chain_speed, target_speed, max(chain_accel_speed, 0.0) * delta)
 
 	if is_instance_valid(_frame_body):
-		var vel := Vector3(0.0, 0.0, eff_speed if (running and not blocked_now) else 0.0)
+		var vel := Vector3(0.0, 0.0, _current_chain_speed)
 		_frame_body.constant_linear_velocity = global_transform.basis * vel
 
-	if not running or blocked_now:
+	if abs(_current_chain_speed) <= 0.0001:
 		return
 
-	var advance := eff_speed * delta
+	var advance := _current_chain_speed * delta
 	_chain_travel += advance
 
 	var ang_vel := advance / SPROCKET_R
@@ -552,12 +741,9 @@ func set_running(on: bool, _force: bool = false) -> void:
 			if is_instance_valid(l_node):
 				l_node.freeze = true
 
-	var dir_sign := -1.0 if reverse_direction else 1.0
-	var eff_speed := chain_speed * dir_sign
-
 	if is_instance_valid(_frame_body):
 		var blocked_now := is_blocked_at_top()
-		var vel := Vector3(0.0, 0.0, eff_speed if (running and not blocked_now) else 0.0)
+		var vel: Vector3 = Vector3(0.0, 0.0, _current_chain_speed if (running and not blocked_now) else 0.0)
 		_frame_body.constant_linear_velocity = global_transform.basis * vel
 
 
@@ -583,7 +769,7 @@ func is_blocked_at_top() -> bool:
 
 func _on_deck_area_body_entered(body: Node3D) -> void:
 	if _is_log_or_board(body) and body is RigidBody3D:
-		var l_node := body as RigidBody3D
+		var l_node: RigidBody3D = body as RigidBody3D
 		_on_deck[l_node.get_instance_id()] = l_node
 		if running:
 			l_node.freeze = false
@@ -606,7 +792,7 @@ func _on_load_zone_body_entered(body: Node3D) -> void:
 
 func _on_top_zone_body_entered(body: Node3D) -> void:
 	if _is_log_or_board(body):
-		var l_node := body as RigidBody3D
+		var l_node: RigidBody3D = body as RigidBody3D
 		_unlock_log(l_node)
 		if _active_log == l_node:
 			_active_log = null

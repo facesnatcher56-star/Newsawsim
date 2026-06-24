@@ -8,10 +8,9 @@
 [ext_resource type="PackedScene" path="res://scenes/log_feed_station.tscn" id="4_logfeed"]
 [ext_resource type="PackedScene" path="res://scenes/headrig_station.tscn" id="5_headrig"]
 [ext_resource type="PackedScene" path="res://scenes/incline_outfeed.tscn" id="6_incline"]
-[ext_resource type="PackedScene" path="res://scenes/simple_chain_deck.tscn" id="8_yfjmh"]
+[ext_resource type="PackedScene" uid="uid://dmko1r1aasdqt" path="res://scenes/simple_chain_deck.tscn" id="8_yfjmh"]
 [ext_resource type="PackedScene" path="res://scenes/cut_board.tscn" id="9_55ft6"]
-[ext_resource type="PackedScene" path="res://scenes/board_unscrambler.tscn" id="11_enqqo"]
-[ext_resource type="PackedScene" path="res://scenes/sawmill_edger.tscn" id="12_edger"]
+[ext_resource type="PackedScene" uid="uid://cultjcvh75pbd" path="res://scenes/board_unscrambler.tscn" id="11_enqqo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
@@ -35,16 +34,16 @@ size = Vector3(60, 0.2, 60)
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_fjvqp"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_enqqo"]
 size = Vector3(0.4, 0.05, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fjvqp"]
+size = Vector3(0.43031737, 0.05, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f8ugb"]
 size = Vector3(0.43031737, 0.05, 4)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_0w0wg"]
-size = Vector3(0.43031737, 0.05, 4)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_0cce1"]
 size = Vector3(1.13, 0.8, 4.05)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
@@ -248,6 +247,24 @@ size = Vector3(0.2, 0.07, 0.045)
 [sub_resource type="BoxShape3D" id="Shape_Detector"]
 size = Vector3(0.75, 0.8, 2.8)
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_0cce1"]
+size = Vector3(2.4, 0.7, 0.35)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xpg8g"]
+size = Vector3(2.4, 0.01, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_op6l5"]
+size = Vector3(2.8, 1.2, 5.7)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_618a6"]
+size = Vector3(2.4, 0.7, 0.35)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_hajir"]
+size = Vector3(2.4, 0.8, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_o3d8n"]
+size = Vector3(2.198374, 0.9421603, 2.2338648)
+
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
@@ -324,18 +341,18 @@ conveyor_width = 0.8
 
 [node name="CollisionBottom" parent="DebarkerStation/DebarkInfeedConveyor" index="0" unique_id=32245668]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
-shape = SubResource("BoxShape3D_fjvqp")
+shape = SubResource("BoxShape3D_enqqo")
 
 [node name="CollisionLeft" parent="DebarkerStation/DebarkInfeedConveyor" index="1" unique_id=426988166]
 transform = Transform3D(0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 0, 0, 1, -0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_f8ugb")
+shape = SubResource("BoxShape3D_fjvqp")
 
 [node name="CollisionRight" parent="DebarkerStation/DebarkInfeedConveyor" index="2" unique_id=558373768]
 transform = Transform3D(0.9063077, -0.42261824, 0, 0.42261824, 0.9063077, 0, 0, 0, 1, 0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_0w0wg")
+shape = SubResource("BoxShape3D_f8ugb")
 
 [node name="CollisionShape3D" parent="DebarkerStation/DebarkInfeedConveyor/LogArea" parent_id_path=PackedInt32Array(771215760, 1866187276, 1655586341) index="0" unique_id=2087271807]
-shape = SubResource("BoxShape3D_0cce1")
+shape = SubResource("BoxShape3D_0w0wg")
 
 [node name="LeftWall" parent="DebarkerStation/DebarkInfeedConveyor" index="4" unique_id=1514265469]
 material = SubResource("StandardMaterial3D_metal")
@@ -957,26 +974,27 @@ shape = SubResource("Shape_Detector")
 [node name="SimpleChainDeck" parent="HeadrigStation/HeadrigConveyor/Visuals" parent_id_path=PackedInt32Array(1393812162, 100000012) index="2" unique_id=1183748203 instance=ExtResource("8_yfjmh")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.022561, -0.69253397, -10.447376)
 running = true
+load_zone_position = Vector3(0, 0.35, -2.380826)
+top_zone_position = Vector3(0, -0.4, 2.729)
+top_zone_size = Vector3(2.4, -2, 0.3)
+deck_area_size = Vector3(2.8, 1.2, 5.7)
 
 [node name="LoadZone" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="0" unique_id=363196828]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.844449)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -2.380826)
 
 [node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/LoadZone" index="0" unique_id=1144213617]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.53637695)
+shape = SubResource("BoxShape3D_0cce1")
 
-[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/TopZone" parent_id_path=PackedInt32Array(1183748203, 1473847192) index="0" unique_id=580698439]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.34296876, 0.4291649)
+[node name="TopZone" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="1" unique_id=1473847192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 2.729)
+
+[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/TopZone" index="0" unique_id=580698439]
+shape = SubResource("BoxShape3D_xpg8g")
 
 [node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/DeckArea" parent_id_path=PackedInt32Array(1183748203, 1538561045) index="0" unique_id=1572588527]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.07299805)
-
-[node name="SawmillEdger" parent="." unique_id=444410492 instance=ExtResource("12_edger")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.75, -0.9, 9.819182)
+shape = SubResource("BoxShape3D_op6l5")
 
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
-
-[node name="SlopeRoot" parent="InclineOutfeed/InclineLogDeck" parent_id_path=PackedInt32Array(371482520, 428629830) index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.3746067, 0, -0.3746067, 0.9271841, 0, 0, 0)
 
 [node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone" index="0"]
 transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99998295, 0, -0.07921165, -0.30083942)
@@ -1001,16 +1019,47 @@ plate_y_offset = 0.12
 plate_width = 0.43
 connecting_bar_width = 0.25
 connecting_bar_thickness = 0.04
-stop_gate_present = false
 stop_gate_length = 1.4500000000000002
 stop_gate_raised = false
-auto_flip_on_stop = false
 
 [node name="CutBoard" parent="InclineOutfeed" unique_id=551924559 instance=ExtResource("9_55ft6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20.950111, -0.10672854, 5.4494033)
 
 [node name="BoardUnscrambler" parent="InclineOutfeed" unique_id=1077583790 instance=ExtResource("11_enqqo")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 35.426147, -0.8000488, 11.884068)
+constant_linear_velocity = Vector3(0.2, 0, 0)
+speed = 0.2
+
+[node name="EdgerTakeAway" parent="." unique_id=1764099896 instance=ExtResource("8_yfjmh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33.07979, 0.21022034, 15.576172)
+deck_length = 2.0
+deck_width = 4.0
+floor_y = -1.5
+lugs_enabled = true
+lug_count = 3
+lug_radius = 0.06
+lug_height = 0.1
+lug_height_offset = 0.0
+lug_color = Color(1, 1, 0.039215688, 1)
+lug_plate_size = Vector3(0.12, 0.035, 0.15)
+load_zone_position = Vector3(0, 0.35, -1.0933444)
+deck_area_position = Vector3(0, 0.5, 0.0589113)
+deck_area_size = Vector3(2.198374, 0.9421603, 2.2338648)
+
+[node name="LoadZone" parent="EdgerTakeAway/DeckRoot" parent_id_path=PackedInt32Array(1764099896, 1267379701) index="0" unique_id=363196828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.0933444)
+
+[node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/LoadZone" index="0" unique_id=1144213617]
+shape = SubResource("BoxShape3D_618a6")
+
+[node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/TopZone" parent_id_path=PackedInt32Array(1764099896, 1473847192) index="0" unique_id=580698439]
+shape = SubResource("BoxShape3D_hajir")
+
+[node name="DeckArea" parent="EdgerTakeAway/DeckRoot" parent_id_path=PackedInt32Array(1764099896, 1267379701) index="2" unique_id=1538561045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.0589113)
+
+[node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/DeckArea" index="0" unique_id=1572588527]
+shape = SubResource("BoxShape3D_o3d8n")
 
 [editable path="Ground/LevelChainDeck"]
 [editable path="Ground/SweepRoller"]
@@ -1029,3 +1078,4 @@ transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 35.4
 [editable path="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck"]
 [editable path="InclineOutfeed"]
 [editable path="InclineOutfeed/InclineLogDeck"]
+[editable path="EdgerTakeAway"]
