@@ -72,8 +72,7 @@ var _rebuild_pending: bool = false
 const _OUTER: Array[Vector2] = [
 	Vector2(-1.50,  0.00),  # entry far left
 	Vector2(-0.60,  0.00),  # before V-notch
-	Vector2(-0.44, -0.28),  # notch descends
-	Vector2(-0.22, -0.28),  # notch bottom flat
+	Vector2(-0.33, -0.28),  # V apex
 	Vector2(-0.04,  0.02),  # back up from notch
 	Vector2( 0.22,  0.36),  # curve begins
 	Vector2( 0.50,  0.72),  # curve mid
@@ -87,8 +86,7 @@ const _OUTER: Array[Vector2] = [
 const _INNER_OFFSETS: Array[Vector2] = [
 	Vector2(-1.50, -0.16),
 	Vector2(-0.60, -0.16),
-	Vector2(-0.44, -0.44),
-	Vector2(-0.22, -0.44),
+	Vector2(-0.33, -0.44),
 	Vector2(-0.04, -0.15),
 	Vector2( 0.22,  0.19),
 	Vector2( 0.50,  0.55),
@@ -99,20 +97,29 @@ const _INNER_OFFSETS: Array[Vector2] = [
 
 func _ready() -> void:
 	constant_linear_velocity = CONVEYOR_DIR * speed
-	_rebuild()
+	if Engine.is_editor_hint():
+		_rebuild()
+	else:
+		_do_rebuild()
 
 func _rebuild() -> void:
 	if not is_inside_tree():
+		return
+	if not Engine.is_editor_hint():
+		_do_rebuild()
 		return
 	if _rebuild_pending:
 		return
 	_rebuild_pending = true
 	await get_tree().process_frame
 	_rebuild_pending = false
+	_do_rebuild()
+
+func _do_rebuild() -> void:
 	for child in get_children():
+		remove_child(child)
 		child.queue_free()
 	_clear_animation_data()
-	await get_tree().process_frame
 
 	constant_linear_velocity = CONVEYOR_DIR * speed
 
@@ -217,8 +224,10 @@ func _build_working_surface() -> void:
 	var segments: Array[Array] = [
 		# [from_outer_index, to_outer_index]
 		[0, 1],   # entry flat
-		[1, 3],   # V-notch
-		[3, 5],   # bottom of notch rising
+		[1, 2],   # V-notch downhill slope
+		[2, 3],   # V-notch bottom flat
+		[3, 4],   # V-notch uphill slope
+		[4, 5],   # before curve begins
 		[5, 6],   # curve segment 1
 		[6, 7],   # curve segment 2
 		[7, 8],   # curve segment 3
@@ -251,7 +260,7 @@ func _build_working_surface() -> void:
 		tray.material = _mat_floor
 		tray.use_collision = true
 
-		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 3)
+		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 2)
 		var is_groove_needed: bool = (seg[0] >= 1)
 
 		if is_groove_needed:
@@ -546,6 +555,7 @@ func _build_chains_and_flights() -> void:
 			# AnimatableBody3D — moves each frame, imparting velocity to RigidBody contacts
 			var fl := AnimatableBody3D.new()
 			fl.name = "Flight_S%d_F%d" % [k, fi]
+			fl.sync_to_physics = false
 			fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, zc_k)
 			fl.rotation = Vector3(0.0, 0.0, ang)
 
@@ -594,6 +604,8 @@ func _tween_node_along_path(node: Node3D, dist: float, z: float, perp: float) ->
 	node.rotation = Vector3(0.0, 0.0, ang)
 
 func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
 	if (_anim_flights.is_empty() and _anim_links.is_empty()) or _anim_path_total < 0.001:
 		return
 	_anim_offset = fmod(_anim_offset + speed * delta, _anim_path_total)
