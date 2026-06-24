@@ -315,7 +315,7 @@ func _build_chains_and_flights() -> void:
 	# Build path: V-notch to exit + overhang, closed loop return underneath
 	var raw: Array[Vector2] = [
 		# Forward path on top of the slide
-		Vector2(-0.22, -0.28),  # V-notch bottom flat
+		Vector2(-0.33, -0.28),  # V apex
 		Vector2(-0.04,  0.02),  # back up from notch
 		Vector2( 0.22,  0.36),  # curve begins
 		Vector2( 0.50,  0.72),  # curve mid
@@ -328,7 +328,7 @@ func _build_chains_and_flights() -> void:
 	# Sample return path using quadratic Bezier curve to create natural droop
 	var p0 := Vector2(2.50 + chain_overhang, 0.70)
 	var p1 := Vector2(1.2, -0.9)
-	var p2 := Vector2(-0.22, -0.48)
+	var p2 := Vector2(-0.33, -0.48)
 
 	var num_bezier_pts := 15
 	for i in range(num_bezier_pts):
@@ -337,7 +337,7 @@ func _build_chains_and_flights() -> void:
 		raw.append(pt)
 
 	# Finally close the loop
-	raw.append(Vector2(-0.22, -0.28))
+	raw.append(Vector2(-0.33, -0.28))
 
 	# Arc-length param
 	var al: Array[float] = [0.0]
