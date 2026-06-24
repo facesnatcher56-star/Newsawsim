@@ -16,8 +16,10 @@ extends StaticBody3D
 @export var profile_scale: float = 1.0:
 	set(v): profile_scale = v; _rebuild()
 
-@export var chain_spacing: float = 1.0:
+@export var chain_spacing: float = 0.8:
 	set(v): chain_spacing = v; _rebuild()
+@export var set_gap: float = 0.1:
+	set(v): set_gap = v; _rebuild()
 @export var flight_spacing: float = 1.4:
 	set(v): flight_spacing = v; _rebuild()
 @export var flight_height: float = 0.1:
@@ -182,12 +184,13 @@ func _build_working_surface() -> void:
 			var scale_factor: float = (chain_diameter / 0.048) * s
 			var outer_z := (0.052 + 0.014) * scale_factor
 			var slot_w := (outer_z * 2.0 + 0.014 * scale_factor) * 1.3
-			var chain_zs := [
-				zc_center - chain_spacing * 1.5,
-				zc_center - chain_spacing * 0.5,
-				zc_center + chain_spacing * 0.5,
-				zc_center + chain_spacing * 1.5
-			]
+			var total_width := 4.0 * chain_spacing + 3.0 * set_gap
+			var start_z := (machine_width - total_width) * 0.5
+			var chain_zs: Array[float] = []
+			for k in range(4):
+				var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
+				chain_zs.append(zc_k - chain_spacing * 0.5)
+				chain_zs.append(zc_k + chain_spacing * 0.5)
 			for cz in chain_zs:
 				var slot := CSGBox3D.new()
 				slot.name = "Slot"
@@ -252,8 +255,10 @@ func _build_chains_and_flights() -> void:
 
 	var zw: float = machine_width
 	var zc := zw * 0.5
-	var za := zc - chain_spacing * 1.5
-	var zb := zc + chain_spacing * 1.5
+	var total_width := 4.0 * chain_spacing + 3.0 * set_gap
+	var start_z := (zw - total_width) * 0.5
+	var za := start_z
+	var zb := start_z + 3.0 * (chain_spacing + set_gap) + chain_spacing
 
 	# Scale diameter, pitch and dimensions relative to Level Deck chain links
 	# Level deck references: pitch = 0.2032, plate length = 0.25, plate height = 0.042,
@@ -400,7 +405,7 @@ func _build_chains_and_flights() -> void:
 	# Shared mesh for flights (Square tubes)
 	var scaled_flight_dia = flight_diameter * s
 	var scaled_flight_h = flight_height * s
-	var flight_len := absf(zb - za) + (inner_z * 2.0 + plate_w) + 0.01
+	var flight_len := chain_spacing + (inner_z * 2.0 + plate_w) + 0.01
 	var flight_mesh_res := BoxMesh.new()
 	flight_mesh_res.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
 
@@ -433,23 +438,31 @@ func _build_chains_and_flights() -> void:
 		var n := Vector2(-d2.y, d2.x)
 		var ang := atan2(d2.y, d2.x)
 
-		var fl := MeshInstance3D.new()
-		fl.name = "Flight%d" % fi
+		for k in range(4):
+			var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
+			var fl := MeshInstance3D.new()
+			fl.name = "Flight_S%d_F%d" % [k, fi]
+			fl.mesh = flight_mesh_res
+			fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, zc_k)
+			fl.rotation = Vector3(0.0, 0.0, ang)
+			fl.material_override = mat
+			fl.add_to_group(_CHAIN_GROUP)
+			add_child(fl)
+
+			if bracket_m:
+				var b1 := MeshInstance3D.new()
+				b1.name = "BracketA"
+				b1.mesh = bracket_m
+				b1.material_override = mat
+				b1.position = Vector3(0.0, bracket_y, -chain_spacing * 0.5)
+				fl.add_child(b1)
+
+				var b2 := MeshInstance3D.new()
+				b2.name = "BracketB"
+				b2.mesh = bracket_m
+				b2.material_override = mat
+				b2.position = Vector3(0.0, bracket_y, chain_spacing * 0.5)
+				fl.add_child(b2)
+
 		fi += 1
-		fl.mesh = flight_mesh_res
-		fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, zc)
-		fl.rotation = Vector3(0.0, 0.0, ang)
-		fl.material_override = mat
-		fl.add_to_group(_CHAIN_GROUP)
-		add_child(fl)
-
-		if bracket_m:
-			for offset in [-chain_spacing * 1.5, -chain_spacing * 0.5, chain_spacing * 0.5, chain_spacing * 1.5]:
-				var b := MeshInstance3D.new()
-				b.name = "Bracket"
-				b.mesh = bracket_m
-				b.material_override = mat
-				b.position = Vector3(0.0, bracket_y, offset)
-				fl.add_child(b)
-
 		fd += flight_spacing
