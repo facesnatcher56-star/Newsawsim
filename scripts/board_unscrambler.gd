@@ -16,7 +16,7 @@ extends StaticBody3D
 @export var profile_scale: float = 1.0:
 	set(v): profile_scale = v; _rebuild()
 
-@export var chain_spacing: float = 1.8:
+@export var chain_spacing: float = 1.0:
 	set(v): chain_spacing = v; _rebuild()
 @export var flight_spacing: float = 1.4:
 	set(v): flight_spacing = v; _rebuild()
@@ -175,6 +175,27 @@ func _build_working_surface() -> void:
 		tray.rotation.z = angle
 		tray.material = _mat_floor
 		tray.use_collision = true
+
+		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 3) or (seg[0] == 3 and seg[1] == 5)
+		if is_v_notch:
+			var zc_center := machine_width * 0.5
+			var scale_factor: float = (chain_diameter / 0.048) * s
+			var outer_z := (0.052 + 0.014) * scale_factor
+			var slot_w := (outer_z * 2.0 + 0.014 * scale_factor) * 1.3
+			var chain_zs := [
+				zc_center - chain_spacing * 1.5,
+				zc_center - chain_spacing * 0.5,
+				zc_center + chain_spacing * 0.5,
+				zc_center + chain_spacing * 1.5
+			]
+			for cz in chain_zs:
+				var slot := CSGBox3D.new()
+				slot.name = "Slot"
+				slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
+				slot.size = Vector3(length + 0.1, 0.05, slot_w)
+				slot.position = Vector3(0.0, 0.0, cz - zc_center)
+				tray.add_child(slot)
+
 		add_child(tray)
 
 # ── Chains & Flights ─────────────────────────────────────────────────────────
@@ -186,11 +207,28 @@ func _build_chains_and_flights() -> void:
 	mat.metallic = 0.9
 	mat.roughness = 0.25
 
-	# Build path: V-notch to exit + overhang
-	var raw: Array[Vector2] = _OUTER.duplicate()
-	var last := raw[raw.size() - 1]
-	var prev := raw[raw.size() - 2]
-	raw.append(last + (last - prev).normalized() * chain_overhang)
+	# Build path: V-notch to exit + overhang, closed loop return underneath
+	var raw: Array[Vector2] = [
+		# Forward path on top of the slide
+		Vector2(-0.22, -0.28),  # V-notch bottom flat
+		Vector2(-0.04,  0.02),  # back up from notch
+		Vector2( 0.22,  0.36),  # curve begins
+		Vector2( 0.50,  0.72),  # curve mid
+		Vector2( 0.78,  0.98),  # curve upper
+		Vector2( 1.00,  1.10),  # entry to exit flat
+		Vector2( 2.50,  1.10),  # exit far right
+		Vector2( 2.50 + chain_overhang, 1.10), # sprocket top
+		
+		# Return path underneath the working surface
+		Vector2( 2.50 + chain_overhang, 0.70), # sprocket bottom
+		Vector2( 1.00,  0.70),  # under exit flat
+		Vector2( 0.78,  0.58),  # under curve upper
+		Vector2( 0.50,  0.32),  # under curve mid
+		Vector2( 0.22, -0.04),  # under curve lower
+		Vector2(-0.04, -0.48),  # under notch rising
+		Vector2(-0.22, -0.48),  # under notch bottom
+		Vector2(-0.22, -0.28),  # close the loop
+	]
 
 	# Arc-length param
 	var al: Array[float] = [0.0]
@@ -214,8 +252,8 @@ func _build_chains_and_flights() -> void:
 
 	var zw: float = machine_width
 	var zc := zw * 0.5
-	var za := zc - chain_spacing * 0.5
-	var zb := zc + chain_spacing * 0.5
+	var za := zc - chain_spacing * 1.5
+	var zb := zc + chain_spacing * 1.5
 
 	# Scale diameter, pitch and dimensions relative to Level Deck chain links
 	# Level deck references: pitch = 0.2032, plate length = 0.25, plate height = 0.042,
@@ -260,8 +298,14 @@ func _build_chains_and_flights() -> void:
 	pin_m.height = outer_z * 2.0 + plate_w * 1.5
 	pin_m.radial_segments = 6
 
-	# Chain rails
-	for z in [za, zb]:
+	# Chain rails (4 chains)
+	var chain_zs := [
+		zc - chain_spacing * 1.5,
+		zc - chain_spacing * 0.5,
+		zc + chain_spacing * 0.5,
+		zc + chain_spacing * 1.5
+	]
+	for z in chain_zs:
 		for i in range(pts.size() - 1):
 			var a := pts[i]
 			var b := pts[i + 1]
@@ -393,25 +437,19 @@ func _build_chains_and_flights() -> void:
 		fl.name = "Flight%d" % fi
 		fi += 1
 		fl.mesh = flight_mesh_res
-		fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, (za + zb) * 0.5)
+		fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, zc)
 		fl.rotation = Vector3(0.0, 0.0, ang)
 		fl.material_override = mat
 		fl.add_to_group(_CHAIN_GROUP)
 		add_child(fl)
 
 		if bracket_m:
-			var b1 := MeshInstance3D.new()
-			b1.name = "BracketA"
-			b1.mesh = bracket_m
-			b1.material_override = mat
-			b1.position = Vector3(0.0, bracket_y, -chain_spacing * 0.5)
-			fl.add_child(b1)
-
-			var b2 := MeshInstance3D.new()
-			b2.name = "BracketB"
-			b2.mesh = bracket_m
-			b2.material_override = mat
-			b2.position = Vector3(0.0, bracket_y, chain_spacing * 0.5)
-			fl.add_child(b2)
+			for offset in [-chain_spacing * 1.5, -chain_spacing * 0.5, chain_spacing * 0.5, chain_spacing * 1.5]:
+				var b := MeshInstance3D.new()
+				b.name = "Bracket"
+				b.mesh = bracket_m
+				b.material_override = mat
+				b.position = Vector3(0.0, bracket_y, offset)
+				fl.add_child(b)
 
 		fd += flight_spacing
