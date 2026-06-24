@@ -170,20 +170,33 @@ func _build_working_surface() -> void:
 			continue
 		var angle := atan2(diff.y, diff.x)
 
+		# Make plates thicker (0.06m) so we can cut out grooves for the chains
+		var surface_thickness := 0.06 * s
+		var offset_dist := (surface_thickness - 0.010) * 0.5
+		var n_dir := Vector2(-sin(angle), cos(angle))
+
 		var tray := CSGBox3D.new()
 		tray.name = "Surface"
-		tray.size = Vector3(length, 0.010, machine_width - plate_thickness * 2.2)
-		tray.position = Vector3(mid.x, mid.y, machine_width * 0.5)
+		tray.size = Vector3(length, surface_thickness, machine_width - plate_thickness * 2.2)
+		tray.position = Vector3(
+			mid.x - n_dir.x * offset_dist,
+			mid.y - n_dir.y * offset_dist,
+			machine_width * 0.5
+		)
 		tray.rotation.z = angle
 		tray.material = _mat_floor
 		tray.use_collision = true
 
 		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 3) or (seg[0] == 3 and seg[1] == 5)
-		if is_v_notch:
+		var is_groove_needed: bool = is_v_notch or (seg[0] == 5 and seg[1] == 8) or (seg[0] == 8 and seg[1] == 9)
+
+		if is_groove_needed:
 			var zc_center := machine_width * 0.5
 			var scale_factor: float = (chain_diameter / 0.048) * s
 			var outer_z := (0.052 + 0.014) * scale_factor
-			var slot_w := (outer_z * 2.0 + 0.014 * scale_factor) * 1.3
+			var slot_w := (outer_z * 2.0 + 0.014 * scale_factor) * 1.15
+			var plate_h := 0.042 * scale_factor
+
 			var total_width := 4.0 * chain_spacing + 3.0 * set_gap
 			var start_z := (machine_width - total_width) * 0.5
 			var chain_zs: Array[float] = []
@@ -191,12 +204,22 @@ func _build_working_surface() -> void:
 				var zc_k := start_z + k * (chain_spacing + set_gap) + chain_spacing * 0.5
 				chain_zs.append(zc_k - chain_spacing * 0.5)
 				chain_zs.append(zc_k + chain_spacing * 0.5)
+
 			for cz in chain_zs:
 				var slot := CSGBox3D.new()
-				slot.name = "Slot"
+				slot.name = "Slot" if is_v_notch else "Groove"
 				slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
-				slot.size = Vector3(length + 0.1, 0.05, slot_w)
-				slot.position = Vector3(0.0, 0.0, cz - zc_center)
+				
+				if is_v_notch:
+					# Slot cuts all the way through the plate
+					slot.size = Vector3(length + 0.1, surface_thickness + 0.05, slot_w)
+					slot.position = Vector3(0.0, 0.0, cz - zc_center)
+				else:
+					# Groove only recedes the chain (depth = plate_h * 1.1)
+					var groove_depth := plate_h * 1.1
+					slot.size = Vector3(length + 0.1, groove_depth, slot_w)
+					slot.position = Vector3(0.0, surface_thickness * 0.5 - groove_depth * 0.5, cz - zc_center)
+					
 				tray.add_child(slot)
 
 		add_child(tray)
@@ -324,7 +347,13 @@ func _build_chains_and_flights() -> void:
 				var p := a + d * ((j + 0.5) * stp)
 				var link := Node3D.new()
 				link.name = "Link"
-				link.position = Vector3(p.x, p.y, z)
+
+				# Recede the chain inside the plates
+				var recede_dist := plate_h * 0.5
+				var n_dir := Vector2(-d.y, d.x)
+				var p_receded := p - n_dir * recede_dist
+
+				link.position = Vector3(p_receded.x, p_receded.y, z)
 				link.rotation.z = ang
 				link.add_to_group(_CHAIN_GROUP)
 				add_child(link)
@@ -409,14 +438,16 @@ func _build_chains_and_flights() -> void:
 	flight_mesh_res.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
 
 	# Bracket setup for attaching flights visually to chains
-	var contact_h: float = plate_h * 0.5 + scaled_flight_dia * 0.5
+	# Since the chains are receded by plate_h * 0.5, the top of the chains lies flush at the plate surface.
+	# The flights ride on top of the plate surface, so their contact threshold is when their bottom touches the surface.
+	var contact_h: float = scaled_flight_dia * 0.5
 	var bracket_m: BoxMesh = null
 	var bracket_y: float = 0.0
 	if scaled_flight_h > contact_h:
 		var bracket_h: float = scaled_flight_h - contact_h
 		bracket_m = BoxMesh.new()
 		bracket_m.size = Vector3(plate_len * 0.5, bracket_h, inner_z * 2.0)
-		bracket_y = (-scaled_flight_h + plate_h * 0.5 - scaled_flight_dia * 0.5) * 0.5
+		bracket_y = - (scaled_flight_h + contact_h) * 0.5
 
 	# Flights
 	var al2: Array[float] = [0.0]
