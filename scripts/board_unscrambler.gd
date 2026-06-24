@@ -15,7 +15,6 @@ extends StaticBody3D
 ## Overall scale factor.
 @export var profile_scale: float = 1.0:
 	set(v): profile_scale = v; _rebuild()
-
 @export var chain_spacing: float = 0.5:
 	set(v): chain_spacing = v; _rebuild()
 @export var set_gap: float = 0.1:
@@ -31,12 +30,39 @@ extends StaticBody3D
 @export var chain_overhang: float = 0.35:
 	set(v): chain_overhang = v; _rebuild()
 
+## Speed of the conveyor (m/s). Boards are pushed in the +X direction.
+@export var speed: float = 3.0:
+	set(v):
+		speed = v
+		if is_inside_tree():
+			constant_linear_velocity = CONVEYOR_DIR * speed
+
+const CONVEYOR_DIR := Vector3.RIGHT
+
 const MAT_STEEL_COLOR  := Color(0.28, 0.30, 0.33)
 const MAT_FLOOR_COLOR  := Color(0.22, 0.24, 0.26)
 const _CHAIN_GROUP := &"_unscrambler_chains"
 
 var _mat_plate: StandardMaterial3D
 var _mat_floor: StandardMaterial3D
+var _mat_chain: StandardMaterial3D
+var _mat_flight: StandardMaterial3D
+
+# Flight animation state (populated by _build_chains_and_flights)
+var _anim_path_pts: Array[Vector2] = []
+var _anim_path_al: Array[float] = []
+var _anim_path_total: float = 0.0
+var _anim_offset: float = 0.0
+var _anim_flights: Array[AnimatableBody3D] = []
+var _anim_flight_dists: Array[float] = []
+var _anim_flight_zs: Array[float] = []
+var _anim_flight_perp: float = 0.0  # perpendicular offset from path (scaled_flight_h)
+
+# Chain link animation state (populated by _build_chains_and_flights)
+var _anim_links: Array[Node3D] = []
+var _anim_link_dists: Array[float] = []
+var _anim_link_zs: Array[float] = []
+var _anim_link_recede: float = 0.0  # perpendicular recede for chain links
 
 # ── Profile definition ───────────────────────────────────────────────────────
 # Points describe the OUTER (top) edge of one side plate.
@@ -71,6 +97,7 @@ const _INNER_OFFSETS: Array[Vector2] = [
 ]
 
 func _ready() -> void:
+	constant_linear_velocity = CONVEYOR_DIR * speed
 	_rebuild()
 
 func _rebuild() -> void:
@@ -78,7 +105,10 @@ func _rebuild() -> void:
 		return
 	for child in get_children():
 		child.queue_free()
+	_clear_animation_data()
 	await get_tree().process_frame
+
+	constant_linear_velocity = CONVEYOR_DIR * speed
 
 	_mat_plate = StandardMaterial3D.new()
 	_mat_plate.albedo_color = MAT_STEEL_COLOR
@@ -90,11 +120,35 @@ func _rebuild() -> void:
 	_mat_floor.metallic = 0.80
 	_mat_floor.roughness = 0.40
 
+	_mat_chain = StandardMaterial3D.new()
+	_mat_chain.albedo_color = Color(0.18, 0.19, 0.21)
+	_mat_chain.metallic = 0.90
+	_mat_chain.roughness = 0.35
+
+	_mat_flight = StandardMaterial3D.new()
+	_mat_flight.albedo_color = Color(0.85, 0.55, 0.05)
+	_mat_flight.metallic = 0.60
+	_mat_flight.roughness = 0.40
+
 	_build_side_plate(0.0)
 	_build_side_plate(machine_width)
 	_build_cross_members()
 	_build_working_surface()
 	_build_chains_and_flights()
+
+func _clear_animation_data() -> void:
+	_anim_flights.clear()
+	_anim_flight_dists.clear()
+	_anim_flight_zs.clear()
+	_anim_links.clear()
+	_anim_link_dists.clear()
+	_anim_link_zs.clear()
+	_anim_path_pts.clear()
+	_anim_path_al.clear()
+	_anim_path_total = 0.0
+	_anim_offset = 0.0
+	_anim_flight_perp = 0.0
+	_anim_link_recede = 0.0
 
 # ── Side plate ───────────────────────────────────────────────────────────────
 
@@ -216,7 +270,7 @@ func _build_working_surface() -> void:
 					var zc_k := start_z + (2 * k + 0.5) * s_dist
 					var slot := CSGBox3D.new()
 					slot.name = "Slot"
-					slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
+					slot.operation = CSGShape3D.OPERATION_SUBTRACTION
 					var slot_w_flight := s_dist + 2.0 * outer_z + 0.02
 					slot.size = Vector3(slot_len, surface_thickness + 0.05, slot_w_flight)
 					# Position at the very bottom end of the downhill slope segment (local X end)
@@ -227,7 +281,7 @@ func _build_working_surface() -> void:
 				for cz in chain_zs:
 					var slot := CSGBox3D.new()
 					slot.name = "Groove"
-					slot.operation = 2 # CSGShape3D.OPERATION_SUBTRACT
+					slot.operation = CSGShape3D.OPERATION_SUBTRACTION
 					var groove_depth := plate_h * 1.1
 					slot.size = Vector3(length + 0.1, groove_depth, slot_w)
 					slot.position = Vector3(0.0, surface_thickness * 0.5 - groove_depth * 0.5, cz - zc_center)
@@ -292,12 +346,9 @@ func _build_chains_and_flights() -> void:
 		return
 
 	var zw: float = machine_width
-	var zc := zw * 0.5
 	var s_dist := chain_spacing
 	var total_width := 7.0 * s_dist
 	var start_z := (zw - total_width) * 0.5
-	var za := start_z
-	var zb := start_z + 7.0 * s_dist
 
 	# Scale diameter, pitch and dimensions relative to Level Deck chain links
 	# Level deck references: pitch = 0.2032, plate length = 0.25, plate height = 0.042,
@@ -360,6 +411,7 @@ func _build_chains_and_flights() -> void:
 	var chain_zs: Array[float] = []
 	for i in range(8):
 		chain_zs.append(start_z + i * s_dist)
+	_anim_link_recede = plate_h * 0.5
 	for z in chain_zs:
 		for j in range(num_links):
 			var d_start := j * actual_step
@@ -384,6 +436,11 @@ func _build_chains_and_flights() -> void:
 			link.rotation.z = ang
 			link.add_to_group(_CHAIN_GROUP)
 			add_child(link)
+
+			# Store for chain animation
+			_anim_links.append(link)
+			_anim_link_dists.append(d_start + actual_step * 0.5)
+			_anim_link_zs.append(z)
 
 			# Left Plate (offset sidebar, positive Z)
 			var lp_in := MeshInstance3D.new()
@@ -441,18 +498,28 @@ func _build_chains_and_flights() -> void:
 			pin.rotation.x = PI / 2.0
 			link.add_child(pin)
 
-	# Shared mesh for flights (Square tubes)
-	var scaled_flight_dia = flight_diameter * s
-	var scaled_flight_h = scaled_flight_dia * 0.5
+	# Shared mesh for flights (square tubes)
+	var scaled_flight_dia := flight_diameter * s
+	var scaled_flight_h := scaled_flight_dia * 0.5
 	var flight_len := s_dist + 2.0 * outer_z
 	var flight_mesh_res := BoxMesh.new()
 	flight_mesh_res.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
 
-	# Flights
+	# BoxShape3D for flight collision (matching visual size)
+	var flight_shape := BoxShape3D.new()
+	flight_shape.size = Vector3(scaled_flight_dia, scaled_flight_dia, flight_len)
+
+	# Store path data for flight animation
+	_anim_path_pts = pts
+	_anim_flight_perp = scaled_flight_h
+
+	# Flights — placed along the closed-loop path and animated each physics frame
 	var al2: Array[float] = [0.0]
 	for i in range(1, pts.size()):
 		al2.append(al2[al2.size() - 1] + pts[i].distance_to(pts[i - 1]))
 	var total2 := al2[al2.size() - 1]
+	_anim_path_al = al2
+	_anim_path_total = total2
 
 	var fd := flight_spacing * 0.5
 	var fi := 0
@@ -469,14 +536,31 @@ func _build_chains_and_flights() -> void:
 
 		for k in range(4):
 			var zc_k := start_z + (2 * k + 0.5) * s_dist
-			var fl := MeshInstance3D.new()
+
+			# AnimatableBody3D — moves each frame, imparting velocity to RigidBody contacts
+			var fl := AnimatableBody3D.new()
 			fl.name = "Flight_S%d_F%d" % [k, fi]
-			fl.mesh = flight_mesh_res
 			fl.position = Vector3(pos.x + n.x * scaled_flight_h, pos.y + n.y * scaled_flight_h, zc_k)
 			fl.rotation = Vector3(0.0, 0.0, ang)
-			fl.material_override = mat
+
+			# Visual mesh
+			var fl_mesh := MeshInstance3D.new()
+			fl_mesh.mesh = flight_mesh_res
+			fl_mesh.material_override = mat
+			fl.add_child(fl_mesh)
+
+			# Collision shape — physically pushes boards
+			var fl_shape := CollisionShape3D.new()
+			fl_shape.shape = flight_shape
+			fl.add_child(fl_shape)
+
 			fl.add_to_group(_CHAIN_GROUP)
 			add_child(fl)
+
+			# Store for animation
+			_anim_flights.append(fl)
+			_anim_flight_dists.append(fd)
+			_anim_flight_zs.append(zc_k)
 
 		fi += 1
 		fd += flight_spacing
@@ -491,3 +575,31 @@ func _get_path_point_at_dist(dist: float, pts: Array[Vector2], pts_al: Array[flo
 		idx += 1
 	var t := (dist - pts_al[idx]) / (pts_al[idx + 1] - pts_al[idx]) if pts_al[idx + 1] > pts_al[idx] else 0.0
 	return pts[idx].lerp(pts[idx + 1], clampf(t, 0.0, 1.0))
+
+func _tween_node_along_path(node: Node3D, dist: float, z: float, perp: float) -> void:
+	var pos_here := _get_path_point_at_dist(dist, _anim_path_pts, _anim_path_al)
+	var pos_ahead := _get_path_point_at_dist(dist + 0.001, _anim_path_pts, _anim_path_al)
+	var dir := (pos_ahead - pos_here).normalized()
+	if dir.length_squared() < 0.0001:
+		return
+	var n := Vector2(-dir.y, dir.x)
+	var ang := atan2(dir.y, dir.x)
+	node.position = Vector3(pos_here.x + n.x * perp, pos_here.y + n.y * perp, z)
+	node.rotation = Vector3(0.0, 0.0, ang)
+
+func _physics_process(delta: float) -> void:
+	if (_anim_flights.is_empty() and _anim_links.is_empty()) or _anim_path_total < 0.001:
+		return
+	_anim_offset = fmod(_anim_offset + speed * delta, _anim_path_total)
+	
+	# Animate flights (AnimatableBody3D — physically push boards)
+	var p := _anim_flight_perp
+	for i in _anim_flights.size():
+		var fd := fmod(_anim_flight_dists[i] + _anim_offset, _anim_path_total)
+		_tween_node_along_path(_anim_flights[i], fd, _anim_flight_zs[i], p)
+	
+	# Animate chain links (Node3D — visual only, follows path with recede offset)
+	var rc := _anim_link_recede
+	for i in _anim_links.size():
+		var fd := fmod(_anim_link_dists[i] + _anim_offset, _anim_path_total)
+		_tween_node_along_path(_anim_links[i], fd, _anim_link_zs[i], -rc)
