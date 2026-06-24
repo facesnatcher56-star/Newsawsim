@@ -51,10 +51,60 @@ var _mat_motor: StandardMaterial3D
 var _mat_warning: StandardMaterial3D
 var _mat_wood: StandardMaterial3D
 var _mat_hydraulic: StandardMaterial3D
+var _mat_chain_grip: StandardMaterial3D
+
+@export_category("Editor Test")
+@export var run_editor_preview: bool = false:
+	set(value):
+		run_editor_preview = value
+		if is_inside_tree():
+			set_process(run_editor_preview)
+
+@export_range(0.1, 8.0, 0.1, "or_greater") var preview_feed_speed: float = 1.4
+
+const FEED_ROLLER_RADIUS := 0.075
+const FEED_ROLLER_LENGTH := 1.14
+const HOLD_DOWN_ROLLER_RADIUS := 0.095
+const HOLD_DOWN_ROLLER_LENGTH := 0.96
+const SAMPLE_BOARD_THICKNESS := 0.045
+const SAMPLE_BOARD_LENGTH := 1.35
+const SAMPLE_BOARD_WIDTH := 0.32
+const SAW_X := -0.18
+const INFEED_CHAIN_END_X := SAW_X - 0.18
+const CHAIN_LINK_LENGTH := 0.13
+const CHAIN_LINK_WIDTH := SAMPLE_BOARD_WIDTH * 0.25
+const CHAIN_LINK_THICKNESS := 0.028
+const CHAIN_LANE_CLEARANCE := 0.004
+const CHAIN_GRIP_TOOTH_HEIGHT := 0.035
+const CHAIN_GRIP_TOOTH_LENGTH := 0.055
+const CHAIN_GRIP_TOOTH_WIDTH := CHAIN_LINK_WIDTH * 0.42
+const HOLD_DOWN_RAISED_OFFSET := 0.24
+const HOLD_DOWN_LOWER_SPEED := 0.55
+const HOLD_DOWN_RAISE_SPEED := 0.72
+const HOLD_DOWN_LEAD_IN := 0.08
+
+var _feed_rollers: Array[CSGCylinder3D] = []
+var _infeed_chain_links: Array[Node3D] = []
+var _infeed_chain_bases: Array[Vector3] = []
+var _hold_down_rollers: Array[CSGCylinder3D] = []
+var _hold_down_stations: Array[Dictionary] = []
+var _saw_blades: Array[CSGCylinder3D] = []
+var _saw_teeth_roots: Array[Node3D] = []
+var _sample_board: CSGBox3D
+var _preview_travel := 0.0
+var _chain_preview_offset := 0.0
 
 
 func _ready() -> void:
 	_rebuild()
+	set_process(run_editor_preview)
+
+
+func _process(delta: float) -> void:
+	if not run_editor_preview:
+		return
+	_preview_travel = fposmod(_preview_travel + preview_feed_speed * delta, bed_length + SAMPLE_BOARD_LENGTH)
+	_apply_preview_motion(delta)
 
 
 func _queue_rebuild() -> void:
@@ -76,6 +126,15 @@ func _rebuild() -> void:
 		remove_child(child)
 		child.queue_free()
 
+	_feed_rollers.clear()
+	_infeed_chain_links.clear()
+	_infeed_chain_bases.clear()
+	_hold_down_rollers.clear()
+	_hold_down_stations.clear()
+	_saw_blades.clear()
+	_saw_teeth_roots.clear()
+	_sample_board = null
+
 	_make_materials()
 	_build_frame()
 	_build_feed_deck()
@@ -84,6 +143,7 @@ func _rebuild() -> void:
 	_build_motors_and_drives()
 	_build_waste_handling()
 	_build_sample_board()
+	_apply_preview_motion(0.0)
 
 
 func _make_materials() -> void:
@@ -95,6 +155,7 @@ func _make_materials() -> void:
 	_mat_warning = _mat(Color(0.95, 0.55, 0.06), 0.55, 0.35)
 	_mat_wood = _mat(Color(0.78, 0.64, 0.42), 0.0, 0.78)
 	_mat_hydraulic = _mat(Color(0.86, 0.86, 0.88), 1.0, 0.12)
+	_mat_chain_grip = _mat(Color(0.42, 0.44, 0.44), 0.9, 0.22)
 
 
 func _mat(color: Color, metallic: float, roughness: float) -> StandardMaterial3D:
@@ -129,61 +190,119 @@ func _build_frame() -> void:
 
 
 func _build_feed_deck() -> void:
-	_add_box("WearPlate", Vector3(0, working_height, 0), Vector3(bed_length, 0.055, 0.54), _mat_dark)
-
 	var half_w := machine_width * 0.5
 	var fence_zs: Array[float] = [-half_w + 0.22, half_w - 0.22]
 	for z in fence_zs:
 		_add_box("SideFence", Vector3(0, working_height + 0.18, z), Vector3(bed_length * 0.94, 0.22, 0.06), _mat_frame)
 
-	var spacing := bed_length / float(feed_roller_count + 1)
-	for i in range(feed_roller_count):
-		var x := -bed_length * 0.5 + spacing * float(i + 1)
-		_add_cylinder("FeedRoller", Vector3(x, working_height + 0.06, 0), 0.075, 1.14, _mat_dark, Vector3(PI * 0.5, 0, 0), 28)
-		_add_cylinder("RollerShaft", Vector3(x, working_height + 0.06, 0), 0.025, machine_width + 0.18, _mat_blade, Vector3(PI * 0.5, 0, 0), 20)
+	_build_infeed_chains()
+
+	var roller_y := working_height + 0.04
+	var roller_start := SAW_X + 0.58
+	var roller_end := bed_length * 0.5 - 0.34
+	var roller_count := maxi(feed_roller_count, 2)
+	var spacing := (roller_end - roller_start) / float(roller_count - 1)
+	for i in range(roller_count):
+		var x := roller_start + spacing * float(i)
+		var suffix := "_%02d" % (i + 1)
+		var roller := _add_cylinder("FeedRoller" + suffix, Vector3(x, roller_y, 0), FEED_ROLLER_RADIUS, FEED_ROLLER_LENGTH, _mat_dark, Vector3(PI * 0.5, 0, 0), 28)
+		_feed_rollers.append(roller)
+		_add_cylinder("RollerShaft" + suffix, Vector3(x, roller_y, 0), 0.025, machine_width + 0.18, _mat_blade, Vector3(PI * 0.5, 0, 0), 20)
+
+
+func _build_infeed_chains() -> void:
+	var chain_top := _support_top_y()
+	var chain_y := chain_top - CHAIN_LINK_THICKNESS * 0.5
+	var chain_start := -bed_length * 0.5 + 0.34
+	var chain_end := INFEED_CHAIN_END_X
+	var chain_length := chain_end - chain_start
+	if chain_length <= 0.4:
+		return
+
+	var lane_pitch := CHAIN_LINK_WIDTH + CHAIN_LANE_CLEARANCE
+	var chain_zs: Array[float] = [-lane_pitch, 0.0, lane_pitch]
+	for lane_i in range(chain_zs.size()):
+		var z := chain_zs[lane_i]
+		var lane_suffix := "_%02d" % (lane_i + 1)
+		_add_box("InfeedChainWearRail" + lane_suffix, Vector3((chain_start + chain_end) * 0.5, chain_top - 0.07, z), Vector3(chain_length, 0.045, CHAIN_LINK_WIDTH + 0.035), _mat_frame)
+		_add_cylinder("InfeedChainIdler" + lane_suffix + "_Entry", Vector3(chain_start, chain_y, z), 0.065, CHAIN_LINK_WIDTH + 0.035, _mat_dark, Vector3(PI * 0.5, 0, 0), 18)
+		_add_cylinder("InfeedChainIdler" + lane_suffix + "_SawEnd", Vector3(chain_end, chain_y, z), 0.065, CHAIN_LINK_WIDTH + 0.035, _mat_dark, Vector3(PI * 0.5, 0, 0), 18)
+
+		var link_count := maxi(6, int(chain_length / CHAIN_LINK_LENGTH))
+		for i in range(link_count):
+			var t := float(i) / float(link_count)
+			var x := lerpf(chain_start, chain_end, t)
+			var link := _add_infeed_chain_link("InfeedChainLink" + lane_suffix + "_%02d" % (i + 1), Vector3(x, chain_y, z), i)
+			_infeed_chain_links.append(link)
+			_infeed_chain_bases.append(link.position)
 
 
 func _build_hold_downs() -> void:
-	var hold_down_xs: Array[float] = [-1.2, -0.45, 0.45, 1.2]
-	for x in hold_down_xs:
-		_add_box("HoldDownCrosshead", Vector3(x, working_height + 0.58, 0), Vector3(0.12, 0.12, 1.20), _mat_frame)
-		_add_box("HoldDownTopPressureBox", Vector3(x, working_height + 0.87, 0), Vector3(0.32, 0.22, 0.92), _mat_frame)
-		_add_box("HoldDownYoke", Vector3(x, working_height + 0.33, 0), Vector3(0.16, 0.10, 1.06), _mat_warning)
-		_add_cylinder("HoldDownRoller", Vector3(x, working_height + 0.42, 0), 0.095, 0.96, _mat_warning, Vector3(PI * 0.5, 0, 0), 28)
-		_add_cylinder("HoldDownAxle", Vector3(x, working_height + 0.42, 0), 0.026, 1.12, _mat_hydraulic, Vector3(PI * 0.5, 0, 0), 20)
+	var hold_down_xs: Array[float] = [-1.75, -0.95, 0.45, 1.25]
+	var board_top := _board_center_y() + SAMPLE_BOARD_THICKNESS * 0.5
+	var roller_y := board_top + HOLD_DOWN_ROLLER_RADIUS - 0.008
+	for i in range(hold_down_xs.size()):
+		var x := hold_down_xs[i]
+		var suffix := "_%02d" % (i + 1)
+		_add_box("HoldDownCrosshead" + suffix, Vector3(x, roller_y + 0.34, 0), Vector3(0.12, 0.12, 1.20), _mat_frame)
+		_add_box("HoldDownTopPressureBox" + suffix, Vector3(x, roller_y + 0.60, 0), Vector3(0.32, 0.22, 0.92), _mat_frame)
+		var hold_down := _add_cylinder("HoldDownRoller" + suffix, Vector3(x, roller_y, 0), HOLD_DOWN_ROLLER_RADIUS, HOLD_DOWN_ROLLER_LENGTH, _mat_warning, Vector3(PI * 0.5, 0, 0), 28)
+		_hold_down_rollers.append(hold_down)
+		var moving_nodes: Array[Node3D] = [hold_down]
+		var axle := _add_cylinder("HoldDownAxle" + suffix, Vector3(x, roller_y, 0), 0.026, 1.12, _mat_hydraulic, Vector3(PI * 0.5, 0, 0), 20)
+		moving_nodes.append(axle)
 
 		var side_zs: Array[float] = [-0.46, 0.46]
-		for z in side_zs:
-			_add_box("YokeSidePlate", Vector3(x, working_height + 0.38, z), Vector3(0.16, 0.28, 0.055), _mat_warning)
-			_add_cylinder("GuidePost", Vector3(x - 0.09, working_height + 0.60, z), 0.026, 0.54, _mat_hydraulic, Vector3.ZERO, 18)
-			_add_cylinder("PressureCylinderBarrel", Vector3(x + 0.09, working_height + 0.75, z), 0.055, 0.28, _mat_dark, Vector3.ZERO, 24)
-			_add_cylinder("PressureCylinderRod", Vector3(x + 0.09, working_height + 0.51, z), 0.023, 0.30, _mat_hydraulic, Vector3.ZERO, 18)
-			_add_box("RodClevis", Vector3(x + 0.09, working_height + 0.35, z), Vector3(0.11, 0.06, 0.07), _mat_hydraulic)
-			_add_box("TopClevisBracket", Vector3(x + 0.09, working_height + 0.91, z), Vector3(0.13, 0.08, 0.09), _mat_dark)
+		for side_i in range(side_zs.size()):
+			var z := side_zs[side_i]
+			var side_suffix := suffix + ("_L" if z < 0.0 else "_R")
+			moving_nodes.append(_add_box("YokeSidePlate" + side_suffix, Vector3(x, roller_y + 0.03, z), Vector3(0.16, 0.30, 0.055), _mat_warning))
+			moving_nodes.append(_add_box("YokeUpperLug" + side_suffix, Vector3(x, roller_y + 0.20, z), Vector3(0.16, 0.08, 0.16), _mat_warning))
+			_add_cylinder("GuidePost" + side_suffix, Vector3(x - 0.09, roller_y + 0.34, z), 0.026, 0.54, _mat_hydraulic, Vector3.ZERO, 18)
+			_add_cylinder("PressureCylinderBarrel" + side_suffix, Vector3(x + 0.09, roller_y + 0.48, z), 0.055, 0.28, _mat_dark, Vector3.ZERO, 24)
+			moving_nodes.append(_add_cylinder("PressureCylinderRod" + side_suffix, Vector3(x + 0.09, roller_y + 0.25, z), 0.023, 0.30, _mat_hydraulic, Vector3.ZERO, 18))
+			moving_nodes.append(_add_box("RodClevis" + side_suffix, Vector3(x + 0.09, roller_y + 0.09, z), Vector3(0.11, 0.06, 0.07), _mat_hydraulic))
+			_add_box("TopClevisBracket" + side_suffix, Vector3(x + 0.09, roller_y + 0.64, z), Vector3(0.13, 0.08, 0.09), _mat_dark)
+
+		var base_positions: Array[Vector3] = []
+		for node in moving_nodes:
+			base_positions.append(node.position)
+			node.position.y += HOLD_DOWN_RAISED_OFFSET
+		_hold_down_stations.append({
+			"x": x,
+			"nodes": moving_nodes,
+			"bases": base_positions,
+			"offset": HOLD_DOWN_RAISED_OFFSET,
+		})
 
 
 func _build_saw_box() -> void:
-	_add_box("MainSawGuard", Vector3(0, working_height + 0.68, 0), Vector3(1.05, 0.95, machine_width + 0.12), _mat_guard)
-	_add_box("ThroatOpening", Vector3(0, working_height + 0.22, 0), Vector3(1.15, 0.18, 0.78), _mat_dark)
+	_add_box("MainSawGuard", Vector3(SAW_X, working_height + 0.86, 0), Vector3(0.76, 0.58, machine_width + 0.12), _mat_guard, Vector3.ZERO, false)
+	_add_box("UpperThroatLip", Vector3(SAW_X, working_height + 0.49, 0), Vector3(0.88, 0.08, 0.92), _mat_dark, Vector3.ZERO, false)
+	for z_sign in [-1.0, 1.0]:
+		_add_box("ThroatSideCheek", Vector3(SAW_X, working_height + 0.22, z_sign * 0.58), Vector3(0.88, 0.18, 0.12), _mat_dark, Vector3.ZERO, false)
 
-	var blade_z := saw_spacing * 0.5
-	var blade_zs: Array[float] = [-blade_z, blade_z]
-	for z in blade_zs:
-		_add_cylinder("EdgerSawBlade", Vector3(0, working_height + 0.2, z), blade_radius, 0.035, _mat_blade, Vector3(PI * 0.5, 0, 0), 64)
-		_add_cylinder("BladeHub", Vector3(0, working_height + 0.2, z), 0.12, 0.07, _mat_dark, Vector3(PI * 0.5, 0, 0), 32)
-		_add_box("BladeKerfGuard", Vector3(0.12, working_height + 0.26, z), Vector3(0.34, 0.06, 0.09), _mat_warning)
+	var blade_zs: Array[float] = [-saw_spacing * 0.5, 0.0, saw_spacing * 0.5]
+	for i in range(blade_zs.size()):
+		var z := blade_zs[i]
+		var suffix := "_%02d" % (i + 1)
+		var blade := _add_cylinder("EdgerSawBlade" + suffix, Vector3(SAW_X, working_height + 0.2, z), blade_radius, 0.035, _mat_blade, Vector3(PI * 0.5, 0, 0), 64, false)
+		_saw_blades.append(blade)
+		_saw_teeth_roots.append(_add_saw_teeth("EdgerSawTeeth" + suffix, Vector3(SAW_X, working_height + 0.2, z), blade_radius))
+		_add_cylinder("BladeHub" + suffix, Vector3(SAW_X, working_height + 0.2, z), 0.12, 0.07, _mat_dark, Vector3(PI * 0.5, 0, 0), 32)
+		_add_box("BladeKerfGuard" + suffix, Vector3(SAW_X + 0.12, working_height + 0.39, z), Vector3(0.34, 0.06, 0.09), _mat_warning, Vector3.ZERO, false)
 
-	_add_cylinder("SawArbor", Vector3(0, working_height + 0.2, 0), 0.045, machine_width + 0.36, _mat_blade, Vector3(PI * 0.5, 0, 0), 28)
+	_add_cylinder("SawArbor", Vector3(SAW_X, working_height + 0.2, 0), 0.045, machine_width + 0.36, _mat_blade, Vector3(PI * 0.5, 0, 0), 28)
 
 
 func _build_motors_and_drives() -> void:
 	var motor_z := machine_width * 0.5 + 0.34
 	var motor_zs: Array[float] = [-motor_z, motor_z]
 	for z in motor_zs:
-		_add_box("MotorMount", Vector3(0, working_height + 0.08, z), Vector3(0.48, 0.18, 0.18), _mat_frame)
-		_add_cylinder("SawMotor", Vector3(-0.22, working_height + 0.25, z), 0.22, 0.48, _mat_motor, Vector3(0, 0, PI * 0.5), 32)
-		_add_cylinder("DrivePulley", Vector3(0.22, working_height + 0.25, z), 0.16, 0.08, _mat_dark, Vector3(0, 0, PI * 0.5), 28)
-		_add_box("BeltGuard", Vector3(0.10, working_height + 0.42, z), Vector3(0.58, 0.10, 0.28), _mat_dark, Vector3(0, 0, 0.18))
+		_add_box("MotorMount", Vector3(SAW_X, working_height + 0.08, z), Vector3(0.48, 0.18, 0.18), _mat_frame)
+		_add_cylinder("SawMotor", Vector3(SAW_X - 0.22, working_height + 0.25, z), 0.22, 0.48, _mat_motor, Vector3(0, 0, PI * 0.5), 32)
+		_add_cylinder("DrivePulley", Vector3(SAW_X + 0.22, working_height + 0.25, z), 0.16, 0.08, _mat_dark, Vector3(0, 0, PI * 0.5), 28)
+		_add_box("BeltGuard", Vector3(SAW_X + 0.10, working_height + 0.42, z), Vector3(0.58, 0.10, 0.28), _mat_dark, Vector3(0, 0, 0.18))
 
 
 func _build_waste_handling() -> void:
@@ -200,30 +319,260 @@ func _build_waste_handling() -> void:
 
 
 func _build_sample_board() -> void:
-	_add_box("ReferenceBoard", Vector3(-1.7, working_height + 0.095, 0), Vector3(1.35, 0.045, 0.32), _mat_wood)
+	_sample_board = _add_box("ReferenceBoard", Vector3(-1.7, _board_center_y(), 0), Vector3(SAMPLE_BOARD_LENGTH, SAMPLE_BOARD_THICKNESS, SAMPLE_BOARD_WIDTH), _mat_wood, Vector3.ZERO, false)
 
 
-func _add_box(name: String, position: Vector3, size: Vector3, material: Material, rotation: Vector3 = Vector3.ZERO) -> CSGBox3D:
+func _board_center_y() -> float:
+	return _support_top_y() + SAMPLE_BOARD_THICKNESS * 0.5 + 0.004
+
+
+func _support_top_y() -> float:
+	return working_height + 0.04 + FEED_ROLLER_RADIUS
+
+
+func _apply_preview_motion(delta: float) -> void:
+	var roller_step := (preview_feed_speed / maxf(FEED_ROLLER_RADIUS, 0.001)) * delta
+	_chain_preview_offset = fposmod(_chain_preview_offset + preview_feed_speed * delta, CHAIN_LINK_LENGTH)
+	_update_infeed_chain_preview()
+	for roller in _feed_rollers:
+		if is_instance_valid(roller):
+			roller.rotate_object_local(Vector3.UP, -roller_step)
+	for blade in _saw_blades:
+		if is_instance_valid(blade):
+			blade.rotate_object_local(Vector3.UP, -18.0 * delta)
+	for teeth_root in _saw_teeth_roots:
+		if is_instance_valid(teeth_root):
+			teeth_root.rotate_object_local(Vector3.FORWARD, -18.0 * delta)
+
+	if is_instance_valid(_sample_board):
+		var start_x := -bed_length * 0.5 - SAMPLE_BOARD_LENGTH * 0.45
+		_sample_board.position.x = start_x + _preview_travel
+		_sample_board.position.y = _board_center_y()
+		_update_hold_down_preview(delta, _sample_board.position.x)
+
+
+func _update_infeed_chain_preview() -> void:
+	var chain_start := -bed_length * 0.5 + 0.34
+	var chain_end := INFEED_CHAIN_END_X
+	var chain_length := chain_end - chain_start
+	if chain_length <= 0.0:
+		return
+	for i in range(_infeed_chain_links.size()):
+		var link := _infeed_chain_links[i]
+		if not is_instance_valid(link):
+			continue
+		var base := _infeed_chain_bases[i]
+		link.position = base
+		link.position.x = chain_start + fposmod((base.x - chain_start) + _chain_preview_offset, chain_length)
+
+
+func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
+	var board_leading_x := board_center_x + SAMPLE_BOARD_LENGTH * 0.5
+	var board_trailing_x := board_center_x - SAMPLE_BOARD_LENGTH * 0.5
+	for station in _hold_down_stations:
+		var station_x := float(station["x"])
+		var should_be_down := board_leading_x >= station_x - HOLD_DOWN_LEAD_IN and board_trailing_x <= station_x
+		var target_offset := 0.0 if should_be_down else HOLD_DOWN_RAISED_OFFSET
+		var current_offset := float(station["offset"])
+		var speed := HOLD_DOWN_LOWER_SPEED if should_be_down else HOLD_DOWN_RAISE_SPEED
+		current_offset = move_toward(current_offset, target_offset, speed * delta)
+		station["offset"] = current_offset
+
+		var nodes: Array = station["nodes"]
+		var bases: Array = station["bases"]
+		for i in range(nodes.size()):
+			var node := nodes[i] as Node3D
+			if is_instance_valid(node):
+				node.position = bases[i] + Vector3(0.0, current_offset, 0.0)
+				if node.name.begins_with("HoldDownRoller"):
+					node.rotate_object_local(Vector3.UP, (preview_feed_speed / maxf(HOLD_DOWN_ROLLER_RADIUS, 0.001)) * delta)
+
+
+func _add_infeed_chain_link(node_name: String, local_position: Vector3, index: int) -> Node3D:
+	var link_root := Node3D.new()
+	link_root.name = node_name
+	link_root.position = local_position
+	add_child(link_root)
+
+	var link_length := CHAIN_LINK_LENGTH * 0.72
+	var side_plate_width := CHAIN_LINK_WIDTH * 0.22
+	var side_plate_z := CHAIN_LINK_WIDTH * 0.5 - side_plate_width * 0.5
+	_add_box_child(link_root, "OuterPlate_L", Vector3(0.0, 0.0, -side_plate_z), Vector3(link_length, CHAIN_LINK_THICKNESS, side_plate_width), _mat_dark)
+	_add_box_child(link_root, "OuterPlate_R", Vector3(0.0, 0.0, side_plate_z), Vector3(link_length, CHAIN_LINK_THICKNESS, side_plate_width), _mat_dark)
+	_add_box_child(link_root, "CenterPad", Vector3(0.0, CHAIN_LINK_THICKNESS * 0.18, 0.0), Vector3(link_length * 0.54, CHAIN_LINK_THICKNESS * 0.55, CHAIN_LINK_WIDTH * 0.42), _mat_chain_grip)
+	_add_cylinder_child(link_root, "CrossPin", Vector3(0.0, -CHAIN_LINK_THICKNESS * 0.05, 0.0), 0.011, CHAIN_LINK_WIDTH + 0.02, _mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 10)
+
+	var tooth_mesh := _create_chain_grip_tooth_mesh()
+	var tooth_xs: Array[float] = [-link_length * 0.22, link_length * 0.22]
+	for tooth_i in range(tooth_xs.size()):
+		var tooth := MeshInstance3D.new()
+		tooth.name = "GripTooth_%02d" % (tooth_i + 1)
+		tooth.mesh = tooth_mesh
+		tooth.material_override = _mat_chain_grip
+		tooth.position = Vector3(tooth_xs[tooth_i], CHAIN_LINK_THICKNESS * 0.5, 0.0)
+		tooth.rotation.y = PI if (index + tooth_i) % 2 == 1 else 0.0
+		link_root.add_child(tooth)
+
+	return link_root
+
+
+func _add_box_child(parent: Node3D, node_name: String, local_position: Vector3, size: Vector3, material: Material) -> CSGBox3D:
 	var box := CSGBox3D.new()
-	box.name = name
-	box.position = position
-	box.rotation = rotation
+	box.name = node_name
+	box.position = local_position
 	box.size = size
 	box.material = material
 	box.use_collision = true
-	add_child(box)
+	parent.add_child(box)
 	return box
 
 
-func _add_cylinder(name: String, position: Vector3, radius: float, height: float, material: Material, rotation: Vector3, sides: int) -> CSGCylinder3D:
+func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int) -> CSGCylinder3D:
 	var cylinder := CSGCylinder3D.new()
-	cylinder.name = name
-	cylinder.position = position
-	cylinder.rotation = rotation
+	cylinder.name = node_name
+	cylinder.position = local_position
+	cylinder.rotation = local_rotation
 	cylinder.radius = radius
 	cylinder.height = height
 	cylinder.sides = sides
 	cylinder.material = material
 	cylinder.use_collision = true
+	parent.add_child(cylinder)
+	return cylinder
+
+
+func _create_chain_grip_tooth_mesh() -> ArrayMesh:
+	var mesh := ArrayMesh.new()
+	var vertices := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array()
+
+	var half_l := CHAIN_GRIP_TOOTH_LENGTH * 0.5
+	var half_w := CHAIN_GRIP_TOOTH_WIDTH * 0.5
+	var front := [
+		Vector3(-half_l, 0.0, half_w),
+		Vector3(half_l, 0.0, half_w),
+		Vector3(half_l * 0.35, CHAIN_GRIP_TOOTH_HEIGHT, half_w),
+		Vector3(-half_l * 0.75, CHAIN_GRIP_TOOTH_HEIGHT * 0.28, half_w),
+	]
+	var back := []
+	for point in front:
+		back.append(Vector3(point.x, point.y, -half_w))
+
+	_add_mesh_face(vertices, normals, indices, front, Vector3(0, 0, 1))
+	var reversed_back := back.duplicate()
+	reversed_back.reverse()
+	_add_mesh_face(vertices, normals, indices, reversed_back, Vector3(0, 0, -1))
+	for i in range(front.size()):
+		var next_i := (i + 1) % front.size()
+		_add_mesh_quad(vertices, normals, indices, front[i], front[next_i], back[next_i], back[i])
+
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
+
+func _add_saw_teeth(node_name: String, center: Vector3, radius: float) -> Node3D:
+	var teeth_root := Node3D.new()
+	teeth_root.name = node_name
+	teeth_root.position = center
+	add_child(teeth_root)
+
+	var tooth_mesh := _create_saw_tooth_mesh()
+	var tooth_count := 48
+	var tooth_root_radius := radius - 0.012
+	for i in range(tooth_count):
+		var angle := TAU * float(i) / float(tooth_count)
+		var tooth := MeshInstance3D.new()
+		tooth.name = "Tooth_%02d" % (i + 1)
+		tooth.mesh = tooth_mesh
+		tooth.material_override = _mat_blade
+		tooth.position = Vector3(cos(angle) * tooth_root_radius, sin(angle) * tooth_root_radius, 0.0)
+		tooth.rotation = Vector3(0.0, 0.0, angle)
+		teeth_root.add_child(tooth)
+	return teeth_root
+
+
+func _create_saw_tooth_mesh() -> ArrayMesh:
+	var mesh := ArrayMesh.new()
+	var vertices := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array()
+
+	var tooth_depth := 0.055
+	var tangential_root := 0.026
+	var tangential_tip := 0.006
+	var half_thickness := 0.018
+	var front := [
+		Vector3(0.0, -tangential_root, half_thickness),
+		Vector3(tooth_depth * 0.70, -tangential_tip, half_thickness),
+		Vector3(tooth_depth, tangential_tip, half_thickness),
+		Vector3(0.0, tangential_root, half_thickness),
+	]
+	var back := []
+	for point in front:
+		back.append(Vector3(point.x, point.y, -half_thickness))
+
+	_add_mesh_face(vertices, normals, indices, front, Vector3(0, 0, 1))
+	var reversed_back := back.duplicate()
+	reversed_back.reverse()
+	_add_mesh_face(vertices, normals, indices, reversed_back, Vector3(0, 0, -1))
+	for i in range(front.size()):
+		var next_i := (i + 1) % front.size()
+		_add_mesh_quad(vertices, normals, indices, front[i], front[next_i], back[next_i], back[i])
+
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	return mesh
+
+
+func _add_mesh_face(vertices: PackedVector3Array, normals: PackedVector3Array, indices: PackedInt32Array, points: Array, normal: Vector3) -> void:
+	var start := vertices.size()
+	for point in points:
+		vertices.append(point)
+		normals.append(normal)
+	for i in range(1, points.size() - 1):
+		indices.append_array(PackedInt32Array([start, start + i, start + i + 1]))
+
+
+func _add_mesh_quad(vertices: PackedVector3Array, normals: PackedVector3Array, indices: PackedInt32Array, a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> void:
+	var normal := (b - a).cross(c - a).normalized()
+	var start := vertices.size()
+	for point in [a, b, c, d]:
+		vertices.append(point)
+		normals.append(normal)
+	indices.append_array(PackedInt32Array([start, start + 1, start + 2, start, start + 2, start + 3]))
+
+
+func _add_box(node_name: String, local_position: Vector3, size: Vector3, material: Material, local_rotation: Vector3 = Vector3.ZERO, collision: bool = true) -> CSGBox3D:
+	var box := CSGBox3D.new()
+	box.name = node_name
+	box.position = local_position
+	box.rotation = local_rotation
+	box.size = size
+	box.material = material
+	box.use_collision = collision
+	add_child(box)
+	return box
+
+
+func _add_cylinder(node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int, collision: bool = true) -> CSGCylinder3D:
+	var cylinder := CSGCylinder3D.new()
+	cylinder.name = node_name
+	cylinder.position = local_position
+	cylinder.rotation = local_rotation
+	cylinder.radius = radius
+	cylinder.height = height
+	cylinder.sides = sides
+	cylinder.material = material
+	cylinder.use_collision = collision
 	add_child(cylinder)
 	return cylinder
