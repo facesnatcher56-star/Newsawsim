@@ -222,16 +222,15 @@ func _build_working_surface() -> void:
 	var s := profile_scale
 	# Thin steel tray panels that follow the profile segments segment-by-segment
 	var segments: Array[Array] = [
-		# [from_outer_index, to_outer_index]
+		# [from_outer_index, to_outer_index]  — profile now has 9 points (0-8)
 		[0, 1],   # entry flat
-		[1, 2],   # V-notch downhill slope
-		[2, 3],   # V-notch bottom flat
-		[3, 4],   # V-notch uphill slope
-		[4, 5],   # before curve begins
-		[5, 6],   # curve segment 1
-		[6, 7],   # curve segment 2
-		[7, 8],   # curve segment 3
-		[8, 9],   # exit flat
+		[1, 2],   # V left slope  (down to apex)
+		[2, 3],   # V right slope (up from apex)
+		[3, 4],   # lower curve
+		[4, 5],   # curve mid
+		[5, 6],   # curve upper
+		[6, 7],   # near-flat approach
+		[7, 8],   # exit flat
 	]
 	for seg in segments:
 		var a: Vector2 = _OUTER[seg[0]] * s
@@ -260,7 +259,7 @@ func _build_working_surface() -> void:
 		tray.material = _mat_floor
 		tray.use_collision = true
 
-		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 2)
+		var is_v_notch: bool = (seg[0] == 1 or seg[0] == 2) and seg[1] == seg[0] + 1
 		var is_groove_needed: bool = (seg[0] >= 1)
 
 		if is_groove_needed:
