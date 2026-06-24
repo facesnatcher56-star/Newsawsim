@@ -259,7 +259,7 @@ func _build_working_surface() -> void:
 		tray.material = _mat_floor
 		tray.use_collision = true
 
-		var is_v_notch: bool = (seg[0] == 1 or seg[0] == 2) and seg[1] == seg[0] + 1
+		var is_v_notch: bool = (seg[0] == 1 and seg[1] == 2)
 		var is_groove_needed: bool = (seg[0] >= 1)
 
 		if is_groove_needed:
