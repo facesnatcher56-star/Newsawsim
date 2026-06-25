@@ -10,6 +10,11 @@ albedo_color = Color(0.72, 0.72, 0.76, 1)
 metallic = 1.0
 roughness = 0.16
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rollstripe"]
+albedo_color = Color(0.92, 0.93, 0.88, 1)
+metallic = 0.25
+roughness = 0.24
+
 [node name="LowerFeedRollerAssembly" type="Node3D" unique_id=123702994]
 metadata/edger_editor_group = true
 
@@ -20,6 +25,12 @@ radius = 0.075
 height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_01_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="RollerShaft_01_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1895281098]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.4, 0.66, 0)
@@ -37,6 +48,12 @@ height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_02_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="RollerShaft_02_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=817412356]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.6766667, 0.66, 0)
 use_collision = true
@@ -52,6 +69,12 @@ radius = 0.075
 height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_03_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="RollerShaft_03_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=853629019]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.9533333, 0.66, 0)
@@ -69,6 +92,12 @@ height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_04_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="RollerShaft_04_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=241498914]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.23, 0.66, 0)
 use_collision = true
@@ -84,6 +113,12 @@ radius = 0.075
 height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_05_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="RollerShaft_05_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=257750095]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.5066667, 0.66, 0)
@@ -101,6 +136,12 @@ height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_06_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="RollerShaft_06_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1099802900]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.7833333, 0.66, 0)
 use_collision = true
@@ -116,6 +157,12 @@ radius = 0.075
 height = 1.14
 sides = 28
 material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerMotionStripe" type="CSGBox3D" parent="FeedRoller_07_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.079)
+use_collision = false
+size = Vector3(0.026, 1.0488, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="RollerShaft_07_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=145068497]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.06, 0.66, 0)

@@ -121,6 +121,7 @@ var _mat_blade: StandardMaterial3D
 var _mat_motor: StandardMaterial3D
 var _mat_warning: StandardMaterial3D
 var _mat_infeed_hold_down: StandardMaterial3D
+var _mat_roller_stripe: StandardMaterial3D
 var _mat_wood: StandardMaterial3D
 var _mat_hydraulic: StandardMaterial3D
 var _mat_chain_grip: StandardMaterial3D
@@ -135,12 +136,10 @@ var _mat_rubber: StandardMaterial3D
 			if not run_editor_preview:
 				_reset_preview_motion()
 
-@export_range(0.1, 8.0, 0.1, "or_greater") var preview_feed_speed: float = 1.4
-
 @export_category("Motion")
+@export_range(0.1, 8.0, 0.1, "or_greater") var infeed_chain_feed_speed: float = 1.4
 @export_range(0.0, 20.0, 0.1, "or_greater") var feed_roller_spin_speed: float = 1.0
 @export_range(0.0, 80.0, 0.1, "or_greater") var blade_spin_speed: float = 18.0
-@export_range(0.0, 20.0, 0.1, "or_greater") var hold_down_roller_spin_speed: float = 1.0
 @export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_lower_speed: float = 0.55
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_raise_speed: float = 0.72
@@ -372,6 +371,7 @@ func _make_materials() -> void:
 	_mat_motor = _mat(Color(0.08, 0.23, 0.34), 0.70, 0.30)
 	_mat_warning = _mat(Color(0.95, 0.55, 0.06), 0.55, 0.35)
 	_mat_infeed_hold_down = _mat(Color(0.05, 0.24, 0.11), 0.55, 0.34)
+	_mat_roller_stripe = _mat(Color(0.92, 0.93, 0.88), 0.25, 0.24)
 	_mat_wood = _mat(Color(0.78, 0.64, 0.42), 0.0, 0.78)
 	_mat_hydraulic = _mat(Color(0.86, 0.86, 0.88), 1.0, 0.12)
 	_mat_chain_grip = _mat(Color(0.42, 0.44, 0.44), 0.9, 0.22)
@@ -587,6 +587,17 @@ func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vect
 	parent.add_child(cylinder)
 	_adopt_new_node(cylinder)
 	return cylinder
+
+
+func _add_roller_motion_stripe(roller: Node3D, radius: float, length: float) -> void:
+	var stripe := CSGBox3D.new()
+	stripe.name = "RollerMotionStripe"
+	stripe.position = Vector3(0.0, 0.0, radius + 0.004)
+	stripe.size = Vector3(0.026, length * 0.92, 0.010)
+	stripe.material = _mat_roller_stripe
+	stripe.use_collision = false
+	roller.add_child(stripe)
+	_adopt_new_node(stripe)
 
 
 func _create_chain_grip_tooth_mesh() -> ArrayMesh:

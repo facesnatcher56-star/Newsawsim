@@ -20,6 +20,11 @@ albedo_color = Color(0.13, 0.14, 0.15, 1)
 metallic = 0.75
 roughness = 0.42
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rollstripe"]
+albedo_color = Color(0.92, 0.93, 0.88, 1)
+metallic = 0.25
+roughness = 0.24
+
 [node name="UpperHoldDownRollerAssembly" type="Node3D" unique_id=373163168]
 metadata/edger_editor_group = true
 
@@ -42,6 +47,12 @@ radius = 0.095
 height = 0.96
 sides = 28
 material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="RollerMotionStripe" type="CSGBox3D" parent="HoldDownRoller_01_Infeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099)
+use_collision = false
+size = Vector3(0.026, 0.8832, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="HoldDownAxle_01_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=815230754]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.75, 1.106, 0)
@@ -167,6 +178,12 @@ height = 0.96
 sides = 28
 material = SubResource("StandardMaterial3D_hpx5k")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="HoldDownRoller_02_Infeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099)
+use_collision = false
+size = Vector3(0.026, 0.8832, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="HoldDownAxle_02_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1944294488]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.95, 1.106, 0)
 use_collision = true
@@ -291,6 +308,12 @@ height = 0.96
 sides = 28
 material = SubResource("StandardMaterial3D_hpx5k")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="HoldDownRoller_03_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099)
+use_collision = false
+size = Vector3(0.026, 0.8832, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="HoldDownAxle_03_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=534408489]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.45, 1.106, 0)
 use_collision = true
@@ -414,6 +437,12 @@ radius = 0.095
 height = 0.96
 sides = 28
 material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="RollerMotionStripe" type="CSGBox3D" parent="HoldDownRoller_04_Outfeed_CenterZ_Mid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.099)
+use_collision = false
+size = Vector3(0.026, 0.8832, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="HoldDownAxle_04_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1641710335]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.25, 1.106, 0)

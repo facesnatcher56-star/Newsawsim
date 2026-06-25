@@ -1,4 +1,4 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bi42ad6wyxnuu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
 albedo_color = Color(0.3, 0.32, 0.34, 1)
@@ -20,13 +20,18 @@ albedo_color = Color(0.13, 0.14, 0.15, 1)
 metallic = 0.75
 roughness = 0.42
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rollstripe"]
+albedo_color = Color(0.92, 0.93, 0.88, 1)
+metallic = 0.25
+roughness = 0.24
+
 [node name="InfeedHoldDownRollerAssembly" type="Node3D" unique_id=1235472971]
 metadata/edger_editor_group = true
 
 [node name="InfeedHoldDownCrosshead_01_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=163345962]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.328, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.2806758, 0)
 use_collision = true
-size = Vector3(0.12, 0.1, 0.48)
+size = Vector3(0.21, 0.035351563, 0.62596416)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="InfeedHoldDownTopBox_01_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=131413674]
@@ -43,54 +48,22 @@ height = 0.48
 sides = 30
 material = SubResource("StandardMaterial3D_ijtbh")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="InfeedHoldDownRoller_01_Infeed_CenterZ_Upper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.139)
+use_collision = false
+size = Vector3(0.026, 0.4416, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="InfeedHoldDownAxle_01_Infeed_CenterZ_Upper" type="CSGCylinder3D" parent="." unique_id=171959537]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -6.295, 1.148, 0)
 use_collision = true
 radius = 0.024
-height = 0.48
+height = 0.56846416
 sides = 18
 material = SubResource("StandardMaterial3D_6fh1k")
 
-[node name="InfeedHoldDownGuide_01_LF_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=919073015]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.375, 1.278, -0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_01_LB_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=370119728]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.375, 1.278, 0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_01_RF_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=15459439]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.215, 1.278, -0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_01_RB_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1781149783]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.215, 1.278, 0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownYoke_01_F_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=396617746]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.188, -0.215)
-use_collision = true
-size = Vector3(0.15, 0.24, 0.04)
-material = SubResource("StandardMaterial3D_ijtbh")
-
 [node name="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" type="Node3D" parent="." unique_id=142461571]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.183, -0.215)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -6.295, 1.183, -0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=447377401]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -179,14 +152,8 @@ height = 0.008
 sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
-[node name="InfeedHoldDownYoke_01_B_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=527310530]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.188, 0.215)
-use_collision = true
-size = Vector3(0.15, 0.24, 0.04)
-material = SubResource("StandardMaterial3D_ijtbh")
-
 [node name="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" type="Node3D" parent="." unique_id=1709393165]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.183, 0.215)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -6.295, 1.183, 0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=948378558]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -276,9 +243,9 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="InfeedHoldDownCrosshead_02_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1692457128]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.328, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.2806758, 0)
 use_collision = true
-size = Vector3(0.12, 0.1, 0.48)
+size = Vector3(0.21, 0.035351563, 0.62596416)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="InfeedHoldDownTopBox_02_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1916744561]
@@ -295,54 +262,22 @@ height = 0.48
 sides = 30
 material = SubResource("StandardMaterial3D_ijtbh")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="InfeedHoldDownRoller_02_Infeed_CenterZ_Upper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.139)
+use_collision = false
+size = Vector3(0.026, 0.4416, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="InfeedHoldDownAxle_02_Infeed_CenterZ_Upper" type="CSGCylinder3D" parent="." unique_id=2012455119]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -4.93, 1.148, 0)
 use_collision = true
 radius = 0.024
-height = 0.48
+height = 0.56846416
 sides = 18
 material = SubResource("StandardMaterial3D_6fh1k")
 
-[node name="InfeedHoldDownGuide_02_LF_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=1530647837]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.01, 1.278, -0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_02_LB_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=467203032]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.01, 1.278, 0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_02_RF_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=532952204]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.85, 1.278, -0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_02_RB_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1173617494]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.85, 1.278, 0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownYoke_02_F_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1887049887]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.188, -0.215)
-use_collision = true
-size = Vector3(0.15, 0.24, 0.04)
-material = SubResource("StandardMaterial3D_ijtbh")
-
 [node name="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" type="Node3D" parent="." unique_id=133703608]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.183, -0.215)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -4.93, 1.183, -0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=516746699]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -431,14 +366,8 @@ height = 0.008
 sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
-[node name="InfeedHoldDownYoke_02_B_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=374912232]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.188, 0.215)
-use_collision = true
-size = Vector3(0.15, 0.24, 0.04)
-material = SubResource("StandardMaterial3D_ijtbh")
-
 [node name="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" type="Node3D" parent="." unique_id=1153661512]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.183, 0.215)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -4.93, 1.183, 0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1521907293]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -528,9 +457,9 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="InfeedHoldDownCrosshead_03_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=475646312]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.328, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.2806758, 0)
 use_collision = true
-size = Vector3(0.12, 0.1, 0.48)
+size = Vector3(0.21, 0.035351563, 0.62596416)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="InfeedHoldDownTopBox_03_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=453437618]
@@ -547,54 +476,22 @@ height = 0.48
 sides = 30
 material = SubResource("StandardMaterial3D_ijtbh")
 
+[node name="RollerMotionStripe" type="CSGBox3D" parent="InfeedHoldDownRoller_03_Infeed_CenterZ_Upper"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.139)
+use_collision = false
+size = Vector3(0.026, 0.4416, 0.01)
+material = SubResource("StandardMaterial3D_rollstripe")
+
 [node name="InfeedHoldDownAxle_03_Infeed_CenterZ_Upper" type="CSGCylinder3D" parent="." unique_id=640978915]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -3.565, 1.148, 0)
 use_collision = true
 radius = 0.024
-height = 0.48
+height = 0.56846416
 sides = 18
 material = SubResource("StandardMaterial3D_6fh1k")
 
-[node name="InfeedHoldDownGuide_03_LF_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=295294532]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.645, 1.278, -0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_03_LB_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=480285624]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.645, 1.278, 0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_03_RF_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=1077801222]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.485, 1.278, -0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownGuide_03_RB_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=2123330620]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.485, 1.278, 0.215)
-use_collision = true
-radius = 0.018
-height = 0.46
-sides = 14
-material = SubResource("StandardMaterial3D_6fh1k")
-
-[node name="InfeedHoldDownYoke_03_F_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=398872299]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.188, -0.215)
-use_collision = true
-size = Vector3(0.15, 0.24, 0.04)
-material = SubResource("StandardMaterial3D_ijtbh")
-
 [node name="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" type="Node3D" parent="." unique_id=338380294]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.183, -0.215)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -3.565, 1.183, -0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=293927636]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
@@ -683,14 +580,8 @@ height = 0.008
 sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
-[node name="InfeedHoldDownYoke_03_B_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1832651318]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.188, 0.215)
-use_collision = true
-size = Vector3(0.15, 0.24, 0.04)
-material = SubResource("StandardMaterial3D_ijtbh")
-
 [node name="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" type="Node3D" parent="." unique_id=55202370]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.183, 0.215)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -3.565, 1.183, 0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1635072572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)

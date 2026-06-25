@@ -116,6 +116,7 @@ func _reset_centering_preview() -> void:
 func _reset_hold_down_preview() -> void:
 	for station in edger._hold_down_stations:
 		station["offset"] = edger.hold_down_raised_offset
+		station["spin_velocity"] = 0.0
 		var nodes: Array = station["nodes"]
 		var bases: Array = station["bases"]
 		for i in range(nodes.size()):
@@ -126,6 +127,7 @@ func _reset_hold_down_preview() -> void:
 
 func _reset_infeed_hold_down_preview() -> void:
 	for station in edger._infeed_hold_down_stations:
+		station["spin_velocity"] = 0.0
 		var raised_y := float(station["raised_y"])
 		var nodes: Array = station["nodes"]
 		var y_offsets: Array = station["y_offsets"]
@@ -171,7 +173,7 @@ func _update_center_board_phase(delta: float) -> void:
 
 
 func _update_feed_board_phase(delta: float) -> void:
-	var feed_step := edger.preview_feed_speed * delta
+	var feed_step := edger.infeed_chain_feed_speed * delta
 	edger._feed_preview_travel += feed_step
 	edger._chain_preview_offset = fposmod(edger._chain_preview_offset + feed_step, SawmillEdger.CHAIN_LINK_LENGTH)
 	_update_infeed_chain_preview()
@@ -180,7 +182,7 @@ func _update_feed_board_phase(delta: float) -> void:
 	board_position.x += feed_step
 	edger._sample_board.global_position = board_position
 
-	var roller_step := (edger.preview_feed_speed / maxf(SawmillEdger.FEED_ROLLER_RADIUS, 0.001)) * edger.feed_roller_spin_speed * delta
+	var roller_step := (edger.infeed_chain_feed_speed / maxf(SawmillEdger.FEED_ROLLER_RADIUS, 0.001)) * edger.feed_roller_spin_speed * delta
 	for roller in edger._feed_rollers:
 		if is_instance_valid(roller):
 			roller.rotate_object_local(Vector3.UP, -roller_step)
@@ -496,6 +498,13 @@ func _update_infeed_hold_down_preview(delta: float) -> void:
 		if can_hold_down and board_under_roller:
 			target_y = _infeed_hold_down_contact_y()
 
+		var target_spin_velocity := 0.0
+		if can_hold_down and board_under_roller and edger._centering_preview_phase == SawmillEdger.CenteringPreviewPhase.FEED_BOARD:
+			target_spin_velocity = -edger.infeed_chain_feed_speed / maxf(SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)
+		var current_spin_velocity := float(station.get("spin_velocity", 0.0))
+		current_spin_velocity = move_toward(current_spin_velocity, target_spin_velocity, _idle_roller_spin_accel() * delta)
+		station["spin_velocity"] = current_spin_velocity
+
 		var nodes: Array = station["nodes"]
 		var y_offsets: Array = station["y_offsets"]
 		for i in range(nodes.size()):
@@ -503,8 +512,8 @@ func _update_infeed_hold_down_preview(delta: float) -> void:
 			if not is_instance_valid(node):
 				continue
 			node.position.y = move_toward(node.position.y, target_y + float(y_offsets[i]), edger.hold_down_lower_speed * delta if target_y < node.position.y else edger.hold_down_raise_speed * delta)
-			if node.name.begins_with("InfeedHoldDownRoller") and edger._centering_preview_phase == SawmillEdger.CenteringPreviewPhase.FEED_BOARD and board_under_roller:
-				node.rotate_object_local(Vector3.UP, (edger.preview_feed_speed / maxf(SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)) * edger.hold_down_roller_spin_speed * delta)
+			if node.name.begins_with("InfeedHoldDownRoller") and not is_zero_approx(current_spin_velocity):
+				node.rotate_object_local(Vector3.UP, current_spin_velocity * delta)
 
 
 func _infeed_hold_down_contact_y() -> float:
@@ -524,6 +533,12 @@ func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
 		var speed := edger.hold_down_lower_speed if should_be_down else edger.hold_down_raise_speed
 		current_offset = move_toward(current_offset, target_offset, speed * delta)
 		station["offset"] = current_offset
+		var target_spin_velocity := 0.0
+		if should_be_down and edger._centering_preview_phase == SawmillEdger.CenteringPreviewPhase.FEED_BOARD:
+			target_spin_velocity = -edger.infeed_chain_feed_speed / maxf(SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, 0.001)
+		var current_spin_velocity := float(station.get("spin_velocity", 0.0))
+		current_spin_velocity = move_toward(current_spin_velocity, target_spin_velocity, _idle_roller_spin_accel() * delta)
+		station["spin_velocity"] = current_spin_velocity
 
 		var nodes: Array = station["nodes"]
 		var bases: Array = station["bases"]
@@ -531,5 +546,9 @@ func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
 			var node := nodes[i] as Node3D
 			if is_instance_valid(node):
 				node.position = bases[i] + Vector3(0.0, current_offset, 0.0)
-				if node.name.begins_with("HoldDownRoller"):
-					node.rotate_object_local(Vector3.UP, (edger.preview_feed_speed / maxf(SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, 0.001)) * edger.hold_down_roller_spin_speed * delta)
+				if node.name.begins_with("HoldDownRoller") and not is_zero_approx(current_spin_velocity):
+					node.rotate_object_local(Vector3.UP, current_spin_velocity * delta)
+
+
+func _idle_roller_spin_accel() -> float:
+	return maxf(edger.infeed_chain_feed_speed * 10.0, 4.0)

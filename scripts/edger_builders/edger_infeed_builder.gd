@@ -104,27 +104,21 @@ func build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
 	var board_top := edger._board_center_y() + SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.5
 	var contact_y := board_top + SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS - 0.006
 	var raised_y := contact_y + edger.hold_down_raised_offset
-	var hardware_z_limit := SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH * 0.5
-	var yoke_z := hardware_z_limit - 0.025
-	var guide_height := 0.46
-	var guide_y := contact_y + 0.37
+	var bearing_z := 0.28423208
+	var crosshead_y_size := 0.035351563
+	var crosshead_z_size := bearing_z * 2.0 + 0.0575
+	var crosshead_y := raised_y + 0.115 + crosshead_y_size * 0.5
 	for i in range(roller_count):
 		var x := chain_start + ramp_spacing * float(i + 1)
 		var suffix := "_%02d" % (i + 1)
-		edger._add_box("InfeedHoldDownCrosshead" + suffix, Vector3(x, contact_y + 0.42, 0.0), Vector3(0.12, 0.10, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH), edger._mat_frame)
+		var crosshead := edger._add_box("InfeedHoldDownCrosshead" + suffix, Vector3(x, crosshead_y, 0.0), Vector3(0.21, crosshead_y_size, crosshead_z_size), edger._mat_frame)
 		edger._add_box("InfeedHoldDownTopBox" + suffix, Vector3(x, contact_y + 0.66, 0.0), Vector3(0.28, 0.18, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH), edger._mat_frame)
 		var roller := edger._add_cylinder("InfeedHoldDownRoller" + suffix, Vector3(x, raised_y, 0.0), SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH, edger._mat_infeed_hold_down, Vector3(PI * 0.5, 0.0, 0.0), 30)
-		var axle := edger._add_cylinder("InfeedHoldDownAxle" + suffix, Vector3(x, raised_y, 0.0), 0.024, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 18)
-		var moving_nodes: Array[Node3D] = [roller, axle]
-		var guide_xs: Array[float] = [-0.08, 0.08]
-		var guide_zs: Array[float] = [-yoke_z, yoke_z]
-		for guide_x in guide_xs:
-			for guide_z in guide_zs:
-				var guide_suffix := "%s_%s%s" % [suffix, "L" if guide_x < 0.0 else "R", "F" if guide_z < 0.0 else "B"]
-				edger._add_cylinder("InfeedHoldDownGuide" + guide_suffix, Vector3(x + guide_x, guide_y, guide_z), 0.018, guide_height, edger._mat_hydraulic, Vector3.ZERO, 14)
-		for z in guide_zs:
+		edger._add_roller_motion_stripe(roller, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH)
+		var axle := edger._add_cylinder("InfeedHoldDownAxle" + suffix, Vector3(x, raised_y, 0.0), 0.024, bearing_z * 2.0, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 18)
+		var moving_nodes: Array[Node3D] = [crosshead, roller, axle]
+		for z in [-bearing_z, bearing_z]:
 			var side_suffix := suffix + ("_F" if z < 0.0 else "_B")
-			moving_nodes.append(edger._add_box("InfeedHoldDownYoke" + side_suffix, Vector3(x, raised_y + 0.04, z), Vector3(0.15, 0.24, 0.04), edger._mat_infeed_hold_down))
 			moving_nodes.append(add_infeed_hold_down_pillow_block("InfeedHoldDownBearing" + side_suffix, Vector3(x, raised_y + 0.035, z)))
 		var y_offsets: Array[float] = []
 		for node in moving_nodes:
@@ -143,6 +137,7 @@ func add_infeed_hold_down_pillow_block(node_name: String, local_position: Vector
 	var root := Node3D.new()
 	root.name = edger._friendly_part_name(node_name, local_position)
 	root.position = local_position
+	root.scale.z = 0.5
 	edger._current_part_parent().add_child(root)
 	edger._adopt_new_node(root)
 
