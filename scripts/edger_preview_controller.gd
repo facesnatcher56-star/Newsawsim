@@ -83,6 +83,7 @@ func reset_preview_motion() -> void:
 		if edger._preview_board_home_global == Vector3.ZERO:
 			edger._preview_board_home_global = edger._sample_board.global_position
 		edger._sample_board.global_position = edger._preview_board_home_global
+		edger._sample_board.rotation.x = 0.0
 
 	_reset_centering_preview()
 	_reset_infeed_hold_down_preview()
@@ -135,6 +136,7 @@ func _reset_infeed_hold_down_preview() -> void:
 			var node := nodes[i] as Node3D
 			if is_instance_valid(node):
 				node.position.y = raised_y + float(y_offsets[i])
+		_update_infeed_hold_down_actuator(station)
 
 
 func _update_infeed_chain_preview() -> void:
@@ -198,17 +200,20 @@ func _update_feed_board_phase(delta: float) -> void:
 
 
 func _update_parking_ramp_preview(delta: float) -> void:
-	var board_center_x := edger.to_local(edger._sample_board.global_position).x
+	var board_center := edger.to_local(edger._sample_board.global_position)
+	var board_center_x := board_center.x
 	var board_leading_x: float = board_center_x + SawmillEdger.SAMPLE_BOARD_LENGTH * 0.5
 	var board_trailing_x: float = board_center_x - SawmillEdger.SAMPLE_BOARD_LENGTH * 0.5
-	var board_on_centering_section: bool = board_leading_x > edger._infeed_chain_start_x() and board_trailing_x < edger._machine_infeed_entry_x()
-	var ramps_should_raise := board_on_centering_section and edger._centering_preview_phase < SawmillEdger.CenteringPreviewPhase.LOWER_RAMPS
+	var ramps_can_raise := edger._centering_preview_phase < SawmillEdger.CenteringPreviewPhase.LOWER_RAMPS
+	var ramps_should_raise := ramps_can_raise and (_board_is_clear_of_parking_ramps(board_center.z) or not _ramps_are_home())
 	for station in edger._parking_ramp_stations:
+		var station_x := float(station["x"])
+		var board_over_ramp_x := board_leading_x >= station_x and board_trailing_x <= station_x
 		var nodes: Array = station["nodes"]
 		for node in nodes:
 			var ramp: Node3D = node as Node3D
 			if is_instance_valid(ramp):
-				var target_angle: float = float(ramp.get_meta("parked_angle" if ramps_should_raise else "retracted_angle", 0.0))
+				var target_angle: float = float(ramp.get_meta("parked_angle" if ramps_should_raise and board_over_ramp_x else "retracted_angle", 0.0))
 				ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, edger.parking_ramp_speed * delta)
 
 
@@ -216,14 +221,53 @@ func _update_board_height_for_ramps(delta: float) -> void:
 	if not is_instance_valid(edger._sample_board):
 		return
 
-	var target_y := _board_chain_center_global_y() + _current_parking_ramp_lift()
+	var edge_lifts := _current_parking_ramp_edge_lifts()
+	var target_y := _board_chain_center_global_y() + (edge_lifts.x + edge_lifts.y) * 0.5
+	var target_rotation_x := -asin(clampf((edge_lifts.y - edge_lifts.x) / SawmillEdger.SAMPLE_BOARD_WIDTH, -0.85, 0.85))
 	var board_position := edger._sample_board.global_position
-	board_position.y = move_toward(board_position.y, target_y, _board_vertical_follow_speed() * delta)
+	board_position.y = target_y
 	edger._sample_board.global_position = board_position
+	edger._sample_board.rotation.x = target_rotation_x
 
 
-func _current_parking_ramp_lift() -> float:
-	var lift := 0.0
+func _current_parking_ramp_edge_lifts() -> Vector2:
+	var max_lift := 0.0
+	var zone_min_z := INF
+	var zone_max_z := -INF
+	var board_center := edger.to_local(edger._sample_board.global_position)
+	var board_leading_x: float = board_center.x + SawmillEdger.SAMPLE_BOARD_LENGTH * 0.5
+	var board_trailing_x: float = board_center.x - SawmillEdger.SAMPLE_BOARD_LENGTH * 0.5
+	for station in edger._parking_ramp_stations:
+		var station_x := float(station["x"])
+		if board_leading_x < station_x or board_trailing_x > station_x:
+			continue
+		var nodes: Array = station["nodes"]
+		for node in nodes:
+			var ramp := node as Node3D
+			if not is_instance_valid(ramp):
+				continue
+			var lift_span := float(ramp.get_meta("board_lift_span", 0.0))
+			if lift_span <= 0.0:
+				continue
+			var side_sign := 1.0 if ramp.position.z >= 0.0 else -1.0
+			var inner_z := ramp.position.z - side_sign * lift_span
+			zone_min_z = minf(zone_min_z, minf(ramp.position.z, inner_z))
+			zone_max_z = maxf(zone_max_z, maxf(ramp.position.z, inner_z))
+			max_lift = maxf(max_lift, sin(absf(ramp.rotation.x)) * lift_span)
+	if max_lift <= 0.0 or zone_min_z >= zone_max_z:
+		return Vector2.ZERO
+
+	var lead_in := SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.75
+	var board_front_z := board_center.z - SawmillEdger.SAMPLE_BOARD_WIDTH * 0.5
+	var board_back_z := board_center.z + SawmillEdger.SAMPLE_BOARD_WIDTH * 0.5
+	var back_progress := smoothstep(0.0, 1.0, clampf(inverse_lerp(zone_min_z - lead_in, zone_max_z, board_back_z), 0.0, 1.0))
+	var front_progress := smoothstep(0.0, 1.0, clampf(inverse_lerp(zone_min_z - lead_in, zone_max_z, board_front_z), 0.0, 1.0))
+	return Vector2(max_lift * front_progress, max_lift * back_progress)
+
+
+func _board_is_clear_of_parking_ramps(board_center_z: float) -> bool:
+	var board_min_z := board_center_z - SawmillEdger.SAMPLE_BOARD_WIDTH * 0.5
+	var board_max_z := board_center_z + SawmillEdger.SAMPLE_BOARD_WIDTH * 0.5
 	for station in edger._parking_ramp_stations:
 		var nodes: Array = station["nodes"]
 		for node in nodes:
@@ -231,23 +275,17 @@ func _current_parking_ramp_lift() -> float:
 			if not is_instance_valid(ramp):
 				continue
 			var lift_span := float(ramp.get_meta("board_lift_span", 0.0))
-			lift = maxf(lift, sin(absf(ramp.rotation.x)) * lift_span)
-	return lift
-
-
-func _board_vertical_follow_speed() -> float:
-	var max_lift_span := 0.0
-	for station in edger._parking_ramp_stations:
-		var nodes: Array = station["nodes"]
-		for node in nodes:
-			var ramp := node as Node3D
-			if is_instance_valid(ramp):
-				max_lift_span = maxf(max_lift_span, float(ramp.get_meta("board_lift_span", 0.0)))
-	return maxf(edger.parking_ramp_speed * max_lift_span, 0.08)
+			var side_sign := 1.0 if ramp.position.z >= 0.0 else -1.0
+			var inner_z := ramp.position.z - side_sign * lift_span
+			var ramp_min_z := minf(ramp.position.z, inner_z)
+			var ramp_max_z := maxf(ramp.position.z, inner_z)
+			if board_max_z >= ramp_min_z and board_min_z <= ramp_max_z:
+				return false
+	return true
 
 
 func _board_chain_center_global_y() -> float:
-	return edger.to_global(Vector3(0.0, edger._board_center_y(), 0.0)).y
+	return edger.to_global(Vector3(0.0, edger._preview_board_center_y(), 0.0)).y
 
 
 func _ramps_are_home() -> bool:
@@ -261,7 +299,10 @@ func _ramps_are_home() -> bool:
 
 
 func _board_is_on_chain() -> bool:
-	return absf(edger._sample_board.global_position.y - _board_chain_center_global_y()) <= SawmillEdger.CENTERING_TOLERANCE
+	return (
+		absf(edger._sample_board.global_position.y - _board_chain_center_global_y()) <= SawmillEdger.CENTERING_TOLERANCE
+		and absf(edger._sample_board.rotation.x) <= SawmillEdger.CENTERING_TOLERANCE
+	)
 
 
 func _update_pin_actuators(delta: float, active: bool, push_board: bool) -> void:
@@ -275,8 +316,9 @@ func _update_pin_actuators(delta: float, active: bool, push_board: bool) -> void
 		var sleeve: Node3D = station["sleeve"] as Node3D
 		if not is_instance_valid(pin) and not is_instance_valid(sleeve):
 			continue
-		var target_y: float = float(station["raised_y"]) if active and edger._active_centering_pin_indices.has(i) else float(station["retracted_y"])
-		var sleeve_target_y: float = float(station["sleeve_raised_y"]) if active and edger._active_centering_pin_indices.has(i) else float(station["sleeve_retracted_y"])
+		var pin_is_active := active and edger._active_centering_pin_indices.has(i)
+		var target_y: float = _position_pin_raised_y(station) if pin_is_active else float(station["retracted_y"])
+		var sleeve_target_y: float = _position_pin_sleeve_raised_y(station, target_y) if pin_is_active else float(station["sleeve_retracted_y"])
 		var target_z := _position_pin_target_z(i, active, push_board)
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, edger.position_pin_speed * delta)
@@ -354,6 +396,18 @@ func _position_pin_target_z(index: int, active: bool, push_board: bool) -> float
 	return maxf(base_z, board_minus_edge_local_z - edger.position_pin_radius)
 
 
+func _position_pin_raised_y(station: Dictionary) -> float:
+	var board_top_y := edger._preview_board_center_y() + SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.5
+	if is_instance_valid(edger._sample_board):
+		board_top_y = edger.to_local(edger._sample_board.global_position).y + SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.5
+	var pin_center_for_board_top := board_top_y - edger.position_pin_height * 0.5 + 0.012
+	return clampf(pin_center_for_board_top, float(station["retracted_y"]), float(station["raised_y"]))
+
+
+func _position_pin_sleeve_raised_y(station: Dictionary, pin_target_y: float) -> float:
+	return float(station["sleeve_retracted_y"]) + maxf(pin_target_y - float(station["retracted_y"]), 0.0)
+
+
 func _cushion_target_z(index: int, active: bool) -> float:
 	var station: Dictionary = edger._cushion_pin_stations[index]
 	var base_z := float(station["base_z"])
@@ -382,10 +436,11 @@ func _active_pins_are_raised() -> bool:
 			continue
 		var station: Dictionary = edger._position_pin_stations[index]
 		var pin := station["pin"] as Node3D
-		if is_instance_valid(pin) and absf(pin.position.y - float(station["raised_y"])) > SawmillEdger.PIN_READY_TOLERANCE:
+		var pin_target_y := _position_pin_raised_y(station)
+		if is_instance_valid(pin) and absf(pin.position.y - pin_target_y) > SawmillEdger.PIN_READY_TOLERANCE:
 			return false
 		var sleeve := station["sleeve"] as Node3D
-		if is_instance_valid(sleeve) and absf(sleeve.position.y - float(station["sleeve_raised_y"])) > SawmillEdger.PIN_READY_TOLERANCE:
+		if is_instance_valid(sleeve) and absf(sleeve.position.y - _position_pin_sleeve_raised_y(station, pin_target_y)) > SawmillEdger.PIN_READY_TOLERANCE:
 			return false
 	return not edger._active_centering_pin_indices.is_empty()
 
@@ -500,9 +555,9 @@ func _update_infeed_hold_down_preview(delta: float) -> void:
 
 		var target_spin_velocity := 0.0
 		if can_hold_down and board_under_roller and edger._centering_preview_phase == SawmillEdger.CenteringPreviewPhase.FEED_BOARD:
-			target_spin_velocity = -edger.infeed_chain_feed_speed / maxf(SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)
+			target_spin_velocity = edger.infeed_chain_feed_speed / maxf(SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001) * edger.hold_down_roller_spin_speed
 		var current_spin_velocity := float(station.get("spin_velocity", 0.0))
-		current_spin_velocity = move_toward(current_spin_velocity, target_spin_velocity, _idle_roller_spin_accel() * delta)
+		current_spin_velocity = _move_hold_down_spin_velocity(current_spin_velocity, target_spin_velocity, delta)
 		station["spin_velocity"] = current_spin_velocity
 
 		var nodes: Array = station["nodes"]
@@ -514,12 +569,38 @@ func _update_infeed_hold_down_preview(delta: float) -> void:
 			node.position.y = move_toward(node.position.y, target_y + float(y_offsets[i]), edger.hold_down_lower_speed * delta if target_y < node.position.y else edger.hold_down_raise_speed * delta)
 			if node.name.begins_with("InfeedHoldDownRoller") and not is_zero_approx(current_spin_velocity):
 				node.rotate_object_local(Vector3.UP, current_spin_velocity * delta)
+		_update_infeed_hold_down_actuator(station)
 
 
 func _infeed_hold_down_contact_y() -> float:
 	var board_center := edger.to_local(edger._sample_board.global_position)
 	var board_top := board_center.y + SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.5
 	return board_top + SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS - 0.006
+
+
+func _update_infeed_hold_down_actuator(station: Dictionary) -> void:
+	if not station.has("actuator"):
+		return
+
+	var actuator: Dictionary = station["actuator"]
+	var root := actuator.get("root") as Node3D
+	var attach_node := actuator.get("attach_node") as Node3D
+	var rod := actuator.get("rod") as CSGCylinder3D
+	var clevis := actuator.get("clevis") as Node3D
+	var pin_hole := actuator.get("pin_hole") as Node3D
+	if not is_instance_valid(root) or not is_instance_valid(attach_node):
+		return
+
+	var rod_top_y := float(actuator.get("rod_top_y", -0.087))
+	var rod_bottom_y := root.to_local(attach_node.global_position).y
+	var rod_height := maxf(rod_top_y - rod_bottom_y, 0.001)
+	if is_instance_valid(rod):
+		rod.height = rod_height
+		rod.position.y = rod_top_y - rod_height * 0.5
+	if is_instance_valid(clevis):
+		clevis.position.y = rod_bottom_y
+	if is_instance_valid(pin_hole):
+		pin_hole.position.y = rod_bottom_y
 
 
 func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
@@ -535,9 +616,9 @@ func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
 		station["offset"] = current_offset
 		var target_spin_velocity := 0.0
 		if should_be_down and edger._centering_preview_phase == SawmillEdger.CenteringPreviewPhase.FEED_BOARD:
-			target_spin_velocity = -edger.infeed_chain_feed_speed / maxf(SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, 0.001)
+			target_spin_velocity = edger.infeed_chain_feed_speed / maxf(SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, 0.001) * edger.hold_down_roller_spin_speed
 		var current_spin_velocity := float(station.get("spin_velocity", 0.0))
-		current_spin_velocity = move_toward(current_spin_velocity, target_spin_velocity, _idle_roller_spin_accel() * delta)
+		current_spin_velocity = _move_hold_down_spin_velocity(current_spin_velocity, target_spin_velocity, delta)
 		station["spin_velocity"] = current_spin_velocity
 
 		var nodes: Array = station["nodes"]
@@ -550,5 +631,8 @@ func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
 					node.rotate_object_local(Vector3.UP, current_spin_velocity * delta)
 
 
-func _idle_roller_spin_accel() -> float:
-	return maxf(edger.infeed_chain_feed_speed * 10.0, 4.0)
+func _move_hold_down_spin_velocity(current: float, target: float, delta: float) -> float:
+	var rate := edger.hold_down_roller_spin_accel
+	if is_zero_approx(target):
+		rate = edger.hold_down_roller_spin_stop_rate
+	return move_toward(current, target, rate * delta)

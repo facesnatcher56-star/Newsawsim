@@ -76,6 +76,11 @@ const SawmillEdgerPreviewController := preload("res://scripts/edger_preview_cont
 		cushion_pin_extension = maxf(value, 0.05)
 		_queue_rebuild()
 
+@export_range(-0.20, 0.20, 0.001) var preview_board_y_offset: float = -0.029:
+	set(value):
+		preview_board_y_offset = value
+		_queue_rebuild()
+
 @export_range(0.20, 4.0, 0.01, "or_greater") var cushion_pin_spacing: float = 1.56:
 	set(value):
 		cushion_pin_spacing = maxf(value, 0.20)
@@ -120,8 +125,7 @@ var _mat_guard: StandardMaterial3D
 var _mat_blade: StandardMaterial3D
 var _mat_motor: StandardMaterial3D
 var _mat_warning: StandardMaterial3D
-var _mat_infeed_hold_down: StandardMaterial3D
-var _mat_roller_stripe: StandardMaterial3D
+var _mat_infeed_hold_down: Material
 var _mat_wood: StandardMaterial3D
 var _mat_hydraulic: StandardMaterial3D
 var _mat_chain_grip: StandardMaterial3D
@@ -143,6 +147,9 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_lower_speed: float = 0.55
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_raise_speed: float = 0.72
+@export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_roller_spin_speed: float = 1.0
+@export_range(0.0, 80.0, 0.1, "or_greater") var hold_down_roller_spin_accel: float = 18.0
+@export_range(0.0, 80.0, 0.1, "or_greater") var hold_down_roller_spin_stop_rate: float = 10.0
 @export_range(0.0, 8.0, 0.01, "or_greater") var parking_ramp_speed: float = 1.8
 @export_range(0.0, 8.0, 0.01, "or_greater") var position_pin_speed: float = 1.6
 @export_range(0.0, 8.0, 0.01, "or_greater") var cushion_pin_speed: float = 2.2
@@ -150,6 +157,15 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 2.0, 0.01, "or_greater") var pin_retract_delay: float = 0.20
 @export_range(0.0, 2.0, 0.01, "or_greater") var feed_chain_start_delay: float = 0.22
 @export_range(-4.0, 0.0, 0.01) var side_load_start_z: float = -1.12
+
+@export_category("Board Physics")
+@export var enable_board_physics_contacts: bool = true
+@export_range(0.0, 2000.0, 1.0, "or_greater") var board_feed_force: float = 420.0
+@export_range(0.0, 2000.0, 1.0, "or_greater") var parking_ramp_lift_force: float = 520.0
+@export_range(0.0, 200.0, 1.0, "or_greater") var parking_ramp_lift_damping: float = 35.0
+@export_range(0.0, 2000.0, 1.0, "or_greater") var centering_pin_force: float = 260.0
+@export_range(0.0, 200.0, 1.0, "or_greater") var centering_pin_damping: float = 28.0
+@export_range(0.0, 2000.0, 1.0, "or_greater") var hold_down_contact_force: float = 360.0
 
 const FEED_ROLLER_RADIUS := 0.075
 const FEED_ROLLER_LENGTH := 1.14
@@ -224,6 +240,247 @@ func _process(delta: float) -> void:
 	if not run_editor_preview:
 		return
 	_apply_preview_motion(delta)
+
+
+func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint() or not enable_board_physics_contacts:
+		return
+	_apply_real_board_contacts(delta)
+
+
+func _apply_real_board_contacts(delta: float) -> void:
+	var boards := _real_cut_boards()
+	if boards.is_empty():
+		return
+
+	_update_real_parking_ramps(delta, boards)
+	_spin_real_contact_parts(delta, boards)
+	for body in boards:
+		var local_center := to_local(body.global_position)
+		if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x() - 0.35, bed_length * 0.5 + 0.55):
+			continue
+		body.sleeping = false
+		_apply_feed_contact(body, local_center)
+		_apply_parking_ramp_edge_contacts(body, local_center)
+		_apply_centering_pin_contacts(body, local_center)
+		_apply_hold_down_contacts(body, local_center)
+
+
+func _real_cut_boards() -> Array[RigidBody3D]:
+	var boards: Array[RigidBody3D] = []
+	if not is_inside_tree():
+		return boards
+	for node in get_tree().get_nodes_in_group("cut_boards"):
+		var body := node as RigidBody3D
+		if not is_instance_valid(body):
+			continue
+		if body == _sample_board or body.freeze:
+			continue
+		boards.append(body)
+	return boards
+
+
+func _apply_feed_contact(body: RigidBody3D, local_center: Vector3) -> void:
+	if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), bed_length * 0.5):
+		return
+	var x_axis := global_transform.basis.x.normalized()
+	var current_speed := body.linear_velocity.dot(x_axis)
+	var speed_error := infeed_chain_feed_speed - current_speed
+	var force := clampf(speed_error * body.mass * 18.0, -board_feed_force, board_feed_force)
+	body.apply_central_force(x_axis * force)
+
+
+func _apply_parking_ramp_edge_contacts(body: RigidBody3D, local_center: Vector3) -> void:
+	var edge_lifts := _parking_ramp_edge_lifts_for_board(local_center)
+	if edge_lifts == Vector2.ZERO:
+		return
+
+	var y_axis := global_transform.basis.y.normalized()
+	var base_center_y := to_global(Vector3(0.0, _preview_board_center_y(), 0.0)).dot(y_axis)
+	_apply_board_edge_lift(body, -SAMPLE_BOARD_WIDTH * 0.5, base_center_y + edge_lifts.x, y_axis)
+	_apply_board_edge_lift(body, SAMPLE_BOARD_WIDTH * 0.5, base_center_y + edge_lifts.y, y_axis)
+
+
+func _apply_board_edge_lift(body: RigidBody3D, local_z: float, target_axis_y: float, y_axis: Vector3) -> void:
+	var edge_global := body.global_transform * Vector3(0.0, 0.0, local_z)
+	var edge_axis_y := edge_global.dot(y_axis)
+	var height_error := target_axis_y - edge_axis_y
+	if height_error <= -0.003:
+		return
+
+	var force_offset := edge_global - body.global_position
+	var point_velocity := body.linear_velocity + body.angular_velocity.cross(force_offset)
+	var lift_force := height_error * parking_ramp_lift_force * 22.0
+	lift_force -= point_velocity.dot(y_axis) * parking_ramp_lift_damping * body.mass
+	lift_force = clampf(lift_force, 0.0, parking_ramp_lift_force)
+	if lift_force > 0.0:
+		body.apply_force(y_axis * lift_force, force_offset)
+
+
+func _apply_centering_pin_contacts(body: RigidBody3D, local_center: Vector3) -> void:
+	if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), _centering_section_end_x() + 0.2):
+		return
+	var z_axis := global_transform.basis.z.normalized()
+	var z_error := -local_center.z
+	if absf(z_error) <= CENTERING_TOLERANCE:
+		return
+	var local_z_speed := body.linear_velocity.dot(z_axis)
+	var force := z_error * centering_pin_force * 10.0 - local_z_speed * centering_pin_damping * body.mass
+	force = clampf(force, -centering_pin_force, centering_pin_force)
+	body.apply_central_force(z_axis * force)
+
+
+func _apply_hold_down_contacts(body: RigidBody3D, local_center: Vector3) -> void:
+	var has_contact := false
+	for station in _infeed_hold_down_stations:
+		if _board_overlaps_x_range(local_center.x, float(station["x"]) - INFEED_HOLD_DOWN_ROLLER_RADIUS, float(station["x"]) + INFEED_HOLD_DOWN_ROLLER_RADIUS):
+			has_contact = true
+			break
+	if not has_contact:
+		for roller in _contact_rollers("HoldDownRoller"):
+			if _board_overlaps_x_range(local_center.x, roller.position.x - HOLD_DOWN_ROLLER_RADIUS, roller.position.x + HOLD_DOWN_ROLLER_RADIUS):
+				has_contact = true
+				break
+	if not has_contact:
+		for roller in _contact_rollers("InfeedHoldDownRoller"):
+			if _board_overlaps_x_range(local_center.x, roller.position.x - INFEED_HOLD_DOWN_ROLLER_RADIUS, roller.position.x + INFEED_HOLD_DOWN_ROLLER_RADIUS):
+				has_contact = true
+				break
+	if not has_contact:
+		return
+
+	var y_axis := global_transform.basis.y.normalized()
+	body.apply_central_force(-y_axis * hold_down_contact_force)
+	_apply_feed_contact(body, local_center)
+
+
+func _update_real_parking_ramps(delta: float, boards: Array[RigidBody3D]) -> void:
+	var ramps := _parking_ramp_nodes()
+	if ramps.is_empty():
+		return
+	var should_raise := false
+	for body in boards:
+		var local_center := to_local(body.global_position)
+		if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), _centering_section_end_x() + 0.2):
+			continue
+		if _board_is_clear_of_real_parking_ramps(local_center.z) or not _real_ramps_are_home(ramps):
+			should_raise = true
+			break
+	for ramp in ramps:
+		var target_angle := float(ramp.get_meta("parked_angle" if should_raise else "retracted_angle", 0.0))
+		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
+
+
+func _spin_real_contact_parts(delta: float, boards: Array[RigidBody3D]) -> void:
+	var board_in_machine := false
+	for body in boards:
+		var local_center := to_local(body.global_position)
+		if _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), bed_length * 0.5):
+			board_in_machine = true
+			break
+	if not board_in_machine:
+		return
+	var feed_step := (infeed_chain_feed_speed / maxf(FEED_ROLLER_RADIUS, 0.001)) * feed_roller_spin_speed * delta
+	for roller in _feed_rollers:
+		if is_instance_valid(roller):
+			roller.rotate_object_local(Vector3.UP, -feed_step)
+	var hold_down_step := (infeed_chain_feed_speed / maxf(HOLD_DOWN_ROLLER_RADIUS, 0.001)) * hold_down_roller_spin_speed * delta
+	for roller in _contact_rollers("HoldDownRoller"):
+		roller.rotate_object_local(Vector3.UP, hold_down_step)
+	var infeed_hold_down_step := (infeed_chain_feed_speed / maxf(INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)) * hold_down_roller_spin_speed * delta
+	for roller in _contact_rollers("InfeedHoldDownRoller"):
+		roller.rotate_object_local(Vector3.UP, infeed_hold_down_step)
+
+
+func _parking_ramp_edge_lifts_for_board(local_center: Vector3) -> Vector2:
+	var max_lift := 0.0
+	var zone_min_z := INF
+	var zone_max_z := -INF
+	var board_leading_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
+	var board_trailing_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+	for ramp in _parking_ramp_nodes():
+		if board_leading_x < ramp.position.x or board_trailing_x > ramp.position.x:
+			continue
+		var lift_span := float(ramp.get_meta("board_lift_span", 0.0))
+		if lift_span <= 0.0:
+			continue
+		var side_sign := 1.0 if ramp.position.z >= 0.0 else -1.0
+		var inner_z := ramp.position.z - side_sign * lift_span
+		zone_min_z = minf(zone_min_z, minf(ramp.position.z, inner_z))
+		zone_max_z = maxf(zone_max_z, maxf(ramp.position.z, inner_z))
+		max_lift = maxf(max_lift, sin(absf(ramp.rotation.x)) * lift_span)
+	if max_lift <= 0.0 or zone_min_z >= zone_max_z:
+		return Vector2.ZERO
+
+	var lead_in := SAMPLE_BOARD_THICKNESS * 0.75
+	var board_front_z := local_center.z - SAMPLE_BOARD_WIDTH * 0.5
+	var board_back_z := local_center.z + SAMPLE_BOARD_WIDTH * 0.5
+	var front_progress := smoothstep(0.0, 1.0, clampf(inverse_lerp(zone_min_z - lead_in, zone_max_z, board_front_z), 0.0, 1.0))
+	var back_progress := smoothstep(0.0, 1.0, clampf(inverse_lerp(zone_min_z - lead_in, zone_max_z, board_back_z), 0.0, 1.0))
+	return Vector2(max_lift * front_progress, max_lift * back_progress)
+
+
+func _board_is_clear_of_real_parking_ramps(board_center_z: float) -> bool:
+	var board_min_z := board_center_z - SAMPLE_BOARD_WIDTH * 0.5
+	var board_max_z := board_center_z + SAMPLE_BOARD_WIDTH * 0.5
+	for ramp in _parking_ramp_nodes():
+		var lift_span := float(ramp.get_meta("board_lift_span", 0.0))
+		var side_sign := 1.0 if ramp.position.z >= 0.0 else -1.0
+		var inner_z := ramp.position.z - side_sign * lift_span
+		var ramp_min_z := minf(ramp.position.z, inner_z)
+		var ramp_max_z := maxf(ramp.position.z, inner_z)
+		if board_max_z >= ramp_min_z and board_min_z <= ramp_max_z:
+			return false
+	return true
+
+
+func _real_ramps_are_home(ramps: Array[Node3D]) -> bool:
+	for ramp in ramps:
+		if is_instance_valid(ramp) and absf(ramp.rotation.x - float(ramp.get_meta("retracted_angle", 0.0))) > PIN_READY_TOLERANCE:
+			return false
+	return true
+
+
+func _parking_ramp_nodes() -> Array[Node3D]:
+	var ramps: Array[Node3D] = []
+	if not _parking_ramp_stations.is_empty():
+		for station in _parking_ramp_stations:
+			var nodes: Array = station["nodes"]
+			for node in nodes:
+				var ramp := node as Node3D
+				if is_instance_valid(ramp):
+					ramps.append(ramp)
+		return ramps
+	for node in find_children("ParkingRampPivot*", "Node3D", true, false):
+		var ramp := node as Node3D
+		if is_instance_valid(ramp):
+			ramps.append(ramp)
+	return ramps
+
+
+func _contact_rollers(prefix: String) -> Array[CSGCylinder3D]:
+	var rollers: Array[CSGCylinder3D] = []
+	var source: Array[CSGCylinder3D] = []
+	if prefix == "InfeedHoldDownRoller":
+		source = _infeed_hold_down_rollers
+	else:
+		source = _hold_down_rollers
+	for roller in source:
+		if is_instance_valid(roller):
+			rollers.append(roller)
+	if not rollers.is_empty():
+		return rollers
+	for node in find_children(prefix + "*", "CSGCylinder3D", true, false):
+		var roller := node as CSGCylinder3D
+		if is_instance_valid(roller):
+			rollers.append(roller)
+	return rollers
+
+
+func _board_overlaps_x_range(center_x: float, min_x: float, max_x: float) -> bool:
+	var board_min_x := center_x - SAMPLE_BOARD_LENGTH * 0.5
+	var board_max_x := center_x + SAMPLE_BOARD_LENGTH * 0.5
+	return board_max_x >= min_x and board_min_x <= max_x
 
 
 func _queue_rebuild() -> void:
@@ -319,8 +576,12 @@ func _collect_generated_parts() -> void:
 	_infeed_chain_links.clear()
 	_infeed_chain_bases.clear()
 	_hold_down_rollers.clear()
+	_hold_down_stations.clear()
 	_infeed_hold_down_rollers.clear()
 	_infeed_hold_down_stations.clear()
+	_parking_ramp_stations.clear()
+	_position_pin_stations.clear()
+	_cushion_pin_stations.clear()
 	_saw_blades.clear()
 	_saw_teeth_roots.clear()
 	_sample_board = null
@@ -341,6 +602,92 @@ func _collect_generated_parts() -> void:
 			_saw_teeth_roots.append(node)
 		elif node.name.begins_with("ReferenceCutBoard") and node is Node3D:
 			_sample_board = node
+	_collect_infeed_hold_down_stations_from_scene()
+
+
+func _collect_infeed_hold_down_stations_from_scene() -> void:
+	var station_parts := {}
+	for node in find_children("*", "Node3D", true, false):
+		var station_id := _hold_down_station_id(String(node.name))
+		if station_id.is_empty():
+			continue
+		if not station_parts.has(station_id):
+			station_parts[station_id] = {
+				"bearings": [],
+			}
+		var parts: Dictionary = station_parts[station_id]
+		if node.name.begins_with("InfeedHoldDownCrosshead"):
+			parts["crosshead"] = node
+		elif node.name.begins_with("InfeedHoldDownRoller") and node is CSGCylinder3D:
+			parts["roller"] = node
+		elif node.name.begins_with("InfeedHoldDownAxle"):
+			parts["axle"] = node
+		elif node.name.begins_with("InfeedHoldDownBearing"):
+			parts["bearings"].append(node)
+		elif node.name.begins_with("PneumaticCylinder"):
+			parts["actuator_root"] = node
+
+	var station_ids := station_parts.keys()
+	station_ids.sort()
+	for station_id in station_ids:
+		var parts: Dictionary = station_parts[station_id]
+		var crosshead := parts.get("crosshead") as Node3D
+		var roller := parts.get("roller") as CSGCylinder3D
+		if not is_instance_valid(crosshead) or not is_instance_valid(roller):
+			continue
+
+		var moving_nodes: Array[Node3D] = [crosshead, roller]
+		var axle := parts.get("axle") as Node3D
+		if is_instance_valid(axle):
+			moving_nodes.append(axle)
+		var bearings: Array = parts["bearings"]
+		for bearing in bearings:
+			var bearing_node := bearing as Node3D
+			if is_instance_valid(bearing_node):
+				moving_nodes.append(bearing_node)
+
+		var raised_y := roller.position.y
+		var y_offsets: Array[float] = []
+		for moving_node in moving_nodes:
+			y_offsets.append(moving_node.position.y - raised_y)
+
+		var station := {
+			"x": roller.position.x,
+			"nodes": moving_nodes,
+			"y_offsets": y_offsets,
+			"raised_y": raised_y,
+			"offset": hold_down_raised_offset,
+		}
+		var actuator_root := parts.get("actuator_root") as Node3D
+		if is_instance_valid(actuator_root):
+			var rod := actuator_root.get_node_or_null("PistonRod") as CSGCylinder3D
+			var rod_top_y := -0.087
+			if is_instance_valid(rod):
+				rod_top_y = rod.position.y + rod.height * 0.5
+			station["actuator"] = {
+				"root": actuator_root,
+				"attach_node": crosshead,
+				"rod": rod,
+				"clevis": actuator_root.get_node_or_null("RodClevis"),
+				"pin_hole": actuator_root.get_node_or_null("ClevisPinHole"),
+				"rod_top_y": rod_top_y,
+			}
+		_infeed_hold_down_stations.append(station)
+
+
+func _hold_down_station_id(node_name: String) -> String:
+	if not (
+		node_name.begins_with("InfeedHoldDownCrosshead")
+		or node_name.begins_with("InfeedHoldDownRoller")
+		or node_name.begins_with("InfeedHoldDownAxle")
+		or node_name.begins_with("InfeedHoldDownBearing")
+		or node_name.begins_with("PneumaticCylinder")
+	):
+		return ""
+	var name_parts := node_name.split("_")
+	if name_parts.size() < 2:
+		return ""
+	return name_parts[1]
 
 
 func _adopt_generated_parts() -> void:
@@ -370,8 +717,7 @@ func _make_materials() -> void:
 	_mat_blade = _mat(Color(0.72, 0.72, 0.76), 1.0, 0.16)
 	_mat_motor = _mat(Color(0.08, 0.23, 0.34), 0.70, 0.30)
 	_mat_warning = _mat(Color(0.95, 0.55, 0.06), 0.55, 0.35)
-	_mat_infeed_hold_down = _mat(Color(0.05, 0.24, 0.11), 0.55, 0.34)
-	_mat_roller_stripe = _mat(Color(0.92, 0.93, 0.88), 0.25, 0.24)
+	_mat_infeed_hold_down = _worn_green_roller_mat()
 	_mat_wood = _mat(Color(0.78, 0.64, 0.42), 0.0, 0.78)
 	_mat_hydraulic = _mat(Color(0.86, 0.86, 0.88), 1.0, 0.12)
 	_mat_chain_grip = _mat(Color(0.42, 0.44, 0.44), 0.9, 0.22)
@@ -383,6 +729,38 @@ func _mat(color: Color, metallic: float, roughness: float) -> StandardMaterial3D
 	material.albedo_color = color
 	material.metallic = metallic
 	material.roughness = roughness
+	return material
+
+
+func _worn_green_roller_mat() -> ShaderMaterial:
+	var shader := Shader.new()
+	shader.code = """
+shader_type spatial;
+
+uniform vec4 base_color : source_color = vec4(0.035, 0.20, 0.085, 1.0);
+uniform vec4 worn_color : source_color = vec4(0.38, 0.43, 0.34, 1.0);
+uniform vec4 dark_scuff_color : source_color = vec4(0.015, 0.045, 0.025, 1.0);
+
+float hash(vec2 p) {
+	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+void fragment() {
+	vec2 uv = UV;
+	float long_wear = smoothstep(0.72, 0.92, hash(floor(vec2(uv.x * 18.0, uv.y * 5.0))));
+	float fine_scuffs = smoothstep(0.52, 0.86, hash(floor(vec2(uv.x * 55.0, uv.y * 16.0))));
+	float rubbed_bands = pow(abs(sin((uv.y * 8.0 + uv.x * 2.0) * 3.14159)), 12.0) * 0.35;
+	float wear = clamp(long_wear * 0.45 + fine_scuffs * 0.18 + rubbed_bands, 0.0, 0.72);
+	vec3 paint = mix(base_color.rgb, worn_color.rgb, wear);
+	float dark_scuffs = smoothstep(0.88, 0.98, hash(floor(vec2(uv.x * 32.0 + 9.0, uv.y * 11.0))));
+	ALBEDO = mix(paint, dark_scuff_color.rgb, dark_scuffs * 0.22);
+	METALLIC = 0.45;
+	ROUGHNESS = 0.48 + wear * 0.26;
+}
+"""
+
+	var material := ShaderMaterial.new()
+	material.shader = shader
 	return material
 
 
@@ -494,6 +872,10 @@ func _board_center_y() -> float:
 	return _support_top_y() + SAMPLE_BOARD_THICKNESS * 0.5 + 0.004
 
 
+func _preview_board_center_y() -> float:
+	return _board_center_y() + preview_board_y_offset
+
+
 func _support_top_y() -> float:
 	return working_height + 0.04 + FEED_ROLLER_RADIUS
 
@@ -587,17 +969,6 @@ func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vect
 	parent.add_child(cylinder)
 	_adopt_new_node(cylinder)
 	return cylinder
-
-
-func _add_roller_motion_stripe(roller: Node3D, radius: float, length: float) -> void:
-	var stripe := CSGBox3D.new()
-	stripe.name = "RollerMotionStripe"
-	stripe.position = Vector3(0.0, 0.0, radius + 0.004)
-	stripe.size = Vector3(0.026, length * 0.92, 0.010)
-	stripe.material = _mat_roller_stripe
-	stripe.use_collision = false
-	roller.add_child(stripe)
-	_adopt_new_node(stripe)
 
 
 func _create_chain_grip_tooth_mesh() -> ArrayMesh:

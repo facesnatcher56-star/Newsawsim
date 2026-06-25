@@ -5,10 +5,11 @@ albedo_color = Color(0.3, 0.32, 0.34, 1)
 metallic = 0.85
 roughness = 0.34
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ijtbh"]
-albedo_color = Color(0.05, 0.24, 0.11, 1)
-metallic = 0.55
-roughness = 0.34
+[sub_resource type="Shader" id="Shader_worn_green_roller"]
+code = "shader_type spatial;\n\nuniform vec4 base_color : source_color = vec4(0.035, 0.20, 0.085, 1.0);\nuniform vec4 worn_color : source_color = vec4(0.38, 0.43, 0.34, 1.0);\nuniform vec4 dark_scuff_color : source_color = vec4(0.015, 0.045, 0.025, 1.0);\n\nfloat hash(vec2 p) {\n\treturn fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);\n}\n\nvoid fragment() {\n\tvec2 uv = UV;\n\tfloat long_wear = smoothstep(0.72, 0.92, hash(floor(vec2(uv.x * 18.0, uv.y * 5.0))));\n\tfloat fine_scuffs = smoothstep(0.52, 0.86, hash(floor(vec2(uv.x * 55.0, uv.y * 16.0))));\n\tfloat rubbed_bands = pow(abs(sin((uv.y * 8.0 + uv.x * 2.0) * 3.14159)), 12.0) * 0.35;\n\tfloat wear = clamp(long_wear * 0.45 + fine_scuffs * 0.18 + rubbed_bands, 0.0, 0.72);\n\tvec3 paint = mix(base_color.rgb, worn_color.rgb, wear);\n\tfloat dark_scuffs = smoothstep(0.88, 0.98, hash(floor(vec2(uv.x * 32.0 + 9.0, uv.y * 11.0))));\n\tALBEDO = mix(paint, dark_scuff_color.rgb, dark_scuffs * 0.22);\n\tMETALLIC = 0.45;\n\tROUGHNESS = 0.48 + wear * 0.26;\n}\n"
+
+[sub_resource type="ShaderMaterial" id="StandardMaterial3D_ijtbh"]
+shader = SubResource("Shader_worn_green_roller")
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6fh1k"]
 albedo_color = Color(0.86, 0.86, 0.88, 1)
@@ -20,11 +21,6 @@ albedo_color = Color(0.13, 0.14, 0.15, 1)
 metallic = 0.75
 roughness = 0.42
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rollstripe"]
-albedo_color = Color(0.92, 0.93, 0.88, 1)
-metallic = 0.25
-roughness = 0.24
-
 [node name="InfeedHoldDownRollerAssembly" type="Node3D" unique_id=1235472971]
 metadata/edger_editor_group = true
 
@@ -35,7 +31,7 @@ size = Vector3(0.21, 0.035351563, 0.62596416)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="InfeedHoldDownTopBox_01_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=131413674]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.568, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.6502448, 0)
 use_collision = true
 size = Vector3(0.28, 0.18, 0.48)
 material = SubResource("StandardMaterial3D_bnj1n")
@@ -47,12 +43,6 @@ radius = 0.135
 height = 0.48
 sides = 30
 material = SubResource("StandardMaterial3D_ijtbh")
-
-[node name="RollerMotionStripe" type="CSGBox3D" parent="InfeedHoldDownRoller_01_Infeed_CenterZ_Upper"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.139)
-use_collision = false
-size = Vector3(0.026, 0.4416, 0.01)
-material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="InfeedHoldDownAxle_01_Infeed_CenterZ_Upper" type="CSGCylinder3D" parent="." unique_id=171959537]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -6.295, 1.148, 0)
@@ -66,34 +56,35 @@ material = SubResource("StandardMaterial3D_6fh1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -6.295, 1.183, -0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=447377401]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0425, 0)
 use_collision = true
-size = Vector3(0.21, 0.04, 0.115)
+size = Vector3(0.21, 0.075, 0.115)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingLeftFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=677343306]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingRightFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=1659185136]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="HalfRoundHousing" type="CSGCombiner3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=1506260002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.035, 0)
 
 [node name="HalfMoonCap" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper/HalfRoundHousing" unique_id=733027449]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.014, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.033, 0)
 radius = 0.078
 height = 0.074
 sides = 32
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="FlatTopCut" type="CSGBox3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper/HalfRoundHousing" unique_id=1280816141]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 operation = 2
 size = Vector3(0.19, 0.09, 0.09)
 
@@ -105,7 +96,7 @@ height = 0.09
 sides = 24
 
 [node name="BearingInnerRace" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=532004820]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.031
 height = 0.08
@@ -113,7 +104,7 @@ sides = 24
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BearingShaftStub" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=667015546]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.021
 height = 0.092
@@ -121,7 +112,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="BoltHole" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=214840249]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -129,7 +120,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BoltHead" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=1066184387]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -137,7 +128,7 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="@CSGCylinder3D@2" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=400322462]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -145,7 +136,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="@CSGCylinder3D@3" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_F_Infeed_Front_Upper" unique_id=2079451858]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -156,34 +147,35 @@ material = SubResource("StandardMaterial3D_6fh1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -6.295, 1.183, 0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=948378558]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0425, 0)
 use_collision = true
-size = Vector3(0.21, 0.04, 0.115)
+size = Vector3(0.21, 0.075, 0.115)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingLeftFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1946045546]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingRightFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=907672550]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="HalfRoundHousing" type="CSGCombiner3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1013684662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.035, 0)
 
 [node name="HalfMoonCap" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper/HalfRoundHousing" unique_id=1145148729]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.014, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.033, 0)
 radius = 0.078
 height = 0.074
 sides = 32
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="FlatTopCut" type="CSGBox3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper/HalfRoundHousing" unique_id=532539234]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 operation = 2
 size = Vector3(0.19, 0.09, 0.09)
 
@@ -195,7 +187,7 @@ height = 0.09
 sides = 24
 
 [node name="BearingInnerRace" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1568359757]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.031
 height = 0.08
@@ -203,7 +195,7 @@ sides = 24
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BearingShaftStub" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1030053198]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.021
 height = 0.092
@@ -211,7 +203,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="BoltHole" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1769594279]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -219,7 +211,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BoltHead" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1830631141]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -227,7 +219,7 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="@CSGCylinder3D@4" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=1442672184]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -235,7 +227,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="@CSGCylinder3D@5" type="CSGCylinder3D" parent="InfeedHoldDownBearing_01_B_Infeed_Back_Upper" unique_id=549327267]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -249,7 +241,7 @@ size = Vector3(0.21, 0.035351563, 0.62596416)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="InfeedHoldDownTopBox_02_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1916744561]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.568, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.6502448, 0)
 use_collision = true
 size = Vector3(0.28, 0.18, 0.48)
 material = SubResource("StandardMaterial3D_bnj1n")
@@ -261,12 +253,6 @@ radius = 0.135
 height = 0.48
 sides = 30
 material = SubResource("StandardMaterial3D_ijtbh")
-
-[node name="RollerMotionStripe" type="CSGBox3D" parent="InfeedHoldDownRoller_02_Infeed_CenterZ_Upper"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.139)
-use_collision = false
-size = Vector3(0.026, 0.4416, 0.01)
-material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="InfeedHoldDownAxle_02_Infeed_CenterZ_Upper" type="CSGCylinder3D" parent="." unique_id=2012455119]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -4.93, 1.148, 0)
@@ -280,34 +266,35 @@ material = SubResource("StandardMaterial3D_6fh1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -4.93, 1.183, -0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=516746699]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0425, 0)
 use_collision = true
-size = Vector3(0.21, 0.04, 0.115)
+size = Vector3(0.21, 0.075, 0.115)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingLeftFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=572654523]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingRightFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=946885250]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="HalfRoundHousing" type="CSGCombiner3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=1409883149]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.035, 0)
 
 [node name="HalfMoonCap" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper/HalfRoundHousing" unique_id=1290997716]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.014, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.033, 0)
 radius = 0.078
 height = 0.074
 sides = 32
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="FlatTopCut" type="CSGBox3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper/HalfRoundHousing" unique_id=1941790855]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 operation = 2
 size = Vector3(0.19, 0.09, 0.09)
 
@@ -319,7 +306,7 @@ height = 0.09
 sides = 24
 
 [node name="BearingInnerRace" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=1244744105]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.031
 height = 0.08
@@ -327,7 +314,7 @@ sides = 24
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BearingShaftStub" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=1472982310]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.021
 height = 0.092
@@ -335,7 +322,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="BoltHole" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=1928159411]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -343,7 +330,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BoltHead" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=450633072]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -351,7 +338,7 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="@CSGCylinder3D@6" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=219190444]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -359,7 +346,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="@CSGCylinder3D@7" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_F_Infeed_Front_Upper" unique_id=24839535]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -370,34 +357,35 @@ material = SubResource("StandardMaterial3D_6fh1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -4.93, 1.183, 0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1521907293]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0425, 0)
 use_collision = true
-size = Vector3(0.21, 0.04, 0.115)
+size = Vector3(0.21, 0.075, 0.115)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingLeftFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=2013903856]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingRightFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1819129034]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="HalfRoundHousing" type="CSGCombiner3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1634741422]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.035, 0)
 
 [node name="HalfMoonCap" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper/HalfRoundHousing" unique_id=706539003]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.014, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.033, 0)
 radius = 0.078
 height = 0.074
 sides = 32
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="FlatTopCut" type="CSGBox3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper/HalfRoundHousing" unique_id=450886372]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 operation = 2
 size = Vector3(0.19, 0.09, 0.09)
 
@@ -409,7 +397,7 @@ height = 0.09
 sides = 24
 
 [node name="BearingInnerRace" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1071657064]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.031
 height = 0.08
@@ -417,7 +405,7 @@ sides = 24
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BearingShaftStub" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1998744553]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.021
 height = 0.092
@@ -425,7 +413,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="BoltHole" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1376892091]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -433,7 +421,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BoltHead" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=931092624]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -441,7 +429,7 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="@CSGCylinder3D@8" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=1349297190]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -449,7 +437,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="@CSGCylinder3D@9" type="CSGCylinder3D" parent="InfeedHoldDownBearing_02_B_Infeed_Back_Upper" unique_id=446895500]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -463,7 +451,7 @@ size = Vector3(0.21, 0.035351563, 0.62596416)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="InfeedHoldDownTopBox_03_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=453437618]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.568, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.6502448, 0)
 use_collision = true
 size = Vector3(0.28, 0.18, 0.48)
 material = SubResource("StandardMaterial3D_bnj1n")
@@ -475,12 +463,6 @@ radius = 0.135
 height = 0.48
 sides = 30
 material = SubResource("StandardMaterial3D_ijtbh")
-
-[node name="RollerMotionStripe" type="CSGBox3D" parent="InfeedHoldDownRoller_03_Infeed_CenterZ_Upper"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.139)
-use_collision = false
-size = Vector3(0.026, 0.4416, 0.01)
-material = SubResource("StandardMaterial3D_rollstripe")
 
 [node name="InfeedHoldDownAxle_03_Infeed_CenterZ_Upper" type="CSGCylinder3D" parent="." unique_id=640978915]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -3.565, 1.148, 0)
@@ -494,34 +476,35 @@ material = SubResource("StandardMaterial3D_6fh1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -3.565, 1.183, -0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=293927636]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0425, 0)
 use_collision = true
-size = Vector3(0.21, 0.04, 0.115)
+size = Vector3(0.21, 0.075, 0.115)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingLeftFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=488932069]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingRightFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=1431441496]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="HalfRoundHousing" type="CSGCombiner3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=579116421]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.035, 0)
 
 [node name="HalfMoonCap" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper/HalfRoundHousing" unique_id=194586742]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.014, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.033, 0)
 radius = 0.078
 height = 0.074
 sides = 32
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="FlatTopCut" type="CSGBox3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper/HalfRoundHousing" unique_id=111990585]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 operation = 2
 size = Vector3(0.19, 0.09, 0.09)
 
@@ -533,7 +516,7 @@ height = 0.09
 sides = 24
 
 [node name="BearingInnerRace" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=2119850035]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.031
 height = 0.08
@@ -541,7 +524,7 @@ sides = 24
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BearingShaftStub" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=1384679721]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.021
 height = 0.092
@@ -549,7 +532,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="BoltHole" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=1589091947]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -557,7 +540,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BoltHead" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=1729749807]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -565,7 +548,7 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="@CSGCylinder3D@10" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=1589852101]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -573,7 +556,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="@CSGCylinder3D@11" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_F_Infeed_Front_Upper" unique_id=714601201]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -584,34 +567,35 @@ material = SubResource("StandardMaterial3D_6fh1k")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.5, -3.565, 1.183, 0.28423208)
 
 [node name="BearingMountBase" type="CSGBox3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1635072572]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0425, 0)
 use_collision = true
-size = Vector3(0.21, 0.04, 0.115)
+size = Vector3(0.21, 0.075, 0.115)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingLeftFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=228643107]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="BearingRightFoot" type="CSGBox3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=833505681]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, 0.026, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06, -0.009, 0)
 use_collision = true
 size = Vector3(0.054, 0.045, 0.105)
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="HalfRoundHousing" type="CSGCombiner3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1656616605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.035, 0)
 
 [node name="HalfMoonCap" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper/HalfRoundHousing" unique_id=1053680433]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.014, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.033, 0)
 radius = 0.078
 height = 0.074
 sides = 32
 material = SubResource("StandardMaterial3D_bnj1n")
 
 [node name="FlatTopCut" type="CSGBox3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper/HalfRoundHousing" unique_id=842956365]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.038, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 operation = 2
 size = Vector3(0.19, 0.09, 0.09)
 
@@ -623,7 +607,7 @@ height = 0.09
 sides = 24
 
 [node name="BearingInnerRace" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=618744855]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.031
 height = 0.08
@@ -631,7 +615,7 @@ sides = 24
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BearingShaftStub" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1404567339]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.035, 0)
 use_collision = true
 radius = 0.021
 height = 0.092
@@ -639,7 +623,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="BoltHole" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1353531612]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -647,7 +631,7 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="BoltHead" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=333177253]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
@@ -655,7 +639,7 @@ sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="@CSGCylinder3D@12" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1950607559]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.084, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.049, 0)
 use_collision = true
 radius = 0.019
 height = 0.006
@@ -663,9 +647,114 @@ sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
 [node name="@CSGCylinder3D@13" type="CSGCylinder3D" parent="InfeedHoldDownBearing_03_B_Infeed_Back_Upper" unique_id=1470058855]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.09, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.058, 0.055, 0)
 use_collision = true
 radius = 0.014
 height = 0.008
 sides = 12
 material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PneumaticCylinder_01" type="Node3D" parent="." unique_id=2000000010]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.295, 1.5535405, 0)
+
+[node name="CylinderHead" type="CSGCylinder3D" parent="PneumaticCylinder_01" unique_id=2000000011]
+radius = 0.04248047
+height = 0.012
+sides = 24
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CylinderBody" type="CSGCylinder3D" parent="PneumaticCylinder_01" unique_id=2000000012]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.075, 0)
+radius = 0.02
+height = 0.15
+sides = 20
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="PistonRod" type="CSGCylinder3D" parent="PneumaticCylinder_01" unique_id=2000000013]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.15970206, 0)
+radius = 0.008
+height = 0.2
+sides = 16
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis" type="CSGBox3D" parent="PneumaticCylinder_01" unique_id=2000000014]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.287, 0)
+size = Vector3(0.018, 0.035, 0.042)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="ClevisPinHole" type="CSGCylinder3D" parent="PneumaticCylinder_01" unique_id=2000000015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.287, 0)
+operation = 2
+radius = 0.006
+height = 0.05
+sides = 16
+
+[node name="PneumaticCylinder_02" type="Node3D" parent="." unique_id=2000000020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.93, 1.5535405, 0)
+
+[node name="CylinderHead" type="CSGCylinder3D" parent="PneumaticCylinder_02" unique_id=2000000021]
+radius = 0.04248047
+height = 0.012
+sides = 24
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CylinderBody" type="CSGCylinder3D" parent="PneumaticCylinder_02" unique_id=2000000022]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.075, 0)
+radius = 0.02
+height = 0.15
+sides = 20
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="PistonRod" type="CSGCylinder3D" parent="PneumaticCylinder_02" unique_id=2000000023]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.15970206, 0)
+radius = 0.008
+height = 0.2
+sides = 16
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis" type="CSGBox3D" parent="PneumaticCylinder_02" unique_id=2000000024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.287, 0)
+size = Vector3(0.018, 0.035, 0.042)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="ClevisPinHole" type="CSGCylinder3D" parent="PneumaticCylinder_02" unique_id=2000000025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.287, 0)
+operation = 2
+radius = 0.006
+height = 0.05
+sides = 16
+
+[node name="PneumaticCylinder_03" type="Node3D" parent="." unique_id=2000000001]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.565, 1.5535405, 0)
+
+[node name="CylinderHead" type="CSGCylinder3D" parent="PneumaticCylinder_03" unique_id=2000000002]
+radius = 0.04248047
+height = 0.012
+sides = 24
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CylinderBody" type="CSGCylinder3D" parent="PneumaticCylinder_03" unique_id=2000000003]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.075, 0)
+radius = 0.02
+height = 0.15
+sides = 20
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="PistonRod" type="CSGCylinder3D" parent="PneumaticCylinder_03" unique_id=2000000004]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, 0, -0.15970206, 0)
+radius = 0.008
+height = 0.2
+sides = 16
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis" type="CSGBox3D" parent="PneumaticCylinder_03" unique_id=2000000005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.287, 0)
+size = Vector3(0.018, 0.035, 0.042)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="ClevisPinHole" type="CSGCylinder3D" parent="PneumaticCylinder_03" unique_id=2000000006]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.287, 0)
+operation = 2
+radius = 0.006
+height = 0.05
+sides = 16
