@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hpx5k"]
+albedo_color = Color(0.95, 0.55, 0.06, 1)
+metallic = 0.55
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[node name="PositionPinAssembly" type="Node3D" unique_id=2124487518]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2555873)
+metadata/edger_editor_group = true
+
+[node name="PositionPin_01_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1086548349]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.12, 0.566, -0.252)
+use_collision = true
+radius = 0.045
+height = 0.26
+sides = 20
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="PositionPinSleeve_01_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=715055173]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.12, 0.655, -0.252)
+use_collision = true
+radius = 0.05625
+height = 0.1
+sides = 18
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PositionPin_02_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=957772447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.64, 0.566, -0.252)
+use_collision = true
+radius = 0.045
+height = 0.26
+sides = 20
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="PositionPinSleeve_02_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=230072277]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.64, 0.655, -0.252)
+use_collision = true
+radius = 0.05625
+height = 0.1
+sides = 18
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PositionPin_03_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=264991769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.16, 0.566, -0.252)
+use_collision = true
+radius = 0.045
+height = 0.26
+sides = 20
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="PositionPinSleeve_03_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=470298745]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.16, 0.655, -0.252)
+use_collision = true
+radius = 0.05625
+height = 0.1
+sides = 18
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PositionPin_04_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=831304142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.68, 0.566, -0.252)
+use_collision = true
+radius = 0.045
+height = 0.26
+sides = 20
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="PositionPinSleeve_04_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1274764073]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.68, 0.655, -0.252)
+use_collision = true
+radius = 0.05625
+height = 0.1
+sides = 18
+material = SubResource("StandardMaterial3D_f87vt")

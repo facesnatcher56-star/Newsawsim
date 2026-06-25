@@ -1,0 +1,105 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
+albedo_color = Color(0.3, 0.32, 0.34, 1)
+metallic = 0.85
+roughness = 0.34
+
+[node name="FrameAssembly" type="Node3D" unique_id=1113205106]
+metadata/edger_editor_group = true
+
+[node name="Leg_Infeed_Front_Lower" type="CSGBox3D" parent="." unique_id=2091528990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12, -0.03, -0.73)
+use_collision = true
+size = Vector3(0.12, 0.9, 0.12)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Foot_Infeed_Front_Lower" type="CSGBox3D" parent="." unique_id=1777121066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12, -0.05, -0.73)
+use_collision = true
+size = Vector3(0.42, 0.08, 0.28)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Leg_Infeed_Back_Lower" type="CSGBox3D" parent="." unique_id=17137027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12, -0.03, 0.73)
+use_collision = true
+size = Vector3(0.12, 0.9, 0.12)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Foot_Infeed_Back_Lower" type="CSGBox3D" parent="." unique_id=983622232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.12, -0.05, 0.73)
+use_collision = true
+size = Vector3(0.42, 0.08, 0.28)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Leg_Outfeed_Front_Lower" type="CSGBox3D" parent="." unique_id=926220943]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.12, -0.03, -0.73)
+use_collision = true
+size = Vector3(0.12, 0.9, 0.12)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Foot_Outfeed_Front_Lower" type="CSGBox3D" parent="." unique_id=1517621461]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.12, -0.05, -0.73)
+use_collision = true
+size = Vector3(0.42, 0.08, 0.28)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Leg_Outfeed_Back_Lower" type="CSGBox3D" parent="." unique_id=714187915]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.12, -0.03, 0.73)
+use_collision = true
+size = Vector3(0.12, 0.9, 0.12)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="Foot_Outfeed_Back_Lower" type="CSGBox3D" parent="." unique_id=518732517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.12, -0.05, 0.73)
+use_collision = true
+size = Vector3(0.42, 0.08, 0.28)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="LongFrameRail_CenterX_Front_Lower" type="CSGBox3D" parent="." unique_id=1782776367]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44, -0.77)
+use_collision = true
+size = Vector3(4.8, 0.14, 0.12)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="LowerFrameRail_CenterX_Front_Lower" type="CSGBox3D" parent="." unique_id=677614255]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, -0.77)
+use_collision = true
+size = Vector3(4.416, 0.1, 0.1)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="LongFrameRail_CenterX_Back_Lower" type="CSGBox3D" parent="." unique_id=848090439]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44, 0.77)
+use_collision = true
+size = Vector3(4.8, 0.14, 0.12)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="LowerFrameRail_CenterX_Back_Lower" type="CSGBox3D" parent="." unique_id=1759929025]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, 0.77)
+use_collision = true
+size = Vector3(4.416, 0.1, 0.1)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CrossMember_Infeed_CenterZ_Lower" type="CSGBox3D" parent="." unique_id=180296170]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 0.42, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.7)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CrossMember_Infeed_CenterZ_Lower_02" type="CSGBox3D" parent="." unique_id=2015022301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.42, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.7)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CrossMember_Outfeed_CenterZ_Lower" type="CSGBox3D" parent="." unique_id=809588652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.42, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.7)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="CrossMember_Outfeed_CenterZ_Lower_02" type="CSGBox3D" parent="." unique_id=994416028]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 0.42, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.7)
+material = SubResource("StandardMaterial3D_bnj1n")

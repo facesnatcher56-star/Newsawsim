@@ -1,0 +1,21 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
+albedo_color = Color(0.3, 0.32, 0.34, 1)
+metallic = 0.85
+roughness = 0.34
+
+[node name="SideFenceAssembly" type="Node3D" unique_id=935191707]
+metadata/edger_editor_group = true
+
+[node name="SideFence_CenterX_Front_Mid" type="CSGBox3D" parent="." unique_id=1902518366]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -0.63)
+use_collision = true
+size = Vector3(4.512, 0.22, 0.06)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="SideFence_CenterX_Back_Mid" type="CSGBox3D" parent="." unique_id=1800869615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0.63)
+use_collision = true
+size = Vector3(4.512, 0.22, 0.06)
+material = SubResource("StandardMaterial3D_bnj1n")

@@ -1,0 +1,50 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
+albedo_color = Color(0.3, 0.32, 0.34, 1)
+metallic = 0.85
+roughness = 0.34
+
+[node name="WasteHandlingAssembly" type="Node3D" unique_id=375529728]
+metadata/edger_editor_group = true
+
+[node name="TrimChute_Outfeed_Front_Mid" type="CSGBox3D" parent="." unique_id=863239311]
+transform = Transform3D(0.98722726, -0.15931821, 0, 0.15931821, 0.98722726, 0, 0, 0, 1, 0.62, 0.54, -1.03)
+use_collision = true
+size = Vector3(1.6, 0.06, 0.36)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ChipConveyorBelt_Outfeed_Front_Lower" type="CSGBox3D" parent="." unique_id=1236386342]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 0.3, -1.21)
+use_collision = true
+size = Vector3(1.7, 0.08, 0.26)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ChipConveyorRail_Outfeed_Front_Lower" type="CSGBox3D" parent="." unique_id=1207762260]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 0.43, -1.37)
+use_collision = true
+size = Vector3(1.7, 0.18, 0.05)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="TrimChute_Outfeed_Back_Mid" type="CSGBox3D" parent="." unique_id=2110253016]
+transform = Transform3D(0.98722726, 0.15931821, 0, -0.15931821, 0.98722726, 0, 0, 0, 1, 0.62, 0.54, 1.03)
+use_collision = true
+size = Vector3(1.6, 0.06, 0.36)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ChipConveyorBelt_Outfeed_Back_Lower" type="CSGBox3D" parent="." unique_id=1470634372]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 0.3, 1.21)
+use_collision = true
+size = Vector3(1.7, 0.08, 0.26)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ChipConveyorRail_Outfeed_Back_Lower" type="CSGBox3D" parent="." unique_id=1232723896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.15, 0.43, 1.37)
+use_collision = true
+size = Vector3(1.7, 0.18, 0.05)
+material = SubResource("StandardMaterial3D_bnj1n")

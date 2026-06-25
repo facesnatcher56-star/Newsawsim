@@ -71,7 +71,7 @@ func _create_bark_coat() -> void:
 	bark_coat = CSGCylinder3D.new()
 	bark_coat.name = "BarkCoat"
 	bark_coat.radius = 0.291
-	bark_coat.height = 2.24
+	bark_coat.height = _get_log_core_length()
 	bark_coat.sides = 48
 	bark_coat.smooth_faces = true
 	bark_coat.rotation.z = PI * 0.5
@@ -182,10 +182,32 @@ func _update_bark_coat() -> void:
 		bark_coat.visible = false
 		return
 	bark_coat.visible = true
-	# Sections are spaced 0.056 m apart. Extending half that amount past each
-	# endpoint keeps the continuous coat flush with the original log ends.
-	bark_coat.height = maxf(0.056, last_x - first_x + 0.056)
+	var section_length := _get_bark_section_length()
+	bark_coat.height = maxf(section_length, last_x - first_x + section_length)
 	bark_coat.position.x = (first_x + last_x) * 0.5
+
+func _get_log_core_length() -> float:
+	var wood_core := get_node_or_null("WoodCore") as CSGCylinder3D
+	if wood_core:
+		return wood_core.height
+	return 4.8768
+
+func _get_bark_section_length() -> float:
+	for section in bark_sections:
+		if not is_instance_valid(section):
+			continue
+		var body := section.get_node_or_null("Body") as CSGCylinder3D
+		if body:
+			return body.height
+	if bark_sections.size() >= 2:
+		var positions: Array[float] = []
+		for section in bark_sections:
+			if is_instance_valid(section):
+				positions.append(section.position.x)
+		positions.sort()
+		if positions.size() >= 2:
+			return absf(positions[1] - positions[0])
+	return 0.161109
 
 func _spawn_bark_piece(pos: Vector3) -> void:
 	var bark_scene = load("res://scenes/bark_piece.tscn")

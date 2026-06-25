@@ -1,0 +1,126 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y1mke"]
+albedo_color = Color(0.72, 0.72, 0.76, 1)
+metallic = 1.0
+roughness = 0.16
+
+[node name="LowerFeedRollerAssembly" type="Node3D" unique_id=123702994]
+metadata/edger_editor_group = true
+
+[node name="FeedRoller_01_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=854559820]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.4, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_01_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1895281098]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.4, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="FeedRoller_02_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=772543149]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.6766667, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_02_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=817412356]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.6766667, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="FeedRoller_03_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=566874982]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.9533333, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_03_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=853629019]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.9533333, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="FeedRoller_04_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=835114731]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.23, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_04_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=241498914]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.23, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="FeedRoller_05_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=773791104]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.5066667, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_05_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=257750095]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.5066667, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="FeedRoller_06_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1689719767]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.7833333, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_06_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1099802900]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.7833333, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="FeedRoller_07_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=980276077]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.06, 0.66, 0)
+use_collision = true
+radius = 0.075
+height = 1.14
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="RollerShaft_07_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=145068497]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 2.06, 0.66, 0)
+use_collision = true
+radius = 0.025
+height = 1.88
+sides = 20
+material = SubResource("StandardMaterial3D_y1mke")

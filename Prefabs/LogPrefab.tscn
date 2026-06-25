@@ -1,727 +1,738 @@
-[gd_scene load_steps=7 format=3 uid="uid://log_prefab_scene"]
+[gd_scene format=3 uid="uid://jsxgi8kpb468"]
 
-[ext_resource type="Script" path="res://scripts/log.gd" id="1"]
+[ext_resource type="Script" uid="uid://15lnucnpcqvp" path="res://scripts/log.gd" id="1"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_log"]
 radius = 0.292
-height = 2.282959
+height = 4.97034
+
+[sub_resource type="Shader" id="Shader_inner_wood"]
+code = "shader_type spatial;
+render_mode diffuse_burley;
+
+varying vec3 local_pos;
+
+void vertex() {
+	local_pos = VERTEX;
+}
+
+void fragment() {
+	float length_grain = sin(local_pos.y * 45.0 + sin(local_pos.x * 20.0) * 0.4 + sin(local_pos.z * 20.0) * 0.4);
+	float dist_from_center = length(local_pos.xz);
+	float ring = sin(dist_from_center * 150.0 + sin(local_pos.y * 5.0) * 0.3);
+	float fine_grain = sin(local_pos.y * 120.0 + local_pos.x * 20.0) * 0.5 + 0.5;
+	float grain = smoothstep(0.45, 0.95, length_grain * 0.5 + 0.5) * 0.15 + smoothstep(0.6, 0.95, ring * 0.5 + 0.5) * 0.15 + fine_grain * 0.04;
+	vec3 base_color = vec3(0.78, 0.62, 0.42);
+	vec3 grain_color = vec3(0.45, 0.28, 0.12);
+	ALBEDO = mix(base_color, grain_color, grain);
+	ROUGHNESS = 0.9;
+}"
+
+[sub_resource type="ShaderMaterial" id="Material_inner_wood"]
+render_priority = 0
+shader = SubResource("Shader_inner_wood")
 
 [sub_resource type="StandardMaterial3D" id="Material_bark"]
 albedo_color = Color(0.24, 0.13, 0.06, 1)
 roughness = 0.95
 
-[sub_resource type="StandardMaterial3D" id="Material_bark_dark"]
-albedo_color = Color(0.15, 0.085, 0.045, 1)
-roughness = 1.0
-
-[sub_resource type="StandardMaterial3D" id="Material_cut_wood"]
-albedo_color = Color(0.72, 0.54, 0.32, 1)
-roughness = 0.85
-
-[sub_resource type="Shader" id="Shader_inner_wood"]
-code = "shader_type spatial;\nrender_mode diffuse_burley;\n\nvarying vec3 local_pos;\n\nvoid vertex() {\n\tlocal_pos = VERTEX;\n}\n\nvoid fragment() {\n\tfloat length_grain = sin(local_pos.y * 45.0 + sin(local_pos.x * 20.0) * 0.4 + sin(local_pos.z * 20.0) * 0.4);\n\tfloat dist_from_center = length(local_pos.xz);\n\tfloat ring = sin(dist_from_center * 150.0 + sin(local_pos.y * 5.0) * 0.3);\n\tfloat fine_grain = sin(local_pos.y * 120.0 + local_pos.x * 20.0) * 0.5 + 0.5;\n\tfloat grain = smoothstep(0.45, 0.95, length_grain * 0.5 + 0.5) * 0.15 + smoothstep(0.6, 0.95, ring * 0.5 + 0.5) * 0.15 + fine_grain * 0.04;\n\tvec3 base_color = vec3(0.78, 0.62, 0.42);\n\tvec3 grain_color = vec3(0.45, 0.28, 0.12);\n\tALBEDO = mix(base_color, grain_color, grain);\n\tROUGHNESS = 0.9;\n}"
-
-[sub_resource type="ShaderMaterial" id="Material_inner_wood"]
-shader = SubResource("Shader_inner_wood")
-
-[node name="LogPrefab" type="RigidBody3D" groups=["logs"]]
+[node name="LogPrefab" type="RigidBody3D" unique_id=1446840428 groups=["logs"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mass = 50.0
-collision_layer = 1
-collision_mask = 1
 script = ExtResource("1")
 board_count = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.0345459, 0, 0)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=286803454]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.07522, 0, 0)
 shape = SubResource("CapsuleShape3D_log")
 
-[node name="WoodCore" type="CSGCylinder3D" parent="."]
+[node name="WoodCore" type="CSGCylinder3D" parent="." unique_id=2036553167]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.245
-height = 2.24
+height = 4.8768
 sides = 32
 material = SubResource("Material_inner_wood")
 
-[node name="Bark" type="Node3D" parent="."]
+[node name="Bark" type="Node3D" parent="." unique_id=218651255]
 
-[node name="BarkSection01" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.092, 0, 0)
+[node name="BarkSection01" type="Node3D" parent="Bark" unique_id=201066015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3774, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection01"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection01" unique_id=140979840]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection01"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection01" unique_id=387552579]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection02" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.036, 0, 0)
+[node name="BarkSection02" type="Node3D" parent="Bark" unique_id=559217197]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2555, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection02"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection02" unique_id=270800632]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection02"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection02" unique_id=1356028049]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection03" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.980, 0, 0)
+[node name="BarkSection03" type="Node3D" parent="Bark" unique_id=899342547]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.1336, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection03"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection03" unique_id=1280076702]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection03"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection03" unique_id=1076778308]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection04" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.924, 0, 0)
+[node name="BarkSection04" type="Node3D" parent="Bark" unique_id=1765254081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0117, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection04"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection04" unique_id=1473885141]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection04"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection04" unique_id=315552485]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection05" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.868, 0, 0)
+[node name="BarkSection05" type="Node3D" parent="Bark" unique_id=713912871]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8898, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection05"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection05" unique_id=2118764735]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection05"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection05" unique_id=2110950673]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection06" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.812, 0, 0)
+[node name="BarkSection06" type="Node3D" parent="Bark" unique_id=1615453492]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7678, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection06"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection06" unique_id=1240953117]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection06"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection06" unique_id=798089862]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection07" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.756, 0, 0)
+[node name="BarkSection07" type="Node3D" parent="Bark" unique_id=1181177383]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6459, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection07"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection07" unique_id=1227114514]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection07"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection07" unique_id=2005425544]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection08" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.700, 0, 0)
+[node name="BarkSection08" type="Node3D" parent="Bark" unique_id=509330904]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5240, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection08"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection08" unique_id=969499610]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection08"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection08" unique_id=1640150666]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection09" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.644, 0, 0)
+[node name="BarkSection09" type="Node3D" parent="Bark" unique_id=787038975]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4021, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection09"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection09" unique_id=211063994]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection09"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection09" unique_id=1884523757]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection10" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.588, 0, 0)
+[node name="BarkSection10" type="Node3D" parent="Bark" unique_id=1708203913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2802, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection10"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection10" unique_id=71311763]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection10"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection10" unique_id=937842405]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection11" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.532, 0, 0)
+[node name="BarkSection11" type="Node3D" parent="Bark" unique_id=1716794696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1582, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection11"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection11" unique_id=898345688]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection11"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection11" unique_id=845499450]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection12" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.476, 0, 0)
+[node name="BarkSection12" type="Node3D" parent="Bark" unique_id=859831850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0363, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection12"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection12" unique_id=826020753]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection12"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection12" unique_id=1941029978]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection13" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.420, 0, 0)
+[node name="BarkSection13" type="Node3D" parent="Bark" unique_id=1705899606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9144, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection13"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection13" unique_id=277253057]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection13"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection13" unique_id=1594965374]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection14" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.364, 0, 0)
+[node name="BarkSection14" type="Node3D" parent="Bark" unique_id=1131228966]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7925, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection14"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection14" unique_id=1738822647]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection14"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection14" unique_id=239749916]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection15" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.308, 0, 0)
+[node name="BarkSection15" type="Node3D" parent="Bark" unique_id=385926951]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6706, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection15"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection15" unique_id=580282289]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection15"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection15" unique_id=1520218575]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection16" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.252, 0, 0)
+[node name="BarkSection16" type="Node3D" parent="Bark" unique_id=1452447470]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5486, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection16"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection16" unique_id=1844545695]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection16"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection16" unique_id=1997952931]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection17" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.196, 0, 0)
+[node name="BarkSection17" type="Node3D" parent="Bark" unique_id=1231778526]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4267, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection17"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection17" unique_id=133219434]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection17"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection17" unique_id=1738902127]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection18" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.140, 0, 0)
+[node name="BarkSection18" type="Node3D" parent="Bark" unique_id=1368623165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3048, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection18"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection18" unique_id=146666574]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection18"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection18" unique_id=1632791327]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection19" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.084, 0, 0)
+[node name="BarkSection19" type="Node3D" parent="Bark" unique_id=2124521751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1829, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection19"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection19" unique_id=147081073]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection19"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection19" unique_id=295523677]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection20" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.028, 0, 0)
+[node name="BarkSection20" type="Node3D" parent="Bark" unique_id=1011433450]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0610, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection20"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection20" unique_id=1337318463]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection20"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection20" unique_id=593291960]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection21" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.028, 0, 0)
+[node name="BarkSection21" type="Node3D" parent="Bark" unique_id=250235473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0610, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection21"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection21" unique_id=2016082055]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection21"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection21" unique_id=329281478]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection22" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.084, 0, 0)
+[node name="BarkSection22" type="Node3D" parent="Bark" unique_id=1109791032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1829, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection22"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection22" unique_id=1325955829]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection22"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection22" unique_id=1653472786]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection23" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.140, 0, 0)
+[node name="BarkSection23" type="Node3D" parent="Bark" unique_id=395441094]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3048, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection23"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection23" unique_id=1993905708]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection23"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection23" unique_id=1803464035]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection24" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.196, 0, 0)
+[node name="BarkSection24" type="Node3D" parent="Bark" unique_id=2041987650]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4267, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection24"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection24" unique_id=1980264024]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection24"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection24" unique_id=39143967]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection25" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.252, 0, 0)
+[node name="BarkSection25" type="Node3D" parent="Bark" unique_id=253845933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5486, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection25"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection25" unique_id=1816691510]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection25"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection25" unique_id=2083444491]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection26" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.308, 0, 0)
+[node name="BarkSection26" type="Node3D" parent="Bark" unique_id=166383954]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6706, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection26"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection26" unique_id=1080050948]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection26"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection26" unique_id=1406303048]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection27" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.364, 0, 0)
+[node name="BarkSection27" type="Node3D" parent="Bark" unique_id=96216771]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7925, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection27"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection27" unique_id=1330889226]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection27"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection27" unique_id=1737330193]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection28" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.420, 0, 0)
+[node name="BarkSection28" type="Node3D" parent="Bark" unique_id=811185552]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9144, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection28"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection28" unique_id=1960747749]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection28"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection28" unique_id=505947452]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection29" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.476, 0, 0)
+[node name="BarkSection29" type="Node3D" parent="Bark" unique_id=615413785]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0363, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection29"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection29" unique_id=1055122087]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection29"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection29" unique_id=1962744183]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection30" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.532, 0, 0)
+[node name="BarkSection30" type="Node3D" parent="Bark" unique_id=468220717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1582, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection30"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection30" unique_id=78444000]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection30"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection30" unique_id=1688864396]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection31" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.588, 0, 0)
+[node name="BarkSection31" type="Node3D" parent="Bark" unique_id=184326326]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2802, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection31"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection31" unique_id=1944456009]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection31"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection31" unique_id=1687161497]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection32" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.644, 0, 0)
+[node name="BarkSection32" type="Node3D" parent="Bark" unique_id=414859595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4021, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection32"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection32" unique_id=85247129]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection32"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection32" unique_id=198499743]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection33" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.700, 0, 0)
+[node name="BarkSection33" type="Node3D" parent="Bark" unique_id=1922192758]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5240, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection33"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection33" unique_id=1156560879]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection33"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection33" unique_id=373433418]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection34" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.756, 0, 0)
+[node name="BarkSection34" type="Node3D" parent="Bark" unique_id=812416142]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6459, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection34"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection34" unique_id=1286478675]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection34"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection34" unique_id=488319987]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection35" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.812, 0, 0)
+[node name="BarkSection35" type="Node3D" parent="Bark" unique_id=1575052522]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7678, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection35"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection35" unique_id=1420341007]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection35"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection35" unique_id=2096330057]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection36" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.868, 0, 0)
+[node name="BarkSection36" type="Node3D" parent="Bark" unique_id=851050704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8898, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection36"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection36" unique_id=407835012]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection36"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection36" unique_id=1832979296]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection37" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.924, 0, 0)
+[node name="BarkSection37" type="Node3D" parent="Bark" unique_id=1609077195]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.0117, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection37"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection37" unique_id=268794508]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection37"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection37" unique_id=1433034905]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection38" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.980, 0, 0)
+[node name="BarkSection38" type="Node3D" parent="Bark" unique_id=1292743111]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1336, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection38"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection38" unique_id=934616453]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection38"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection38" unique_id=216220207]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection39" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.036, 0, 0)
+[node name="BarkSection39" type="Node3D" parent="Bark" unique_id=221000750]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2555, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection39"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection39" unique_id=411794127]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection39"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection39" unique_id=2081241319]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="BarkSection40" type="Node3D" parent="Bark"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.092, 0, 0)
+[node name="BarkSection40" type="Node3D" parent="Bark" unique_id=1295266039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.3774, 0, 0)
 
-[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection40"]
+[node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection40" unique_id=624240750]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.285
-height = 0.074
+height = 0.161109
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection40"]
+[node name="Ridge" type="CSGCylinder3D" parent="Bark/BarkSection40" unique_id=1114645026]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.286
-height = 0.004
+height = 0.008709
 sides = 24
 material = SubResource("Material_bark")
 
-[node name="Boards" type="Node3D" parent="."]
+[node name="Boards" type="Node3D" parent="." unique_id=490264759]

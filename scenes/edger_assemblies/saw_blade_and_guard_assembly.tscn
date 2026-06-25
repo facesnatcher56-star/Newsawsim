@@ -1,0 +1,877 @@
+[gd_scene format=4]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5ifn8"]
+albedo_color = Color(0.2, 0.46, 0.28, 1)
+metallic = 0.55
+roughness = 0.36
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y1mke"]
+albedo_color = Color(0.72, 0.72, 0.76, 1)
+metallic = 1.0
+roughness = 0.16
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_xck04"]
+_surfaces = [{
+"aabb": AABB(0, -0.026, -0.018, 0.055, 0.052, 0.036),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAPT91Ly8dJM8LbIdPaabxLu8dJM8rkdhPaabxDu8dJM8AAAAAPT91Dy8dJM8AAAAAPT91Dy8dJO8rkdhPaabxDu8dJO8LbIdPaabxLu8dJO8AAAAAPT91Ly8dJO8AAAAAPT91Ly8dJM8LbIdPaabxLu8dJM8LbIdPaabxLu8dJO8AAAAAPT91Ly8dJO8LbIdPaabxLu8dJM8rkdhPaabxDu8dJM8rkdhPaabxDu8dJO8LbIdPaabxLu8dJO8rkdhPaabxDu8dJM8AAAAAPT91Dy8dJM8AAAAAPT91Dy8dJO8rkdhPaabxDu8dJO8AAAAAPT91Dy8dJM8AAAAAPT91Ly8dJM8AAAAAPT91Ly8dJO8AAAAAPT91Dy8dJO8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgDxUPNR2OGqtPFQ81HY4aq08VDzUdjhqrTxUPNR2OGqtGkoaykRHXqsaShrKREdeqxpKGspER16rGkoaykRHXqvdXSIibiqOz91dIiJuKo7P3V0iIm4qjs/dXSIibiqOz////3//f/+/////f/9//7////9//3//v////3//f/+/")
+}]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hpx5k"]
+albedo_color = Color(0.95, 0.55, 0.06, 1)
+metallic = 0.55
+roughness = 0.35
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_kilfl"]
+_surfaces = [{
+"aabb": AABB(0, -0.026, -0.018, 0.055, 0.052, 0.036),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAPT91Ly8dJM8LbIdPaabxLu8dJM8rkdhPaabxDu8dJM8AAAAAPT91Dy8dJM8AAAAAPT91Dy8dJO8rkdhPaabxDu8dJO8LbIdPaabxLu8dJO8AAAAAPT91Ly8dJO8AAAAAPT91Ly8dJM8LbIdPaabxLu8dJM8LbIdPaabxLu8dJO8AAAAAPT91Ly8dJO8LbIdPaabxLu8dJM8rkdhPaabxDu8dJM8rkdhPaabxDu8dJO8LbIdPaabxLu8dJO8rkdhPaabxDu8dJM8AAAAAPT91Dy8dJM8AAAAAPT91Dy8dJO8rkdhPaabxDu8dJO8AAAAAPT91Dy8dJM8AAAAAPT91Ly8dJM8AAAAAPT91Ly8dJO8AAAAAPT91Dy8dJO8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgDxUPNR2OGqtPFQ81HY4aq08VDzUdjhqrTxUPNR2OGqtGkoaykRHXqsaShrKREdeqxpKGspER16rGkoaykRHXqvdXSIibiqOz91dIiJuKo7P3V0iIm4qjs/dXSIibiqOz////3//f/+/////f/9//7////9//3//v////3//f/+/")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_1utt7"]
+_surfaces = [{
+"aabb": AABB(0, -0.026, -0.018, 0.055, 0.052, 0.036),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("AAAAAPT91Ly8dJM8LbIdPaabxLu8dJM8rkdhPaabxDu8dJM8AAAAAPT91Dy8dJM8AAAAAPT91Dy8dJO8rkdhPaabxDu8dJO8LbIdPaabxLu8dJO8AAAAAPT91Ly8dJO8AAAAAPT91Ly8dJM8LbIdPaabxLu8dJM8LbIdPaabxLu8dJO8AAAAAPT91Ly8dJO8LbIdPaabxLu8dJM8rkdhPaabxDu8dJM8rkdhPaabxDu8dJO8LbIdPaabxLu8dJO8rkdhPaabxDu8dJM8AAAAAPT91Dy8dJM8AAAAAPT91Dy8dJO8rkdhPaabxDu8dJO8AAAAAPT91Dy8dJM8AAAAAPT91Ly8dJM8AAAAAPT91Ly8dJO8AAAAAPT91Dy8dJO8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgDxUPNR2OGqtPFQ81HY4aq08VDzUdjhqrTxUPNR2OGqtGkoaykRHXqsaShrKREdeqxpKGspER16rGkoaykRHXqvdXSIibiqOz91dIiJuKo7P3V0iIm4qjs/dXSIibiqOz////3//f/+/////f/9//7////9//3//v////3//f/+/")
+}]
+
+[node name="SawBladeAndGuardAssembly" type="Node3D" unique_id=166215241]
+metadata/edger_editor_group = true
+
+[node name="MainSawGuard_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=2008151462]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 1.48, 0)
+size = Vector3(0.76, 0.58, 1.82)
+material = SubResource("StandardMaterial3D_5ifn8")
+
+[node name="UpperThroatLip_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=2033737171]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 1.11, 0)
+size = Vector3(0.88, 0.08, 0.92)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ThroatSideCheek_Infeed_Front_Mid" type="CSGBox3D" parent="." unique_id=821044645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.84, -0.58)
+size = Vector3(0.88, 0.18, 0.12)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ThroatSideCheek_Infeed_Back_Mid" type="CSGBox3D" parent="." unique_id=717003147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.84, 0.58)
+size = Vector3(0.88, 0.18, 0.12)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="EdgerSawBlade_01_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=39429765]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, -0.41)
+radius = 0.38
+height = 0.035
+sides = 64
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="EdgerSawTeeth_01" type="Node3D" parent="." unique_id=1374007351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.82, -0.41)
+
+[node name="Tooth_01" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1670960842]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.368, 0, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_02" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1456855918]
+transform = Transform3D(0.9914449, -0.1305262, 0, 0.1305262, 0.9914449, 0, 0, 0, 1, 0.3648517, 0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_03" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=28456950]
+transform = Transform3D(0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, 0, 0, 1, 0.3554607, 0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_04" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1345624556]
+transform = Transform3D(0.9238795, -0.38268346, 0, 0.38268346, 0.9238795, 0, 0, 0, 1, 0.33998767, 0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_05" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=781040226]
+transform = Transform3D(0.8660254, -0.5, 0, 0.5, 0.8660254, 0, 0, 0, 1, 0.31869736, 0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_06" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1351098016]
+transform = Transform3D(0.7933533, -0.6087614, 0, 0.6087614, 0.7933533, 0, 0, 0, 1, 0.29195404, 0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_07" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=263166798]
+transform = Transform3D(0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0, 1, 0.26021528, 0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_08" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1410773629]
+transform = Transform3D(0.6087614, -0.7933533, 0, 0.7933533, 0.6087614, 0, 0, 0, 1, 0.2240242, 0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_09" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=810228322]
+transform = Transform3D(0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0, 0, 0, 1, 0.184, 0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_10" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=2090842760]
+transform = Transform3D(0.38268343, -0.9238795, 0, 0.9238795, 0.38268343, 0, 0, 0, 1, 0.1408275, 0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_11" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1424404214]
+transform = Transform3D(0.25881907, -0.9659258, 0, 0.9659258, 0.25881907, 0, 0, 0, 1, 0.095245406, 0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_12" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=948579897]
+transform = Transform3D(0.13052624, -0.9914448, 0, 0.9914448, 0.13052624, 0, 0, 0, 1, 0.04803364, 0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_13" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1082807699]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 2.2533502e-17, 0.368, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_14" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1350813175]
+transform = Transform3D(-0.13052621, -0.9914449, 0, 0.9914449, -0.13052621, 0, 0, 0, 1, -0.04803364, 0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_15" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1104269394]
+transform = Transform3D(-0.25881904, -0.9659258, 0, 0.9659258, -0.25881904, 0, 0, 0, 1, -0.095245406, 0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_16" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1221065360]
+transform = Transform3D(-0.3826834, -0.92387956, 0, 0.92387956, -0.3826834, 0, 0, 0, 1, -0.1408275, 0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_17" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1218808679]
+transform = Transform3D(-0.50000006, -0.8660254, 0, 0.8660254, -0.50000006, 0, 0, 0, 1, -0.184, 0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_18" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=2041163806]
+transform = Transform3D(-0.6087614, -0.7933533, 0, 0.7933533, -0.6087614, 0, 0, 0, 1, -0.2240242, 0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_19" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1846208140]
+transform = Transform3D(-0.70710677, -0.70710677, 0, 0.70710677, -0.70710677, 0, 0, 0, 1, -0.26021528, 0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_20" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=535830149]
+transform = Transform3D(-0.7933533, -0.6087614, 0, 0.6087614, -0.7933533, 0, 0, 0, 1, -0.29195404, 0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_21" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1932828663]
+transform = Transform3D(-0.8660254, -0.50000006, 0, 0.50000006, -0.8660254, 0, 0, 0, 1, -0.31869736, 0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_22" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1802830496]
+transform = Transform3D(-0.9238795, -0.3826835, 0, 0.3826835, -0.9238795, 0, 0, 0, 1, -0.33998767, 0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_23" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1353737636]
+transform = Transform3D(-0.9659258, -0.25881913, 0, 0.25881913, -0.9659258, 0, 0, 0, 1, -0.3554607, 0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_24" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=241744728]
+transform = Transform3D(-0.9914449, -0.13052608, 0, 0.13052608, -0.9914449, 0, 0, 0, 1, -0.3648517, 0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_25" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=225498380]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, -0.368, 4.5067003e-17, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_26" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1744099090]
+transform = Transform3D(-0.9914448, 0.13052626, 0, -0.13052626, -0.9914448, 0, 0, 0, 1, -0.3648517, -0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_27" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1746405568]
+transform = Transform3D(-0.9659258, 0.25881907, 0, -0.25881907, -0.9659258, 0, 0, 0, 1, -0.3554607, -0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_28" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1496037249]
+transform = Transform3D(-0.9238795, 0.38268343, 0, -0.38268343, -0.9238795, 0, 0, 0, 1, -0.33998767, -0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_29" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=2005775121]
+transform = Transform3D(-0.8660254, 0.49999997, 0, -0.49999997, -0.8660254, 0, 0, 0, 1, -0.31869736, -0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_30" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=194897737]
+transform = Transform3D(-0.7933534, 0.60876137, 0, -0.60876137, -0.7933534, 0, 0, 0, 1, -0.29195404, -0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_31" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=821100486]
+transform = Transform3D(-0.7071068, 0.7071067, 0, -0.7071067, -0.7071068, 0, 0, 0, 1, -0.26021528, -0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_32" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1068479698]
+transform = Transform3D(-0.6087615, 0.79335326, 0, -0.79335326, -0.6087615, 0, 0, 0, 1, -0.2240242, -0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_33" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=2118622366]
+transform = Transform3D(-0.4999999, 0.86602545, 0, -0.86602545, -0.4999999, 0, 0, 0, 1, -0.184, -0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_34" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=777006124]
+transform = Transform3D(-0.38268358, 0.9238795, 0, -0.9238795, -0.38268358, 0, 0, 0, 1, -0.1408275, -0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_35" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=443055100]
+transform = Transform3D(-0.25881898, 0.9659259, 0, -0.9659259, -0.25881898, 0, 0, 0, 1, -0.095245406, -0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_36" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1430202898]
+transform = Transform3D(-0.1305264, 0.9914448, 0, -0.9914448, -0.1305264, 0, 0, 0, 1, -0.04803364, -0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_37" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=823051804]
+transform = Transform3D(1.1924881e-08, 1, 0, -1, 1.1924881e-08, 0, 0, 0, 1, -6.76005e-17, -0.368, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_38" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=492299218]
+transform = Transform3D(0.13052641, 0.9914448, 0, -0.9914448, 0.13052641, 0, 0, 0, 1, 0.04803364, -0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_39" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1181307433]
+transform = Transform3D(0.258819, 0.9659258, 0, -0.9659258, 0.258819, 0, 0, 0, 1, 0.095245406, -0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_40" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1557527994]
+transform = Transform3D(0.3826836, 0.92387944, 0, -0.92387944, 0.3826836, 0, 0, 0, 1, 0.1408275, -0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_41" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=489862498]
+transform = Transform3D(0.4999999, 0.86602545, 0, -0.86602545, 0.4999999, 0, 0, 0, 1, 0.184, -0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_42" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1112180013]
+transform = Transform3D(0.60876155, 0.79335326, 0, -0.79335326, 0.60876155, 0, 0, 0, 1, 0.2240242, -0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_43" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=1339099619]
+transform = Transform3D(0.70710665, 0.7071069, 0, -0.7071069, 0.70710665, 0, 0, 0, 1, 0.26021528, -0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_44" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=543055373]
+transform = Transform3D(0.7933534, 0.60876137, 0, -0.60876137, 0.7933534, 0, 0, 0, 1, 0.29195404, -0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_45" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=723342765]
+transform = Transform3D(0.8660253, 0.5000002, 0, -0.5000002, 0.8660253, 0, 0, 0, 1, 0.31869736, -0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_46" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=455958958]
+transform = Transform3D(0.92387956, 0.38268343, 0, -0.38268343, 0.92387956, 0, 0, 0, 1, 0.33998767, -0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_47" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=2021884670]
+transform = Transform3D(0.9659259, 0.25881884, 0, -0.25881884, 0.9659259, 0, 0, 0, 1, 0.3554607, -0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="Tooth_48" type="MeshInstance3D" parent="EdgerSawTeeth_01" unique_id=612286555]
+transform = Transform3D(0.9914449, 0.13052623, 0, -0.13052623, 0.9914449, 0, 0, 0, 1, 0.3648517, -0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_xck04")
+
+[node name="BladeHub_01_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1163657411]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, -0.41)
+use_collision = true
+radius = 0.12
+height = 0.07
+sides = 32
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="BladeKerfGuard_01_CenterX_Front_Upper" type="CSGBox3D" parent="." unique_id=1729063316]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 1.01, -0.41)
+size = Vector3(0.34, 0.06, 0.09)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="EdgerSawBlade_02_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1771026152]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0)
+radius = 0.38
+height = 0.035
+sides = 64
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="EdgerSawTeeth_02" type="Node3D" parent="." unique_id=1652018901]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.82, 0)
+
+[node name="Tooth_01" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=928538733]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.368, 0, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_02" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=238788149]
+transform = Transform3D(0.9914449, -0.1305262, 0, 0.1305262, 0.9914449, 0, 0, 0, 1, 0.3648517, 0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_03" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=204044138]
+transform = Transform3D(0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, 0, 0, 1, 0.3554607, 0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_04" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1056176609]
+transform = Transform3D(0.9238795, -0.38268346, 0, 0.38268346, 0.9238795, 0, 0, 0, 1, 0.33998767, 0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_05" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1860339293]
+transform = Transform3D(0.8660254, -0.5, 0, 0.5, 0.8660254, 0, 0, 0, 1, 0.31869736, 0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_06" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=467381878]
+transform = Transform3D(0.7933533, -0.6087614, 0, 0.6087614, 0.7933533, 0, 0, 0, 1, 0.29195404, 0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_07" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1977052497]
+transform = Transform3D(0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0, 1, 0.26021528, 0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_08" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=634258732]
+transform = Transform3D(0.6087614, -0.7933533, 0, 0.7933533, 0.6087614, 0, 0, 0, 1, 0.2240242, 0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_09" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=827870288]
+transform = Transform3D(0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0, 0, 0, 1, 0.184, 0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_10" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=928046718]
+transform = Transform3D(0.38268343, -0.9238795, 0, 0.9238795, 0.38268343, 0, 0, 0, 1, 0.1408275, 0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_11" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=420147812]
+transform = Transform3D(0.25881907, -0.9659258, 0, 0.9659258, 0.25881907, 0, 0, 0, 1, 0.095245406, 0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_12" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=587500467]
+transform = Transform3D(0.13052624, -0.9914448, 0, 0.9914448, 0.13052624, 0, 0, 0, 1, 0.04803364, 0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_13" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1009984082]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 2.2533502e-17, 0.368, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_14" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1271306351]
+transform = Transform3D(-0.13052621, -0.9914449, 0, 0.9914449, -0.13052621, 0, 0, 0, 1, -0.04803364, 0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_15" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=831431581]
+transform = Transform3D(-0.25881904, -0.9659258, 0, 0.9659258, -0.25881904, 0, 0, 0, 1, -0.095245406, 0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_16" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=2007636175]
+transform = Transform3D(-0.3826834, -0.92387956, 0, 0.92387956, -0.3826834, 0, 0, 0, 1, -0.1408275, 0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_17" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=191279857]
+transform = Transform3D(-0.50000006, -0.8660254, 0, 0.8660254, -0.50000006, 0, 0, 0, 1, -0.184, 0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_18" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1702072742]
+transform = Transform3D(-0.6087614, -0.7933533, 0, 0.7933533, -0.6087614, 0, 0, 0, 1, -0.2240242, 0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_19" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=442838131]
+transform = Transform3D(-0.70710677, -0.70710677, 0, 0.70710677, -0.70710677, 0, 0, 0, 1, -0.26021528, 0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_20" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=348627142]
+transform = Transform3D(-0.7933533, -0.6087614, 0, 0.6087614, -0.7933533, 0, 0, 0, 1, -0.29195404, 0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_21" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1781881733]
+transform = Transform3D(-0.8660254, -0.50000006, 0, 0.50000006, -0.8660254, 0, 0, 0, 1, -0.31869736, 0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_22" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=720549391]
+transform = Transform3D(-0.9238795, -0.3826835, 0, 0.3826835, -0.9238795, 0, 0, 0, 1, -0.33998767, 0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_23" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1607720746]
+transform = Transform3D(-0.9659258, -0.25881913, 0, 0.25881913, -0.9659258, 0, 0, 0, 1, -0.3554607, 0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_24" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=849448531]
+transform = Transform3D(-0.9914449, -0.13052608, 0, 0.13052608, -0.9914449, 0, 0, 0, 1, -0.3648517, 0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_25" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=471315569]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, -0.368, 4.5067003e-17, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_26" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=2107330654]
+transform = Transform3D(-0.9914448, 0.13052626, 0, -0.13052626, -0.9914448, 0, 0, 0, 1, -0.3648517, -0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_27" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1098414987]
+transform = Transform3D(-0.9659258, 0.25881907, 0, -0.25881907, -0.9659258, 0, 0, 0, 1, -0.3554607, -0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_28" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=2147098842]
+transform = Transform3D(-0.9238795, 0.38268343, 0, -0.38268343, -0.9238795, 0, 0, 0, 1, -0.33998767, -0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_29" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1414535619]
+transform = Transform3D(-0.8660254, 0.49999997, 0, -0.49999997, -0.8660254, 0, 0, 0, 1, -0.31869736, -0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_30" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=210564252]
+transform = Transform3D(-0.7933534, 0.60876137, 0, -0.60876137, -0.7933534, 0, 0, 0, 1, -0.29195404, -0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_31" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1896597872]
+transform = Transform3D(-0.7071068, 0.7071067, 0, -0.7071067, -0.7071068, 0, 0, 0, 1, -0.26021528, -0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_32" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=581704598]
+transform = Transform3D(-0.6087615, 0.79335326, 0, -0.79335326, -0.6087615, 0, 0, 0, 1, -0.2240242, -0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_33" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=700573546]
+transform = Transform3D(-0.4999999, 0.86602545, 0, -0.86602545, -0.4999999, 0, 0, 0, 1, -0.184, -0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_34" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=513769506]
+transform = Transform3D(-0.38268358, 0.9238795, 0, -0.9238795, -0.38268358, 0, 0, 0, 1, -0.1408275, -0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_35" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=900617267]
+transform = Transform3D(-0.25881898, 0.9659259, 0, -0.9659259, -0.25881898, 0, 0, 0, 1, -0.095245406, -0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_36" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1873443358]
+transform = Transform3D(-0.1305264, 0.9914448, 0, -0.9914448, -0.1305264, 0, 0, 0, 1, -0.04803364, -0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_37" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=108498263]
+transform = Transform3D(1.1924881e-08, 1, 0, -1, 1.1924881e-08, 0, 0, 0, 1, -6.76005e-17, -0.368, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_38" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=2062460821]
+transform = Transform3D(0.13052641, 0.9914448, 0, -0.9914448, 0.13052641, 0, 0, 0, 1, 0.04803364, -0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_39" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1567024902]
+transform = Transform3D(0.258819, 0.9659258, 0, -0.9659258, 0.258819, 0, 0, 0, 1, 0.095245406, -0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_40" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=855396157]
+transform = Transform3D(0.3826836, 0.92387944, 0, -0.92387944, 0.3826836, 0, 0, 0, 1, 0.1408275, -0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_41" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1476030169]
+transform = Transform3D(0.4999999, 0.86602545, 0, -0.86602545, 0.4999999, 0, 0, 0, 1, 0.184, -0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_42" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=450170507]
+transform = Transform3D(0.60876155, 0.79335326, 0, -0.79335326, 0.60876155, 0, 0, 0, 1, 0.2240242, -0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_43" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1776409943]
+transform = Transform3D(0.70710665, 0.7071069, 0, -0.7071069, 0.70710665, 0, 0, 0, 1, 0.26021528, -0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_44" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1245357509]
+transform = Transform3D(0.7933534, 0.60876137, 0, -0.60876137, 0.7933534, 0, 0, 0, 1, 0.29195404, -0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_45" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1838601272]
+transform = Transform3D(0.8660253, 0.5000002, 0, -0.5000002, 0.8660253, 0, 0, 0, 1, 0.31869736, -0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_46" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=420151692]
+transform = Transform3D(0.92387956, 0.38268343, 0, -0.38268343, 0.92387956, 0, 0, 0, 1, 0.33998767, -0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_47" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=2121421082]
+transform = Transform3D(0.9659259, 0.25881884, 0, -0.25881884, 0.9659259, 0, 0, 0, 1, 0.3554607, -0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="Tooth_48" type="MeshInstance3D" parent="EdgerSawTeeth_02" unique_id=1104122786]
+transform = Transform3D(0.9914449, 0.13052623, 0, -0.13052623, 0.9914449, 0, 0, 0, 1, 0.3648517, -0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_kilfl")
+
+[node name="BladeHub_02_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=956240705]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0)
+use_collision = true
+radius = 0.12
+height = 0.07
+sides = 32
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="BladeKerfGuard_02_CenterX_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1413092245]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 1.01, 0)
+size = Vector3(0.34, 0.06, 0.09)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="EdgerSawBlade_03_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=324489274]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0.41)
+radius = 0.38
+height = 0.035
+sides = 64
+material = SubResource("StandardMaterial3D_y1mke")
+
+[node name="EdgerSawTeeth_03" type="Node3D" parent="." unique_id=1736280726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.82, 0.41)
+
+[node name="Tooth_01" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=201508632]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.368, 0, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_02" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=191916312]
+transform = Transform3D(0.9914449, -0.1305262, 0, 0.1305262, 0.9914449, 0, 0, 0, 1, 0.3648517, 0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_03" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=461810622]
+transform = Transform3D(0.9659258, -0.25881904, 0, 0.25881904, 0.9659258, 0, 0, 0, 1, 0.3554607, 0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_04" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=26433466]
+transform = Transform3D(0.9238795, -0.38268346, 0, 0.38268346, 0.9238795, 0, 0, 0, 1, 0.33998767, 0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_05" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=41536124]
+transform = Transform3D(0.8660254, -0.5, 0, 0.5, 0.8660254, 0, 0, 0, 1, 0.31869736, 0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_06" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1456268266]
+transform = Transform3D(0.7933533, -0.6087614, 0, 0.6087614, 0.7933533, 0, 0, 0, 1, 0.29195404, 0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_07" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=978201013]
+transform = Transform3D(0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0, 1, 0.26021528, 0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_08" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1570656633]
+transform = Transform3D(0.6087614, -0.7933533, 0, 0.7933533, 0.6087614, 0, 0, 0, 1, 0.2240242, 0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_09" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1508397399]
+transform = Transform3D(0.49999997, -0.86602545, 0, 0.86602545, 0.49999997, 0, 0, 0, 1, 0.184, 0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_10" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=513730732]
+transform = Transform3D(0.38268343, -0.9238795, 0, 0.9238795, 0.38268343, 0, 0, 0, 1, 0.1408275, 0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_11" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=700683484]
+transform = Transform3D(0.25881907, -0.9659258, 0, 0.9659258, 0.25881907, 0, 0, 0, 1, 0.095245406, 0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_12" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=2009730861]
+transform = Transform3D(0.13052624, -0.9914448, 0, 0.9914448, 0.13052624, 0, 0, 0, 1, 0.04803364, 0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_13" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1899663645]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 2.2533502e-17, 0.368, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_14" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=187051341]
+transform = Transform3D(-0.13052621, -0.9914449, 0, 0.9914449, -0.13052621, 0, 0, 0, 1, -0.04803364, 0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_15" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1544617582]
+transform = Transform3D(-0.25881904, -0.9659258, 0, 0.9659258, -0.25881904, 0, 0, 0, 1, -0.095245406, 0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_16" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=351341297]
+transform = Transform3D(-0.3826834, -0.92387956, 0, 0.92387956, -0.3826834, 0, 0, 0, 1, -0.1408275, 0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_17" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1376814664]
+transform = Transform3D(-0.50000006, -0.8660254, 0, 0.8660254, -0.50000006, 0, 0, 0, 1, -0.184, 0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_18" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=526366079]
+transform = Transform3D(-0.6087614, -0.7933533, 0, 0.7933533, -0.6087614, 0, 0, 0, 1, -0.2240242, 0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_19" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=419495983]
+transform = Transform3D(-0.70710677, -0.70710677, 0, 0.70710677, -0.70710677, 0, 0, 0, 1, -0.26021528, 0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_20" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1128805978]
+transform = Transform3D(-0.7933533, -0.6087614, 0, 0.6087614, -0.7933533, 0, 0, 0, 1, -0.29195404, 0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_21" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1435623082]
+transform = Transform3D(-0.8660254, -0.50000006, 0, 0.50000006, -0.8660254, 0, 0, 0, 1, -0.31869736, 0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_22" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=599513708]
+transform = Transform3D(-0.9238795, -0.3826835, 0, 0.3826835, -0.9238795, 0, 0, 0, 1, -0.33998767, 0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_23" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1028193125]
+transform = Transform3D(-0.9659258, -0.25881913, 0, 0.25881913, -0.9659258, 0, 0, 0, 1, -0.3554607, 0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_24" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=929630877]
+transform = Transform3D(-0.9914449, -0.13052608, 0, 0.13052608, -0.9914449, 0, 0, 0, 1, -0.3648517, 0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_25" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1529365064]
+transform = Transform3D(-1, 8.742278e-08, 0, -8.742278e-08, -1, 0, 0, 0, 1, -0.368, 4.5067003e-17, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_26" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=464700832]
+transform = Transform3D(-0.9914448, 0.13052626, 0, -0.13052626, -0.9914448, 0, 0, 0, 1, -0.3648517, -0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_27" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1269852568]
+transform = Transform3D(-0.9659258, 0.25881907, 0, -0.25881907, -0.9659258, 0, 0, 0, 1, -0.3554607, -0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_28" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=933310814]
+transform = Transform3D(-0.9238795, 0.38268343, 0, -0.38268343, -0.9238795, 0, 0, 0, 1, -0.33998767, -0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_29" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1556634817]
+transform = Transform3D(-0.8660254, 0.49999997, 0, -0.49999997, -0.8660254, 0, 0, 0, 1, -0.31869736, -0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_30" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=2009642482]
+transform = Transform3D(-0.7933534, 0.60876137, 0, -0.60876137, -0.7933534, 0, 0, 0, 1, -0.29195404, -0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_31" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1041172610]
+transform = Transform3D(-0.7071068, 0.7071067, 0, -0.7071067, -0.7071068, 0, 0, 0, 1, -0.26021528, -0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_32" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1021814758]
+transform = Transform3D(-0.6087615, 0.79335326, 0, -0.79335326, -0.6087615, 0, 0, 0, 1, -0.2240242, -0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_33" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1770766488]
+transform = Transform3D(-0.4999999, 0.86602545, 0, -0.86602545, -0.4999999, 0, 0, 0, 1, -0.184, -0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_34" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=31330312]
+transform = Transform3D(-0.38268358, 0.9238795, 0, -0.9238795, -0.38268358, 0, 0, 0, 1, -0.1408275, -0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_35" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=310821163]
+transform = Transform3D(-0.25881898, 0.9659259, 0, -0.9659259, -0.25881898, 0, 0, 0, 1, -0.095245406, -0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_36" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1193799021]
+transform = Transform3D(-0.1305264, 0.9914448, 0, -0.9914448, -0.1305264, 0, 0, 0, 1, -0.04803364, -0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_37" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1234070592]
+transform = Transform3D(1.1924881e-08, 1, 0, -1, 1.1924881e-08, 0, 0, 0, 1, -6.76005e-17, -0.368, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_38" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1475272836]
+transform = Transform3D(0.13052641, 0.9914448, 0, -0.9914448, 0.13052641, 0, 0, 0, 1, 0.04803364, -0.3648517, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_39" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1647907872]
+transform = Transform3D(0.258819, 0.9659258, 0, -0.9659258, 0.258819, 0, 0, 0, 1, 0.095245406, -0.3554607, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_40" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1859662767]
+transform = Transform3D(0.3826836, 0.92387944, 0, -0.92387944, 0.3826836, 0, 0, 0, 1, 0.1408275, -0.33998767, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_41" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=450759678]
+transform = Transform3D(0.4999999, 0.86602545, 0, -0.86602545, 0.4999999, 0, 0, 0, 1, 0.184, -0.31869736, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_42" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=648317829]
+transform = Transform3D(0.60876155, 0.79335326, 0, -0.79335326, 0.60876155, 0, 0, 0, 1, 0.2240242, -0.29195404, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_43" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1692354701]
+transform = Transform3D(0.70710665, 0.7071069, 0, -0.7071069, 0.70710665, 0, 0, 0, 1, 0.26021528, -0.26021528, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_44" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1196245946]
+transform = Transform3D(0.7933534, 0.60876137, 0, -0.60876137, 0.7933534, 0, 0, 0, 1, 0.29195404, -0.2240242, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_45" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1891701927]
+transform = Transform3D(0.8660253, 0.5000002, 0, -0.5000002, 0.8660253, 0, 0, 0, 1, 0.31869736, -0.184, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_46" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1270464090]
+transform = Transform3D(0.92387956, 0.38268343, 0, -0.38268343, 0.92387956, 0, 0, 0, 1, 0.33998767, -0.1408275, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_47" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1126520476]
+transform = Transform3D(0.9659259, 0.25881884, 0, -0.25881884, 0.9659259, 0, 0, 0, 1, 0.3554607, -0.095245406, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="Tooth_48" type="MeshInstance3D" parent="EdgerSawTeeth_03" unique_id=1988787518]
+transform = Transform3D(0.9914449, 0.13052623, 0, -0.13052623, 0.9914449, 0, 0, 0, 1, 0.3648517, -0.04803364, 0)
+material_override = SubResource("StandardMaterial3D_y1mke")
+mesh = SubResource("ArrayMesh_1utt7")
+
+[node name="BladeHub_03_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=625745262]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0.41)
+use_collision = true
+radius = 0.12
+height = 0.07
+sides = 32
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="BladeKerfGuard_03_CenterX_Back_Upper" type="CSGBox3D" parent="." unique_id=1865645091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06, 1.01, 0.41)
+size = Vector3(0.34, 0.06, 0.09)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="SawArbor_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1636610753]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0)
+use_collision = true
+radius = 0.045
+height = 2.06
+sides = 28
+material = SubResource("StandardMaterial3D_y1mke")

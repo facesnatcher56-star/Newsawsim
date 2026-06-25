@@ -2,6 +2,9 @@
 class_name SawmillEdger
 extends StaticBody3D
 
+const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assembly_builder.gd")
+const SawmillEdgerPreviewController := preload("res://scripts/edger_preview_controller.gd")
+
 ## Industrial board edger sized for the sawmill board line.
 ## X is feed direction, Z is board-length/cross-machine width.
 
@@ -91,6 +94,24 @@ extends StaticBody3D
 			_adopt_generated_parts()
 
 @export var auto_rebuild_generated_parts: bool = true
+@export var use_saved_assembly_scenes: bool = false:
+	set(value):
+		use_saved_assembly_scenes = value
+		_queue_rebuild()
+
+@export var frame_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/frame_assembly.tscn")
+@export var side_fence_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/side_fence_assembly.tscn")
+@export var infeed_chain_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/infeed_chain_assembly.tscn")
+@export var parking_ramp_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/parking_ramp_assembly.tscn")
+@export var infeed_hold_down_roller_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/infeed_hold_down_roller_assembly.tscn")
+@export var position_pin_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/position_pin_assembly.tscn")
+@export var cushion_pin_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/cushion_pin_assembly.tscn")
+@export var lower_feed_roller_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/lower_feed_roller_assembly.tscn")
+@export var upper_hold_down_roller_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/upper_hold_down_roller_assembly.tscn")
+@export var saw_blade_and_guard_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/saw_blade_and_guard_assembly.tscn")
+@export var motor_drive_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/motor_drive_assembly.tscn")
+@export var waste_handling_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/waste_handling_assembly.tscn")
+@export var reference_board_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/reference_board_assembly.tscn")
 
 var _rebuild_queued := false
 var _mat_frame: StandardMaterial3D
@@ -99,6 +120,7 @@ var _mat_guard: StandardMaterial3D
 var _mat_blade: StandardMaterial3D
 var _mat_motor: StandardMaterial3D
 var _mat_warning: StandardMaterial3D
+var _mat_infeed_hold_down: StandardMaterial3D
 var _mat_wood: StandardMaterial3D
 var _mat_hydraulic: StandardMaterial3D
 var _mat_chain_grip: StandardMaterial3D
@@ -134,6 +156,8 @@ const FEED_ROLLER_RADIUS := 0.075
 const FEED_ROLLER_LENGTH := 1.14
 const HOLD_DOWN_ROLLER_RADIUS := 0.095
 const HOLD_DOWN_ROLLER_LENGTH := 0.96
+const INFEED_HOLD_DOWN_ROLLER_RADIUS := 0.135
+const INFEED_HOLD_DOWN_ROLLER_LENGTH := HOLD_DOWN_ROLLER_LENGTH * 0.5
 const SAMPLE_BOARD_THICKNESS := 0.04
 const SAMPLE_BOARD_LENGTH := 4.8768
 const SAMPLE_BOARD_WIDTH := 0.35
@@ -160,6 +184,7 @@ enum CenteringPreviewPhase {
 	PIN_RETRACT_DELAY,
 	RETRACT_PINS,
 	RETURN_PINS_HOME_Z,
+	LOWER_RAMPS,
 	FEED_DELAY,
 	FEED_BOARD,
 }
@@ -169,6 +194,8 @@ var _infeed_chain_links: Array[Node3D] = []
 var _infeed_chain_bases: Array[Vector3] = []
 var _hold_down_rollers: Array[CSGCylinder3D] = []
 var _hold_down_stations: Array[Dictionary] = []
+var _infeed_hold_down_rollers: Array[CSGCylinder3D] = []
+var _infeed_hold_down_stations: Array[Dictionary] = []
 var _parking_ramp_stations: Array[Dictionary] = []
 var _position_pin_stations: Array[Dictionary] = []
 var _cushion_pin_stations: Array[Dictionary] = []
@@ -185,6 +212,8 @@ var _preview_board_home_global := Vector3.ZERO
 var _generated_name_counts: Dictionary = {}
 var _editor_group_stack: Array[Node3D] = []
 var _preserved_editor_group_transforms: Dictionary = {}
+var _assembly_builder: RefCounted
+var _preview_controller: RefCounted
 
 
 func _ready() -> void:
@@ -230,6 +259,8 @@ func _rebuild() -> void:
 	_infeed_chain_bases.clear()
 	_hold_down_rollers.clear()
 	_hold_down_stations.clear()
+	_infeed_hold_down_rollers.clear()
+	_infeed_hold_down_stations.clear()
 	_parking_ramp_stations.clear()
 	_position_pin_stations.clear()
 	_cushion_pin_stations.clear()
@@ -240,15 +271,48 @@ func _rebuild() -> void:
 	_editor_group_stack.clear()
 
 	_make_materials()
-	_build_frame()
-	_build_feed_deck()
-	_build_hold_downs()
-	_build_saw_box()
-	_build_motors_and_drives()
-	_build_waste_handling()
-	_build_sample_board()
+	_assembly_builder = SawmillEdgerAssemblyBuilder.new(self)
+	_preview_controller = SawmillEdgerPreviewController.new(self)
+	if use_saved_assembly_scenes:
+		_instantiate_saved_assembly_scenes()
+		_collect_generated_parts()
+	else:
+		_build_frame()
+		_build_feed_deck()
+		_build_hold_downs()
+		_build_saw_box()
+		_build_motors_and_drives()
+		_build_waste_handling()
+		_build_sample_board()
 	_adopt_generated_parts()
 	_apply_preview_motion(0.0)
+
+
+func _instantiate_saved_assembly_scenes() -> void:
+	var assembly_scenes: Array[PackedScene] = [
+		frame_assembly_scene,
+		side_fence_assembly_scene,
+		infeed_chain_assembly_scene,
+		parking_ramp_assembly_scene,
+		infeed_hold_down_roller_assembly_scene,
+		position_pin_assembly_scene,
+		cushion_pin_assembly_scene,
+		lower_feed_roller_assembly_scene,
+		upper_hold_down_roller_assembly_scene,
+		saw_blade_and_guard_assembly_scene,
+		motor_drive_assembly_scene,
+		waste_handling_assembly_scene,
+		reference_board_assembly_scene,
+	]
+
+	for assembly_scene in assembly_scenes:
+		if assembly_scene == null:
+			continue
+		var instance := assembly_scene.instantiate()
+		if _preserved_editor_group_transforms.has(instance.name):
+			instance.transform = _preserved_editor_group_transforms[instance.name]
+		add_child(instance)
+		_adopt_new_node(instance)
 
 
 func _collect_generated_parts() -> void:
@@ -256,6 +320,8 @@ func _collect_generated_parts() -> void:
 	_infeed_chain_links.clear()
 	_infeed_chain_bases.clear()
 	_hold_down_rollers.clear()
+	_infeed_hold_down_rollers.clear()
+	_infeed_hold_down_stations.clear()
 	_saw_blades.clear()
 	_saw_teeth_roots.clear()
 	_sample_board = null
@@ -268,6 +334,8 @@ func _collect_generated_parts() -> void:
 			_infeed_chain_bases.append(node.position)
 		elif node.name.begins_with("HoldDownRoller") and node is CSGCylinder3D:
 			_hold_down_rollers.append(node)
+		elif node.name.begins_with("InfeedHoldDownRoller") and node is CSGCylinder3D:
+			_infeed_hold_down_rollers.append(node)
 		elif node.name.begins_with("EdgerSawBlade") and node is CSGCylinder3D:
 			_saw_blades.append(node)
 		elif node.name.begins_with("EdgerSawTeeth"):
@@ -303,6 +371,7 @@ func _make_materials() -> void:
 	_mat_blade = _mat(Color(0.72, 0.72, 0.76), 1.0, 0.16)
 	_mat_motor = _mat(Color(0.08, 0.23, 0.34), 0.70, 0.30)
 	_mat_warning = _mat(Color(0.95, 0.55, 0.06), 0.55, 0.35)
+	_mat_infeed_hold_down = _mat(Color(0.05, 0.24, 0.11), 0.55, 0.34)
 	_mat_wood = _mat(Color(0.78, 0.64, 0.42), 0.0, 0.78)
 	_mat_hydraulic = _mat(Color(0.86, 0.86, 0.88), 1.0, 0.12)
 	_mat_chain_grip = _mat(Color(0.42, 0.44, 0.44), 0.9, 0.22)
@@ -341,309 +410,51 @@ func _current_part_parent() -> Node:
 
 
 func _build_frame() -> void:
-	_push_editor_group("FrameAssembly")
-	var half_l := bed_length * 0.5
-	var half_w := machine_width * 0.5
-	var leg_y := working_height * 0.5 - 0.34
-	var leg_h := maxf(working_height + 0.28, 0.7)
-	var end_xs: Array[float] = [-half_l + 0.28, half_l - 0.28]
-	var side_zs: Array[float] = [-half_w + 0.12, half_w - 0.12]
-
-	for x in end_xs:
-		for z in side_zs:
-			_add_box("Leg", Vector3(x, leg_y, z), Vector3(0.12, leg_h, 0.12), _mat_frame)
-			_add_box("Foot", Vector3(x, -0.05, z), Vector3(0.42, 0.08, 0.28), _mat_frame)
-
-	var rail_zs: Array[float] = [-half_w + 0.08, half_w - 0.08]
-	for z in rail_zs:
-		_add_box("LongFrameRail", Vector3(0, working_height - 0.18, z), Vector3(bed_length, 0.14, 0.12), _mat_frame)
-		_add_box("LowerFrameRail", Vector3(0, 0.16, z), Vector3(bed_length * 0.92, 0.10, 0.10), _mat_frame)
-
-	var cross_xs: Array[float] = [-half_l + 0.2, -0.7, 0.7, half_l - 0.2]
-	for x in cross_xs:
-		_add_box("CrossMember", Vector3(x, working_height - 0.2, 0), Vector3(0.12, 0.12, machine_width), _mat_frame)
-	_pop_editor_group()
+	_assembly_builder.build_frame()
 
 
 func _build_feed_deck() -> void:
-	_push_editor_group("SideFenceAssembly")
-	var half_w := machine_width * 0.5
-	var fence_zs: Array[float] = [-half_w + 0.22, half_w - 0.22]
-	for z in fence_zs:
-		_add_box("SideFence", Vector3(0, working_height + 0.18, z), Vector3(bed_length * 0.94, 0.22, 0.06), _mat_frame)
-	_pop_editor_group()
-
-	_build_infeed_chains()
-
-	_push_editor_group("LowerFeedRollerAssembly")
-	var roller_y := working_height + 0.04
-	var roller_start := SAW_X + 0.58
-	var roller_end := bed_length * 0.5 - 0.34
-	var roller_count := maxi(feed_roller_count, 2)
-	var spacing := (roller_end - roller_start) / float(roller_count - 1)
-	for i in range(roller_count):
-		var x := roller_start + spacing * float(i)
-		var suffix := "_%02d" % (i + 1)
-		var roller := _add_cylinder("FeedRoller" + suffix, Vector3(x, roller_y, 0), FEED_ROLLER_RADIUS, FEED_ROLLER_LENGTH, _mat_dark, Vector3(PI * 0.5, 0, 0), 28)
-		_feed_rollers.append(roller)
-		_add_cylinder("RollerShaft" + suffix, Vector3(x, roller_y, 0), 0.025, machine_width + 0.18, _mat_blade, Vector3(PI * 0.5, 0, 0), 20)
-	_pop_editor_group()
+	_assembly_builder.build_feed_deck()
 
 
 func _build_infeed_chains() -> void:
-	_push_editor_group("InfeedChainAssembly")
-	var chain_top := _support_top_y()
-	var chain_y := chain_top - CHAIN_LINK_THICKNESS * 0.5
-	var chain_start := _infeed_chain_start_x()
-	var chain_end := INFEED_CHAIN_END_X
-	var chain_length := chain_end - chain_start
-	if chain_length <= 0.4:
-		_pop_editor_group()
-		return
-
-	var lane_pitch := CHAIN_LINK_WIDTH + CHAIN_LANE_CLEARANCE
-	var chain_zs: Array[float] = [-lane_pitch, 0.0, lane_pitch]
-	for lane_i in range(chain_zs.size()):
-		var z := chain_zs[lane_i]
-		var lane_suffix := "_%02d" % (lane_i + 1)
-		_add_box("InfeedChainWearRail" + lane_suffix, Vector3((chain_start + chain_end) * 0.5, chain_top - 0.07, z), Vector3(chain_length, 0.045, CHAIN_LINK_WIDTH + 0.035), _mat_frame)
-		_add_cylinder("InfeedChainIdler" + lane_suffix + "_Entry", Vector3(chain_start, chain_y, z), 0.065, CHAIN_LINK_WIDTH + 0.035, _mat_dark, Vector3(PI * 0.5, 0, 0), 18)
-		_add_cylinder("InfeedChainIdler" + lane_suffix + "_SawEnd", Vector3(chain_end, chain_y, z), 0.065, CHAIN_LINK_WIDTH + 0.035, _mat_dark, Vector3(PI * 0.5, 0, 0), 18)
-
-		var link_count := maxi(6, int(chain_length / CHAIN_LINK_LENGTH))
-		for i in range(link_count):
-			var t := float(i) / float(link_count)
-			var x := lerpf(chain_start, chain_end, t)
-			var link := _add_infeed_chain_link("InfeedChainLink" + lane_suffix + "_%02d" % (i + 1), Vector3(x, chain_y, z), i)
-			_infeed_chain_links.append(link)
-			_infeed_chain_bases.append(link.position)
-	_pop_editor_group()
-
-	var centering_start: float = chain_start
-	var centering_end: float = _centering_section_end_x()
-	_build_parking_ramps(centering_start, centering_end, chain_top)
-	_build_position_pins(centering_start, centering_end, chain_top)
-	_build_cushion_pins(centering_start, centering_end, chain_top)
+	_assembly_builder.build_infeed_chains()
 
 
 func _build_parking_ramps(chain_start: float, chain_end: float, chain_top: float) -> void:
-	var usable_length: float = chain_end - chain_start
-	if usable_length <= 0.4:
-		return
+	_assembly_builder.build_parking_ramps(chain_start, chain_end, chain_top)
 
-	_push_editor_group("ParkingRampAssembly")
-	var station_count: int = maxi(parking_ramp_stations, 2)
-	var station_spacing: float = usable_length / float(station_count)
-	var ramp_x_size: float = minf(0.46, station_spacing * 0.62)
-	var ramp_y_size: float = 0.055
-	var ramp_z_size: float = 0.20
-	var parked_y: float = chain_top + ramp_y_size * 0.5 + 0.045
-	var retracted_y: float = chain_top - 0.16
-	var ramp_zs: Array[float] = [-SAMPLE_BOARD_WIDTH * 0.48, SAMPLE_BOARD_WIDTH * 0.48]
 
-	for i in range(station_count):
-		var x: float = chain_start + station_spacing * (float(i) + 0.5)
-		var station_nodes: Array[Node3D] = []
-		var station_bases: Array[Vector3] = []
-		for side_i in range(ramp_zs.size()):
-			var z: float = ramp_zs[side_i]
-			var suffix: String = "_%02d_%s" % [i + 1, "Front" if z < 0.0 else "Back"]
-			var ramp: CSGBox3D = _add_box("ParkingRamp" + suffix, Vector3(x, retracted_y, z), Vector3(ramp_x_size, ramp_y_size, ramp_z_size), _mat_hydraulic, Vector3(0.0, 0.0, 0.0))
-			station_nodes.append(ramp)
-			station_bases.append(Vector3(x, parked_y, z))
-			_add_cylinder("ParkingRampCylinder" + suffix, Vector3(x, working_height - 0.09, z), 0.025, 0.24, _mat_dark, Vector3.ZERO, 12)
-		_parking_ramp_stations.append({
-			"x": x,
-			"nodes": station_nodes,
-			"bases": station_bases,
-			"retracted_y": retracted_y,
-			"parked_y": parked_y,
-		})
-	_pop_editor_group()
+func _build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
+	_assembly_builder.build_infeed_hold_downs(chain_start, chain_end)
 
 
 func _build_position_pins(chain_start: float, chain_end: float, chain_top: float) -> void:
-	var station_count: int = 4
-	var first_x: float = chain_start + 0.42
-	var last_x: float = chain_end - 0.36
-	if last_x <= first_x:
-		return
-
-	_push_editor_group("PositionPinAssembly")
-	var station_xs: Array[float] = _pin_station_xs(first_x, last_x, station_count, position_pin_spacing)
-	var front_z: float = -SAMPLE_BOARD_WIDTH * 0.72
-	var raised_y: float = chain_top + position_pin_height * 0.5 + 0.015
-	var retracted_y: float = chain_top - position_pin_height * 0.65
-	var sleeve_retracted_y: float = chain_top - 0.08
-	var sleeve_raised_y: float = sleeve_retracted_y + raised_y - retracted_y
-	for i in range(station_xs.size()):
-		var x: float = station_xs[i]
-		var suffix: String = "_%02d" % (i + 1)
-		var pin: CSGCylinder3D = _add_cylinder("PositionPin" + suffix, Vector3(x, retracted_y, front_z), position_pin_radius, position_pin_height, _mat_warning, Vector3.ZERO, 20)
-		var sleeve: CSGCylinder3D = _add_cylinder("PositionPinSleeve" + suffix, Vector3(x, sleeve_retracted_y, front_z), position_pin_radius * 1.25, 0.10, _mat_dark, Vector3.ZERO, 18)
-		_position_pin_stations.append({
-			"x": x,
-			"pin": pin,
-			"sleeve": sleeve,
-			"raised_y": raised_y,
-			"retracted_y": retracted_y,
-			"sleeve_raised_y": sleeve_raised_y,
-			"sleeve_retracted_y": sleeve_retracted_y,
-			"z": front_z,
-		})
-	_pop_editor_group()
+	_assembly_builder.build_position_pins(chain_start, chain_end, chain_top)
 
 
 func _build_cushion_pins(chain_start: float, chain_end: float, chain_top: float) -> void:
-	var station_count: int = 4
-	var first_x: float = chain_start + 0.42
-	var last_x: float = chain_end - 0.36
-	if last_x <= first_x:
-		return
-
-	_push_editor_group("CushionPinAssembly")
-	var station_xs: Array[float] = _pin_station_xs(first_x, last_x, station_count, cushion_pin_spacing)
-	var back_z: float = SAMPLE_BOARD_WIDTH * 0.78
-	var pin_y: float = chain_top + 0.065
-	for i in range(station_xs.size()):
-		var x: float = station_xs[i]
-		var suffix: String = "_%02d" % (i + 1)
-		var body: Node3D = Node3D.new()
-		body.position = Vector3(x, pin_y, back_z)
-		body.name = _friendly_part_name("CushionPinAssembly" + suffix, body.position)
-		_current_part_parent().add_child(body)
-		_adopt_new_node(body)
-
-		var barrel: CSGCylinder3D = _add_cylinder_child(body, "CushionCylinder", Vector3(0.0, 0.0, 0.13), 0.035, 0.26, _mat_dark, Vector3(PI * 0.5, 0.0, 0.0), 16)
-		var rod: CSGCylinder3D = _add_cylinder_child(body, "CushionRod", Vector3(0.0, 0.0, -0.08), 0.018, cushion_pin_extension, _mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 14)
-		var pad: CSGBox3D = _add_box_child(body, "CushionPad", Vector3(0.0, 0.0, -0.08 - cushion_pin_extension * 0.5), Vector3(0.16, 0.12, 0.045), _mat_rubber)
-		_cushion_pin_stations.append({
-			"x": x,
-			"body": body,
-			"barrel": barrel,
-			"rod": rod,
-			"pad": pad,
-			"base_z": back_z,
-			"extended": false,
-		})
-	_pop_editor_group()
-
-
-func _pin_station_xs(first_x: float, last_x: float, station_count: int, station_spacing: float) -> Array[float]:
-	var positions: Array[float] = []
-	if station_count <= 0:
-		return positions
-	if station_count == 1:
-		positions.append((first_x + last_x) * 0.5)
-		return positions
-
-	var center_x: float = (first_x + last_x) * 0.5
-	var effective_spacing: float = maxf(station_spacing, 0.20)
-	var span: float = effective_spacing * float(station_count - 1)
-	var start_x: float = center_x - span * 0.5
-	for i in range(station_count):
-		positions.append(start_x + effective_spacing * float(i))
-	return positions
+	_assembly_builder.build_cushion_pins(chain_start, chain_end, chain_top)
 
 
 func _build_hold_downs() -> void:
-	_push_editor_group("UpperHoldDownRollerAssembly")
-	var hold_down_xs: Array[float] = [-1.75, -0.95, 0.45, 1.25]
-	var board_top := _board_center_y() + SAMPLE_BOARD_THICKNESS * 0.5
-	var roller_y := board_top + HOLD_DOWN_ROLLER_RADIUS - 0.008
-	for i in range(hold_down_xs.size()):
-		var x := hold_down_xs[i]
-		var suffix := "_%02d" % (i + 1)
-		_add_box("HoldDownCrosshead" + suffix, Vector3(x, roller_y + 0.34, 0), Vector3(0.12, 0.12, 1.20), _mat_frame)
-		_add_box("HoldDownTopPressureBox" + suffix, Vector3(x, roller_y + 0.60, 0), Vector3(0.32, 0.22, 0.92), _mat_frame)
-		var hold_down := _add_cylinder("HoldDownRoller" + suffix, Vector3(x, roller_y, 0), HOLD_DOWN_ROLLER_RADIUS, HOLD_DOWN_ROLLER_LENGTH, _mat_warning, Vector3(PI * 0.5, 0, 0), 28)
-		_hold_down_rollers.append(hold_down)
-		var moving_nodes: Array[Node3D] = [hold_down]
-		var axle := _add_cylinder("HoldDownAxle" + suffix, Vector3(x, roller_y, 0), 0.026, 1.12, _mat_hydraulic, Vector3(PI * 0.5, 0, 0), 20)
-		moving_nodes.append(axle)
-
-		var side_zs: Array[float] = [-0.46, 0.46]
-		for side_i in range(side_zs.size()):
-			var z := side_zs[side_i]
-			var side_suffix := suffix + ("_L" if z < 0.0 else "_R")
-			moving_nodes.append(_add_box("YokeSidePlate" + side_suffix, Vector3(x, roller_y + 0.03, z), Vector3(0.16, 0.30, 0.055), _mat_warning))
-			moving_nodes.append(_add_box("YokeUpperLug" + side_suffix, Vector3(x, roller_y + 0.20, z), Vector3(0.16, 0.08, 0.16), _mat_warning))
-			_add_cylinder("GuidePost" + side_suffix, Vector3(x - 0.09, roller_y + 0.34, z), 0.026, 0.54, _mat_hydraulic, Vector3.ZERO, 18)
-			_add_cylinder("PressureCylinderBarrel" + side_suffix, Vector3(x + 0.09, roller_y + 0.48, z), 0.055, 0.28, _mat_dark, Vector3.ZERO, 24)
-			moving_nodes.append(_add_cylinder("PressureCylinderRod" + side_suffix, Vector3(x + 0.09, roller_y + 0.25, z), 0.023, 0.30, _mat_hydraulic, Vector3.ZERO, 18))
-			moving_nodes.append(_add_box("RodClevis" + side_suffix, Vector3(x + 0.09, roller_y + 0.09, z), Vector3(0.11, 0.06, 0.07), _mat_hydraulic))
-			_add_box("TopClevisBracket" + side_suffix, Vector3(x + 0.09, roller_y + 0.64, z), Vector3(0.13, 0.08, 0.09), _mat_dark)
-
-		var base_positions: Array[Vector3] = []
-		for node in moving_nodes:
-			base_positions.append(node.position)
-			node.position.y += hold_down_raised_offset
-		_hold_down_stations.append({
-			"x": x,
-			"nodes": moving_nodes,
-			"bases": base_positions,
-			"offset": hold_down_raised_offset,
-		})
-	_pop_editor_group()
+	_assembly_builder.build_hold_downs()
 
 
 func _build_saw_box() -> void:
-	_push_editor_group("SawBladeAndGuardAssembly")
-	_add_box("MainSawGuard", Vector3(SAW_X, working_height + 0.86, 0), Vector3(0.76, 0.58, machine_width + 0.12), _mat_guard, Vector3.ZERO, false)
-	_add_box("UpperThroatLip", Vector3(SAW_X, working_height + 0.49, 0), Vector3(0.88, 0.08, 0.92), _mat_dark, Vector3.ZERO, false)
-	for z_sign in [-1.0, 1.0]:
-		_add_box("ThroatSideCheek", Vector3(SAW_X, working_height + 0.22, z_sign * 0.58), Vector3(0.88, 0.18, 0.12), _mat_dark, Vector3.ZERO, false)
-
-	var blade_zs: Array[float] = [-saw_spacing * 0.5, 0.0, saw_spacing * 0.5]
-	for i in range(blade_zs.size()):
-		var z := blade_zs[i]
-		var suffix := "_%02d" % (i + 1)
-		var blade := _add_cylinder("EdgerSawBlade" + suffix, Vector3(SAW_X, working_height + 0.2, z), blade_radius, 0.035, _mat_blade, Vector3(PI * 0.5, 0, 0), 64, false)
-		_saw_blades.append(blade)
-		_saw_teeth_roots.append(_add_saw_teeth("EdgerSawTeeth" + suffix, Vector3(SAW_X, working_height + 0.2, z), blade_radius))
-		_add_cylinder("BladeHub" + suffix, Vector3(SAW_X, working_height + 0.2, z), 0.12, 0.07, _mat_dark, Vector3(PI * 0.5, 0, 0), 32)
-		_add_box("BladeKerfGuard" + suffix, Vector3(SAW_X + 0.12, working_height + 0.39, z), Vector3(0.34, 0.06, 0.09), _mat_warning, Vector3.ZERO, false)
-
-	_add_cylinder("SawArbor", Vector3(SAW_X, working_height + 0.2, 0), 0.045, machine_width + 0.36, _mat_blade, Vector3(PI * 0.5, 0, 0), 28)
-	_pop_editor_group()
+	_assembly_builder.build_saw_box()
 
 
 func _build_motors_and_drives() -> void:
-	_push_editor_group("MotorDriveAssembly")
-	var motor_z := machine_width * 0.5 + 0.34
-	var motor_zs: Array[float] = [-motor_z, motor_z]
-	for z in motor_zs:
-		_add_box("MotorMount", Vector3(SAW_X, working_height + 0.08, z), Vector3(0.48, 0.18, 0.18), _mat_frame)
-		_add_cylinder("SawMotor", Vector3(SAW_X - 0.22, working_height + 0.25, z), 0.22, 0.48, _mat_motor, Vector3(0, 0, PI * 0.5), 32)
-		_add_cylinder("DrivePulley", Vector3(SAW_X + 0.22, working_height + 0.25, z), 0.16, 0.08, _mat_dark, Vector3(0, 0, PI * 0.5), 28)
-		_add_box("BeltGuard", Vector3(SAW_X + 0.10, working_height + 0.42, z), Vector3(0.58, 0.10, 0.28), _mat_dark, Vector3(0, 0, 0.18))
-	_pop_editor_group()
+	_assembly_builder.build_motors_and_drives()
 
 
 func _build_waste_handling() -> void:
-	if not show_waste_chutes:
-		return
-
-	_push_editor_group("WasteHandlingAssembly")
-	var chute_z := machine_width * 0.5 + 0.18
-	var z_signs: Array[float] = [-1.0, 1.0]
-	for z_sign in z_signs:
-		var z := chute_z * z_sign
-		_add_box("TrimChute", Vector3(0.62, working_height - 0.08, z), Vector3(1.6, 0.06, 0.36), _mat_dark, Vector3(0, 0, -0.16 * z_sign))
-		_add_box("ChipConveyorBelt", Vector3(1.15, working_height - 0.32, z + 0.18 * z_sign), Vector3(1.7, 0.08, 0.26), _mat_dark)
-		_add_box("ChipConveyorRail", Vector3(1.15, working_height - 0.19, z + 0.34 * z_sign), Vector3(1.7, 0.18, 0.05), _mat_frame)
-	_pop_editor_group()
+	_assembly_builder.build_waste_handling()
 
 
 func _build_sample_board() -> void:
-	_push_editor_group("ReferenceBoardAssembly")
-	var board := _create_reference_board()
-	board.position = Vector3(_preview_board_start_x(), _board_center_y(), side_load_start_z)
-	_current_part_parent().add_child(board)
-	_sample_board = board
-	_preview_board_home_global = board.global_position
-	_pop_editor_group()
-
+	_assembly_builder.build_sample_board()
 
 func _create_reference_board() -> Node3D:
 	var board: Node3D = null
@@ -707,425 +518,19 @@ func _feed_preview_length() -> float:
 	return bed_length + infeed_chain_extension + SAMPLE_BOARD_LENGTH * 0.5
 
 
+func _ensure_preview_controller() -> void:
+	if _preview_controller == null:
+		_preview_controller = SawmillEdgerPreviewController.new(self)
+
+
 func _apply_preview_motion(delta: float) -> void:
-	if not is_instance_valid(_sample_board):
-		return
-
-	match _centering_preview_phase:
-		CenteringPreviewPhase.SIDE_LOAD:
-			_update_side_load_phase(delta)
-		CenteringPreviewPhase.RAISE_PINS:
-			_update_pin_actuators(delta, true, false)
-			if _active_pins_are_raised() and _active_cushions_are_at_target():
-				_centering_preview_phase = CenteringPreviewPhase.CENTER_BOARD
-		CenteringPreviewPhase.CENTER_BOARD:
-			_update_pin_actuators(delta, true, true)
-			_update_center_board_phase(delta)
-		CenteringPreviewPhase.PIN_RETRACT_DELAY:
-			_update_pin_actuators(delta, true, false)
-			_pin_retract_delay_elapsed += delta
-			if _pin_retract_delay_elapsed >= pin_retract_delay:
-				_centering_preview_phase = CenteringPreviewPhase.RETRACT_PINS
-		CenteringPreviewPhase.RETRACT_PINS:
-			_update_pin_actuators(delta, false, false)
-			if _pins_are_retracted_down() and _cushions_are_home():
-				_centering_preview_phase = CenteringPreviewPhase.RETURN_PINS_HOME_Z
-		CenteringPreviewPhase.RETURN_PINS_HOME_Z:
-			_update_position_pins_z_home(delta)
-			_update_cushion_pins_home(delta)
-			if _pins_and_cushions_are_home():
-				_feed_delay_elapsed = 0.0
-				_centering_preview_phase = CenteringPreviewPhase.FEED_DELAY
-		CenteringPreviewPhase.FEED_DELAY:
-			_feed_delay_elapsed += delta
-			if _feed_delay_elapsed >= feed_chain_start_delay:
-				_centering_preview_phase = CenteringPreviewPhase.FEED_BOARD
-		CenteringPreviewPhase.FEED_BOARD:
-			_update_feed_board_phase(delta)
-
-	_update_parking_ramp_preview(delta)
-	_update_hold_down_preview(delta, to_local(_sample_board.global_position).x)
+	_ensure_preview_controller()
+	_preview_controller.apply_preview_motion(delta)
 
 
 func _reset_preview_motion() -> void:
-	_feed_preview_travel = 0.0
-	_feed_delay_elapsed = 0.0
-	_pin_retract_delay_elapsed = 0.0
-	_chain_preview_offset = 0.0
-	_centering_preview_phase = CenteringPreviewPhase.SIDE_LOAD
-	_active_centering_pin_indices = _select_board_contact_position_pins()
-	_update_infeed_chain_preview()
-
-	for roller in _feed_rollers:
-		if is_instance_valid(roller):
-			roller.rotation = Vector3(PI * 0.5, 0.0, 0.0)
-	for roller in _hold_down_rollers:
-		if is_instance_valid(roller):
-			roller.rotation = Vector3(PI * 0.5, 0.0, 0.0)
-	for blade in _saw_blades:
-		if is_instance_valid(blade):
-			blade.rotation = Vector3(PI * 0.5, 0.0, 0.0)
-	for teeth_root in _saw_teeth_roots:
-		if is_instance_valid(teeth_root):
-			teeth_root.rotation = Vector3.ZERO
-
-	if is_instance_valid(_sample_board):
-		if _preview_board_home_global == Vector3.ZERO:
-			_preview_board_home_global = _sample_board.global_position
-		_sample_board.global_position = _preview_board_home_global
-
-	_reset_centering_preview()
-	_reset_hold_down_preview()
-
-
-func _reset_centering_preview() -> void:
-	for station in _parking_ramp_stations:
-		var nodes: Array = station["nodes"]
-		for node in nodes:
-			var ramp := node as Node3D
-			if is_instance_valid(ramp):
-				ramp.position.y = float(station["retracted_y"])
-
-	for station in _position_pin_stations:
-		var pin := station["pin"] as Node3D
-		if is_instance_valid(pin):
-			pin.position.y = float(station["retracted_y"])
-			pin.position.z = float(station["z"])
-		var sleeve := station["sleeve"] as Node3D
-		if is_instance_valid(sleeve):
-			sleeve.position.y = float(station["sleeve_retracted_y"])
-			sleeve.position.z = float(station["z"])
-
-	for station in _cushion_pin_stations:
-		var body := station["body"] as Node3D
-		if is_instance_valid(body):
-			body.position.z = float(station["base_z"])
-
-
-func _reset_hold_down_preview() -> void:
-	for station in _hold_down_stations:
-		station["offset"] = hold_down_raised_offset
-		var nodes: Array = station["nodes"]
-		var bases: Array = station["bases"]
-		for i in range(nodes.size()):
-			var node := nodes[i] as Node3D
-			if is_instance_valid(node):
-				node.position = bases[i] + Vector3(0.0, hold_down_raised_offset, 0.0)
-
-
-func _update_infeed_chain_preview() -> void:
-	var chain_start := _infeed_chain_start_x()
-	var chain_end := INFEED_CHAIN_END_X
-	var chain_length := chain_end - chain_start
-	if chain_length <= 0.0:
-		return
-	for i in range(_infeed_chain_links.size()):
-		var link := _infeed_chain_links[i]
-		if not is_instance_valid(link):
-			continue
-		var base := _infeed_chain_bases[i]
-		link.position = base
-		link.position.x = chain_start + fposmod((base.x - chain_start) + _chain_preview_offset, chain_length)
-
-
-func _update_side_load_phase(delta: float) -> void:
-	var target_z := _board_pin_clear_z()
-	var board_position := _sample_board.global_position
-	board_position.z = move_toward(board_position.z, target_z, centering_board_speed * delta)
-	_sample_board.global_position = board_position
-	if absf(_sample_board.global_position.z - target_z) <= CENTERING_TOLERANCE:
-		_active_centering_pin_indices = _select_board_contact_position_pins()
-		_centering_preview_phase = CenteringPreviewPhase.RAISE_PINS
-
-
-func _update_center_board_phase(delta: float) -> void:
-	var target_z := _board_center_target_z()
-	var board_position := _sample_board.global_position
-	board_position.z = move_toward(board_position.z, target_z, centering_board_speed * delta)
-	_sample_board.global_position = board_position
-	if absf(_sample_board.global_position.z - target_z) <= CENTERING_TOLERANCE:
-		_pin_retract_delay_elapsed = 0.0
-		_centering_preview_phase = CenteringPreviewPhase.PIN_RETRACT_DELAY
-
-
-func _update_feed_board_phase(delta: float) -> void:
-	var feed_step := preview_feed_speed * delta
-	_feed_preview_travel += feed_step
-	_chain_preview_offset = fposmod(_chain_preview_offset + feed_step, CHAIN_LINK_LENGTH)
-	_update_infeed_chain_preview()
-
-	var board_position := _sample_board.global_position
-	board_position.x += feed_step
-	_sample_board.global_position = board_position
-
-	var roller_step := (preview_feed_speed / maxf(FEED_ROLLER_RADIUS, 0.001)) * feed_roller_spin_speed * delta
-	for roller in _feed_rollers:
-		if is_instance_valid(roller):
-			roller.rotate_object_local(Vector3.UP, -roller_step)
-	for blade in _saw_blades:
-		if is_instance_valid(blade):
-			blade.rotate_object_local(Vector3.UP, -blade_spin_speed * delta)
-	for teeth_root in _saw_teeth_roots:
-		if is_instance_valid(teeth_root):
-			teeth_root.rotate_object_local(Vector3.FORWARD, -blade_spin_speed * delta)
-
-	if _feed_preview_travel >= _feed_preview_length():
-		_reset_preview_motion()
-
-
-func _update_parking_ramp_preview(delta: float) -> void:
-	var board_center_x := to_local(_sample_board.global_position).x
-	var board_leading_x: float = board_center_x + SAMPLE_BOARD_LENGTH * 0.5
-	var board_trailing_x: float = board_center_x - SAMPLE_BOARD_LENGTH * 0.5
-	var board_on_centering_section: bool = board_leading_x > _infeed_chain_start_x() and board_trailing_x < _machine_infeed_entry_x()
-	for station in _parking_ramp_stations:
-		var target_y: float = float(station["parked_y"]) if board_on_centering_section else float(station["retracted_y"])
-		var nodes: Array = station["nodes"]
-		for node in nodes:
-			var ramp: Node3D = node as Node3D
-			if is_instance_valid(ramp):
-				ramp.position.y = move_toward(ramp.position.y, target_y, parking_ramp_speed * delta)
-
-
-func _update_pin_actuators(delta: float, active: bool, push_board: bool) -> void:
-	var hold_position_pin_z := not push_board and (
-		_centering_preview_phase == CenteringPreviewPhase.PIN_RETRACT_DELAY
-		or _centering_preview_phase == CenteringPreviewPhase.RETRACT_PINS
-	)
-	for i in range(_position_pin_stations.size()):
-		var station: Dictionary = _position_pin_stations[i]
-		var pin: Node3D = station["pin"] as Node3D
-		var sleeve: Node3D = station["sleeve"] as Node3D
-		if not is_instance_valid(pin) and not is_instance_valid(sleeve):
-			continue
-		var target_y: float = float(station["raised_y"]) if active and _active_centering_pin_indices.has(i) else float(station["retracted_y"])
-		var sleeve_target_y: float = float(station["sleeve_raised_y"]) if active and _active_centering_pin_indices.has(i) else float(station["sleeve_retracted_y"])
-		var target_z := _position_pin_target_z(i, active, push_board)
-		if is_instance_valid(pin):
-			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
-			if not hold_position_pin_z:
-				pin.position.z = move_toward(pin.position.z, target_z, centering_board_speed * delta)
-		if is_instance_valid(sleeve):
-			sleeve.position.y = move_toward(sleeve.position.y, sleeve_target_y, position_pin_speed * delta)
-			if not hold_position_pin_z:
-				sleeve.position.z = move_toward(sleeve.position.z, target_z, centering_board_speed * delta)
-
-	for i in range(_cushion_pin_stations.size()):
-		var station: Dictionary = _cushion_pin_stations[i]
-		var body: Node3D = station["body"] as Node3D
-		if not is_instance_valid(body):
-			continue
-		var target_z := _cushion_target_z(i, active)
-		body.position.z = move_toward(body.position.z, target_z, cushion_pin_speed * delta)
-
-
-func _update_position_pins_z_home(delta: float) -> void:
-	for station in _position_pin_stations:
-		var base_z := float(station["z"])
-		var pin := station["pin"] as Node3D
-		if is_instance_valid(pin):
-			pin.position.y = float(station["retracted_y"])
-			pin.position.z = move_toward(pin.position.z, base_z, centering_board_speed * delta)
-		var sleeve := station["sleeve"] as Node3D
-		if is_instance_valid(sleeve):
-			sleeve.position.y = float(station["sleeve_retracted_y"])
-			sleeve.position.z = move_toward(sleeve.position.z, base_z, centering_board_speed * delta)
-
-
-func _update_cushion_pins_home(delta: float) -> void:
-	for station in _cushion_pin_stations:
-		var body := station["body"] as Node3D
-		if is_instance_valid(body):
-			body.position.z = move_toward(body.position.z, float(station["base_z"]), cushion_pin_speed * delta)
-
-
-func _board_pin_clear_z() -> float:
-	var pin_z := 0.0
-	var found_pin := false
-	for index in _select_board_contact_position_pins():
-		if index < 0 or index >= _position_pin_stations.size():
-			continue
-		var pin := _position_pin_stations[index]["pin"] as Node3D
-		if is_instance_valid(pin):
-			pin_z = pin.global_position.z if not found_pin else maxf(pin_z, pin.global_position.z)
-			found_pin = true
-	if not found_pin:
-		return _preview_board_home_global.z
-	return maxf(_preview_board_home_global.z, pin_z + SAMPLE_BOARD_WIDTH * 0.5 + PIN_BOARD_CLEARANCE)
-
-
-func _board_center_target_z() -> float:
-	return global_transform.origin.z
-
-
-func _position_pin_target_z(index: int, active: bool, push_board: bool) -> float:
-	var station: Dictionary = _position_pin_stations[index]
-	var base_z := float(station["z"])
-	if not active or not push_board or not _active_centering_pin_indices.has(index):
-		return base_z
-	if not is_instance_valid(_sample_board):
-		return base_z
-
-	var board_minus_edge_global_z := _sample_board.global_position.z - SAMPLE_BOARD_WIDTH * 0.5
-	var pin_node := station["pin"] as Node3D
-	var parent_node: Node3D = null
-	if is_instance_valid(pin_node):
-		parent_node = pin_node.get_parent() as Node3D
-	var board_minus_edge_local_z := board_minus_edge_global_z
-	if is_instance_valid(parent_node):
-		board_minus_edge_local_z = parent_node.to_local(Vector3(_sample_board.global_position.x, _sample_board.global_position.y, board_minus_edge_global_z)).z
-	return maxf(base_z, board_minus_edge_local_z - position_pin_radius)
-
-
-func _cushion_target_z(index: int, active: bool) -> float:
-	var station: Dictionary = _cushion_pin_stations[index]
-	var base_z := float(station["base_z"])
-	if not active or not _active_centering_pin_indices.has(index):
-		return base_z
-
-	var fully_extended_z := base_z - cushion_pin_extension
-	var body := station["body"] as Node3D
-	if not is_instance_valid(body) or not is_instance_valid(_sample_board):
-		return fully_extended_z
-
-	var board_plus_edge_global_z := _sample_board.global_position.z + SAMPLE_BOARD_WIDTH * 0.5
-	var parent_node := body.get_parent() as Node3D
-	var board_plus_edge_local_z := board_plus_edge_global_z
-	if is_instance_valid(parent_node):
-		board_plus_edge_local_z = parent_node.to_local(Vector3(_sample_board.global_position.x, _sample_board.global_position.y, board_plus_edge_global_z)).z
-
-	var pad_contact_offset := CUSHION_PAD_CONTACT_OFFSET_Z - cushion_pin_extension * 0.5
-	var contact_z := board_plus_edge_local_z - pad_contact_offset
-	return clampf(contact_z, fully_extended_z, base_z)
-
-
-func _active_pins_are_raised() -> bool:
-	for index in _active_centering_pin_indices:
-		if index < 0 or index >= _position_pin_stations.size():
-			continue
-		var station: Dictionary = _position_pin_stations[index]
-		var pin := station["pin"] as Node3D
-		if is_instance_valid(pin) and absf(pin.position.y - float(station["raised_y"])) > PIN_READY_TOLERANCE:
-			return false
-		var sleeve := station["sleeve"] as Node3D
-		if is_instance_valid(sleeve) and absf(sleeve.position.y - float(station["sleeve_raised_y"])) > PIN_READY_TOLERANCE:
-			return false
-	return not _active_centering_pin_indices.is_empty()
-
-
-func _active_cushions_are_at_target() -> bool:
-	for index in _active_centering_pin_indices:
-		if index < 0 or index >= _cushion_pin_stations.size():
-			continue
-		var station: Dictionary = _cushion_pin_stations[index]
-		var body := station["body"] as Node3D
-		if is_instance_valid(body) and absf(body.position.z - _cushion_target_z(index, true)) > PIN_READY_TOLERANCE:
-			return false
-	return not _active_centering_pin_indices.is_empty()
-
-
-func _pins_are_retracted_down() -> bool:
-	for station in _position_pin_stations:
-		var pin := station["pin"] as Node3D
-		if is_instance_valid(pin) and absf(pin.position.y - float(station["retracted_y"])) > PIN_READY_TOLERANCE:
-			return false
-		var sleeve := station["sleeve"] as Node3D
-		if is_instance_valid(sleeve) and absf(sleeve.position.y - float(station["sleeve_retracted_y"])) > PIN_READY_TOLERANCE:
-			return false
-	return true
-
-
-func _cushions_are_home() -> bool:
-	for station in _cushion_pin_stations:
-		var body := station["body"] as Node3D
-		if is_instance_valid(body) and absf(body.position.z - float(station["base_z"])) > PIN_READY_TOLERANCE:
-			return false
-	return true
-
-
-func _pins_and_cushions_are_home() -> bool:
-	for station in _position_pin_stations:
-		var pin := station["pin"] as Node3D
-		if is_instance_valid(pin) and absf(pin.position.y - float(station["retracted_y"])) > PIN_READY_TOLERANCE:
-			return false
-		if is_instance_valid(pin) and absf(pin.position.z - float(station["z"])) > PIN_READY_TOLERANCE:
-			return false
-		var sleeve := station["sleeve"] as Node3D
-		if is_instance_valid(sleeve) and absf(sleeve.position.y - float(station["sleeve_retracted_y"])) > PIN_READY_TOLERANCE:
-			return false
-		if is_instance_valid(sleeve) and absf(sleeve.position.z - float(station["z"])) > PIN_READY_TOLERANCE:
-			return false
-	return _cushions_are_home()
-
-
-func _select_board_contact_position_pins() -> Array[int]:
-	var candidates: Array[Dictionary] = []
-	var board_center_x := _board_center_x_for_pin_selection()
-	var board_start_x := board_center_x - SAMPLE_BOARD_LENGTH * 0.5
-	var board_end_x := board_center_x + SAMPLE_BOARD_LENGTH * 0.5
-	var contact_min_x := board_start_x - position_pin_radius - PIN_BOARD_X_CONTACT_MARGIN
-	var contact_max_x := board_end_x + position_pin_radius + PIN_BOARD_X_CONTACT_MARGIN
-
-	for i in range(_position_pin_stations.size()):
-		var station: Dictionary = _position_pin_stations[i]
-		var station_x := float(station["x"])
-		if station_x < contact_min_x or station_x > contact_max_x:
-			continue
-		candidates.append({
-			"index": i,
-			"x": station_x,
-			"start_distance": absf(station_x - board_start_x),
-			"end_distance": absf(station_x - board_end_x),
-		})
-
-	var selected: Array[int] = []
-	if candidates.is_empty():
-		return selected
-
-	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		return float(a["start_distance"]) < float(b["start_distance"])
-	)
-	selected.append(int(candidates[0]["index"]))
-
-	if candidates.size() > 1:
-		candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-			return float(a["end_distance"]) < float(b["end_distance"])
-		)
-		for candidate in candidates:
-			var index := int(candidate["index"])
-			if not selected.has(index):
-				selected.append(index)
-				break
-	return selected
-
-
-func _board_center_x_for_pin_selection() -> float:
-	if is_instance_valid(_sample_board):
-		return to_local(_sample_board.global_position).x
-	return to_local(_preview_board_home_global).x
-
-
-func _update_hold_down_preview(delta: float, board_center_x: float) -> void:
-	var board_leading_x := board_center_x + SAMPLE_BOARD_LENGTH * 0.5
-	var board_trailing_x := board_center_x - SAMPLE_BOARD_LENGTH * 0.5
-	for station in _hold_down_stations:
-		var station_x := float(station["x"])
-		var should_be_down := board_leading_x >= station_x - HOLD_DOWN_LEAD_IN and board_trailing_x <= station_x
-		var target_offset := 0.0 if should_be_down else hold_down_raised_offset
-		var current_offset := float(station["offset"])
-		var speed := hold_down_lower_speed if should_be_down else hold_down_raise_speed
-		current_offset = move_toward(current_offset, target_offset, speed * delta)
-		station["offset"] = current_offset
-
-		var nodes: Array = station["nodes"]
-		var bases: Array = station["bases"]
-		for i in range(nodes.size()):
-			var node := nodes[i] as Node3D
-			if is_instance_valid(node):
-				node.position = bases[i] + Vector3(0.0, current_offset, 0.0)
-				if node.name.begins_with("HoldDownRoller"):
-					node.rotate_object_local(Vector3.UP, (preview_feed_speed / maxf(HOLD_DOWN_ROLLER_RADIUS, 0.001)) * hold_down_roller_spin_speed * delta)
-
+	_ensure_preview_controller()
+	_preview_controller.reset_preview_motion()
 
 func _add_infeed_chain_link(node_name: String, local_position: Vector3, index: int) -> Node3D:
 	var link_root := Node3D.new()

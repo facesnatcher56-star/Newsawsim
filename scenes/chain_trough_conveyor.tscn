@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b7rvsxnjb6skt"]
 
-[ext_resource type="Script" uid="uid://cksu808ecggkk" path="res://scripts/chain_trough_conveyor.gd" id="1_trough"]
+[ext_resource type="Script" uid="uid://3pdrpgyr8mll" path="res://scripts/chain_trough_conveyor.gd" id="1_trough"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4fx5w"]
 size = Vector3(0.4, 0.05, 4)
@@ -26,7 +26,7 @@ direction = Vector3(0, 0, 1)
 link_spacing = 0.15
 
 [node name="CollisionBottom" type="CollisionShape3D" parent="." unique_id=32245668]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
 shape = SubResource("BoxShape3D_4fx5w")
 
 [node name="CollisionLeft" type="CollisionShape3D" parent="." unique_id=426988166]

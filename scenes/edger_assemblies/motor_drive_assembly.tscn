@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
+albedo_color = Color(0.3, 0.32, 0.34, 1)
+metallic = 0.85
+roughness = 0.34
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_uo7wq"]
+albedo_color = Color(0.08, 0.23, 0.34, 1)
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[node name="MotorDriveAssembly" type="Node3D" unique_id=1892770686]
+metadata/edger_editor_group = true
+
+[node name="MotorMount_Infeed_Front_Mid" type="CSGBox3D" parent="." unique_id=1144200428]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.7, -1.19)
+use_collision = true
+size = Vector3(0.48, 0.18, 0.18)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="SawMotor_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=944003774]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.4, 0.87, -1.19)
+use_collision = true
+radius = 0.22
+height = 0.48
+sides = 32
+material = SubResource("StandardMaterial3D_uo7wq")
+
+[node name="DrivePulley_CenterX_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1628955141]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.04, 0.87, -1.19)
+use_collision = true
+radius = 0.16
+height = 0.08
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="BeltGuard_CenterX_Front_Upper" type="CSGBox3D" parent="." unique_id=1723264449]
+transform = Transform3D(0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, 0, 0, 0, 1, -0.08, 1.04, -1.19)
+use_collision = true
+size = Vector3(0.58, 0.1, 0.28)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="MotorMount_Infeed_Back_Mid" type="CSGBox3D" parent="." unique_id=914232165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.18, 0.7, 1.19)
+use_collision = true
+size = Vector3(0.48, 0.18, 0.18)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="SawMotor_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=108442283]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, -0.4, 0.87, 1.19)
+use_collision = true
+radius = 0.22
+height = 0.48
+sides = 32
+material = SubResource("StandardMaterial3D_uo7wq")
+
+[node name="DrivePulley_CenterX_Back_Mid" type="CSGCylinder3D" parent="." unique_id=953489816]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0.04, 0.87, 1.19)
+use_collision = true
+radius = 0.16
+height = 0.08
+sides = 28
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="BeltGuard_CenterX_Back_Upper" type="CSGBox3D" parent="." unique_id=1543731918]
+transform = Transform3D(0.9838437, -0.17902958, 0, 0.17902958, 0.9838437, 0, 0, 0, 1, -0.08, 1.04, 1.19)
+use_collision = true
+size = Vector3(0.58, 0.1, 0.28)
+material = SubResource("StandardMaterial3D_f87vt")

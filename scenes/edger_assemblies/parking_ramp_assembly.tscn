@@ -1,0 +1,174 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6fh1k"]
+albedo_color = Color(0.86, 0.86, 0.88, 1)
+metallic = 1.0
+roughness = 0.12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[node name="ParkingRampAssembly" type="Node3D" unique_id=1072798940]
+metadata/edger_editor_group = true
+
+[node name="ParkingRampPivot_01_Front_Infeed_Front_Mid" type="Node3D" parent="." unique_id=1681879358]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9775, 0.711, -0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = -0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_01_Front_Infeed_Front_Mid" unique_id=701711660]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_01_Front_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=988026616]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9775, 0.636, -0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_01_Back_Infeed_Back_Mid" type="Node3D" parent="." unique_id=1016579307]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9775, 0.711, 0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = 0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_01_Back_Infeed_Back_Mid" unique_id=1068708706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_01_Back_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=408641153]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.9775, 0.636, 0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_02_Front_Infeed_Front_Mid" type="Node3D" parent="." unique_id=2096122531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6125, 0.711, -0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = -0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_02_Front_Infeed_Front_Mid" unique_id=1770748009]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_02_Front_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1328410226]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6125, 0.636, -0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_02_Back_Infeed_Back_Mid" type="Node3D" parent="." unique_id=50284094]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6125, 0.711, 0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = 0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_02_Back_Infeed_Back_Mid" unique_id=877240938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_02_Back_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=380929601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6125, 0.636, 0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_03_Front_Infeed_Front_Mid" type="Node3D" parent="." unique_id=818248200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2475, 0.711, -0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = -0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_03_Front_Infeed_Front_Mid" unique_id=1280732988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_03_Front_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1498594419]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2475, 0.636, -0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_03_Back_Infeed_Back_Mid" type="Node3D" parent="." unique_id=556442716]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2475, 0.711, 0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = 0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_03_Back_Infeed_Back_Mid" unique_id=1075887037]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_03_Back_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=615310178]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2475, 0.636, 0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_04_Front_Infeed_Front_Mid" type="Node3D" parent="." unique_id=583722827]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8825, 0.711, -0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = -0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_04_Front_Infeed_Front_Mid" unique_id=71484514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_04_Front_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1020694122]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8825, 0.636, -0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="ParkingRampPivot_04_Back_Infeed_Back_Mid" type="Node3D" parent="." unique_id=179376165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8825, 0.711, 0.268)
+metadata/retracted_angle = 0.0
+metadata/parked_angle = 0.24
+metadata/board_lift_span = 0.2
+
+[node name="ParkingRampPlate" type="CSGBox3D" parent="ParkingRampPivot_04_Back_Infeed_Back_Mid" unique_id=1711552620]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+use_collision = true
+size = Vector3(0.46, 0.024, 0.2)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="ParkingRampShaft_04_Back_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=1329945198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8825, 0.636, 0.268)
+use_collision = true
+radius = 0.018
+height = 0.09
+sides = 12
+material = SubResource("StandardMaterial3D_f87vt")

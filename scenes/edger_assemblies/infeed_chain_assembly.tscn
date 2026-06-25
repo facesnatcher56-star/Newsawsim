@@ -1,0 +1,2902 @@
+[gd_scene format=4]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
+albedo_color = Color(0.3, 0.32, 0.34, 1)
+metallic = 0.85
+roughness = 0.34
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_61ivt"]
+albedo_color = Color(0.42, 0.44, 0.44, 1)
+metallic = 0.9
+roughness = 0.22
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6fh1k"]
+albedo_color = Color(0.86, 0.86, 0.88, 1)
+metallic = 1.0
+roughness = 0.12
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_fvo1g"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_kqg06"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_74sh3"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_u5q0y"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_8j475"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_6108c"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_rwua2"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_njrpb"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ayvw5"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_hehna"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_57hw1"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7ah55"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2mn0h"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ysa2b"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5qbv6"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_1mc7o"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nphnl"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ymsca"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_b348b"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7aj33"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_32536"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_mrve4"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vxfrj"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_6jpux"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nhhxu"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_ga05k"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_r65t6"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_1n7yl"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2xqfv"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_pq2x4"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_c3mn5"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_co442"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_m72n1"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_uy021"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_emmge"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_61ksn"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_7skli"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_v8b3r"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vlsy0"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_w6n2j"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_5lth5"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_uobij"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_nf816"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_jfv4c"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_fboqn"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_tid3q"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_kghl4"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2ij22"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_gveii"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_15rii"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_wrdvl"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_2cdct"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_oqvhw"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_64qp6"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_jc28j"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_73jag"]
+_surfaces = [{
+"aabb": AABB(-0.0275, 0, -0.018375, 0.055, 0.035, 0.03675),
+"format": 34359742471,
+"index_count": 36,
+"index_data": PackedByteArray("AAABAAIAAAACAAMABAAFAAYABAAGAAcACAAJAAoACAAKAAsADAANAA4ADAAOAA8AEAARABIAEAASABMAFAAVABYAFAAWABcA"),
+"primitive": 3,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 24,
+"vertex_data": PackedByteArray("rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhvAAAAAArh5Y8rkfhPAAAAAArh5Y8rkfhPAAAAAArh5a8rkfhvAAAAAArh5a8rkfhPAAAAAArh5Y8LbIdPClcDz0rh5Y8LbIdPClcDz0rh5a8rkfhPAAAAAArh5a8LbIdPClcDz0rh5Y8w/WovC6QIDwrh5Y8w/WovC6QIDwrh5a8LbIdPClcDz0rh5a8w/WovC6QIDwrh5Y8rkfhvAAAAAArh5Y8rkfhvAAAAAArh5a8w/WovC6QIDwrh5a8/3//f/9/AID/f/9//38AgP9//3//fwCA/3//f/9/AID//////38AgP//////fwCA//////9/AID//////38AgP9///8AAP+//3///wAA/7//f///AAD/v/9///8AAP+/RSu6VCdtctJFK7pUJ21y0kUrulQnbXLSRSu6VCdtctIruis6WE3mqiu6KzpYTeaqK7orOlhN5qoruis6WE3mqjnLOUtIY4erOcs5S0hjh6s5yzlLSGOHqznLOUtIY4er")
+}]
+
+[node name="InfeedChainAssembly" type="Node3D" unique_id=93315138]
+metadata/edger_editor_group = true
+
+[node name="InfeedChainWearRail_01_Infeed_CenterZ_Mid" type="CSGBox3D" parent="." unique_id=262418925]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.01, 0.665, 0)
+use_collision = true
+size = Vector3(7.3, 0.045, 0.1225)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="InfeedChainIdler_01_Entry_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1249259372]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -7.66, 0.721, 0)
+use_collision = true
+radius = 0.065
+height = 0.1225
+sides = 18
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="InfeedChainIdler_01_SawEnd_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1164303117]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.36, 0.721, 0)
+use_collision = true
+radius = 0.065
+height = 0.1225
+sides = 18
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="InfeedChainLink_01_01" type="Node3D" parent="." unique_id=1235081662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.66, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_01" unique_id=742683514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_01" unique_id=3446820]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_01" unique_id=1768834088]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_01" unique_id=289195302]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_01" unique_id=1121385996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_fvo1g")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_01" unique_id=1449560692]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_fvo1g")
+
+[node name="InfeedChainLink_01_02" type="Node3D" parent="." unique_id=1031425701]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.529643, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_02" unique_id=545449645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_02" unique_id=1466165323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_02" unique_id=141511816]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_02" unique_id=611219888]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_02" unique_id=48934187]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_kqg06")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_02" unique_id=1575944691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_kqg06")
+
+[node name="InfeedChainLink_01_03" type="Node3D" parent="." unique_id=1578243118]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.399286, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_03" unique_id=1736044492]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_03" unique_id=1728932768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_03" unique_id=443525782]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_03" unique_id=1713270282]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_03" unique_id=741436194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_74sh3")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_03" unique_id=1840878958]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_74sh3")
+
+[node name="InfeedChainLink_01_04" type="Node3D" parent="." unique_id=1023776594]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2689285, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_04" unique_id=204154257]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_04" unique_id=889160222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_04" unique_id=1566607896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_04" unique_id=1355018528]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_04" unique_id=139930206]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_u5q0y")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_04" unique_id=35399346]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_u5q0y")
+
+[node name="InfeedChainLink_01_05" type="Node3D" parent="." unique_id=753781435]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1385713, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_05" unique_id=294900322]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_05" unique_id=1180246290]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_05" unique_id=385602530]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_05" unique_id=98319835]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_05" unique_id=1804360235]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_8j475")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_05" unique_id=2093069674]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_8j475")
+
+[node name="InfeedChainLink_01_06" type="Node3D" parent="." unique_id=772657645]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0082145, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_06" unique_id=1651168608]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_06" unique_id=1689865747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_06" unique_id=1439394591]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_06" unique_id=2142931374]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_06" unique_id=1552906862]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_6108c")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_06" unique_id=1728564386]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_6108c")
+
+[node name="InfeedChainLink_01_07" type="Node3D" parent="." unique_id=6271135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.877857, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_07" unique_id=1152532499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_07" unique_id=214476574]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_07" unique_id=2125557168]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_07" unique_id=1571501936]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_07" unique_id=767988890]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_rwua2")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_07" unique_id=1780411370]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_rwua2")
+
+[node name="InfeedChainLink_01_08" type="Node3D" parent="." unique_id=1406591732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.7475, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_08" unique_id=48176987]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_08" unique_id=1311533124]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_08" unique_id=1783465920]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_08" unique_id=1238541085]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_08" unique_id=1642495582]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_njrpb")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_08" unique_id=1441729803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_njrpb")
+
+[node name="InfeedChainLink_01_09" type="Node3D" parent="." unique_id=458667473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.6171427, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_09" unique_id=354795201]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_09" unique_id=1545452610]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_09" unique_id=351200300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_09" unique_id=393992522]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_09" unique_id=577748898]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ayvw5")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_09" unique_id=149537786]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ayvw5")
+
+[node name="InfeedChainLink_01_10" type="Node3D" parent="." unique_id=1709324230]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.486786, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_10" unique_id=586481071]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_10" unique_id=902614615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_10" unique_id=2008149040]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_10" unique_id=1329725247]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_10" unique_id=241592614]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_hehna")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_10" unique_id=640650356]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_hehna")
+
+[node name="InfeedChainLink_01_11" type="Node3D" parent="." unique_id=922560209]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.3564286, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_11" unique_id=1415877161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_11" unique_id=1780499803]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_11" unique_id=1011558752]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_11" unique_id=655558901]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_11" unique_id=667932718]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_57hw1")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_11" unique_id=1648763168]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_57hw1")
+
+[node name="InfeedChainLink_01_12" type="Node3D" parent="." unique_id=1005646856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.2260714, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_12" unique_id=1190831005]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_12" unique_id=161788276]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_12" unique_id=1398160294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_12" unique_id=1174681461]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_12" unique_id=1787329399]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_7ah55")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_12" unique_id=536770897]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_7ah55")
+
+[node name="InfeedChainLink_01_13" type="Node3D" parent="." unique_id=830564161]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.095714, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_13" unique_id=1118388828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_13" unique_id=1905832484]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_13" unique_id=2085571596]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_13" unique_id=667869147]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_13" unique_id=808638330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2mn0h")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_13" unique_id=635906415]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2mn0h")
+
+[node name="InfeedChainLink_01_14" type="Node3D" parent="." unique_id=155193615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9653573, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_14" unique_id=379342198]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_14" unique_id=1119868706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_14" unique_id=1367584815]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_14" unique_id=2018390740]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_14" unique_id=2027144404]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ysa2b")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_14" unique_id=609554279]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ysa2b")
+
+[node name="InfeedChainLink_01_15" type="Node3D" parent="." unique_id=1952644498]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.835, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_15" unique_id=1098386601]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_15" unique_id=781879960]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_15" unique_id=642222007]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_15" unique_id=1879653847]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_15" unique_id=310943585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_5qbv6")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_15" unique_id=1805969419]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_5qbv6")
+
+[node name="InfeedChainLink_01_16" type="Node3D" parent="." unique_id=1795377321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.704643, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_16" unique_id=484120555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_16" unique_id=1035372946]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_16" unique_id=1039990309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_16" unique_id=1321550271]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_16" unique_id=347411898]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_1mc7o")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_16" unique_id=1536183052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_1mc7o")
+
+[node name="InfeedChainLink_01_17" type="Node3D" parent="." unique_id=1655520562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5742855, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_17" unique_id=1017591537]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_17" unique_id=165665603]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_17" unique_id=1606200692]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_17" unique_id=1294916149]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_17" unique_id=2045540523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_nphnl")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_17" unique_id=1925397551]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_nphnl")
+
+[node name="InfeedChainLink_01_18" type="Node3D" parent="." unique_id=1660666082]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.4439287, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_18" unique_id=438623991]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_18" unique_id=3519919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_18" unique_id=30405606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_18" unique_id=1224283415]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_18" unique_id=132488867]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ymsca")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_18" unique_id=259356487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ymsca")
+
+[node name="InfeedChainLink_01_19" type="Node3D" parent="." unique_id=1643376868]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3135715, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_19" unique_id=564375398]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_19" unique_id=672856546]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_19" unique_id=868972497]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_19" unique_id=236888022]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_19" unique_id=529508872]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_b348b")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_19" unique_id=2086703902]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_b348b")
+
+[node name="InfeedChainLink_01_20" type="Node3D" parent="." unique_id=2074617281]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.183214, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_20" unique_id=811676274]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_20" unique_id=988614768]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_20" unique_id=1570718838]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_20" unique_id=293419788]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_20" unique_id=128756904]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_7aj33")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_20" unique_id=1375690514]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_7aj33")
+
+[node name="InfeedChainLink_01_21" type="Node3D" parent="." unique_id=973388099]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.052857, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_21" unique_id=1562917486]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_21" unique_id=1513253187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_21" unique_id=1668287322]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_21" unique_id=1196161870]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_21" unique_id=135269628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_32536")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_21" unique_id=1533484094]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_32536")
+
+[node name="InfeedChainLink_01_22" type="Node3D" parent="." unique_id=1905168365]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.9225, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_22" unique_id=1126208311]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_22" unique_id=2011405614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_22" unique_id=291631524]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_22" unique_id=1744316579]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_22" unique_id=1182335711]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_mrve4")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_22" unique_id=1449568352]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_mrve4")
+
+[node name="InfeedChainLink_01_23" type="Node3D" parent="." unique_id=896653349]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.792143, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_23" unique_id=1060783154]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_23" unique_id=1113068997]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_23" unique_id=501679164]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_23" unique_id=1922313824]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_23" unique_id=1269975502]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_vxfrj")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_23" unique_id=847207372]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_vxfrj")
+
+[node name="InfeedChainLink_01_24" type="Node3D" parent="." unique_id=2017387024]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6617856, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_24" unique_id=1619483056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_24" unique_id=1274001630]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_24" unique_id=676754595]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_24" unique_id=327831636]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_24" unique_id=193902193]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_6jpux")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_24" unique_id=1836784192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_6jpux")
+
+[node name="InfeedChainLink_01_25" type="Node3D" parent="." unique_id=765270008]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5314283, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_25" unique_id=1191018289]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_25" unique_id=87753836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_25" unique_id=558749210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_25" unique_id=1498740263]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_25" unique_id=773842662]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_nhhxu")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_25" unique_id=1835853261]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_nhhxu")
+
+[node name="InfeedChainLink_01_26" type="Node3D" parent="." unique_id=1692228580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4010715, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_26" unique_id=840160456]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_26" unique_id=632984579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_26" unique_id=1461555472]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_26" unique_id=2051714747]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_26" unique_id=1945511329]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ga05k")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_26" unique_id=470585454]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_ga05k")
+
+[node name="InfeedChainLink_01_27" type="Node3D" parent="." unique_id=2031764553]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2707143, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_27" unique_id=1664267241]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_27" unique_id=695832222]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_27" unique_id=203122909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_27" unique_id=1929055466]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_27" unique_id=276938100]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_r65t6")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_27" unique_id=543597122]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_r65t6")
+
+[node name="InfeedChainLink_01_28" type="Node3D" parent="." unique_id=2127120467]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.140357, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_28" unique_id=1803183176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_28" unique_id=1488208395]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_28" unique_id=986580275]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_28" unique_id=374334193]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_28" unique_id=1523423425]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_1n7yl")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_28" unique_id=284396800]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_1n7yl")
+
+[node name="InfeedChainLink_01_29" type="Node3D" parent="." unique_id=1628609177]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.01, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_29" unique_id=1510989120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_29" unique_id=1462125840]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_29" unique_id=699443763]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_29" unique_id=1936882827]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_29" unique_id=1511565045]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2xqfv")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_29" unique_id=723494279]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2xqfv")
+
+[node name="InfeedChainLink_01_30" type="Node3D" parent="." unique_id=221696249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.879643, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_30" unique_id=1747577408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_30" unique_id=1501459982]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_30" unique_id=1664136691]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_30" unique_id=1926645337]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_30" unique_id=1253353727]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_pq2x4")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_30" unique_id=1136222914]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_pq2x4")
+
+[node name="InfeedChainLink_01_31" type="Node3D" parent="." unique_id=81031852]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7492857, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_31" unique_id=1908638194]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_31" unique_id=2131258679]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_31" unique_id=747170021]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_31" unique_id=913095032]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_31" unique_id=1538807038]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_c3mn5")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_31" unique_id=1188823089]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_c3mn5")
+
+[node name="InfeedChainLink_01_32" type="Node3D" parent="." unique_id=450383513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6189287, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_32" unique_id=1243610941]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_32" unique_id=147437671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_32" unique_id=737580819]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_32" unique_id=461597306]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_32" unique_id=498992461]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_co442")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_32" unique_id=1742248360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_co442")
+
+[node name="InfeedChainLink_01_33" type="Node3D" parent="." unique_id=2002767628]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4885714, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_33" unique_id=1285986115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_33" unique_id=615645402]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_33" unique_id=765449410]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_33" unique_id=1443812737]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_33" unique_id=919713769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_m72n1")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_33" unique_id=1015019724]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_m72n1")
+
+[node name="InfeedChainLink_01_34" type="Node3D" parent="." unique_id=153457044]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.3582144, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_34" unique_id=302346929]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_34" unique_id=754728969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_34" unique_id=643436994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_34" unique_id=2129428962]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_34" unique_id=1123998279]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_uy021")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_34" unique_id=2073824086]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_uy021")
+
+[node name="InfeedChainLink_01_35" type="Node3D" parent="." unique_id=1616263492]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.227857, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_35" unique_id=1551007080]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_35" unique_id=1145734344]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_35" unique_id=1716111939]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_35" unique_id=124205667]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_35" unique_id=1285641494]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_emmge")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_35" unique_id=1470167462]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_emmge")
+
+[node name="InfeedChainLink_01_36" type="Node3D" parent="." unique_id=916620833]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0975, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_36" unique_id=705727230]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_36" unique_id=928180598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_36" unique_id=1585044539]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_36" unique_id=1837526088]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_36" unique_id=1668514371]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_61ksn")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_36" unique_id=426179063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_61ksn")
+
+[node name="InfeedChainLink_01_37" type="Node3D" parent="." unique_id=995381176]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9671428, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_37" unique_id=386981012]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_37" unique_id=1657882579]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_37" unique_id=1359374147]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_37" unique_id=1496321069]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_37" unique_id=2118157267]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_7skli")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_37" unique_id=1056754356]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_7skli")
+
+[node name="InfeedChainLink_01_38" type="Node3D" parent="." unique_id=486269919]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8367858, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_38" unique_id=1901056721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_38" unique_id=1813139769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_38" unique_id=871753361]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_38" unique_id=1352224209]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_38" unique_id=192091840]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_v8b3r")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_38" unique_id=70279727]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_v8b3r")
+
+[node name="InfeedChainLink_01_39" type="Node3D" parent="." unique_id=1712596747]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7064285, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_39" unique_id=1817595418]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_39" unique_id=843909872]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_39" unique_id=1726813330]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_39" unique_id=1786985769]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_39" unique_id=1891855374]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_vlsy0")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_39" unique_id=1448619543]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_vlsy0")
+
+[node name="InfeedChainLink_01_40" type="Node3D" parent="." unique_id=1977931965]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5760715, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_40" unique_id=1003597501]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_40" unique_id=444581962]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_40" unique_id=889959822]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_40" unique_id=2066936314]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_40" unique_id=2127505744]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_w6n2j")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_40" unique_id=666372968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_w6n2j")
+
+[node name="InfeedChainLink_01_41" type="Node3D" parent="." unique_id=2133393433]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4457142, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_41" unique_id=718942397]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_41" unique_id=937028942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_41" unique_id=1111475928]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_41" unique_id=1918298173]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_41" unique_id=864784562]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_5lth5")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_41" unique_id=166522237]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_5lth5")
+
+[node name="InfeedChainLink_01_42" type="Node3D" parent="." unique_id=1215727531]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.3153572, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_42" unique_id=1859524058]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_42" unique_id=500756999]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_42" unique_id=1831611462]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_42" unique_id=941281877]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_42" unique_id=1969179675]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_uobij")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_42" unique_id=307525848]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_uobij")
+
+[node name="InfeedChainLink_01_43" type="Node3D" parent="." unique_id=2022244916]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.185, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_43" unique_id=290856644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_43" unique_id=1626752834]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_43" unique_id=295734075]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_43" unique_id=1703833992]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_43" unique_id=1854627189]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_nf816")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_43" unique_id=2032113730]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_nf816")
+
+[node name="InfeedChainLink_01_44" type="Node3D" parent="." unique_id=655570517]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.054643, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_44" unique_id=376585411]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_44" unique_id=333892408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_44" unique_id=1572077749]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_44" unique_id=1394920853]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_44" unique_id=75341370]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_jfv4c")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_44" unique_id=1380164788]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_jfv4c")
+
+[node name="InfeedChainLink_01_45" type="Node3D" parent="." unique_id=1129236069]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9242858, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_45" unique_id=25700249]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_45" unique_id=374091924]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_45" unique_id=480290937]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_45" unique_id=1923933834]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_45" unique_id=674655470]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_fboqn")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_45" unique_id=1779933610]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_fboqn")
+
+[node name="InfeedChainLink_01_46" type="Node3D" parent="." unique_id=1915614513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7939286, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_46" unique_id=947757026]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_46" unique_id=1732219337]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_46" unique_id=47200219]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_46" unique_id=1208965314]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_46" unique_id=1391960053]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_tid3q")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_46" unique_id=1593705120]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_tid3q")
+
+[node name="InfeedChainLink_01_47" type="Node3D" parent="." unique_id=1757494627]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6635715, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_47" unique_id=1814797313]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_47" unique_id=1266788063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_47" unique_id=1655530701]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_47" unique_id=1940816068]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_47" unique_id=1933386200]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_kghl4")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_47" unique_id=1647372573]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_kghl4")
+
+[node name="InfeedChainLink_01_48" type="Node3D" parent="." unique_id=634561791]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5332143, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_48" unique_id=1419790933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_48" unique_id=1643016955]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_48" unique_id=1314956263]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_48" unique_id=1015973170]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_48" unique_id=1479566998]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2ij22")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_48" unique_id=1203314360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2ij22")
+
+[node name="InfeedChainLink_01_49" type="Node3D" parent="." unique_id=479104377]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4028572, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_49" unique_id=782079239]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_49" unique_id=1877587203]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_49" unique_id=622500537]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_49" unique_id=1201658147]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_49" unique_id=851827029]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_gveii")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_49" unique_id=1251757121]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_gveii")
+
+[node name="InfeedChainLink_01_50" type="Node3D" parent="." unique_id=907457157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2725, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_50" unique_id=946225555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_50" unique_id=1931526789]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_50" unique_id=1989248169]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_50" unique_id=282867940]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_50" unique_id=1233911553]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_15rii")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_50" unique_id=417586582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_15rii")
+
+[node name="InfeedChainLink_01_51" type="Node3D" parent="." unique_id=1013217477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1421429, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_51" unique_id=1182444653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_51" unique_id=1444191764]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_51" unique_id=1331771927]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_51" unique_id=1595084612]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_51" unique_id=500058299]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_wrdvl")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_51" unique_id=1529847732]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_wrdvl")
+
+[node name="InfeedChainLink_01_52" type="Node3D" parent="." unique_id=606988663]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0117857, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_52" unique_id=267813322]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_52" unique_id=1685176527]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_52" unique_id=1990644441]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_52" unique_id=1879762530]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_52" unique_id=1805885542]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2cdct")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_52" unique_id=408909938]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_2cdct")
+
+[node name="InfeedChainLink_01_53" type="Node3D" parent="." unique_id=146089379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8814286, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_53" unique_id=1595913]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_53" unique_id=1955573876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_53" unique_id=948903862]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_53" unique_id=342240943]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_53" unique_id=1119445376]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_oqvhw")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_53" unique_id=1724571481]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_oqvhw")
+
+[node name="InfeedChainLink_01_54" type="Node3D" parent="." unique_id=2108378121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75107145, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_54" unique_id=60893039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_54" unique_id=1364636794]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_54" unique_id=2031112761]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_54" unique_id=544090137]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_54" unique_id=725384428]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_64qp6")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_54" unique_id=334223053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_64qp6")
+
+[node name="InfeedChainLink_01_55" type="Node3D" parent="." unique_id=1674351525]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6207143, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_55" unique_id=282864810]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_55" unique_id=1402474843]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_55" unique_id=108275054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_55" unique_id=1829272819]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_55" unique_id=1437554700]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_jc28j")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_55" unique_id=658995913]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_jc28j")
+
+[node name="InfeedChainLink_01_56" type="Node3D" parent="." unique_id=1186651963]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.49035713, 0.721, 0)
+
+[node name="OuterPlate_L" type="CSGBox3D" parent="InfeedChainLink_01_56" unique_id=870446856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="OuterPlate_R" type="CSGBox3D" parent="InfeedChainLink_01_56" unique_id=891520599]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.034125)
+use_collision = true
+size = Vector3(0.0936, 0.028, 0.01925)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="CenterPad" type="CSGBox3D" parent="InfeedChainLink_01_56" unique_id=930659094]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00504, 0)
+use_collision = true
+size = Vector3(0.050544, 0.0154, 0.03675)
+material = SubResource("StandardMaterial3D_61ivt")
+
+[node name="CrossPin" type="CSGCylinder3D" parent="InfeedChainLink_01_56" unique_id=1584957477]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, -0.0014, 0)
+use_collision = true
+radius = 0.011
+height = 0.1075
+sides = 10
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_56" unique_id=1844828593]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_73jag")
+
+[node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_56" unique_id=50346970]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+material_override = SubResource("StandardMaterial3D_61ivt")
+mesh = SubResource("ArrayMesh_73jag")

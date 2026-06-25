@@ -1,0 +1,520 @@
+[gd_scene format=3]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
+albedo_color = Color(0.3, 0.32, 0.34, 1)
+metallic = 0.85
+roughness = 0.34
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hpx5k"]
+albedo_color = Color(0.95, 0.55, 0.06, 1)
+metallic = 0.55
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6fh1k"]
+albedo_color = Color(0.86, 0.86, 0.88, 1)
+metallic = 1.0
+roughness = 0.12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f87vt"]
+albedo_color = Color(0.13, 0.14, 0.15, 1)
+metallic = 0.75
+roughness = 0.42
+
+[node name="UpperHoldDownRollerAssembly" type="Node3D" unique_id=373163168]
+metadata/edger_editor_group = true
+
+[node name="HoldDownCrosshead_01_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1794882505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.206, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.2)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownTopPressureBox_01_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=344002547]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.466, 0)
+use_collision = true
+size = Vector3(0.32, 0.22, 0.92)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownRoller_01_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1104064119]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.75, 1.106, 0)
+use_collision = true
+radius = 0.095
+height = 0.96
+sides = 28
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="HoldDownAxle_01_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=815230754]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -1.75, 1.106, 0)
+use_collision = true
+radius = 0.026
+height = 1.12
+sides = 20
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="YokeSidePlate_01_L_Infeed_Front_Mid" type="CSGBox3D" parent="." unique_id=140838399]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.136, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_01_L_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1946613588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.306, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_01_L_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=1712826232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84, 1.206, -0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_01_L_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=688644849]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.346, -0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_01_L_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=992546876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.3560001, -0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_01_L_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1308513902]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.196, -0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_01_L_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1213820726]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.506, -0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="YokeSidePlate_01_R_Infeed_Back_Mid" type="CSGBox3D" parent="." unique_id=1395964304]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.136, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_01_R_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=514942677]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.306, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_01_R_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1403350301]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.84, 1.206, 0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_01_R_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=779467294]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.346, 0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_01_R_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1584289967]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.3560001, 0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_01_R_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1137045227]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.196, 0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_01_R_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1955012759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.66, 1.506, 0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="HoldDownCrosshead_02_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1004239716]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.206, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.2)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownTopPressureBox_02_Infeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=703607891]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.466, 0)
+use_collision = true
+size = Vector3(0.32, 0.22, 0.92)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownRoller_02_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1980248182]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.95, 1.106, 0)
+use_collision = true
+radius = 0.095
+height = 0.96
+sides = 28
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="HoldDownAxle_02_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1944294488]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.95, 1.106, 0)
+use_collision = true
+radius = 0.026
+height = 1.12
+sides = 20
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="YokeSidePlate_02_L_Infeed_Front_Mid" type="CSGBox3D" parent="." unique_id=1484228036]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.136, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_02_L_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1238694329]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.306, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_02_L_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=260854436]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04, 1.206, -0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_02_L_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=154671066]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.346, -0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_02_L_Infeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=920605033]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.3560001, -0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_02_L_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=893210140]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.196, -0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_02_L_Infeed_Front_Upper" type="CSGBox3D" parent="." unique_id=140355272]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.506, -0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="YokeSidePlate_02_R_Infeed_Back_Mid" type="CSGBox3D" parent="." unique_id=91973650]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.136, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_02_R_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=249910082]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.95, 1.306, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_02_R_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=746177649]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04, 1.206, 0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_02_R_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=747650447]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.346, 0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_02_R_Infeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1655976936]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.3560001, 0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_02_R_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=379130119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.196, 0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_02_R_Infeed_Back_Upper" type="CSGBox3D" parent="." unique_id=979266011]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.86, 1.506, 0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="HoldDownCrosshead_03_Outfeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1266035037]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.206, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.2)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownTopPressureBox_03_Outfeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=794223855]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.466, 0)
+use_collision = true
+size = Vector3(0.32, 0.22, 0.92)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownRoller_03_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1606315102]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.45, 1.106, 0)
+use_collision = true
+radius = 0.095
+height = 0.96
+sides = 28
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="HoldDownAxle_03_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=534408489]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0.45, 1.106, 0)
+use_collision = true
+radius = 0.026
+height = 1.12
+sides = 20
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="YokeSidePlate_03_L_Outfeed_Front_Mid" type="CSGBox3D" parent="." unique_id=701138121]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.136, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_03_L_Outfeed_Front_Upper" type="CSGBox3D" parent="." unique_id=381693801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.306, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_03_L_Outfeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=1852366306]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36, 1.206, -0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_03_L_Outfeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=705464248]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.346, -0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_03_L_Outfeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=1512453185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.3560001, -0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_03_L_Outfeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1909476234]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.196, -0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_03_L_Outfeed_Front_Upper" type="CSGBox3D" parent="." unique_id=2100487351]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.506, -0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="YokeSidePlate_03_R_Outfeed_Back_Mid" type="CSGBox3D" parent="." unique_id=501512754]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.136, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_03_R_Outfeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1727190496]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.45, 1.306, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_03_R_Outfeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1781648587]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36, 1.206, 0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_03_R_Outfeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=940519532]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.346, 0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_03_R_Outfeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=980716683]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.3560001, 0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_03_R_Outfeed_Back_Upper" type="CSGBox3D" parent="." unique_id=345911605]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.196, 0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_03_R_Outfeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1841067065]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 1.506, 0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="HoldDownCrosshead_04_Outfeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=1903427711]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.206, 0)
+use_collision = true
+size = Vector3(0.12, 0.12, 1.2)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownTopPressureBox_04_Outfeed_CenterZ_Upper" type="CSGBox3D" parent="." unique_id=759953672]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.466, 0)
+use_collision = true
+size = Vector3(0.32, 0.22, 0.92)
+material = SubResource("StandardMaterial3D_bnj1n")
+
+[node name="HoldDownRoller_04_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1875111687]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.25, 1.106, 0)
+use_collision = true
+radius = 0.095
+height = 0.96
+sides = 28
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="HoldDownAxle_04_Outfeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1641710335]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 1.25, 1.106, 0)
+use_collision = true
+radius = 0.026
+height = 1.12
+sides = 20
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="YokeSidePlate_04_L_Outfeed_Front_Mid" type="CSGBox3D" parent="." unique_id=138349058]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.136, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_04_L_Outfeed_Front_Upper" type="CSGBox3D" parent="." unique_id=1884294900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.306, -0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_04_L_Outfeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=1040825185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.16, 1.206, -0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_04_L_Outfeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=54242908]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.346, -0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_04_L_Outfeed_Front_Upper" type="CSGCylinder3D" parent="." unique_id=116935740]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.3560001, -0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_04_L_Outfeed_Front_Upper" type="CSGBox3D" parent="." unique_id=373973013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.196, -0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_04_L_Outfeed_Front_Upper" type="CSGBox3D" parent="." unique_id=102428777]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.506, -0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="YokeSidePlate_04_R_Outfeed_Back_Mid" type="CSGBox3D" parent="." unique_id=974708957]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.136, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.3, 0.055)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="YokeUpperLug_04_R_Outfeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1951716839]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.25, 1.306, 0.46)
+use_collision = true
+size = Vector3(0.16, 0.08, 0.16)
+material = SubResource("StandardMaterial3D_hpx5k")
+
+[node name="GuidePost_04_R_Outfeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=739216039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.16, 1.206, 0.46)
+use_collision = true
+radius = 0.026
+height = 0.54
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="PressureCylinderBarrel_04_R_Outfeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1466317388]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.346, 0.46)
+use_collision = true
+radius = 0.055
+height = 0.28
+sides = 24
+material = SubResource("StandardMaterial3D_f87vt")
+
+[node name="PressureCylinderRod_04_R_Outfeed_Back_Upper" type="CSGCylinder3D" parent="." unique_id=1414178896]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.3560001, 0.46)
+use_collision = true
+radius = 0.023
+height = 0.3
+sides = 18
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="RodClevis_04_R_Outfeed_Back_Upper" type="CSGBox3D" parent="." unique_id=60450236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.196, 0.46)
+use_collision = true
+size = Vector3(0.11, 0.06, 0.07)
+material = SubResource("StandardMaterial3D_6fh1k")
+
+[node name="TopClevisBracket_04_R_Outfeed_Back_Upper" type="CSGBox3D" parent="." unique_id=1686055081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34, 1.506, 0.46)
+use_collision = true
+size = Vector3(0.13, 0.08, 0.09)
+material = SubResource("StandardMaterial3D_f87vt")
