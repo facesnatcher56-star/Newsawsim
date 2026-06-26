@@ -54,7 +54,3 @@ metadata/edger_editor_group = true
 
 [node name="WasteHandlingAssembly" type="Node3D" parent="." unique_id=647485372]
 metadata/edger_editor_group = true
-
-[node name="ReferenceBoardAssembly" type="Node3D" parent="." unique_id=1839182468]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37132502, 0, -0.6692028)
-metadata/edger_editor_group = true

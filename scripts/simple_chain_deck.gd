@@ -9,7 +9,7 @@ extends Node3D
 @export var deck_width:        float = 2.4
 @export var chain_speed:       float = 0.55
 @export var chain_accel_speed: float = 2.0
-@export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
+@export var track_x_positions: Array[float] = [-1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25, 1.75]
 @export var running:           bool  = false
 @export var reverse_direction: bool  = false
 @export var floor_y:           float = -1.0

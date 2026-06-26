@@ -16,6 +16,7 @@ script = ExtResource("1_simple")
 load_zone = NodePath("DeckRoot/LoadZone")
 top_zone = NodePath("DeckRoot/TopZone")
 deck_area = NodePath("DeckRoot/DeckArea")
+track_x_positions = Array[float]([-1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25, 1.75])
 
 [node name="DeckRoot" type="Node3D" parent="." unique_id=1267379701]
 

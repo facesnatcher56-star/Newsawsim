@@ -539,7 +539,8 @@ func _rebuild() -> void:
 		_build_saw_box()
 		_build_motors_and_drives()
 		_build_waste_handling()
-		_build_sample_board()
+		if _should_include_reference_board():
+			_build_sample_board()
 	_adopt_generated_parts()
 	_apply_preview_motion(0.0)
 
@@ -558,8 +559,9 @@ func _instantiate_saved_assembly_scenes() -> void:
 		saw_blade_and_guard_assembly_scene,
 		motor_drive_assembly_scene,
 		waste_handling_assembly_scene,
-		reference_board_assembly_scene,
 	]
+	if _should_include_reference_board():
+		assembly_scenes.append(reference_board_assembly_scene)
 
 	for assembly_scene in assembly_scenes:
 		if assembly_scene == null:
@@ -569,6 +571,10 @@ func _instantiate_saved_assembly_scenes() -> void:
 			instance.transform = _preserved_editor_group_transforms[instance.name]
 		add_child(instance)
 		_adopt_new_node(instance)
+
+
+func _should_include_reference_board() -> bool:
+	return Engine.is_editor_hint()
 
 
 func _collect_generated_parts() -> void:
