@@ -23,12 +23,12 @@ enum State {
 @export var enabled: bool = true
 
 @export var main_boom_swing_angle: float = -0.244
-@export var main_boom_pickup_angle: float = -1.117
-@export var main_boom_drop_angle: float = -0.716
+@export var main_boom_pickup_angle: float = -0.890
+@export var main_boom_drop_angle: float = -0.820
 
 @export var outer_boom_swing_angle: float = -1.134
-@export var outer_boom_pickup_angle: float = -1.501
-@export var outer_boom_drop_angle: float = -1.030
+@export var outer_boom_pickup_angle: float = -1.890
+@export var outer_boom_drop_angle: float = -0.840
 
 ## How far above the deck surface to release the log, letting it drop naturally.
 ## Prevents the grapple from pushing the log through the deck.
@@ -391,6 +391,8 @@ func _start_grab_log() -> void:
 		# Record starting relative transform
 		grab_start_relative_transform = grapple_area.global_transform.affine_inverse() * clamped_log.global_transform
 		grab_target_relative_transform = grab_start_relative_transform
+		grab_target_relative_transform.origin.x = 0.0
+		grab_target_relative_transform.origin.z = 0.0
 		
 		log_relative_transform = grab_start_relative_transform
 	else:

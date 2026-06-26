@@ -49,7 +49,21 @@ shape = SubResource("CapsuleShape3D_log")
 [node name="WoodCore" type="CSGCylinder3D" parent="." unique_id=2036553167]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.245
-height = 4.8768
+height = 4.82
+sides = 32
+material = SubResource("Material_inner_wood")
+
+[node name="WoodEndLeft" type="CSGCylinder3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -2.47, 0, 0)
+radius = 0.268
+height = 0.018
+sides = 32
+material = SubResource("Material_inner_wood")
+
+[node name="WoodEndRight" type="CSGCylinder3D" parent="."]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 2.47, 0, 0)
+radius = 0.268
+height = 0.018
 sides = 32
 material = SubResource("Material_inner_wood")
 

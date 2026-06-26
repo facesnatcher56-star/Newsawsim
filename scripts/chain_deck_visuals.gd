@@ -5,8 +5,17 @@ extends Node3D
 @export var link_spacing: float = 0.32
 @export var chain_speed: float = 0.55
 
-const TRACK_X: Array[float] = [-0.9, -0.3, 0.3, 0.9]
-const TRACK_NAMES: Array[String] = ["LeftOuterLinks", "LeftInnerLinks", "RightInnerLinks", "RightOuterLinks"]
+const TRACK_X: Array[float] = [-3.3, -2.7, -2.1, -1.5, -0.9, -0.3, 0.3, 0.9]
+const TRACK_NAMES: Array[String] = [
+	"Track0Links",
+	"Track1Links",
+	"Track2Links",
+	"Track3Links",
+	"Track4Links",
+	"Track5Links",
+	"Track6Links",
+	"Track7Links",
+]
 const SPROCKET_R: float = 0.20
 const SPROCKET_Y: float = 0.95
 
@@ -96,14 +105,18 @@ func _build_link(container: Node3D, idx: int, track_x: float, loop_length: float
 
 func _build_shafts_and_sprockets(visuals: Node3D) -> void:
 	var half_z := deck_length * 0.5
+	var min_x: float = TRACK_X.min()
+	var max_x: float = TRACK_X.max()
+	var shaft_center_x := (min_x + max_x) * 0.5
+	var shaft_width := (max_x - min_x) + 0.2
 	for end_name: String in ["Infeed", "Discharge"]:
 		var z := half_z if end_name == "Infeed" else -half_z
 		var shaft := CSGCylinder3D.new()
 		shaft.name = "%sShaft" % end_name
 		shaft.radius = 0.035
-		shaft.height = 2.0
+		shaft.height = shaft_width
 		shaft.rotation_degrees = Vector3(0.0, 0.0, 90.0)
-		shaft.position = Vector3(0.0, SPROCKET_Y, z)
+		shaft.position = Vector3(shaft_center_x, SPROCKET_Y, z)
 		shaft.material = _mat_hardware
 		visuals.add_child(shaft)
 		_rotating_parts.append(shaft)
@@ -137,6 +150,7 @@ func _build_bolts(visuals: Node3D) -> void:
 	bm.height = 0.04
 	bm.radial_segments = 8
 	var foot_positions: Array[Vector3] = [
+		Vector3(-3.25, 0.0, -1.72), Vector3(-3.25, 0.0, 1.72),
 		Vector3(-1.25, 0.0, -1.72), Vector3(-1.25, 0.0, 1.72),
 		Vector3( 1.25, 0.0, -1.72), Vector3( 1.25, 0.0, 1.72),
 	]
