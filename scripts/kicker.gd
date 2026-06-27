@@ -9,6 +9,7 @@ extends Area3D
 ## When true, the KickerShaft sibling physically sweeps the log via
 ## AnimatableBody3D — no velocity injection. The arm does the pushing.
 @export var use_physical_arm: bool = false
+@export var debug_trace: bool = false
 
 var original_speed: float = -1.0
 var is_kicking: bool = false
@@ -83,6 +84,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _start_log_trace(bodies: Array[RigidBody3D]) -> void:
+	if not debug_trace:
+		return
 	for log_body in bodies:
 		if not is_instance_valid(log_body):
 			continue
@@ -93,6 +96,8 @@ func _start_log_trace(bodies: Array[RigidBody3D]) -> void:
 
 
 func _trace_log(log_body: RigidBody3D, tick: int) -> void:
+	if not debug_trace:
+		return
 	if not is_instance_valid(log_body) or tick > 200:
 		return
 	await get_tree().create_timer(0.05).timeout

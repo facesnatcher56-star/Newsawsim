@@ -41,6 +41,7 @@ enum State {
 @export var log_seat_x: float = 0.285
 ## Y offset from KneesAssembly origin to log center (raises log off platform). Tune this until log sits on platform with dogs gripping from above.
 @export var log_seat_y: float = 0.18
+@export var bandsaw_path: NodePath = "../../Bandsaw"
 
 # Kicking parameters
 @export var kick_speed_x: float = 2.5 # sideway push (local +X, global -Z)
@@ -76,6 +77,9 @@ var current_progress: float = 0.0 # Normalized position [0.0, 1.0]
 
 const SETWORKS_CYLINDER_FRONT_X := -0.48
 const SETWORKS_ROD_ATTACH_X := 0.02
+const SAW_POS := Vector3(19.0, -0.083, 6.13)
+const SAW_APPROACH_MARGIN := 0.12
+const SAW_EXIT_CLEARANCE := 0.08
 
 var clamped_log: RigidBody3D = null
 var log_relative_transform: Transform3D
@@ -92,9 +96,11 @@ var flip_target_roll: float = 0.0
 var wheel_angle: float = 0.0
 var last_carriage_position: Vector3
 var active_cut_knees_x: float = 0.0
+var bandsaw_node: Node3D = null
 
 func _ready() -> void:
 	add_to_group("headrig_carriage")
+	bandsaw_node = get_node_or_null(bandsaw_path) as Node3D
 	start_pos = position
 	target_pos = start_pos + travel_axis.normalized() * travel_distance
 	last_carriage_position = global_position
@@ -181,9 +187,10 @@ func _physics_process(delta: float) -> void:
 					active_cut_knees_x,
 					setworks_slide_speed * delta
 				)
-			# Automated speed control: slow down to 35% of normal speed as we pass the bandsaw (global X 17.5 to 20.5)
+			_update_clamped_log_transform()
+
 			var current_speed = speed
-			if global_position.x > 17.5 and global_position.x < 20.5:
+			if _is_log_in_saw_cut_window():
 				current_speed = 0.35 * speed
 			
 			current_progress += (current_speed / travel_distance) * delta
@@ -202,15 +209,14 @@ func _physics_process(delta: float) -> void:
 			else:
 				position = start_pos.lerp(target_pos, current_progress)
 			
-			# Trigger cut board when log tail end clears the bandsaw blade (global X > 20.15)
-			if global_position.x > 20.15 and not has_cut_this_pass:
+			_update_clamped_log_transform()
+
+			# Trigger cut board when the log tail clears the bandsaw blade.
+			if _has_log_tail_cleared_saw() and not has_cut_this_pass:
 				if clamped_log != null and clamped_log.has_method("cut_board"):
-					clamped_log.cut_board(Vector3(19, -0.083, 6.13))
+					clamped_log.cut_board(_get_saw_position(), _get_travel_direction())
 					cuts_on_current_face += 1
 				has_cut_this_pass = true
-			
-			# Update clamped log relative transform (keeps it flush with knees as it shrinks)
-			_update_clamped_log_transform()
 				
 		State.RETRACTING_LOG:
 			# Pull the setworks crosshead and dogged log fully behind the saw line.
@@ -404,6 +410,54 @@ func _get_cut_depth_per_pass() -> float:
 	if clamped_log != null and is_instance_valid(clamped_log) and clamped_log.has_method("get_cut_depth_per_pass"):
 		return clamped_log.get_cut_depth_per_pass()
 	return 0.05
+
+func _get_log_product_length() -> float:
+	if clamped_log != null and is_instance_valid(clamped_log) and clamped_log.has_method("get_log_product_length"):
+		return clamped_log.get_log_product_length()
+	return 4.958
+
+func _get_saw_position() -> Vector3:
+	if bandsaw_node != null and is_instance_valid(bandsaw_node):
+		return bandsaw_node.global_position
+	return SAW_POS
+
+func _get_travel_direction() -> Vector3:
+	var local_direction := travel_axis.normalized()
+	var parent := get_parent() as Node3D
+	if parent != null:
+		return (parent.global_transform.basis * local_direction).normalized()
+	return (global_transform.basis * local_direction).normalized()
+
+func _get_log_center_along_travel() -> float:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return global_position.dot(_get_travel_direction())
+	return clamped_log.global_position.dot(_get_travel_direction())
+
+func _get_log_half_length_along_travel() -> float:
+	return _get_log_product_length() * 0.5
+
+func _get_saw_position_along_travel() -> float:
+	return _get_saw_position().dot(_get_travel_direction())
+
+func _get_log_leading_end_along_travel() -> float:
+	return _get_log_center_along_travel() + _get_log_half_length_along_travel()
+
+func _get_log_trailing_end_along_travel() -> float:
+	return _get_log_center_along_travel() - _get_log_half_length_along_travel()
+
+func _is_log_in_saw_cut_window() -> bool:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return false
+	var saw_position := _get_saw_position_along_travel()
+	return (
+		_get_log_leading_end_along_travel() >= saw_position - SAW_APPROACH_MARGIN
+		and _get_log_trailing_end_along_travel() <= saw_position + SAW_EXIT_CLEARANCE
+	)
+
+func _has_log_tail_cleared_saw() -> bool:
+	if clamped_log == null or not is_instance_valid(clamped_log):
+		return false
+	return _get_log_trailing_end_along_travel() > _get_saw_position_along_travel() + SAW_EXIT_CLEARANCE
 
 func _get_log_seat_extent() -> float:
 	if clamped_log == null or not is_instance_valid(clamped_log):

@@ -8,9 +8,9 @@ extends Node3D
 ## Compatible with the standard kicker/transfer station API.
 
 @export var deck_length:       float = 5.0
-@export var deck_width:        float = 2.4
+@export var deck_width:        float = 4.2
 @export var chain_speed:       float = 0.55
-@export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
+@export var track_x_positions: Array[float] = [-1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8]
 @export var running:           bool  = false
 @export var reverse_direction: bool  = false
 @export var stoppers_extended: bool  = true

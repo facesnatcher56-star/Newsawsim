@@ -1,20 +1,17 @@
-[gd_scene format=3 uid="uid://log_feed_station"]
+[gd_scene format=3 uid="uid://cv2doupq74rvb"]
 
 [ext_resource type="PackedScene" path="res://scenes/chain_log_deck.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/knuckle_boom_loader.tscn" id="3"]
-[ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://scripts/kicker.gd" id="4"]
-[ext_resource type="PackedScene" path="res://scenes/waste_conveyor_kicker.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://d1qddmxhkrbxi" path="res://scenes/waste_conveyor_kicker.tscn" id="5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape_kicker"]
 size = Vector3(1.0029297, 1, 0.973114)
-
 
 [sub_resource type="StandardMaterial3D" id="Material_Ground"]
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
 
-[node name="LogFeedStation" type="Node3D"]
+[node name="LogFeedStation" type="Node3D" unique_id=1736691262]
 
 [node name="DebarkDeckTest" parent="." unique_id=1006123449 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 0.22059476, 5.068916)
@@ -22,22 +19,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 0.22059476, 5.06891
 [node name="RetractableStops" parent="DebarkDeckTest" index="4" unique_id=1420736936]
 rotation_speed = 45.0
 deck_start_delay = 5.0
-dump_target_path = NodePath("")
 downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
 
 [node name="CollisionShape3D" parent="DebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(1006123449, 1464854583) index="0" unique_id=624450580]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.60839957, 0, 0, -0.018068075)
 
 [node name="OppositeDebarkDeckTest" parent="." unique_id=258696570 instance=ExtResource("1")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0.277256, 0.22059476, -0.832212)
-
-[node name="CollisionShape3D" parent="OppositeDebarkDeckTest" index="0" unique_id=290170045]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1, 1.07, 0)
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.922744, 0.22059476, -0.832212)
 
 [node name="RetractableStops" parent="OppositeDebarkDeckTest" index="4" unique_id=1420736936]
 rotation_speed = 45.0
 deck_start_delay = 5.0
-dump_target_path = NodePath("")
 downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
 
 [node name="CollisionShape3D" parent="OppositeDebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(258696570, 1464854583) index="0" unique_id=624450580]
@@ -48,19 +40,15 @@ transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 13.254882, 0.45677352, 2.118
 speed = 0.8
 direction = Vector3(1, 0, 0)
 
-[node name="KickerZone" parent="WasteConveyor3" index="4"]
+[node name="KickerZone" parent="WasteConveyor3" index="4" unique_id=182965496]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 0.5, -1.3315182)
-kick_direction = Vector3(1, 0, 0)
-incline_path = NodePath("")
 
-[node name="CollisionShape3D" parent="WasteConveyor3/KickerZone"]
+[node name="CollisionShape3D" parent="WasteConveyor3/KickerZone" index="0" unique_id=1639818572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00360322, 0, -0.93274593)
 shape = SubResource("BoxShape_kicker")
 
-
-
 [node name="LogBunk" type="Node3D" parent="." unique_id=471500047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, -0.9, -2.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, -0.9, -2)
 
 [node name="Base" type="CSGBox3D" parent="LogBunk" unique_id=1011912949]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -87,7 +75,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
 size = Vector3(0.1, 1, 0.1)
 
 [node name="LogBunkOpposite" type="Node3D" parent="." unique_id=1006123451]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, -0.9, 6.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, -0.9, 6)
 
 [node name="Base" type="CSGBox3D" parent="LogBunkOpposite" unique_id=2011912949]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
@@ -115,7 +103,7 @@ size = Vector3(0.1, 1, 0.1)
 material = SubResource("Material_Ground")
 
 [node name="KnuckleBoomLoader" parent="." unique_id=100000048 instance=ExtResource("3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, -2.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, -2)
 enabled = false
 
 [node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" index="0"]
@@ -125,7 +113,7 @@ emitting = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05609107, 0, 0)
 
 [node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, 6.0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, 6)
 
 [node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
 emitting = false

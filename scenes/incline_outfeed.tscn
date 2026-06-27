@@ -10,8 +10,10 @@
 [node name="InclineLogDeck" parent="." unique_id=428629830 node_paths=PackedStringArray("carriage", "load_zone", "top_zone", "deck_area") instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 0.9724839, -0.23297013, 0, 0.23297013, 0.9724839, 14.081036, 0.13039482, 4.092802)
 incline_length = 3.0
+incline_width = 5.2
 lugs_per_track = 8
 lug_spacing = 0.75
+track_x_positions = Array[float]([-2.4, -1.8, -1.2, -0.6, 0, 0.6, 1.2, 1.8, 2.4])
 carriage = NodePath("")
 max_logs_on_deck = 4
 load_zone = NodePath("SlopeRoot/LoadZone")

@@ -17,6 +17,12 @@ var cuts_on_current_face: int = 0
 var current_cut_face: int = 0
 
 const CUT_DEPTH_PER_PASS: float = 0.05
+const LOG_CORE_LENGTH: float = 4.922
+const LOG_PRODUCT_LENGTH: float = 4.958
+const CUT_BOX_LENGTH_CLEARANCE: float = 0.24
+const CUT_PRODUCT_FORWARD_SPEED: float = 0.35
+const CUT_PRODUCT_DROP_SPEED: float = -0.22
+const CUT_PRODUCT_BELT_KICK_SPEED: float = -1.35
 
 # Positions of processing stations (approximate world coordinates)
 const DEBARKER_RING_POS: Vector3 = Vector3(5.165, 0.714, 2.072)
@@ -190,7 +196,13 @@ func _get_log_core_length() -> float:
 	var wood_core := get_node_or_null("WoodCore") as CSGCylinder3D
 	if wood_core:
 		return wood_core.height
-	return 4.8768
+	return LOG_CORE_LENGTH
+
+func get_log_core_length() -> float:
+	return _get_log_core_length()
+
+func get_log_product_length() -> float:
+	return LOG_PRODUCT_LENGTH
 
 func _get_bark_section_length() -> float:
 	for section in bark_sections:
@@ -266,11 +278,11 @@ func _get_or_create_cut_box(wood_core: CSGShape3D, box_name: String) -> CSGBox3D
 	if box == null:
 		box = CSGBox3D.new()
 		box.name = box_name
-		box.size = Vector3(1.0, 3.0, 1.0)
 		box.operation = CSGShape3D.OPERATION_SUBTRACTION
 		box.material = wood_core.material
 		box.position = Vector3(0.0, 0.0, 10.0)
 		wood_core.add_child(box)
+	box.size = Vector3(1.0, _get_log_core_length() + CUT_BOX_LENGTH_CLEARANCE, 1.0)
 	return box
 
 func _update_csg_cut_position() -> void:
@@ -288,7 +300,7 @@ func _update_csg_cut_position() -> void:
 			cut_box_face_b.position = Vector3(0.0, 0.0, cut_z - 0.5)
 			pass
 
-func cut_board(_saw_pos: Vector3) -> void:
+func cut_board(_saw_pos: Vector3, travel_direction: Vector3 = Vector3.RIGHT) -> void:
 	if board_count <= 0:
 		return
 	
@@ -303,12 +315,17 @@ func cut_board(_saw_pos: Vector3) -> void:
 	if board_scene:
 		var board_node = board_scene.instantiate()
 		get_parent().add_child(board_node)
+		if board_node.has_method("configure_length"):
+			board_node.configure_length(LOG_PRODUCT_LENGTH)
 		
-		# Spawn just past the saw and above the headrig outfeed so both faces
-		# drop onto the same conveyor after the log is flipped.
-		board_node.global_position = Vector3(_saw_pos.x, global_position.y + 0.08, 5.7)
+		# Spawn with the board center where the cut product is when its tail clears the blade.
+		var product_center := _saw_pos + travel_direction.normalized() * (LOG_PRODUCT_LENGTH * 0.5)
+		board_node.global_position = Vector3(product_center.x, global_position.y + 0.08, 5.7)
 		
-		board_node.linear_velocity = Vector3(0.0, -0.25, -0.55)
+		board_node.linear_velocity = (
+			travel_direction.normalized() * CUT_PRODUCT_FORWARD_SPEED
+			+ Vector3(0.0, CUT_PRODUCT_DROP_SPEED, CUT_PRODUCT_BELT_KICK_SPEED)
+		)
 		if is_roundback:
 			board_node.angular_velocity = Vector3(
 				randf_range(-1.2, 1.2),

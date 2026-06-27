@@ -13,11 +13,11 @@ extends Node3D
 
 @export var incline_angle_deg: float = 22.0
 @export var incline_length:    float = 5.0
-@export var incline_width:     float = 2.4
+@export var incline_width:     float = 5.2
 @export var chain_speed:       float = 0.55
 @export var lugs_per_track:    int   = 4
 @export var lug_spacing:       float = 1.5
-@export var track_x_positions: Array[float] = [-0.9, -0.3, 0.3, 0.9]
+@export var track_x_positions: Array[float] = [-2.4, -1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8, 2.4]
 @export var running:           bool  = false
 ## Reference to the headrig carriage to check for backpressure.
 @export var carriage: AnimatableBody3D

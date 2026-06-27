@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" path="res://scenes/cut_board.tscn" id="1_gw0b0"]
 
 [sub_resource type="BoxShape3D" id="1"]
-size = Vector3(4.8768, 0.04, 0.35)
+size = Vector3(4.958, 0.04, 0.35)
 
 [sub_resource type="StandardMaterial3D" id="2"]
 albedo_color = Color(0.8, 0.7, 0.5, 1)
@@ -11,7 +11,7 @@ roughness = 0.8
 
 [sub_resource type="BoxMesh" id="3"]
 material = SubResource("2")
-size = Vector3(4.8768, 0.04, 0.35)
+size = Vector3(4.958, 0.04, 0.35)
 
 [node name="ReferenceBoardAssembly" type="Node3D" unique_id=1871433820]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37132502, 0, -0.6692028)

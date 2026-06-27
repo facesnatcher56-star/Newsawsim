@@ -4,7 +4,7 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_log"]
 radius = 0.292
-height = 4.97034
+height = 4.958
 
 [sub_resource type="Shader" id="Shader_inner_wood"]
 code = "shader_type spatial;
@@ -43,26 +43,26 @@ script = ExtResource("1")
 board_count = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=286803454]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -0.07522, 0, 0)
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_log")
 
 [node name="WoodCore" type="CSGCylinder3D" parent="." unique_id=2036553167]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 radius = 0.245
-height = 4.82
+height = 4.922
 sides = 32
 material = SubResource("Material_inner_wood")
 
 [node name="WoodEndLeft" type="CSGCylinder3D" parent="."]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -2.47, 0, 0)
-radius = 0.268
+radius = 0.245
 height = 0.018
 sides = 32
 material = SubResource("Material_inner_wood")
 
 [node name="WoodEndRight" type="CSGCylinder3D" parent="."]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 2.47, 0, 0)
-radius = 0.268
+radius = 0.245
 height = 0.018
 sides = 32
 material = SubResource("Material_inner_wood")
