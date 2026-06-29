@@ -70,7 +70,8 @@ func _build_chains() -> void:
 	# Clean up any existing MultiMeshInstance3D children
 	for child in get_children():
 		if child is MultiMeshInstance3D:
-			remove_child(child)
+			if Engine.is_editor_hint():
+				remove_child(child)
 			child.queue_free()
 			
 	var num_even_links := 0
@@ -270,4 +271,3 @@ func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
 		y = SPROCKET_Y - SPROCKET_R * cos(theta)
 		rot_x = theta - PI
 	return Transform3D(Basis(Vector3.RIGHT, rot_x), Vector3(0.0, y, z))
-

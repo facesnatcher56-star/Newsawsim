@@ -3,21 +3,21 @@
 [ext_resource type="Script" uid="uid://dkk4kcyh1w5q6" path="res://scripts/level_chain_deck.gd" id="1_lvldeck"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_load"]
-size = Vector3(4.2, 0.7, 0.35378417)
+size = Vector3(5.4, 0.7, 0.35378417)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_top"]
-size = Vector3(4.2, 0.8, 0.5)
+size = Vector3(5.4, 0.8, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_deck"]
-size = Vector3(4.6, 1.2, 5)
+size = Vector3(5.8, 1.2, 5)
 
 [node name="LevelChainDeck" type="Node3D" unique_id=347498683 node_paths=PackedStringArray("load_zone", "top_zone", "deck_area")]
 script = ExtResource("1_lvldeck")
 ramp_length = 0.6
 ramp_angle_down_deg = 0.0
 ramp_angle_up_deg = 30.0
-deck_width = 4.2
-track_x_positions = Array[float]([-1.8, -1.2, -0.6, 0, 0.6, 1.2, 1.8])
+deck_width = 5.4
+track_x_positions = Array[float]([-2.4, -1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8, 2.4])
 load_zone = NodePath("DeckRoot/LoadZone")
 top_zone = NodePath("DeckRoot/TopZone")
 deck_area = NodePath("DeckRoot/DeckArea")

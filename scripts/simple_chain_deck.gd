@@ -6,13 +6,14 @@ extends Node3D
 ## as level_chain_deck.gd, but without retractable stoppers or pivoting ramp.
 
 @export var deck_length:       float = 5.0
-@export var deck_width:        float = 2.4
+@export var deck_width:        float = 3.9
 @export var chain_speed:       float = 0.55
 @export var chain_accel_speed: float = 2.0
-@export var track_x_positions: Array[float] = [-1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25, 1.75]
+@export var track_x_positions: Array[float] = [-2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5]
 @export var running:           bool  = false
 @export var reverse_direction: bool  = false
 @export var floor_y:           float = -1.0
+@export var external_stop:     bool  = false
 
 @export_group("Lugs")
 @export var lugs_enabled:      bool = false
@@ -26,11 +27,11 @@ extends Node3D
 
 @export_group("Zones")
 @export var load_zone_position: Vector3 = Vector3(0.0, 0.35, -1.8)
-@export var load_zone_size:     Vector3 = Vector3(2.4, 0.7, 0.35)
+@export var load_zone_size:     Vector3 = Vector3(3.9, 0.7, 0.35)
 @export var top_zone_position:  Vector3 = Vector3(0.0, 0.4, 2.3)
-@export var top_zone_size:      Vector3 = Vector3(2.4, 0.8, 0.5)
+@export var top_zone_size:      Vector3 = Vector3(3.9, 0.8, 0.5)
 @export var deck_area_position: Vector3 = Vector3(0.0, 0.5, 0.0)
-@export var deck_area_size:     Vector3 = Vector3(2.8, 1.2, 5.15)
+@export var deck_area_size:     Vector3 = Vector3(4.3, 1.2, 5.15)
 @export_group("")
 
 ## Reference to the headrig carriage to check for backpressure.
@@ -166,12 +167,14 @@ func _clear_procedural_nodes() -> void:
 	if _deck_root != null:
 		if _deck_root.has_node("Frame"):
 			var f := _deck_root.get_node("Frame")
-			_deck_root.remove_child(f)
+			if Engine.is_editor_hint():
+				_deck_root.remove_child(f)
 			f.queue_free()
 
 		for child in _deck_root.get_children():
 			if child.name.begins_with("ChainLink_") or child.name.begins_with("Lug_") or child is MultiMeshInstance3D:
-				_deck_root.remove_child(child)
+				if Engine.is_editor_hint():
+					_deck_root.remove_child(child)
 				child.queue_free()
 
 
@@ -466,7 +469,8 @@ func _spawn_chain_links() -> void:
 	# Clean up any existing MultiMesh or Lug nodes
 	for child in _deck_root.get_children():
 		if child.name.begins_with("ChainLink_") or child.name.begins_with("Lug_") or child is MultiMeshInstance3D:
-			_deck_root.remove_child(child)
+			if Engine.is_editor_hint():
+				_deck_root.remove_child(child)
 			child.queue_free()
 
 	_lugs_nodes.clear()
@@ -813,6 +817,8 @@ func has_room() -> bool:
 
 
 func is_blocked_at_top() -> bool:
+	if not external_stop:
+		return false
 	if top_zone == null:
 		return false
 	for body in top_zone.get_overlapping_bodies():

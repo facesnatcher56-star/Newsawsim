@@ -257,7 +257,8 @@ func _build_visuals() -> void:
 	# Clean old visuals
 	var old_visuals = get_node_or_null("Visuals")
 	if old_visuals:
-		remove_child(old_visuals)
+		if Engine.is_editor_hint():
+			remove_child(old_visuals)
 		old_visuals.queue_free()
 
 	_visuals_root = Node3D.new()

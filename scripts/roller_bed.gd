@@ -373,13 +373,15 @@ func _rebuild() -> void:
 
 	var old_container: Node = get_node_or_null("GeneratedRollers")
 	if old_container != null:
-		remove_child(old_container)
+		if Engine.is_editor_hint():
+			remove_child(old_container)
 		old_container.queue_free()
 
 	# CollisionShape3D nodes must be direct children of this StaticBody3D.
 	for child: Node in get_children():
 		if child is CollisionShape3D and child.name.begins_with("GeneratedRoller"):
-			remove_child(child)
+			if Engine.is_editor_hint():
+				remove_child(child)
 			child.queue_free()
 
 	var container := Node3D.new()
@@ -471,7 +473,8 @@ func _rebuild() -> void:
 func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector3) -> void:
 	var old_plates_container: Node = get_node_or_null("GeneratedPlates")
 	if old_plates_container != null:
-		remove_child(old_plates_container)
+		if Engine.is_editor_hint():
+			remove_child(old_plates_container)
 		old_plates_container.queue_free()
 
 	_flip_table_node = null
@@ -560,12 +563,14 @@ func _rebuild_flip_table(travel: Vector3, roller_axis: Vector3, local_up: Vector
 func _rebuild_stop_gate(travel: Vector3, roller_axis: Vector3, local_up: Vector3, radius: float) -> void:
 	var old_gate: Node = get_node_or_null("GeneratedStopGate")
 	if old_gate != null:
-		remove_child(old_gate)
+		if Engine.is_editor_hint():
+			remove_child(old_gate)
 		old_gate.queue_free()
 
 	var old_sensor: Node = get_node_or_null("StopGateSensor")
 	if old_sensor != null:
-		remove_child(old_sensor)
+		if Engine.is_editor_hint():
+			remove_child(old_sensor)
 		old_sensor.queue_free()
 
 	_stop_gate_node = null
@@ -716,15 +721,17 @@ func _update_motion() -> void:
 	constant_linear_velocity = global_transform.basis * local_velocity
 
 
-func _rebuild_sweep_chains(travel: Vector3, roller_axis: Vector3, local_up: Vector3, radius: float) -> void:
+func _rebuild_sweep_chains(travel: Vector3, _roller_axis: Vector3, local_up: Vector3, radius: float) -> void:
 	var old_sweep: Node = get_node_or_null("GeneratedSweepSystem")
 	if old_sweep != null:
-		remove_child(old_sweep)
+		if Engine.is_editor_hint():
+			remove_child(old_sweep)
 		old_sweep.queue_free()
 
 	var old_sensor: Node = get_node_or_null("SweepSensor")
 	if old_sensor != null:
-		remove_child(old_sensor)
+		if Engine.is_editor_hint():
+			remove_child(old_sensor)
 		old_sensor.queue_free()
 
 	_sweep_lugs.clear()

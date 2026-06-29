@@ -9,10 +9,10 @@ extends Node3D
 
 @export var deck_length:       float = 5.0:
 	set(v): deck_length = v; _rebuild_everything()
-@export var deck_width:        float = 4.2:
+@export var deck_width:        float = 5.4:
 	set(v): deck_width = v; _rebuild_everything()
 @export var chain_speed:       float = 0.55
-@export var track_x_positions: Array[float] = [-1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8]:
+@export var track_x_positions: Array[float] = [-2.4, -1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8, 2.4]:
 	set(v): track_x_positions = v; _rebuild_everything()
 @export var running:           bool  = false
 @export var reverse_direction: bool  = false
@@ -180,23 +180,27 @@ func _clear_procedural_nodes() -> void:
 	if _deck_root != null:
 		if _deck_root.has_node("Frame"):
 			var f := _deck_root.get_node("Frame")
-			_deck_root.remove_child(f)
+			if Engine.is_editor_hint():
+				_deck_root.remove_child(f)
 			f.queue_free()
 		
 		if _deck_root.has_node("Stoppers"):
 			var s := _deck_root.get_node("Stoppers")
-			_deck_root.remove_child(s)
+			if Engine.is_editor_hint():
+				_deck_root.remove_child(s)
 			s.queue_free()
 
 		if _deck_root.has_node("PivotingRamp"):
 			var r := _deck_root.get_node("PivotingRamp")
-			_deck_root.remove_child(r)
+			if Engine.is_editor_hint():
+				_deck_root.remove_child(r)
 			r.queue_free()
 
 		# Remove old links
 		for child in _deck_root.get_children():
 			if child.name.begins_with("ChainLink_") or child is MultiMeshInstance3D:
-				_deck_root.remove_child(child)
+				if Engine.is_editor_hint():
+					_deck_root.remove_child(child)
 				child.queue_free()
 
 

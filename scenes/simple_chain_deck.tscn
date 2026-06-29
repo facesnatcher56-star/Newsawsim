@@ -1,22 +1,23 @@
 [gd_scene format=3 uid="uid://dmko1r1aasdqt"]
 
-[ext_resource type="Script" uid="uid://dpiohau26bbg7" path="res://scripts/simple_chain_deck.gd" id="1_simple"]
+[ext_resource type="Script" path="res://scripts/simple_chain_deck.gd" id="1_simple"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_30vfm"]
-size = Vector3(2.4, 0.7, 0.35)
+size = Vector3(3.9, 0.7, 0.35)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ors71"]
-size = Vector3(2.4, 0.8, 0.5)
+size = Vector3(3.9, 0.8, 0.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_vq3d7"]
-size = Vector3(2.8, 1.2, 5.15)
+size = Vector3(4.3, 1.2, 5.15)
 
 [node name="SimpleChainDeck" type="Node3D" unique_id=1764099896 node_paths=PackedStringArray("load_zone", "top_zone", "deck_area")]
 script = ExtResource("1_simple")
 load_zone = NodePath("DeckRoot/LoadZone")
 top_zone = NodePath("DeckRoot/TopZone")
 deck_area = NodePath("DeckRoot/DeckArea")
-track_x_positions = Array[float]([-1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25, 1.75])
+deck_width = 3.9
+track_x_positions = Array[float]([-2.5, -2.0, -1.5, -1.0, -0.5, 0.0, 0.5, 1.0, 1.5, 2.0, 2.5])
 
 [node name="DeckRoot" type="Node3D" parent="." unique_id=1267379701]
 

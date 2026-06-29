@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://qxhkdq0grc63"]
 
-[ext_resource type="Script" uid="uid://cksu808ecggkk" path="res://scripts/chain_trough_conveyor.gd" id="2_5ghiq"]
+[ext_resource type="Script" path="res://scripts/chain_trough_conveyor.gd" id="2_5ghiq"]
 [ext_resource type="PackedScene" uid="uid://b7rvsxnjb6skt" path="res://scenes/chain_trough_conveyor.tscn" id="8_trough"]
 [ext_resource type="PackedScene" path="res://scenes/waste_conveyor.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://c3mlf0h3g6a7r" path="res://scenes/grip_roller.tscn" id="2"]

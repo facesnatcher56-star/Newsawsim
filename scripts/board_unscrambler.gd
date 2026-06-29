@@ -7,7 +7,7 @@
 extends StaticBody3D
 
 ## Width of the machine (board-length direction, Z axis).
-@export var machine_width: float = 4.2:
+@export var machine_width: float = 5.7:
 	set(v): machine_width = v; _rebuild()
 ## Thickness of the steel side plates (visual).
 @export var plate_thickness: float = 0.018:
@@ -117,7 +117,8 @@ func _rebuild() -> void:
 
 func _do_rebuild() -> void:
 	for child in get_children():
-		remove_child(child)
+		if Engine.is_editor_hint():
+			remove_child(child)
 		child.queue_free()
 	_clear_animation_data()
 
@@ -269,18 +270,18 @@ func _build_working_surface() -> void:
 			var slot_w := (outer_z * 2.0 + 0.014 * scale_factor) * 1.15
 			var plate_h := 0.042 * scale_factor
 
-			# Generate 8 evenly spaced chains
+			# Generate 11 evenly spaced chains
 			var s_dist := chain_spacing
-			var total_width := 7.0 * s_dist
+			var total_width := 10.0 * s_dist
 			var start_z := (machine_width - total_width) * 0.5
 			var chain_zs: Array[float] = []
-			for i in range(8):
+			for i in range(11):
 				chain_zs.append(start_z + i * s_dist)
 
 			if is_v_notch:
-				# Cut 4 small slots at the bottom end of the downhill slope for the flights and chains
+				# Cut 5 small slots at the bottom end of the downhill slope for the flights and chains
 				var slot_len := 0.15 * s
-				for k in range(4):
+				for k in range(5):
 					var zc_k := start_z + (2 * k + 0.5) * s_dist
 					var slot := CSGBox3D.new()
 					slot.name = "Slot"
@@ -361,7 +362,7 @@ func _build_chains_and_flights() -> void:
 
 	var zw: float = machine_width
 	var s_dist := chain_spacing
-	var total_width := 7.0 * s_dist
+	var total_width := 10.0 * s_dist
 	var start_z := (zw - total_width) * 0.5
 
 	# Scale diameter, pitch and dimensions relative to Level Deck chain links
@@ -421,9 +422,9 @@ func _build_chains_and_flights() -> void:
 	pin_m.height = outer_z * 2.0 + plate_w * 1.5
 	pin_m.radial_segments = 6
 
-	# Chain rails (8 chains total, evenly spaced)
+	# Chain rails (11 chains total, evenly spaced)
 	var chain_zs: Array[float] = []
-	for i in range(8):
+	for i in range(11):
 		chain_zs.append(start_z + i * s_dist)
 	_anim_link_recede = plate_h * 0.5
 	for z in chain_zs:
@@ -548,7 +549,7 @@ func _build_chains_and_flights() -> void:
 		var n := Vector2(-d2.y, d2.x)
 		var ang := atan2(d2.y, d2.x)
 
-		for k in range(4):
+		for k in range(5):
 			var zc_k := start_z + (2 * k + 0.5) * s_dist
 
 			# AnimatableBody3D — moves each frame, imparting velocity to RigidBody contacts

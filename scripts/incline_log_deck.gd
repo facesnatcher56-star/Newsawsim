@@ -368,7 +368,8 @@ func _spawn_chain_links() -> void:
 	# Clean up any existing chain links or MultiMeshInstance3D nodes
 	for child in _slope_root.get_children():
 		if child.name.begins_with("ChainLink_") or child is MultiMeshInstance3D:
-			_slope_root.remove_child(child)
+			if Engine.is_editor_hint():
+				_slope_root.remove_child(child)
 			child.queue_free()
 
 	# 1. Plates MultiMesh

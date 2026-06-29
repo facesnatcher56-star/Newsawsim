@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cultjcvh75pbd"]
 
-[ext_resource type="Script" uid="uid://cbogqrygky4bg" path="res://scripts/board_unscrambler.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/board_unscrambler.gd" id="1"]
 
 [node name="BoardUnscrambler" type="StaticBody3D" unique_id=1077583790]
 constant_linear_velocity = Vector3(0.3, 0, 0)
