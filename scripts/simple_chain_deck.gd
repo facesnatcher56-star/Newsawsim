@@ -693,6 +693,11 @@ func _update_chain_links() -> void:
 			var xf   := _get_loop_xform(slot)
 			var local_xform: Transform3D = Transform3D(xf.basis, Vector3(tx, xf.origin.y, xf.origin.z))
 			lug_body.global_transform = _deck_root.global_transform * local_xform
+			
+			# Set constant velocity to push objects like CutBoard
+			var local_velocity := Vector3(0.0, 0.0, _current_chain_speed)
+			var global_velocity := _deck_root.global_transform.basis * local_velocity
+			lug_body.constant_linear_velocity = global_velocity
 
 
 # ─────────────────────────────────────────────────────────────────────────────
