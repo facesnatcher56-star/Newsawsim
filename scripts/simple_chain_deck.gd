@@ -78,11 +78,16 @@ var _active_log:     RigidBody3D
 var _on_deck:        Dictionary = {}
 
 # Chain links (visuals)
-var _chain_nodes:    Array[Node3D]  = []
-var _chain_tx:       Array[float]   = []
-var _link_slot:      Array[float]   = []
+var _multimesh_plates: MultiMeshInstance3D
+var _multimesh_rollers: MultiMeshInstance3D
+var _num_links:      int            = 0
 var _chain_travel:   float          = 0.0
 var _current_chain_speed: float      = 0.0
+
+# Lugs (physics)
+var _lugs_nodes:     Array[AnimatableBody3D] = []
+var _lugs_track_x:   Array[float]            = []
+var _lugs_link_index: Array[int]              = []
 
 # Sprocket nodes (for rotation animation)
 var _sprocket_nodes: Array[Node3D] = []
@@ -152,9 +157,10 @@ func _ready() -> void:
 
 func _clear_procedural_nodes() -> void:
 	_sprocket_nodes.clear()
-	_chain_nodes.clear()
-	_chain_tx.clear()
-	_link_slot.clear()
+	_num_links = 0
+	_lugs_nodes.clear()
+	_lugs_track_x.clear()
+	_lugs_link_index.clear()
 	_frame_body = null
 
 	if _deck_root != null:
@@ -164,7 +170,7 @@ func _clear_procedural_nodes() -> void:
 			f.queue_free()
 
 		for child in _deck_root.get_children():
-			if child.name.begins_with("ChainLink_"):
+			if child.name.begins_with("ChainLink_") or child.name.begins_with("Lug_") or child is MultiMeshInstance3D:
 				_deck_root.remove_child(child)
 				child.queue_free()
 
@@ -449,21 +455,56 @@ func _build_sprockets(frame: StaticBody3D) -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _spawn_chain_links() -> void:
-	var n_links := int(ceil(_loop_len / CHAIN_PITCH)) + 2
+	_num_links = int(ceil(_loop_len / CHAIN_PITCH)) + 2
+	var num_tracks := track_x_positions.size()
 
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.18, 0.18, 0.20)
 	mat.metallic     = 0.93
 	mat.roughness    = 0.35
 
+	# Clean up any existing MultiMesh or Lug nodes
+	for child in _deck_root.get_children():
+		if child.name.begins_with("ChainLink_") or child.name.begins_with("Lug_") or child is MultiMeshInstance3D:
+			_deck_root.remove_child(child)
+			child.queue_free()
+
+	_lugs_nodes.clear()
+	_lugs_track_x.clear()
+	_lugs_link_index.clear()
+
+	# 1. Plates MultiMesh
+	_multimesh_plates = MultiMeshInstance3D.new()
+	_multimesh_plates.name = "PlatesMultiMesh"
+	var mm_plates := MultiMesh.new()
+	mm_plates.transform_format = MultiMesh.TRANSFORM_3D
+	mm_plates.use_custom_data = false
+	mm_plates.use_colors = false
 	var plate_mesh := BoxMesh.new()
 	plate_mesh.size = Vector3(CHAIN_PLATE_W, CHAIN_PLATE_H, CHAIN_PLATE_D)
+	mm_plates.mesh = plate_mesh
+	mm_plates.instance_count = _num_links * num_tracks * 2
+	_multimesh_plates.multimesh = mm_plates
+	_multimesh_plates.material_override = mat
+	_deck_root.add_child(_multimesh_plates)
 
+	# 2. Rollers MultiMesh
+	_multimesh_rollers = MultiMeshInstance3D.new()
+	_multimesh_rollers.name = "RollersMultiMesh"
+	var mm_rollers := MultiMesh.new()
+	mm_rollers.transform_format = MultiMesh.TRANSFORM_3D
+	mm_rollers.use_custom_data = false
+	mm_rollers.use_colors = false
 	var roller_mesh := CylinderMesh.new()
 	roller_mesh.top_radius    = CHAIN_ROLLER_R
 	roller_mesh.bottom_radius = CHAIN_ROLLER_R
 	roller_mesh.height        = CHAIN_SPAN + CHAIN_PLATE_W * 2.0 + 0.01
 	roller_mesh.radial_segments = 6
+	mm_rollers.mesh = roller_mesh
+	mm_rollers.instance_count = _num_links * num_tracks
+	_multimesh_rollers.multimesh = mm_rollers
+	_multimesh_rollers.material_override = mat
+	_deck_root.add_child(_multimesh_rollers)
 
 	var lug_mat := StandardMaterial3D.new()
 	lug_mat.albedo_color = lug_color
@@ -495,42 +536,21 @@ func _spawn_chain_links() -> void:
 	lug_shape.radius = lug_radius
 	lug_shape.height = maxf(lug_height, lug_radius * 2.0)
 
-	var inner_x := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W * 0.5
-
 	for xi in range(track_x_positions.size()):
 		var tx: float = track_x_positions[xi]
-		for j in range(n_links):
-			var slot0 := float(j) * CHAIN_PITCH
+		for j in range(_num_links):
+			if _should_link_have_lug(j, _num_links):
+				var lug_body := AnimatableBody3D.new()
+				lug_body.name = "Lug_%d_%d" % [xi, j]
+				lug_body.sync_to_physics = true
+				_add_lug_to_link(lug_body, lug_mesh, lug_shape, lug_mat, lug_plate_mesh, lug_plate_shape, lug_plate_mat)
+				_deck_root.add_child(lug_body)
+				
+				_lugs_nodes.append(lug_body)
+				_lugs_track_x.append(tx)
+				_lugs_link_index.append(j)
 
-			var link: AnimatableBody3D = AnimatableBody3D.new()
-			link.name = "ChainLink_%d_%d" % [xi, j]
-
-			var lp := MeshInstance3D.new()
-			lp.mesh = plate_mesh
-			lp.material_override = mat
-			lp.position = Vector3(-inner_x, 0.0, 0.0)
-			link.add_child(lp)
-
-			var rp := MeshInstance3D.new()
-			rp.mesh = plate_mesh
-			rp.material_override = mat
-			rp.position = Vector3(inner_x, 0.0, 0.0)
-			link.add_child(rp)
-
-			var ro := MeshInstance3D.new()
-			ro.mesh = roller_mesh
-			ro.material_override = mat
-			ro.rotation_degrees.z = 90.0
-			link.add_child(ro)
-
-			if _should_link_have_lug(j, n_links):
-				_add_lug_to_link(link, lug_mesh, lug_shape, lug_mat, lug_plate_mesh, lug_plate_shape, lug_plate_mat)
-
-			_deck_root.add_child(link)
-
-			_chain_nodes.append(link)
-			_chain_tx.append(tx)
-			_link_slot.append(slot0)
+	_update_chain_links()
 
 
 func _should_link_have_lug(link_index: int, n_links: int) -> bool:
@@ -628,13 +648,47 @@ func _get_loop_xform(d: float) -> Transform3D:
 
 
 func _update_chain_links() -> void:
-	for i in range(_chain_nodes.size()):
-		var slot := fposmod(_link_slot[i] + _chain_travel, _loop_len)
-		var xf   := _get_loop_xform(slot)
-		var node := _chain_nodes[i]
-		if is_instance_valid(node):
-			var local_xform: Transform3D = Transform3D(xf.basis, Vector3(_chain_tx[i], xf.origin.y, xf.origin.z))
-			node.global_transform = _deck_root.global_transform * local_xform
+	if not is_instance_valid(_multimesh_plates) or not is_instance_valid(_multimesh_rollers):
+		return
+	var num_tracks := track_x_positions.size()
+	var inner_x := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W * 0.5
+	
+	var plate_idx := 0
+	var roller_idx := 0
+	
+	for xi in num_tracks:
+		var tx := track_x_positions[xi]
+		for j in _num_links:
+			var slot := fposmod(float(j) * CHAIN_PITCH + _chain_travel, _loop_len)
+			var xf   := _get_loop_xform(slot)
+			var link_pos := Vector3(tx, xf.origin.y, xf.origin.z)
+			var link_xf := Transform3D(xf.basis, link_pos)
+			
+			# Left Plate
+			var lp_xf := link_xf * Transform3D(Basis(), Vector3(-inner_x, 0.0, 0.0))
+			_multimesh_plates.multimesh.set_instance_transform(plate_idx, lp_xf)
+			plate_idx += 1
+			
+			# Right Plate
+			var rp_xf := link_xf * Transform3D(Basis(), Vector3(inner_x, 0.0, 0.0))
+			_multimesh_plates.multimesh.set_instance_transform(plate_idx, rp_xf)
+			plate_idx += 1
+			
+			# Joint Roller
+			var ro_xf := link_xf * Transform3D(Basis(Vector3.FORWARD, deg_to_rad(90.0)), Vector3.ZERO)
+			_multimesh_rollers.multimesh.set_instance_transform(roller_idx, ro_xf)
+			roller_idx += 1
+
+	# Now update separate physical lug bodies
+	for i in range(_lugs_nodes.size()):
+		var lug_body := _lugs_nodes[i]
+		if is_instance_valid(lug_body):
+			var tx := _lugs_track_x[i]
+			var j := _lugs_link_index[i]
+			var slot := fposmod(float(j) * CHAIN_PITCH + _chain_travel, _loop_len)
+			var xf   := _get_loop_xform(slot)
+			var local_xform: Transform3D = Transform3D(xf.basis, Vector3(tx, xf.origin.y, xf.origin.z))
+			lug_body.global_transform = _deck_root.global_transform * local_xform
 
 
 # ─────────────────────────────────────────────────────────────────────────────

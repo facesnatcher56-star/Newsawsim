@@ -70,9 +70,9 @@ var _active_log:     RigidBody3D
 var _on_deck:        Dictionary = {}
 
 # Chain links (visuals)
-var _chain_nodes:    Array[Node3D]  = []
-var _chain_tx:       Array[float]   = []
-var _link_slot:      Array[float]   = []
+var _multimesh_plates: MultiMeshInstance3D
+var _multimesh_rollers: MultiMeshInstance3D
+var _num_links:      int            = 0
 var _chain_travel:   float          = 0.0
 
 # Sprocket nodes (for rotation animation)
@@ -158,9 +158,7 @@ func _ready() -> void:
 
 func _clear_procedural_nodes() -> void:
 	_sprocket_nodes.clear()
-	_chain_nodes.clear()
-	_chain_tx.clear()
-	_link_slot.clear()
+	_num_links = 0
 	_frame_body = null
 	_stoppers_body = null
 
@@ -182,7 +180,7 @@ func _clear_procedural_nodes() -> void:
 
 		# Remove old links
 		for child in _deck_root.get_children():
-			if child.name.begins_with("ChainLink_"):
+			if child.name.begins_with("ChainLink_") or child is MultiMeshInstance3D:
 				_deck_root.remove_child(child)
 				child.queue_free()
 
@@ -596,58 +594,50 @@ func _build_pivot_ramp() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _spawn_chain_links() -> void:
-	var n_links := int(ceil(_loop_len / CHAIN_PITCH)) + 2
+	_num_links = int(ceil(_loop_len / CHAIN_PITCH)) + 2
+	var num_tracks := track_x_positions.size()
 
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.18, 0.18, 0.20) # dark oily steel
 	mat.metallic     = 0.93
 	mat.roughness    = 0.35
 
+	# 1. Plates MultiMesh
+	_multimesh_plates = MultiMeshInstance3D.new()
+	_multimesh_plates.name = "PlatesMultiMesh"
+	var mm_plates := MultiMesh.new()
+	mm_plates.transform_format = MultiMesh.TRANSFORM_3D
+	mm_plates.use_custom_data = false
+	mm_plates.use_colors = false
+	
 	var plate_mesh := BoxMesh.new()
 	plate_mesh.size = Vector3(CHAIN_PLATE_W, CHAIN_PLATE_H, CHAIN_PLATE_D)
+	mm_plates.mesh = plate_mesh
+	mm_plates.instance_count = _num_links * num_tracks * 2
+	_multimesh_plates.multimesh = mm_plates
+	_multimesh_plates.material_override = mat
+	_deck_root.add_child(_multimesh_plates)
 
+	# 2. Rollers MultiMesh
+	_multimesh_rollers = MultiMeshInstance3D.new()
+	_multimesh_rollers.name = "RollersMultiMesh"
+	var mm_rollers := MultiMesh.new()
+	mm_rollers.transform_format = MultiMesh.TRANSFORM_3D
+	mm_rollers.use_custom_data = false
+	mm_rollers.use_colors = false
+	
 	var roller_mesh := CylinderMesh.new()
 	roller_mesh.top_radius    = CHAIN_ROLLER_R
 	roller_mesh.bottom_radius = CHAIN_ROLLER_R
 	roller_mesh.height        = CHAIN_SPAN + CHAIN_PLATE_W * 2.0 + 0.01
 	roller_mesh.radial_segments = 6
+	mm_rollers.mesh = roller_mesh
+	mm_rollers.instance_count = _num_links * num_tracks
+	_multimesh_rollers.multimesh = mm_rollers
+	_multimesh_rollers.material_override = mat
+	_deck_root.add_child(_multimesh_rollers)
 
-	var inner_x := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W * 0.5
-
-	for xi in range(track_x_positions.size()):
-		var tx: float = track_x_positions[xi]
-		for j in range(n_links):
-			var slot0 := float(j) * CHAIN_PITCH
-
-			var link := Node3D.new()
-			link.name = "ChainLink_%d_%d" % [xi, j]
-
-			# Left side plate
-			var lp := MeshInstance3D.new()
-			lp.mesh = plate_mesh
-			lp.material_override = mat
-			lp.position = Vector3(-inner_x, 0.0, 0.0)
-			link.add_child(lp)
-
-			# Right side plate
-			var rp := MeshInstance3D.new()
-			rp.mesh = plate_mesh
-			rp.material_override = mat
-			rp.position = Vector3(inner_x, 0.0, 0.0)
-			link.add_child(rp)
-
-			# Cross pin/roller
-			var ro := MeshInstance3D.new()
-			ro.mesh = roller_mesh
-			ro.material_override = mat
-			ro.rotation_degrees.z = 90.0
-			link.add_child(ro)
-
-			_deck_root.add_child(link)
-
-			_chain_nodes.append(link)
-			_chain_tx.append(tx)
-			_link_slot.append(slot0)
+	_update_chain_links()
 
 
 func _get_loop_xform(d: float) -> Transform3D:
@@ -693,13 +683,36 @@ func _get_loop_xform(d: float) -> Transform3D:
 
 
 func _update_chain_links() -> void:
-	for i in range(_chain_nodes.size()):
-		var slot := fposmod(_link_slot[i] + _chain_travel, _loop_len)
-		var xf   := _get_loop_xform(slot)
-		var node := _chain_nodes[i]
-		if is_instance_valid(node):
-			node.position = Vector3(_chain_tx[i], xf.origin.y, xf.origin.z)
-			node.basis    = xf.basis
+	if not is_instance_valid(_multimesh_plates) or not is_instance_valid(_multimesh_rollers):
+		return
+	var num_tracks := track_x_positions.size()
+	var inner_x := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W * 0.5
+	
+	var plate_idx := 0
+	var roller_idx := 0
+	
+	for xi in num_tracks:
+		var tx := track_x_positions[xi]
+		for j in _num_links:
+			var slot := fposmod(float(j) * CHAIN_PITCH + _chain_travel, _loop_len)
+			var xf   := _get_loop_xform(slot)
+			var link_pos := Vector3(tx, xf.origin.y, xf.origin.z)
+			var link_xf := Transform3D(xf.basis, link_pos)
+			
+			# Left Plate
+			var lp_xf := link_xf * Transform3D(Basis(), Vector3(-inner_x, 0.0, 0.0))
+			_multimesh_plates.multimesh.set_instance_transform(plate_idx, lp_xf)
+			plate_idx += 1
+			
+			# Right Plate
+			var rp_xf := link_xf * Transform3D(Basis(), Vector3(inner_x, 0.0, 0.0))
+			_multimesh_plates.multimesh.set_instance_transform(plate_idx, rp_xf)
+			plate_idx += 1
+			
+			# Joint Roller
+			var ro_xf := link_xf * Transform3D(Basis(Vector3.FORWARD, deg_to_rad(90.0)), Vector3.ZERO)
+			_multimesh_rollers.multimesh.set_instance_transform(roller_idx, ro_xf)
+			roller_idx += 1
 
 
 # ─────────────────────────────────────────────────────────────────────────────

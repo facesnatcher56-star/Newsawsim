@@ -19,7 +19,10 @@ const TRACK_NAMES: Array[String] = [
 const SPROCKET_R: float = 0.20
 const SPROCKET_Y: float = 0.95
 
-var _chains: Dictionary = {}
+var _num_links: int = 0
+var _multimesh_side_plates: MultiMeshInstance3D
+var _multimesh_pins: MultiMeshInstance3D
+var _multimesh_blocks: MultiMeshInstance3D
 var _rotating_parts: Array[Node3D] = []
 var _travel_distance: float = 0.0
 var _conveyor: Node = null
@@ -45,7 +48,6 @@ func _ready() -> void:
 		_conveyor = parent.get_parent()
 	_build_runner_beds()
 	_build_chains()
-	_collect_and_sort_chains()
 	_build_shafts_and_sprockets.call_deferred(parent)
 	_build_bolts.call_deferred(parent)
 
@@ -62,46 +64,69 @@ func _build_runner_beds() -> void:
 
 func _build_chains() -> void:
 	var loop_length := 2.0 * deck_length + 2.0 * PI * SPROCKET_R
-	var num_links := int(round(loop_length / link_spacing))
-	for i in TRACK_X.size():
-		var container := Node3D.new()
-		container.name = TRACK_NAMES[i]
-		add_child(container)
-		for li in num_links:
-			_build_link(container, li, TRACK_X[i], loop_length)
+	_num_links = int(round(loop_length / link_spacing))
+	var num_tracks := TRACK_X.size()
+	
+	# Clean up any existing MultiMeshInstance3D children
+	for child in get_children():
+		if child is MultiMeshInstance3D:
+			remove_child(child)
+			child.queue_free()
+			
+	var num_even_links := 0
+	var num_odd_links := 0
+	for li in _num_links:
+		if li % 2 == 0:
+			num_even_links += 1
+		else:
+			num_odd_links += 1
 
-func _build_link(container: Node3D, idx: int, track_x: float, loop_length: float) -> void:
-	var link := Node3D.new()
-	link.name = "ChainLink%02d" % idx
-	var local_t := _get_loop_transform(idx * link_spacing, loop_length)
-	link.transform.basis = local_t.basis
-	link.position = Vector3(track_x, local_t.origin.y, local_t.origin.z)
-	container.add_child(link)
-	for sx: float in [-0.1, 0.1]:
-		var mi := MeshInstance3D.new()
-		var m := BoxMesh.new()
-		m.size = Vector3(0.02, 0.08, 0.34)
-		mi.mesh = m
-		mi.material_override = _mat_chain
-		mi.position = Vector3(sx, 0.04, 0.0)
-		link.add_child(mi)
-	if idx % 2 == 0:
-		for pz: float in [-0.16, 0.16]:
-			var mi := MeshInstance3D.new()
-			var m := BoxMesh.new()
-			m.size = Vector3(0.2, 0.04, 0.04)
-			mi.mesh = m
-			mi.material_override = _mat_chain
-			mi.position = Vector3(0.0, 0.04, pz)
-			link.add_child(mi)
-	else:
-		var mi := MeshInstance3D.new()
-		var m := BoxMesh.new()
-		m.size = Vector3(0.14, 0.06, 0.18)
-		mi.mesh = m
-		mi.material_override = _mat_chain
-		mi.position = Vector3(0.0, 0.04, 0.0)
-		link.add_child(mi)
+	# 1. Side Plates MultiMesh
+	_multimesh_side_plates = MultiMeshInstance3D.new()
+	_multimesh_side_plates.name = "SidePlatesMultiMesh"
+	var mm_plates := MultiMesh.new()
+	mm_plates.transform_format = MultiMesh.TRANSFORM_3D
+	mm_plates.use_custom_data = false
+	mm_plates.use_colors = false
+	var m_plate := BoxMesh.new()
+	m_plate.size = Vector3(0.02, 0.08, 0.34)
+	mm_plates.mesh = m_plate
+	mm_plates.instance_count = _num_links * num_tracks * 2
+	_multimesh_side_plates.multimesh = mm_plates
+	_multimesh_side_plates.material_override = _mat_chain
+	add_child(_multimesh_side_plates)
+
+	# 2. Pins MultiMesh
+	_multimesh_pins = MultiMeshInstance3D.new()
+	_multimesh_pins.name = "PinsMultiMesh"
+	var mm_pins := MultiMesh.new()
+	mm_pins.transform_format = MultiMesh.TRANSFORM_3D
+	mm_pins.use_custom_data = false
+	mm_pins.use_colors = false
+	var m_pin := BoxMesh.new()
+	m_pin.size = Vector3(0.2, 0.04, 0.04)
+	mm_pins.mesh = m_pin
+	mm_pins.instance_count = num_even_links * num_tracks * 2
+	_multimesh_pins.multimesh = mm_pins
+	_multimesh_pins.material_override = _mat_chain
+	add_child(_multimesh_pins)
+
+	# 3. Blocks MultiMesh
+	_multimesh_blocks = MultiMeshInstance3D.new()
+	_multimesh_blocks.name = "BlocksMultiMesh"
+	var mm_blocks := MultiMesh.new()
+	mm_blocks.transform_format = MultiMesh.TRANSFORM_3D
+	mm_blocks.use_custom_data = false
+	mm_blocks.use_colors = false
+	var m_block := BoxMesh.new()
+	m_block.size = Vector3(0.14, 0.06, 0.18)
+	mm_blocks.mesh = m_block
+	mm_blocks.instance_count = num_odd_links * num_tracks * 1
+	_multimesh_blocks.multimesh = mm_blocks
+	_multimesh_blocks.material_override = _mat_chain
+	add_child(_multimesh_blocks)
+
+	_update_positions(0.0)
 
 func _build_shafts_and_sprockets(visuals: Node3D) -> void:
 	var half_z := deck_length * 0.5
@@ -166,10 +191,8 @@ func _build_bolts(visuals: Node3D) -> void:
 				container.add_child(mi)
 				bi += 1
 
-
-
 func _process(delta: float) -> void:
-	if Engine.is_editor_hint() or _chains.is_empty():
+	if Engine.is_editor_hint() or _num_links == 0:
 		return
 	var speed := chain_speed
 	var dir_z := -1.0
@@ -187,20 +210,39 @@ func _process(delta: float) -> void:
 			part.rotate_object_local(Vector3.UP, rot_step)
 
 func _update_positions(travel_dist: float) -> void:
-	for group_name in _chains:
-		var links: Array = _chains[group_name]
-		var num_links := links.size()
-		if num_links == 0:
-			continue
-		var loop_length := num_links * link_spacing
-		for idx in range(num_links):
-			var link: Node3D = links[idx]
-			if not is_instance_valid(link):
-				continue
-			var local_t := _get_loop_transform(idx * link_spacing + travel_dist, loop_length)
-			link.transform.basis = local_t.basis
-			link.position.y = local_t.origin.y
-			link.position.z = local_t.origin.z
+	if not is_instance_valid(_multimesh_side_plates) or not is_instance_valid(_multimesh_pins) or not is_instance_valid(_multimesh_blocks):
+		return
+	var loop_length := _num_links * link_spacing
+	var num_tracks := TRACK_X.size()
+	
+	var plate_idx := 0
+	var pin_idx := 0
+	var block_idx := 0
+	
+	for t in num_tracks:
+		var track_x := TRACK_X[t]
+		for i in _num_links:
+			var slot0 := float(i) * link_spacing + travel_dist
+			var local_t := _get_loop_transform(slot0, loop_length)
+			var link_pos := Vector3(track_x, local_t.origin.y, local_t.origin.z)
+			var link_xf := Transform3D(local_t.basis, link_pos)
+			
+			# Side plates
+			for sx in [-0.1, 0.1]:
+				var lp_xf := link_xf * Transform3D(Basis(), Vector3(sx, 0.04, 0.0))
+				_multimesh_side_plates.multimesh.set_instance_transform(plate_idx, lp_xf)
+				plate_idx += 1
+				
+			# Even / Odd features
+			if i % 2 == 0:
+				for pz in [-0.16, 0.16]:
+					var pin_xf := link_xf * Transform3D(Basis(), Vector3(0.0, 0.04, pz))
+					_multimesh_pins.multimesh.set_instance_transform(pin_idx, pin_xf)
+					pin_idx += 1
+			else:
+				var block_xf := link_xf * Transform3D(Basis(), Vector3(0.0, 0.04, 0.0))
+				_multimesh_blocks.multimesh.set_instance_transform(block_idx, block_xf)
+				block_idx += 1
 
 func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
 	d = fposmod(d, loop_length)
@@ -229,15 +271,3 @@ func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
 		rot_x = theta - PI
 	return Transform3D(Basis(Vector3.RIGHT, rot_x), Vector3(0.0, y, z))
 
-func _collect_and_sort_chains() -> void:
-	_chains.clear()
-	for container in get_children():
-		if not container is Node3D:
-			continue
-		var links: Array[Node3D] = []
-		for child in container.get_children():
-			if child is Node3D and child.name.begins_with("ChainLink"):
-				links.append(child as Node3D)
-		if not links.is_empty():
-			links.sort_custom(func(a: Node3D, b: Node3D) -> bool: return a.name < b.name)
-			_chains[container.name] = links
