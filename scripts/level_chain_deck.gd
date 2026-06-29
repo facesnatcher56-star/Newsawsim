@@ -7,22 +7,32 @@ extends Node3D
 ##
 ## Compatible with the standard kicker/transfer station API.
 
-@export var deck_length:       float = 5.0
-@export var deck_width:        float = 4.2
+@export var deck_length:       float = 5.0:
+	set(v): deck_length = v; _rebuild_everything()
+@export var deck_width:        float = 4.2:
+	set(v): deck_width = v; _rebuild_everything()
 @export var chain_speed:       float = 0.55
-@export var track_x_positions: Array[float] = [-1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8]
+@export var track_x_positions: Array[float] = [-1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8]:
+	set(v): track_x_positions = v; _rebuild_everything()
 @export var running:           bool  = false
 @export var reverse_direction: bool  = false
 @export var stoppers_extended: bool  = true
-@export var stopper_height:    float = 0.35
+@export var stopper_height:    float = 0.35:
+	set(v): stopper_height = v; _rebuild_everything()
 @export var stopper_speed:     float = 1.2
-@export var floor_y:           float = -1.0
+@export var floor_y:           float = -1.0:
+	set(v): floor_y = v; _rebuild_everything()
 
 @export_group("Pivoting Ramp")
+@export var ramp_enabled:        bool  = true:
+	set(v): ramp_enabled = v; _rebuild_everything()
 @export var ramp_lowered:        bool  = true
-@export var ramp_length:         float = 1.2
-@export var ramp_angle_down_deg: float = -20.0
-@export var ramp_angle_up_deg:   float = 50.0
+@export var ramp_length:         float = 1.2:
+	set(v): ramp_length = v; _rebuild_everything()
+@export var ramp_angle_down_deg: float = -20.0:
+	set(v): ramp_angle_down_deg = v; _rebuild_everything()
+@export var ramp_angle_up_deg:   float = 50.0:
+	set(v): ramp_angle_up_deg = v; _rebuild_everything()
 @export var ramp_speed:          float = 90.0
 
 ## Reference to the headrig carriage to check for backpressure.
@@ -95,12 +105,6 @@ var _ramp_body:      AnimatableBody3D
 
 
 func _ready() -> void:
-	_spr_cy    = DECK_SURFACE_Y - SPROCKET_R # -0.09
-	_loop_len  = 2.0 * deck_length + 2.0 * PI * SPROCKET_R
-	
-	_extended_y  = DECK_SURFACE_Y + stopper_height * 0.5
-	_retracted_y = DECK_SURFACE_Y - stopper_height * 0.5 - 0.05
-
 	if _deck_root == null:
 		_deck_root = get_node_or_null("DeckRoot")
 	
@@ -110,6 +114,16 @@ func _ready() -> void:
 		add_child(_deck_root)
 		if Engine.is_editor_hint():
 			_deck_root.owner = get_tree().edited_scene_root
+
+	_rebuild_everything()
+
+func _rebuild_everything() -> void:
+	if not is_node_ready():
+		return
+	_spr_cy    = DECK_SURFACE_Y - SPROCKET_R
+	_loop_len  = 2.0 * deck_length + 2.0 * PI * SPROCKET_R
+	_extended_y  = DECK_SURFACE_Y + stopper_height * 0.5
+	_retracted_y = DECK_SURFACE_Y - stopper_height * 0.5 - 0.05
 
 	# Clear any old procedural nodes to avoid duplicates in editor tool mode
 	_clear_procedural_nodes()
@@ -161,6 +175,7 @@ func _clear_procedural_nodes() -> void:
 	_num_links = 0
 	_frame_body = null
 	_stoppers_body = null
+	_ramp_body = null
 
 	if _deck_root != null:
 		if _deck_root.has_node("Frame"):
@@ -482,6 +497,8 @@ func _build_stoppers() -> void:
 
 
 func _build_pivot_ramp() -> void:
+	if not ramp_enabled:
+		return
 	var ramp := AnimatableBody3D.new()
 	ramp.name = "PivotingRamp"
 	ramp.sync_to_physics = true

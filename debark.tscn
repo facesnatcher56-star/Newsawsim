@@ -310,7 +310,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.039669037, -0.5130632, -0.
 size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ground")
 
-[node name="LevelChainDeck" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
+[node name="ReSawDeck1" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 14.685764, 0.5144422, -0.6011386)
 chain_speed = 0.2
 running = true
@@ -320,7 +320,20 @@ ramp_angle_up_deg = 70.0
 ramp_speed = 40.0
 max_logs_on_deck = 10
 
-[node name="CollisionShape3D" parent="Ground/LevelChainDeck/DeckRoot/LoadZone" parent_id_path=PackedInt32Array(347498683, 2021739285) index="0" unique_id=1007098130]
+[node name="CollisionShape3D" parent="Ground/ReSawDeck1/DeckRoot/LoadZone" parent_id_path=PackedInt32Array(347498683, 2021739285) index="0" unique_id=1007098130]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.8200016)
+
+[node name="ReSawDeck2" parent="Ground" unique_id=1410568683 instance=ExtResource("2_1dclx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.685764, 0.5144422, -7.241973)
+chain_speed = 0.2
+running = true
+floor_y = 0.08
+ramp_angle_down_deg = 10.0
+ramp_angle_up_deg = 70.0
+ramp_speed = 40.0
+max_logs_on_deck = 10
+
+[node name="CollisionShape3D" parent="Ground/ReSawDeck2/DeckRoot/LoadZone" parent_id_path=PackedInt32Array(1410568683, 2021739285) index="0" unique_id=1007098130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.8200016)
 
 [node name="RollerBed2" parent="Ground" unique_id=220690297 instance=ExtResource("3_n1fx5")]
@@ -1161,7 +1174,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.0589113)
 [node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/DeckArea" index="0" unique_id=1572588527]
 shape = SubResource("BoxShape3D_ei6oq")
 
-[editable path="Ground/LevelChainDeck"]
+[editable path="Ground/ReSawDeck1"]
+[editable path="Ground/ReSawDeck2"]
 [editable path="Ground/SweepRoller"]
 [editable path="DebarkerStation"]
 [editable path="DebarkerStation/DebarkInfeedConveyor"]
