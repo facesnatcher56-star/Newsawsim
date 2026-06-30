@@ -440,8 +440,8 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 
 		# Only engage this pin if it's selected for the active board
 		if active_pin_indices.has(i):
-			target_y = float(station["retracted_y"]) + 3.0
-			sleeve_target_y = float(station["sleeve_retracted_y"]) + 3.0
+			target_y = float(station["retracted_y"]) + 5.0
+			sleeve_target_y = float(station["sleeve_retracted_y"]) + 5.0
 			# Push pin in +Z direction to extend toward board center
 			target_z = float(station["z"]) + 5.0
 
