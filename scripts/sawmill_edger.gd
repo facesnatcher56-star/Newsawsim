@@ -262,8 +262,6 @@ func _real_cut_boards() -> Array[RigidBody3D]:
 		if body == _sample_board or body.freeze:
 			continue
 		boards.append(body)
-	if is_instance_valid(_real_active_board) and not boards.has(_real_active_board):
-		boards.append(_real_active_board)
 	return boards
 
 
@@ -271,15 +269,10 @@ func _apply_feed_contact(body: RigidBody3D, local_center: Vector3) -> void:
 	if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), bed_length * 0.5):
 		return
 
-	var can_feed := false
-	if body == _real_active_board:
-		if _real_centering_phase == CenteringPreviewPhase.FEED_BOARD or local_center.x > _centering_section_end_x() + 0.2:
-			can_feed = true
+	# Feed boards through the chain
+	if local_center.x > _centering_section_end_x() + 0.2:
+		pass  # Allow feeding
 	else:
-		if local_center.x > _centering_section_end_x() + 0.2:
-			can_feed = true
-
-	if not can_feed:
 		return
 
 	var x_axis := global_transform.basis.x.normalized()
@@ -318,27 +311,8 @@ func _apply_board_edge_lift(body: RigidBody3D, local_z: float, target_axis_y: fl
 
 
 func _apply_centering_pin_contacts(body: RigidBody3D, local_center: Vector3, delta: float) -> void:
-	if body != _real_active_board or _real_centering_phase != CenteringPreviewPhase.CENTER_BOARD:
-		return
-	var z_axis := global_transform.basis.z.normalized()
-	var z_error := -_get_board_local_z_center_for_body(body)
-	if absf(z_error) <= CENTERING_TOLERANCE:
-		var centered_z_speed := body.linear_velocity.dot(z_axis)
-		body.linear_velocity -= z_axis * centered_z_speed
-		return
-
-	var next_local_center := local_center
-	var target_origin_z := local_center.z + z_error
-	next_local_center.z = move_toward(local_center.z, target_origin_z, centering_board_speed * delta)
-	var z_step := next_local_center.z - local_center.z
-	if is_zero_approx(z_step):
-		return
-
-	body.global_position = to_global(next_local_center)
-	var target_z_speed := z_step / maxf(delta, 0.0001)
-	var local_z_speed := body.linear_velocity.dot(z_axis)
-	body.linear_velocity += z_axis * (target_z_speed - local_z_speed)
-	body.sleeping = false
+	# Centering is now handled by position and cushion pins - this is disabled
+	return
 
 
 func _apply_hold_down_contacts(body: RigidBody3D, local_center: Vector3) -> void:
@@ -369,12 +343,10 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 	var ramps := _parking_ramp_nodes()
 	if ramps.is_empty():
 		return
+	# Ramps stay retracted - position and cushion pins handle board positioning
 	var should_raise := false
-	if is_instance_valid(_real_active_board):
-		if _real_centering_phase < CenteringPreviewPhase.LOWER_RAMPS:
-			should_raise = true
 	for ramp in ramps:
-		var target_angle := float(ramp.get_meta("parked_angle" if should_raise else "retracted_angle", 0.0))
+		var target_angle := float(ramp.get_meta("retracted_angle", 0.0))
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
 
 
