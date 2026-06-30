@@ -419,8 +419,17 @@ func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
 	# If there's a board in the top_zone, select which pins should be active
 	var active_pin_indices: Array[int] = []
+	var active_board: RigidBody3D = null
 	if not boards_in_top_zone.is_empty():
-		active_pin_indices = _select_position_pins_for_board(boards_in_top_zone[0])
+		active_board = boards_in_top_zone[0]
+		active_pin_indices = _select_position_pins_for_board(active_board)
+
+	# Get marker target position (only if we have an active board)
+	var marker_target_z: float = 0.0
+	if is_instance_valid(active_board):
+		var marker = get_tree().root.get_node_or_null("HeadrigStation/MarkerRed")
+		if is_instance_valid(marker):
+			marker_target_z = marker.global_position.z
 
 	for i in range(_position_pin_stations.size()):
 		var station: Dictionary = _position_pin_stations[i]
@@ -446,7 +455,16 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 
 			# Only start Z movement after delay
 			if station["z_travel_elapsed"] >= position_pin_z_travel_delay:
-				target_z = base_z + position_pin_z_travel
+				# Calculate dynamic push distance: board needs to travel to marker's Z position
+				if is_instance_valid(active_board) and marker_target_z != 0.0:
+					var board_center_global_z = active_board.global_position.z
+					var distance_to_marker = marker_target_z - board_center_global_z
+					# Pin extends by the distance board needs to travel (clamped to max travel)
+					var extension = clampf(distance_to_marker, 0.0, position_pin_z_travel)
+					target_z = base_z + extension
+				else:
+					# Fallback to max travel if no marker found
+					target_z = base_z + position_pin_z_travel
 		else:
 			# Reset delay when pin is not active
 			station["z_travel_elapsed"] = 0.0
