@@ -136,20 +136,12 @@ var _mat_rubber: StandardMaterial3D
 @export_category("Motion")
 @export_range(0.1, 8.0, 0.1, "or_greater") var infeed_chain_feed_speed: float = 1.4
 @export_range(0.0, 20.0, 0.1, "or_greater") var feed_roller_spin_speed: float = 1.0
-@export_range(0.0, 80.0, 0.1, "or_greater") var blade_spin_speed: float = 18.0
 @export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
-@export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_lower_speed: float = 0.55
-@export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_raise_speed: float = 0.72
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_roller_spin_speed: float = 1.0
-@export_range(0.0, 80.0, 0.1, "or_greater") var hold_down_roller_spin_accel: float = 18.0
-@export_range(0.0, 80.0, 0.1, "or_greater") var hold_down_roller_spin_stop_rate: float = 10.0
 @export_range(0.0, 8.0, 0.01, "or_greater") var parking_ramp_speed: float = 1.8
 @export_range(0.0, 8.0, 0.01, "or_greater") var position_pin_speed: float = 1.6
 @export_range(0.0, 8.0, 0.01, "or_greater") var cushion_pin_speed: float = 2.2
-@export_range(0.0, 4.0, 0.01, "or_greater") var centering_board_speed: float = 0.28
 @export_range(0.0, 2.0, 0.01, "or_greater") var pin_retract_delay: float = 0.20
-@export_range(0.0, 2.0, 0.01, "or_greater") var feed_chain_start_delay: float = 0.22
-@export_range(-4.0, 0.0, 0.01) var side_load_start_z: float = -1.12
 
 @export_category("Position Pin Control")
 @export_range(0.0, 10.0, 0.1) var position_pin_raise_height: float = 5.0
@@ -162,8 +154,6 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 2000.0, 1.0, "or_greater") var board_feed_force: float = 420.0
 @export_range(0.0, 2000.0, 1.0, "or_greater") var parking_ramp_lift_force: float = 520.0
 @export_range(0.0, 200.0, 1.0, "or_greater") var parking_ramp_lift_damping: float = 35.0
-@export_range(0.0, 2000.0, 1.0, "or_greater") var centering_pin_force: float = 260.0
-@export_range(0.0, 200.0, 1.0, "or_greater") var centering_pin_damping: float = 28.0
 @export_range(0.0, 2000.0, 1.0, "or_greater") var hold_down_contact_force: float = 360.0
 
 const FEED_ROLLER_RADIUS := 0.075
