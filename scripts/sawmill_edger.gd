@@ -205,6 +205,8 @@ var _generated_name_counts: Dictionary = {}
 var _editor_group_stack: Array[Node3D] = []
 var _preserved_editor_group_transforms: Dictionary = {}
 var _assembly_builder: RefCounted
+var _centering_board: RigidBody3D = null
+var _centering_completed := false
 
 
 func _ready() -> void:
@@ -225,12 +227,44 @@ func _apply_real_board_contacts(delta: float) -> void:
 	# Check if any board is in the top_zone to trigger pin engagement
 	var boards_in_top_zone := _get_boards_in_top_zone()
 
-	_update_real_parking_ramps(delta, boards)
-	_update_real_position_pins(delta, boards, boards_in_top_zone)
-	_update_real_cushion_pins(delta, boards, boards_in_top_zone)
+	# State machine: keep centering until the board reaches target Z-limit (centered on chain at local Z = 0.0)
+	if is_instance_valid(_centering_board):
+		if not _centering_completed:
+			var board_center_global_z = _centering_board.global_position.z
+			# Target Z is the edger's global Z position, which aligns with local Z = 0.0 (chain center)
+			if board_center_global_z >= global_position.z - CENTERING_TOLERANCE:
+				_centering_completed = true
+				print("[SawmillEdger TRACE] Centering completed!")
+				print("   - Board center global Z: %.4f" % board_center_global_z)
+				print("   - Target global Z (chain center): %.4f" % global_position.z)
+				print("   - Board center offset from target: %.4f" % (board_center_global_z - global_position.z))
+				for i in range(_position_pin_stations.size()):
+					var station = _position_pin_stations[i]
+					var pin = station["pin"] as Node3D
+					if is_instance_valid(pin):
+						print("   - Position Pin %d local Z: %.4f, global Z: %.4f" % [i + 1, pin.position.z, pin.global_position.z])
+		
+		# Reset once centering is completed and the board has left the top zone
+		if _centering_completed and not boards_in_top_zone.has(_centering_board):
+			print("[SawmillEdger TRACE] Resetting centering cycle. Board left top zone.")
+			_centering_board = null
+			_centering_completed = false
+	
+	if not is_instance_valid(_centering_board):
+		if not boards_in_top_zone.is_empty():
+			_centering_board = boards_in_top_zone[0]
+			_centering_completed = false
+			print("[SawmillEdger TRACE] Centering started for: ", _centering_board.name)
+			print("   - Initial board center global Z: %.4f" % _centering_board.global_position.z)
+			print("   - Target global Z (chain center): %.4f" % global_position.z)
 
-	# Pause deck if board is in top zone
-	_set_infeed_deck_pause(not boards_in_top_zone.is_empty())
+	_update_real_parking_ramps(delta, boards)
+	_update_real_position_pins(delta, boards)
+	_update_real_cushion_pins(delta, boards)
+
+	# Pause deck if board is active and centering has not finished
+	var should_pause_deck = is_instance_valid(_centering_board) and not _centering_completed
+	_set_infeed_deck_pause(should_pause_deck)
 
 	_spin_real_contact_parts(delta, boards)
 	for body in boards:
@@ -417,12 +451,12 @@ func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 	return false
 
 
-func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
-	# If there's a board in the top_zone, select which pins should be active
+func _update_real_position_pins(delta: float, _boards: Array[RigidBody3D]) -> void:
+	# If there's an active board being centered, select which pins should be active
 	var active_pin_indices: Array[int] = []
 	var active_board: RigidBody3D = null
-	if not boards_in_top_zone.is_empty():
-		active_board = boards_in_top_zone[0]
+	if is_instance_valid(_centering_board) and not _centering_completed:
+		active_board = _centering_board
 		active_pin_indices = _select_position_pins_for_board(active_board)
 
 	for i in range(_position_pin_stations.size()):
@@ -449,13 +483,13 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 
 			# Only start Z movement after delay
 			if station["z_travel_elapsed"] >= position_pin_z_travel_delay:
-				# Calculate dynamic push distance to reach target Z (MarkerRed position)
 				if is_instance_valid(active_board):
-					var board_center_global_z = active_board.global_position.z
-					var distance_to_target = position_pin_target_z - board_center_global_z
-					# Pin extends by the distance board needs to travel (clamped to max travel)
-					var extension = clampf(distance_to_target, 0.0, position_pin_z_travel)
-					target_z = base_z + extension
+					# Align the board center to local Z = 0.0 (chain center)
+					# The pin touches the negative Z edge of the board. We subtract the parent assembly's Z
+					# to convert from edger-local coordinate space to pin-local coordinate space:
+					var assembly = get_node_or_null("PositionPinAssembly") as Node3D
+					var assembly_z = assembly.position.z if is_instance_valid(assembly) else 0.0
+					target_z = -_get_board_width_for_body(active_board) / 2.0 - assembly_z
 				else:
 					target_z = base_z + position_pin_z_travel
 		else:
@@ -470,7 +504,7 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 			sleeve.position.z = move_toward(sleeve.position.z, target_z, position_pin_z_travel_speed * delta)
 
 
-func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
+func _update_real_cushion_pins(delta: float, _boards: Array[RigidBody3D]) -> void:
 	for i in range(_cushion_pin_stations.size()):
 		var station: Dictionary = _cushion_pin_stations[i]
 		var body: Node3D = station["body"] as Node3D
@@ -481,16 +515,14 @@ func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D], boards_
 		var nearby_board: RigidBody3D = null
 		var board_z_bounds: Vector2 = Vector2.ZERO
 
-		# Find a board from the top_zone that overlaps this pin's X position
-		for board in boards_in_top_zone:
-			var local_center := to_local(board.global_position)
+		# If an active board is being centered, check if it overlaps this cushion pin in X
+		if is_instance_valid(_centering_board) and not _centering_completed:
+			var local_center := to_local(_centering_board.global_position)
 			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
 			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
-			# Check if pin's X falls within board's X range
 			if pin_x >= board_min_x and pin_x <= board_max_x:
-				nearby_board = board
-				board_z_bounds = _get_board_local_z_bounds_for_body(board)
-				break
+				nearby_board = _centering_board
+				board_z_bounds = _get_board_local_z_bounds_for_body(_centering_board)
 
 		var base_z := float(station["base_z"])
 		var target_z := base_z

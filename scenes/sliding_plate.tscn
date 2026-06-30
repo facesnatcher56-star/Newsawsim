@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://do7m0w82c4cxo"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_plate"]
+friction = 0.2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_js36l"]
+size = Vector3(0.22781754, 0.09295654, 0.871727)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plate"]
+albedo_color = Color(0.4, 0.4, 0.45, 1)
+metallic = 0.5
+roughness = 0.2
+
+[node name="SlidingPlate" type="StaticBody3D" unique_id=1076047872]
+physics_material_override = SubResource("PhysicsMaterial_plate")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=582867989]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9480007, 0.49197388, -1.8065681)
+shape = SubResource("BoxShape3D_js36l")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1138548671]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9452744, 0.4816475, -1.8081665)
+size = Vector3(0.23291016, 0.1, 0.85583496)
+material = SubResource("StandardMaterial3D_plate")
