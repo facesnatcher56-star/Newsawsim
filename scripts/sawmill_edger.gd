@@ -429,9 +429,12 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 		var nearby_board: RigidBody3D = null
 		var board_z_bounds: Vector2 = Vector2.ZERO
 
-		# Find a board that overlaps this pin's X position
+		# Find a board that overlaps this pin's X position AND is in the edger processing zone
 		for board in boards:
 			var local_center := to_local(board.global_position)
+			# Only process boards in the edger's working area (near the saw)
+			if not _board_overlaps_x_range(local_center.x, SAW_X - 1.0, SAW_X + 0.5):
+				continue
 			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
 			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
 			# Check if pin's X falls within board's X range
@@ -448,8 +451,8 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 		if is_instance_valid(nearby_board):
 			target_y = _position_pin_raised_y_for_board(station, nearby_board)
 			sleeve_target_y = _real_position_pin_sleeve_raised_y(station, target_y)
-			# Move pin to touch the board edge
-			target_z = board_z_bounds.x - position_pin_radius
+			# Move pin to touch the board's far edge
+			target_z = board_z_bounds.y + position_pin_radius
 
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
@@ -470,9 +473,12 @@ func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D]) -> void
 		var nearby_board: RigidBody3D = null
 		var board_z_bounds: Vector2 = Vector2.ZERO
 
-		# Find a board that overlaps this pin's X position
+		# Find a board that overlaps this pin's X position AND is in the edger processing zone
 		for board in boards:
 			var local_center := to_local(board.global_position)
+			# Only process boards in the edger's working area (near the saw)
+			if not _board_overlaps_x_range(local_center.x, SAW_X - 1.0, SAW_X + 0.5):
+				continue
 			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
 			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
 			# Check if pin's X falls within board's X range
