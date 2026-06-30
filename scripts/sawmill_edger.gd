@@ -236,7 +236,6 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint() or not enable_board_physics_contacts:
 		return
-	_update_real_centering_cycle(delta)
 	_apply_real_board_contacts(delta)
 
 
@@ -246,6 +245,9 @@ func _apply_real_board_contacts(delta: float) -> void:
 		return
 
 	_update_real_parking_ramps(delta, boards)
+	_update_real_position_pins(delta, boards)
+	_update_real_cushion_pins(delta, boards)
+	_set_infeed_deck_pause(false)
 	_spin_real_contact_parts(delta, boards)
 	for body in boards:
 		var local_center := to_local(body.global_position)
@@ -386,6 +388,80 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 	for ramp in ramps:
 		var target_angle := float(ramp.get_meta("parked_angle" if should_raise else "retracted_angle", 0.0))
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
+
+
+func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> void:
+	for i in range(_position_pin_stations.size()):
+		var station: Dictionary = _position_pin_stations[i]
+		var pin: Node3D = station["pin"] as Node3D
+		var sleeve: Node3D = station["sleeve"] as Node3D
+		if not is_instance_valid(pin) and not is_instance_valid(sleeve):
+			continue
+
+		var pin_x := float(station["x"])
+		var nearby_board: RigidBody3D = null
+		var board_z_bounds: Vector2 = Vector2.ZERO
+
+		# Find a board that overlaps this pin's X position
+		for board in boards:
+			var local_center := to_local(board.global_position)
+			if _board_overlaps_x_range(pin_x, local_center.x - SAMPLE_BOARD_LENGTH * 0.5, local_center.x + SAMPLE_BOARD_LENGTH * 0.5):
+				nearby_board = board
+				board_z_bounds = _get_board_local_z_bounds_for_body(board)
+				break
+
+		var target_y: float = float(station["retracted_y"])
+		var sleeve_target_y: float = float(station["sleeve_retracted_y"])
+		var target_z: float = float(station["z"])
+
+		# If a board is nearby, raise the pin and move it to contact the board edge
+		if is_instance_valid(nearby_board):
+			target_y = _real_position_pin_raised_y(station)
+			sleeve_target_y = _real_position_pin_sleeve_raised_y(station, target_y)
+			# Move pin to touch the board edge
+			target_z = board_z_bounds.x - position_pin_radius
+
+		if is_instance_valid(pin):
+			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
+			pin.position.z = move_toward(pin.position.z, target_z, centering_board_speed * delta)
+		if is_instance_valid(sleeve):
+			sleeve.position.y = move_toward(sleeve.position.y, sleeve_target_y, position_pin_speed * delta)
+			sleeve.position.z = move_toward(sleeve.position.z, target_z, centering_board_speed * delta)
+
+
+func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D]) -> void:
+	for i in range(_cushion_pin_stations.size()):
+		var station: Dictionary = _cushion_pin_stations[i]
+		var body: Node3D = station["body"] as Node3D
+		if not is_instance_valid(body):
+			continue
+
+		var pin_x := float(station["x"])
+		var nearby_board: RigidBody3D = null
+		var board_z_bounds: Vector2 = Vector2.ZERO
+
+		# Find a board that overlaps this pin's X position
+		for board in boards:
+			var local_center := to_local(board.global_position)
+			if _board_overlaps_x_range(pin_x, local_center.x - SAMPLE_BOARD_LENGTH * 0.5, local_center.x + SAMPLE_BOARD_LENGTH * 0.5):
+				nearby_board = board
+				board_z_bounds = _get_board_local_z_bounds_for_body(board)
+				break
+
+		var base_z := float(station["base_z"])
+		var target_z := base_z
+
+		# If a board is nearby, extend the pin to contact it
+		if is_instance_valid(nearby_board):
+			var fully_extended_z := base_z - cushion_pin_extension
+			var pad_contact_offset := CUSHION_PAD_CONTACT_OFFSET_Z - cushion_pin_extension * 0.5
+			var pad := body.get_node_or_null("CushionPad") as Node3D
+			if is_instance_valid(pad):
+				pad_contact_offset = pad.position.z - 0.0225
+			var contact_z := board_z_bounds.y - pad_contact_offset
+			target_z = clampf(contact_z, fully_extended_z, base_z)
+
+		body.position.z = move_toward(body.position.z, target_z, cushion_pin_speed * delta)
 
 
 func _spin_real_contact_parts(delta: float, boards: Array[RigidBody3D]) -> void:
