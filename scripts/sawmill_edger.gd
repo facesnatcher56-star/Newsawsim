@@ -470,10 +470,8 @@ func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
 	# If there's a board in the top_zone, select which pins should be active
 	var active_pin_indices: Array[int] = []
-	var active_board: RigidBody3D = null
 	if not boards_in_top_zone.is_empty():
-		active_board = boards_in_top_zone[0]
-		active_pin_indices = _select_position_pins_for_board(active_board)
+		active_pin_indices = _select_position_pins_for_board(boards_in_top_zone[0])
 
 	for i in range(_position_pin_stations.size()):
 		var station: Dictionary = _position_pin_stations[i]
@@ -487,12 +485,11 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 		var target_z: float = float(station["z"])
 
 		# Only engage this pin if it's selected for the active board
-		if is_instance_valid(active_board) and active_pin_indices.has(i):
-			var board_z_bounds := _get_board_local_z_bounds_for_body(active_board)
-			target_y = _position_pin_raised_y_for_board(station, active_board)
-			sleeve_target_y = _real_position_pin_sleeve_raised_y(station, target_y)
-			# Move pin to touch the board's edge, pushing in +Z direction
-			target_z = board_z_bounds.x - position_pin_radius
+		if active_pin_indices.has(i):
+			target_y = 0.35
+			sleeve_target_y = 0.35
+			# Push pin in +Z direction to extend toward board center
+			target_z = float(station["z"]) + 0.5
 
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
