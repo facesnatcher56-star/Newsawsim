@@ -244,17 +244,15 @@ func _apply_real_board_contacts(delta: float) -> void:
 	if boards.is_empty():
 		return
 
-	_update_real_parking_ramps(delta, boards)
-	_update_real_position_pins(delta, boards)
-	_update_real_cushion_pins(delta, boards)
+	# Check if any board is in the top_zone to trigger pin engagement
+	var boards_in_top_zone := _get_boards_in_top_zone()
 
-	# Pause deck if any board is in the processing zone (has pins engaged)
-	var should_pause := false
-	for board in boards:
-		if _board_has_pins_engaged(board):
-			should_pause = true
-			break
-	_set_infeed_deck_pause(should_pause)
+	_update_real_parking_ramps(delta, boards)
+	_update_real_position_pins(delta, boards, boards_in_top_zone)
+	_update_real_cushion_pins(delta, boards, boards_in_top_zone)
+
+	# Pause deck if board is in top zone
+	_set_infeed_deck_pause(not boards_in_top_zone.is_empty())
 
 	_spin_real_contact_parts(delta, boards)
 	for body in boards:
@@ -398,6 +396,27 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
 
 
+func _get_boards_in_top_zone() -> Array[RigidBody3D]:
+	var boards_in_zone: Array[RigidBody3D] = []
+	var deck = infeed_deck
+	if not is_instance_valid(deck) and is_inside_tree():
+		deck = get_parent().get_node_or_null("EdgerTakeAway")
+
+	if is_instance_valid(deck):
+		var top_zone = null
+		if deck.has_method("get"):
+			top_zone = deck.get("top_zone")
+		else:
+			top_zone = deck.top_zone if "top_zone" in deck else null
+
+		if is_instance_valid(top_zone):
+			for body in top_zone.get_overlapping_bodies():
+				if body is RigidBody3D and (body.is_in_group("cut_boards") or "board" in body.name.to_lower()):
+					boards_in_zone.append(body)
+
+	return boards_in_zone
+
+
 func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 	var local_center := to_local(board.global_position)
 	# Check if any position pins are engaged with this board
@@ -417,7 +436,7 @@ func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 	return false
 
 
-func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> void:
+func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
 	for i in range(_position_pin_stations.size()):
 		var station: Dictionary = _position_pin_stations[i]
 		var pin: Node3D = station["pin"] as Node3D
@@ -429,12 +448,9 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 		var nearby_board: RigidBody3D = null
 		var board_z_bounds: Vector2 = Vector2.ZERO
 
-		# Find a board that overlaps this pin's X position AND is in the edger processing zone
-		for board in boards:
+		# Find a board from the top_zone that overlaps this pin's X position
+		for board in boards_in_top_zone:
 			var local_center := to_local(board.global_position)
-			# Only process boards in the edger's working area (near the saw)
-			if not _board_overlaps_x_range(local_center.x, SAW_X - 1.0, SAW_X + 0.5):
-				continue
 			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
 			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
 			# Check if pin's X falls within board's X range
@@ -451,8 +467,8 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 		if is_instance_valid(nearby_board):
 			target_y = _position_pin_raised_y_for_board(station, nearby_board)
 			sleeve_target_y = _real_position_pin_sleeve_raised_y(station, target_y)
-			# Move pin to touch the board's far edge
-			target_z = board_z_bounds.y + position_pin_radius
+			# Move pin to touch the board's edge
+			target_z = board_z_bounds.x - position_pin_radius
 
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
@@ -462,7 +478,7 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 			sleeve.position.z = move_toward(sleeve.position.z, target_z, centering_board_speed * delta)
 
 
-func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D]) -> void:
+func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
 	for i in range(_cushion_pin_stations.size()):
 		var station: Dictionary = _cushion_pin_stations[i]
 		var body: Node3D = station["body"] as Node3D
@@ -473,12 +489,9 @@ func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D]) -> void
 		var nearby_board: RigidBody3D = null
 		var board_z_bounds: Vector2 = Vector2.ZERO
 
-		# Find a board that overlaps this pin's X position AND is in the edger processing zone
-		for board in boards:
+		# Find a board from the top_zone that overlaps this pin's X position
+		for board in boards_in_top_zone:
 			var local_center := to_local(board.global_position)
-			# Only process boards in the edger's working area (near the saw)
-			if not _board_overlaps_x_range(local_center.x, SAW_X - 1.0, SAW_X + 0.5):
-				continue
 			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
 			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
 			# Check if pin's X falls within board's X range
