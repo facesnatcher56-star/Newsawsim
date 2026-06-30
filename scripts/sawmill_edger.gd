@@ -440,8 +440,8 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 
 		# Only engage this pin if it's selected for the active board
 		if active_pin_indices.has(i):
-			target_y = 0.35
-			sleeve_target_y = 0.35
+			target_y = float(station["retracted_y"]) + 3.0
+			sleeve_target_y = float(station["sleeve_retracted_y"]) + 3.0
 			# Push pin in +Z direction to extend toward board center
 			target_z = float(station["z"]) + 0.5
 
@@ -1522,4 +1522,3 @@ func _get_board_thickness_for_body(board: RigidBody3D) -> float:
 			if min_y < max_y:
 				return max_y - min_y
 	return SAMPLE_BOARD_THICKNESS
-
