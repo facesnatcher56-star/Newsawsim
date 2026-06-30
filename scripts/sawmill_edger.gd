@@ -400,14 +400,16 @@ func _select_position_pins_for_board(board: RigidBody3D) -> Array[int]:
 	var selected_indices: Array[int] = []
 	var candidates: Array[Dictionary] = []
 
-	var board_z_bounds := _get_board_local_z_bounds_for_body(board)
+	var local_center := to_local(board.global_position)
+	var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+	var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
 
-	# Find all position pins that can reach the board's Z extent
+	# Find all position pins that overlap with the board's X range
 	for i in range(_position_pin_stations.size()):
 		var station: Dictionary = _position_pin_stations[i]
 		var pin_x := float(station["x"])
-		# Check if this pin's Z position overlaps with board's Z extent
-		if absf(pin_x) <= board_z_bounds.y and absf(pin_x) >= board_z_bounds.x:
+		# Check if this pin's X position falls within board's X range
+		if pin_x >= board_min_x and pin_x <= board_max_x:
 			candidates.append({"index": i, "x": pin_x})
 
 	if candidates.size() < 2:
