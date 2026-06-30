@@ -419,7 +419,7 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 
 		# If a board is nearby, raise the pin and move it to contact the board edge
 		if is_instance_valid(nearby_board):
-			target_y = _real_position_pin_raised_y(station)
+			target_y = _position_pin_raised_y_for_board(station, nearby_board)
 			sleeve_target_y = _real_position_pin_sleeve_raised_y(station, target_y)
 			# Move pin to touch the board edge
 			target_z = board_z_bounds.x - position_pin_radius
@@ -1570,6 +1570,13 @@ func _update_real_cushion_pins_home(delta: float) -> void:
 		var body := station["body"] as Node3D
 		if is_instance_valid(body):
 			body.position.z = move_toward(body.position.z, float(station["base_z"]), cushion_pin_speed * delta)
+
+
+func _position_pin_raised_y_for_board(station: Dictionary, board: RigidBody3D) -> float:
+	var thickness := _get_board_thickness_for_body(board)
+	var board_top_y := to_local(board.global_position).y + thickness * 0.5
+	var pin_center_for_board_top := board_top_y - position_pin_height * 0.5 + 0.012
+	return clampf(pin_center_for_board_top, float(station["retracted_y"]), float(station["raised_y"]))
 
 
 func _real_position_pin_raised_y(station: Dictionary) -> float:
