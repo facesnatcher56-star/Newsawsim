@@ -754,7 +754,7 @@ func _physics_process(delta: float) -> void:
 
 	if is_instance_valid(_frame_body):
 		var vel := Vector3(0.0, 0.0, _current_chain_speed)
-		_frame_body.constant_linear_velocity = global_transform.basis * vel
+		_frame_body.constant_linear_velocity = Vector3.ZERO if lugs_enabled else global_transform.basis * vel
 
 	if abs(_current_chain_speed) <= 0.0001:
 		return
@@ -807,7 +807,7 @@ func set_running(on: bool, _force: bool = false) -> void:
 	if is_instance_valid(_frame_body):
 		var blocked_now := is_blocked_at_top()
 		var vel: Vector3 = Vector3(0.0, 0.0, _current_chain_speed if (running and not blocked_now) else 0.0)
-		_frame_body.constant_linear_velocity = global_transform.basis * vel
+		_frame_body.constant_linear_velocity = Vector3.ZERO if lugs_enabled else global_transform.basis * vel
 
 
 func _unlock_log(l_node: RigidBody3D) -> void:

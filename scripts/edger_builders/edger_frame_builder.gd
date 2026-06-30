@@ -38,5 +38,5 @@ func build_side_fences() -> void:
 	var half_w := edger.machine_width * 0.5
 	var fence_zs: Array[float] = [-half_w + 0.22, half_w - 0.22]
 	for z in fence_zs:
-		edger._add_box("SideFence", Vector3(0, edger.working_height + 0.18, z), Vector3(edger.bed_length * 0.94, 0.22, 0.06), edger._mat_frame)
+		edger._add_box("SideFence", Vector3(0, edger.working_height + 0.18, z), Vector3(edger.bed_length * 0.94, 0.22, 0.06), edger._mat_frame, Vector3.ZERO, false)
 	edger._pop_editor_group()

@@ -257,7 +257,7 @@ func _apply_real_board_contacts(delta: float) -> void:
 		body.sleeping = false
 		_apply_feed_contact(body, local_center)
 		_apply_parking_ramp_edge_contacts(body, local_center)
-		_apply_centering_pin_contacts(body, local_center)
+		_apply_centering_pin_contacts(body, local_center, delta)
 		_apply_hold_down_contacts(body, local_center)
 
 
@@ -324,17 +324,27 @@ func _apply_board_edge_lift(body: RigidBody3D, local_z: float, target_axis_y: fl
 		body.apply_force(y_axis * lift_force, force_offset)
 
 
-func _apply_centering_pin_contacts(body: RigidBody3D, local_center: Vector3) -> void:
+func _apply_centering_pin_contacts(body: RigidBody3D, local_center: Vector3, delta: float) -> void:
 	if body != _real_active_board or _real_centering_phase != CenteringPreviewPhase.CENTER_BOARD:
 		return
 	var z_axis := global_transform.basis.z.normalized()
 	var z_error := -local_center.z
 	if absf(z_error) <= CENTERING_TOLERANCE:
+		var centered_z_speed := body.linear_velocity.dot(z_axis)
+		body.linear_velocity -= z_axis * centered_z_speed
 		return
+
+	var next_local_center := local_center
+	next_local_center.z = move_toward(local_center.z, 0.0, centering_board_speed * delta)
+	var z_step := next_local_center.z - local_center.z
+	if is_zero_approx(z_step):
+		return
+
+	body.global_position = to_global(next_local_center)
+	var target_z_speed := z_step / maxf(delta, 0.0001)
 	var local_z_speed := body.linear_velocity.dot(z_axis)
-	var force := z_error * centering_pin_force * 10.0 - local_z_speed * centering_pin_damping * body.mass
-	force = clampf(force, -centering_pin_force, centering_pin_force)
-	body.apply_central_force(z_axis * force)
+	body.linear_velocity += z_axis * (target_z_speed - local_z_speed)
+	body.sleeping = false
 
 
 func _apply_hold_down_contacts(body: RigidBody3D, local_center: Vector3) -> void:
