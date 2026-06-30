@@ -1190,10 +1190,9 @@ shape = SubResource("BoxShape3D_jhoeu")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.46477965, 18.297045)
 show_waste_chutes = false
 position_pin_raise_height = 0.2
-position_pin_z_travel = 0.5
+position_pin_z_travel = 1.0
 position_pin_z_travel_speed = 0.57
 position_pin_z_travel_delay = 0.99
-position_pin_target_z = 18.825495
 
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]
