@@ -247,7 +247,15 @@ func _apply_real_board_contacts(delta: float) -> void:
 	_update_real_parking_ramps(delta, boards)
 	_update_real_position_pins(delta, boards)
 	_update_real_cushion_pins(delta, boards)
-	_set_infeed_deck_pause(false)
+
+	# Pause deck if any board is in the processing zone (has pins engaged)
+	var should_pause := false
+	for board in boards:
+		if _board_has_pins_engaged(board):
+			should_pause = true
+			break
+	_set_infeed_deck_pause(should_pause)
+
 	_spin_real_contact_parts(delta, boards)
 	for body in boards:
 		var local_center := to_local(body.global_position)
@@ -388,6 +396,25 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 	for ramp in ramps:
 		var target_angle := float(ramp.get_meta("parked_angle" if should_raise else "retracted_angle", 0.0))
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
+
+
+func _board_has_pins_engaged(board: RigidBody3D) -> bool:
+	var local_center := to_local(board.global_position)
+	# Check if any position pins are engaged with this board
+	for station in _position_pin_stations:
+		var pin_x := float(station["x"])
+		var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+		var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
+		if pin_x >= board_min_x and pin_x <= board_max_x:
+			return true
+	# Check if any cushion pins are engaged with this board
+	for station in _cushion_pin_stations:
+		var pin_x := float(station["x"])
+		var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+		var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
+		if pin_x >= board_min_x and pin_x <= board_max_x:
+			return true
+	return false
 
 
 func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> void:
