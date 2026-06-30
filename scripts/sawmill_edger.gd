@@ -1168,7 +1168,7 @@ func _add_physics_box(node_name: String, local_position: Vector3, size: Vector3,
 	body.name = _friendly_part_name(node_name, local_position)
 	body.position = local_position
 	body.rotation = local_rotation
-	body.sync_to_physics = true
+	body.sync_to_physics = false
 	_current_part_parent().add_child(body)
 	_adopt_new_node(body)
 	_add_box_contact_child(body, "Visual", Vector3.ZERO, size, material)
@@ -1180,7 +1180,7 @@ func _add_physics_cylinder(node_name: String, local_position: Vector3, radius: f
 	body.name = _friendly_part_name(node_name, local_position)
 	body.position = local_position
 	body.rotation = local_rotation
-	body.sync_to_physics = true
+	body.sync_to_physics = false
 	_current_part_parent().add_child(body)
 	_adopt_new_node(body)
 
