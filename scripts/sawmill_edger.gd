@@ -405,7 +405,10 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D]) -> voi
 		# Find a board that overlaps this pin's X position
 		for board in boards:
 			var local_center := to_local(board.global_position)
-			if _board_overlaps_x_range(pin_x, local_center.x - SAMPLE_BOARD_LENGTH * 0.5, local_center.x + SAMPLE_BOARD_LENGTH * 0.5):
+			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
+			# Check if pin's X falls within board's X range
+			if pin_x >= board_min_x and pin_x <= board_max_x:
 				nearby_board = board
 				board_z_bounds = _get_board_local_z_bounds_for_body(board)
 				break
@@ -443,7 +446,10 @@ func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D]) -> void
 		# Find a board that overlaps this pin's X position
 		for board in boards:
 			var local_center := to_local(board.global_position)
-			if _board_overlaps_x_range(pin_x, local_center.x - SAMPLE_BOARD_LENGTH * 0.5, local_center.x + SAMPLE_BOARD_LENGTH * 0.5):
+			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
+			# Check if pin's X falls within board's X range
+			if pin_x >= board_min_x and pin_x <= board_max_x:
 				nearby_board = board
 				board_z_bounds = _get_board_local_z_bounds_for_body(board)
 				break
