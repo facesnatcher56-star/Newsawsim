@@ -396,6 +396,35 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
 
 
+func _select_position_pins_for_board(board: RigidBody3D) -> Array[int]:
+	var selected_indices: Array[int] = []
+	var candidates: Array[Dictionary] = []
+
+	var board_z_bounds := _get_board_local_z_bounds_for_body(board)
+
+	# Find all position pins that can reach the board's Z extent
+	for i in range(_position_pin_stations.size()):
+		var station: Dictionary = _position_pin_stations[i]
+		var pin_x := float(station["x"])
+		# Check if this pin's Z position overlaps with board's Z extent
+		if absf(pin_x) <= board_z_bounds.y and absf(pin_x) >= board_z_bounds.x:
+			candidates.append({"index": i, "x": pin_x})
+
+	if candidates.size() < 2:
+		return selected_indices
+
+	# Sort by X position to find the two furthest apart
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["x"]) < float(b["x"])
+	)
+
+	# Select the first and last (furthest apart in X)
+	selected_indices.append(int(candidates[0]["index"]))
+	selected_indices.append(int(candidates[-1]["index"]))
+
+	return selected_indices
+
+
 func _get_boards_in_top_zone() -> Array[RigidBody3D]:
 	var boards_in_zone: Array[RigidBody3D] = []
 	var deck = infeed_deck
@@ -437,6 +466,13 @@ func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 
 
 func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
+	# If there's a board in the top_zone, select which pins should be active
+	var active_pin_indices: Array[int] = []
+	var active_board: RigidBody3D = null
+	if not boards_in_top_zone.is_empty():
+		active_board = boards_in_top_zone[0]
+		active_pin_indices = _select_position_pins_for_board(active_board)
+
 	for i in range(_position_pin_stations.size()):
 		var station: Dictionary = _position_pin_stations[i]
 		var pin: Node3D = station["pin"] as Node3D
@@ -444,30 +480,16 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 		if not is_instance_valid(pin) and not is_instance_valid(sleeve):
 			continue
 
-		var pin_x := float(station["x"])
-		var nearby_board: RigidBody3D = null
-		var board_z_bounds: Vector2 = Vector2.ZERO
-
-		# Find a board from the top_zone that overlaps this pin's X position
-		for board in boards_in_top_zone:
-			var local_center := to_local(board.global_position)
-			var board_min_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
-			var board_max_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
-			# Check if pin's X falls within board's X range
-			if pin_x >= board_min_x and pin_x <= board_max_x:
-				nearby_board = board
-				board_z_bounds = _get_board_local_z_bounds_for_body(board)
-				break
-
 		var target_y: float = float(station["retracted_y"])
 		var sleeve_target_y: float = float(station["sleeve_retracted_y"])
 		var target_z: float = float(station["z"])
 
-		# If a board is nearby, raise the pin and move it to contact the board edge
-		if is_instance_valid(nearby_board):
-			target_y = _position_pin_raised_y_for_board(station, nearby_board)
+		# Only engage this pin if it's selected for the active board
+		if is_instance_valid(active_board) and active_pin_indices.has(i):
+			var board_z_bounds := _get_board_local_z_bounds_for_body(active_board)
+			target_y = _position_pin_raised_y_for_board(station, active_board)
 			sleeve_target_y = _real_position_pin_sleeve_raised_y(station, target_y)
-			# Move pin to touch the board's edge
+			# Move pin to touch the board's edge, pushing in +Z direction
 			target_z = board_z_bounds.x - position_pin_radius
 
 		if is_instance_valid(pin):
