@@ -151,6 +151,12 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 2.0, 0.01, "or_greater") var feed_chain_start_delay: float = 0.22
 @export_range(-4.0, 0.0, 0.01) var side_load_start_z: float = -1.12
 
+@export_category("Position Pin Control")
+@export_range(0.0, 10.0, 0.1) var position_pin_raise_height: float = 5.0
+@export_range(0.0, 10.0, 0.1, "or_greater") var position_pin_z_travel: float = 5.0
+@export_range(0.0, 10.0, 0.01, "or_greater") var position_pin_z_travel_speed: float = 0.95
+@export_range(0.0, 2.0, 0.01) var position_pin_z_travel_delay: float = 0.0
+
 @export_category("Board Physics")
 @export var enable_board_physics_contacts: bool = true
 @export_range(0.0, 2000.0, 1.0, "or_greater") var board_feed_force: float = 420.0
@@ -437,20 +443,31 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 		var target_y: float = float(station["retracted_y"])
 		var sleeve_target_y: float = float(station["sleeve_retracted_y"])
 		var target_z: float = float(station["z"])
+		var base_z: float = float(station["z"])
 
 		# Only engage this pin if it's selected for the active board
 		if active_pin_indices.has(i):
-			target_y = float(station["retracted_y"]) + 5.0
-			sleeve_target_y = float(station["sleeve_retracted_y"]) + 5.0
-			# Push pin in +Z direction to extend toward board center
-			target_z = float(station["z"]) + 5.0
+			target_y = float(station["retracted_y"]) + position_pin_raise_height
+			sleeve_target_y = float(station["sleeve_retracted_y"]) + position_pin_raise_height
+
+			# Track elapsed time for Z travel delay
+			if not station.has("z_travel_elapsed"):
+				station["z_travel_elapsed"] = 0.0
+			station["z_travel_elapsed"] += delta
+
+			# Only start Z movement after delay
+			if station["z_travel_elapsed"] >= position_pin_z_travel_delay:
+				target_z = base_z + position_pin_z_travel
+		else:
+			# Reset delay when pin is not active
+			station["z_travel_elapsed"] = 0.0
 
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
-			pin.position.z = move_toward(pin.position.z, target_z, centering_board_speed * delta)
+			pin.position.z = move_toward(pin.position.z, target_z, position_pin_z_travel_speed * delta)
 		if is_instance_valid(sleeve):
 			sleeve.position.y = move_toward(sleeve.position.y, sleeve_target_y, position_pin_speed * delta)
-			sleeve.position.z = move_toward(sleeve.position.z, target_z, centering_board_speed * delta)
+			sleeve.position.z = move_toward(sleeve.position.z, target_z, position_pin_z_travel_speed * delta)
 
 
 func _update_real_cushion_pins(delta: float, boards: Array[RigidBody3D], boards_in_top_zone: Array[RigidBody3D]) -> void:
