@@ -185,18 +185,6 @@ const PIN_READY_TOLERANCE := 0.01
 const CENTERING_TOLERANCE := 0.01
 const CUSHION_PAD_CONTACT_OFFSET_Z := -0.08 - 0.0225
 
-enum CenteringPreviewPhase {
-	SIDE_LOAD,
-	RAISE_PINS,
-	CENTER_BOARD,
-	PIN_RETRACT_DELAY,
-	RETRACT_PINS,
-	RETURN_PINS_HOME_Z,
-	LOWER_RAMPS,
-	FEED_DELAY,
-	FEED_BOARD,
-}
-
 var _feed_rollers: Array[Node3D] = []
 var _infeed_chain_links: Array[Node3D] = []
 var _infeed_chain_bases: Array[Vector3] = []
@@ -221,12 +209,6 @@ var _generated_name_counts: Dictionary = {}
 var _editor_group_stack: Array[Node3D] = []
 var _preserved_editor_group_transforms: Dictionary = {}
 var _assembly_builder: RefCounted
-# Runtime active board and centering variables
-var _real_active_board: RigidBody3D = null
-var _real_centering_phase: CenteringPreviewPhase = CenteringPreviewPhase.SIDE_LOAD
-var _real_pin_retract_delay_elapsed := 0.0
-var _real_feed_delay_elapsed := 0.0
-var _real_active_pin_indices: Array[int] = []
 
 
 func _ready() -> void:
@@ -1466,105 +1448,6 @@ func _position_name_suffix(local_position: Vector3) -> String:
 
 # ── Runtime Centering Cycle State Machine ───────────────────────────────────
 
-func _update_real_centering_cycle(delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
-	
-	
-	# If we have an active board but it is no longer valid or has moved past the machine exit, release it.
-	if is_instance_valid(_real_active_board):
-		var local_center := to_local(_real_active_board.global_position)
-		if local_center.x > bed_length * 0.5 + 0.8:
-			_real_active_board = null
-			_real_centering_phase = CenteringPreviewPhase.SIDE_LOAD
-			_set_infeed_deck_pause(false)
-	
-	# If no active board, find the first board that enters the infeed/centering section
-	if not is_instance_valid(_real_active_board):
-		var deck = infeed_deck
-		if not is_instance_valid(deck) and is_inside_tree():
-			deck = get_parent().get_node_or_null("EdgerTakeAway")
-		
-		var trigger_bodies: Array[Node3D] = []
-		if is_instance_valid(deck) and deck.get("top_zone") != null:
-			var top_zone = deck.get("top_zone") as Area3D
-			if is_instance_valid(top_zone):
-				trigger_bodies = top_zone.get_overlapping_bodies()
-		
-		for body in trigger_bodies:
-			if body is RigidBody3D and (body.is_in_group("cut_boards") or body.name.to_lower().contains("board")):
-				_real_active_board = body
-				_real_centering_phase = CenteringPreviewPhase.RAISE_PINS
-				_real_pin_retract_delay_elapsed = 0.0
-				_real_feed_delay_elapsed = 0.0
-				_real_active_pin_indices = _select_real_board_contact_position_pins(body)
-				_set_infeed_deck_pause(true)
-				break
-
-	# If we still don't have an active board, keep deck unpaused and pins home
-	if not is_instance_valid(_real_active_board):
-		_update_real_pins_to_home(delta)
-		_set_infeed_deck_pause(false)
-		return
-
-	# State Machine for Active Board
-	var local_board_center := to_local(_real_active_board.global_position)
-	
-	match _real_centering_phase:
-		CenteringPreviewPhase.SIDE_LOAD:
-			_real_centering_phase = CenteringPreviewPhase.RAISE_PINS
-			_set_infeed_deck_pause(true)
-				
-		CenteringPreviewPhase.RAISE_PINS:
-			_set_infeed_deck_pause(true)
-			_update_real_pin_actuators(delta, true, false)
-			if _active_real_pins_are_raised() and _active_real_cushions_are_at_target():
-				_real_centering_phase = CenteringPreviewPhase.CENTER_BOARD
-				
-		CenteringPreviewPhase.CENTER_BOARD:
-			_set_infeed_deck_pause(true)
-			_update_real_pin_actuators(delta, true, true)
-			var z_error := -_get_board_local_z_center_for_body(_real_active_board)
-			if absf(z_error) <= CENTERING_TOLERANCE + 0.01:
-				_real_pin_retract_delay_elapsed = 0.0
-				_real_centering_phase = CenteringPreviewPhase.PIN_RETRACT_DELAY
-				
-		CenteringPreviewPhase.PIN_RETRACT_DELAY:
-			_set_infeed_deck_pause(true)
-			_update_real_pin_actuators(delta, true, false)
-			_real_pin_retract_delay_elapsed += delta
-			if _real_pin_retract_delay_elapsed >= pin_retract_delay:
-				_real_centering_phase = CenteringPreviewPhase.RETRACT_PINS
-				
-		CenteringPreviewPhase.RETRACT_PINS:
-			_set_infeed_deck_pause(true)
-			_update_real_pin_actuators(delta, false, false)
-			if _real_pins_are_retracted_down() and _real_cushions_are_home():
-				_real_centering_phase = CenteringPreviewPhase.RETURN_PINS_HOME_Z
-				
-		CenteringPreviewPhase.RETURN_PINS_HOME_Z:
-			_set_infeed_deck_pause(true)
-			_update_real_position_pins_z_home(delta)
-			_update_real_cushion_pins_home(delta)
-			if _real_pins_and_cushions_are_home():
-				_real_centering_phase = CenteringPreviewPhase.LOWER_RAMPS
-				
-		CenteringPreviewPhase.LOWER_RAMPS:
-			if _real_ramps_are_home_nodes() and _real_board_is_on_chain():
-				_real_feed_delay_elapsed = 0.0
-				_real_centering_phase = CenteringPreviewPhase.FEED_DELAY
-				
-		CenteringPreviewPhase.FEED_DELAY:
-			_set_infeed_deck_pause(true)
-			_real_feed_delay_elapsed += delta
-			if _real_feed_delay_elapsed >= feed_chain_start_delay:
-				_real_centering_phase = CenteringPreviewPhase.FEED_BOARD
-				
-		CenteringPreviewPhase.FEED_BOARD:
-			if local_board_center.x > _centering_section_end_x() + 0.5:
-				_set_infeed_deck_pause(false)
-			else:
-				_set_infeed_deck_pause(true)
 
 
 func _set_infeed_deck_pause(paused: bool) -> void:

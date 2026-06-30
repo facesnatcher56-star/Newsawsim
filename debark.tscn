@@ -1104,7 +1104,7 @@ shape = SubResource("BoxShape3D_618a6")
 shape = SubResource("BoxShape3D_hajir")
 
 [node name="MarkerRed" parent="HeadrigStation" index="5" unique_id=1863297703]
-transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 32.859077, 0.3531793, 18.292707)
+transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 34.01226, 0.3410695, 16.20005)
 
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
 
