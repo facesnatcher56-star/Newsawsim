@@ -667,8 +667,6 @@ func _rebuild() -> void:
 		_build_saw_box()
 		_build_motors_and_drives()
 		_build_waste_handling()
-		if _should_include_reference_board():
-			_build_sample_board()
 	_adopt_generated_parts()
 
 
@@ -1045,9 +1043,6 @@ func _build_motors_and_drives() -> void:
 func _build_waste_handling() -> void:
 	_assembly_builder.build_waste_handling()
 
-
-func _build_sample_board() -> void:
-	_assembly_builder.build_sample_board()
 
 func _create_reference_board() -> Node3D:
 	var board: Node3D = null

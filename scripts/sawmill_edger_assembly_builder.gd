@@ -6,7 +6,6 @@ const InfeedBuilder := preload("res://scripts/edger_builders/edger_infeed_builde
 const PinBuilder := preload("res://scripts/edger_builders/edger_pin_builder.gd")
 const OutfeedBuilder := preload("res://scripts/edger_builders/edger_outfeed_builder.gd")
 const SawBuilder := preload("res://scripts/edger_builders/edger_saw_builder.gd")
-const ReferenceBoardBuilder := preload("res://scripts/edger_builders/edger_reference_board_builder.gd")
 
 var edger: SawmillEdger
 var frame_builder: RefCounted
@@ -14,7 +13,6 @@ var infeed_builder: RefCounted
 var pin_builder: RefCounted
 var outfeed_builder: RefCounted
 var saw_builder: RefCounted
-var reference_board_builder: RefCounted
 
 
 func _init(p_edger: SawmillEdger) -> void:
@@ -24,7 +22,6 @@ func _init(p_edger: SawmillEdger) -> void:
 	infeed_builder = InfeedBuilder.new(edger, pin_builder)
 	outfeed_builder = OutfeedBuilder.new(edger)
 	saw_builder = SawBuilder.new(edger)
-	reference_board_builder = ReferenceBoardBuilder.new(edger)
 
 
 func build_frame() -> void:
@@ -73,5 +70,3 @@ func build_waste_handling() -> void:
 	outfeed_builder.build_waste_handling()
 
 
-func build_sample_board() -> void:
-	reference_board_builder.build_sample_board()
