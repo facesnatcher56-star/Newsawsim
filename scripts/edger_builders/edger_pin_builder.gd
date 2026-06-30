@@ -60,9 +60,9 @@ func build_cushion_pins(chain_start: float, chain_end: float, chain_top: float) 
 		edger._current_part_parent().add_child(body)
 		edger._adopt_new_node(body)
 
-		var barrel: CSGCylinder3D = edger._add_cylinder_child(body, "CushionCylinder", Vector3(0.0, 0.0, 0.13), 0.035, 0.26, edger._mat_dark, Vector3(PI * 0.5, 0.0, 0.0), 16, false)
-		var rod: CSGCylinder3D = edger._add_cylinder_child(body, "CushionRod", Vector3(0.0, 0.0, -0.08), 0.018, edger.cushion_pin_extension, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 14, false)
-		var pad := edger._add_box_contact_child(body, "CushionPad", Vector3(0.0, 0.0, -0.08 - edger.cushion_pin_extension * 0.5), Vector3(0.16, 0.12, 0.045), edger._mat_rubber)
+		var barrel: CSGCylinder3D = edger._add_cylinder_child(edger._current_part_parent(), "CushionCylinder" + suffix, Vector3(x, pin_y, back_z + 0.13), 0.035, 0.26, edger._mat_dark, Vector3(PI * 0.5, 0.0, 0.0), 16, false)
+		var rod: CSGCylinder3D = edger._add_cylinder_child(body, "CushionRod", Vector3(0.0, 0.0, 0.11553), 0.018, 0.26031, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 14, false)
+		var pad := edger._add_box_contact_child(body, "CushionPad", Vector3(0.0, 0.0, -0.035), Vector3(0.16, 0.12, 0.045), edger._mat_rubber)
 		edger._cushion_pin_stations.append({
 			"x": x,
 			"body": body,

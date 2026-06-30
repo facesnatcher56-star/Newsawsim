@@ -5,7 +5,7 @@
 [node name="SawmillEdger" type="StaticBody3D" unique_id=1576143709]
 script = ExtResource("1_edger")
 position_pin_spacing = 1.48
-cushion_pin_extension = 0.31
+cushion_pin_extension = 0.26
 cushion_pin_spacing = 1.48
 infeed_chain_feed_speed = 5.199999999999999
 hold_down_roller_spin_speed = 3.15
@@ -16,3 +16,41 @@ cushion_pin_speed = 1.04
 centering_board_speed = 0.95
 pin_retract_delay = 0.71
 feed_chain_start_delay = 0.19
+
+[node name="FrameAssembly" type="Node3D" parent="." unique_id=1726946572]
+metadata/edger_editor_group = true
+
+[node name="SideFenceAssembly" type="Node3D" parent="." unique_id=1265338694]
+metadata/edger_editor_group = true
+
+[node name="InfeedChainAssembly" type="Node3D" parent="." unique_id=755896789]
+metadata/edger_editor_group = true
+
+[node name="ParkingRampAssembly" type="Node3D" parent="." unique_id=1297069452]
+metadata/edger_editor_group = true
+
+[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="." unique_id=840951013]
+metadata/edger_editor_group = true
+
+[node name="PositionPinAssembly" type="Node3D" parent="." unique_id=633221807]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.4021559)
+metadata/edger_editor_group = true
+
+[node name="CushionPinAssembly" type="Node3D" parent="." unique_id=1525465781]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05816233)
+metadata/edger_editor_group = true
+
+[node name="LowerFeedRollerAssembly" type="Node3D" parent="." unique_id=1309539097]
+metadata/edger_editor_group = true
+
+[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="." unique_id=1700723961]
+metadata/edger_editor_group = true
+
+[node name="SawBladeAndGuardAssembly" type="Node3D" parent="." unique_id=105609917]
+metadata/edger_editor_group = true
+
+[node name="MotorDriveAssembly" type="Node3D" parent="." unique_id=209236384]
+metadata/edger_editor_group = true
+
+[node name="WasteHandlingAssembly" type="Node3D" parent="." unique_id=2144817955]
+metadata/edger_editor_group = true
