@@ -443,7 +443,7 @@ func _update_real_position_pins(delta: float, boards: Array[RigidBody3D], boards
 			target_y = float(station["retracted_y"]) + 3.0
 			sleeve_target_y = float(station["sleeve_retracted_y"]) + 3.0
 			# Push pin in +Z direction to extend toward board center
-			target_z = float(station["z"]) + 0.5
+			target_z = float(station["z"]) + 5.0
 
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
