@@ -7,7 +7,7 @@ const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assemb
 ## Industrial board edger sized for the sawmill board line.
 ## X is feed direction, Z is board-length/cross-machine width.
 
-@export_category("Layout")
+@export_category("Machine Geometry")
 @export_range(2.0, 8.0, 0.1, "or_greater") var bed_length: float = 4.8:
 	set(value):
 		bed_length = maxf(value, 2.0)
@@ -28,7 +28,6 @@ const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assemb
 		saw_spacing = maxf(value, 0.2)
 		_queue_rebuild()
 
-@export_category("Detail")
 @export_range(2, 12, 1, "or_greater") var feed_roller_count: int = 7:
 	set(value):
 		feed_roller_count = maxi(value, 2)
@@ -39,25 +38,7 @@ const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assemb
 		blade_radius = maxf(value, 0.2)
 		_queue_rebuild()
 
-@export var show_waste_chutes: bool = true:
-	set(value):
-		show_waste_chutes = value
-		_queue_rebuild()
-
-@export_category("Infeed Integration")
-@export var infeed_deck: Node3D = null
-
-@export_category("Infeed Centering")
-@export_range(0.0, 10.0, 0.05) var infeed_chain_extension: float = 5.6:
-	set(value):
-		infeed_chain_extension = maxf(value, 0.0)
-		_queue_rebuild()
-
-@export var preview_board_scene: PackedScene = preload("res://scenes/cut_board.tscn"):
-	set(value):
-		preview_board_scene = value
-		_queue_rebuild()
-
+@export_category("Pin Geometry")
 @export_range(0.02, 0.30, 0.01) var position_pin_radius: float = 0.045:
 	set(value):
 		position_pin_radius = maxf(value, 0.02)
@@ -78,11 +59,6 @@ const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assemb
 		cushion_pin_extension = maxf(value, 0.05)
 		_queue_rebuild()
 
-@export_range(-0.20, 0.20, 0.001) var preview_board_y_offset: float = -0.029:
-	set(value):
-		preview_board_y_offset = value
-		_queue_rebuild()
-
 @export_range(0.20, 4.0, 0.01, "or_greater") var cushion_pin_spacing: float = 1.56:
 	set(value):
 		cushion_pin_spacing = maxf(value, 0.20)
@@ -93,7 +69,31 @@ const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assemb
 		parking_ramp_stations = clampi(value, 2, 8)
 		_queue_rebuild()
 
-@export_category("Generated Parts")
+@export_category("Infeed")
+@export var infeed_deck: Node3D = null
+
+@export_range(0.0, 10.0, 0.05) var infeed_chain_extension: float = 5.6:
+	set(value):
+		infeed_chain_extension = maxf(value, 0.0)
+		_queue_rebuild()
+
+@export_category("Editor Preview")
+@export var show_waste_chutes: bool = true:
+	set(value):
+		show_waste_chutes = value
+		_queue_rebuild()
+
+@export var preview_board_scene: PackedScene = preload("res://scenes/cut_board.tscn"):
+	set(value):
+		preview_board_scene = value
+		_queue_rebuild()
+
+@export_range(-0.20, 0.20, 0.001) var preview_board_y_offset: float = -0.029:
+	set(value):
+		preview_board_y_offset = value
+		_queue_rebuild()
+
+@export_category("Build System")
 @export var expose_generated_parts: bool = true:
 	set(value):
 		expose_generated_parts = value
@@ -133,17 +133,16 @@ var _mat_hydraulic: StandardMaterial3D
 var _mat_chain_grip: StandardMaterial3D
 var _mat_rubber: StandardMaterial3D
 
-@export_category("Motion")
+@export_category("Motion Speeds")
 @export_range(0.1, 8.0, 0.1, "or_greater") var infeed_chain_feed_speed: float = 1.4
 @export_range(0.0, 20.0, 0.1, "or_greater") var feed_roller_spin_speed: float = 1.0
-@export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_roller_spin_speed: float = 1.0
 @export_range(0.0, 8.0, 0.01, "or_greater") var parking_ramp_speed: float = 1.8
 @export_range(0.0, 8.0, 0.01, "or_greater") var position_pin_speed: float = 1.6
 @export_range(0.0, 8.0, 0.01, "or_greater") var cushion_pin_speed: float = 2.2
-@export_range(0.0, 2.0, 0.01, "or_greater") var pin_retract_delay: float = 0.20
+@export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
 
-@export_category("Position Pin Control")
+@export_category("Position Pin Behavior")
 @export_range(0.0, 10.0, 0.1) var position_pin_raise_height: float = 5.0
 @export_range(0.0, 10.0, 0.1, "or_greater") var position_pin_z_travel: float = 5.0
 @export_range(0.0, 10.0, 0.01, "or_greater") var position_pin_z_travel_speed: float = 0.95
