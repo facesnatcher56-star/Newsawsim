@@ -1446,6 +1446,10 @@ func _position_name_suffix(local_position: Vector3) -> String:
 	return "_".join(PackedStringArray(parts))
 
 
+# ── Runtime Centering Cycle State Machine ───────────────────────────────────
+
+
+
 func _set_infeed_deck_pause(paused: bool) -> void:
 	var deck = infeed_deck
 	if not is_instance_valid(deck) and is_inside_tree():
@@ -1453,3 +1457,372 @@ func _set_infeed_deck_pause(paused: bool) -> void:
 	if is_instance_valid(deck) and (deck.name == "EdgerTakeAway" or deck.has_method("set_running") or "external_stop" in deck):
 		if deck.get("external_stop") != paused:
 			deck.set("external_stop", paused)
+
+
+func _update_real_pins_to_home(delta: float) -> void:
+	_update_real_position_pins_z_home(delta)
+	_update_real_cushion_pins_home(delta)
+
+
+func _update_real_pin_actuators(delta: float, active: bool, push_board: bool) -> void:
+	var hold_position_pin_z := not push_board and (
+		_real_centering_phase == CenteringPreviewPhase.PIN_RETRACT_DELAY
+		or _real_centering_phase == CenteringPreviewPhase.RETRACT_PINS
+	)
+	for i in range(_position_pin_stations.size()):
+		var station: Dictionary = _position_pin_stations[i]
+		var pin: Node3D = station["pin"] as Node3D
+		var sleeve: Node3D = station["sleeve"] as Node3D
+		if not is_instance_valid(pin) and not is_instance_valid(sleeve):
+			continue
+		var pin_is_active := active and _real_active_pin_indices.has(i)
+		var target_y: float = _real_position_pin_raised_y(station) if pin_is_active else float(station["retracted_y"])
+		var sleeve_target_y: float = _real_position_pin_sleeve_raised_y(station, target_y) if pin_is_active else float(station["sleeve_retracted_y"])
+		var target_z := _real_position_pin_target_z(i, active, push_board)
+		if is_instance_valid(pin):
+			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
+			if not hold_position_pin_z:
+				pin.position.z = move_toward(pin.position.z, target_z, centering_board_speed * delta)
+		if is_instance_valid(sleeve):
+			sleeve.position.y = move_toward(sleeve.position.y, sleeve_target_y, position_pin_speed * delta)
+			if not hold_position_pin_z:
+				sleeve.position.z = move_toward(sleeve.position.z, target_z, centering_board_speed * delta)
+
+	for i in range(_cushion_pin_stations.size()):
+		var station: Dictionary = _cushion_pin_stations[i]
+		var body: Node3D = station["body"] as Node3D
+		if not is_instance_valid(body):
+			continue
+		var target_z := _real_cushion_target_z(i, active)
+		body.position.z = move_toward(body.position.z, target_z, cushion_pin_speed * delta)
+
+
+func _update_real_position_pins_z_home(delta: float) -> void:
+	for station in _position_pin_stations:
+		var base_z := float(station["z"])
+		var pin := station["pin"] as Node3D
+		if is_instance_valid(pin):
+			pin.position.y = float(station["retracted_y"])
+			pin.position.z = move_toward(pin.position.z, base_z, centering_board_speed * delta)
+		var sleeve := station["sleeve"] as Node3D
+		if is_instance_valid(sleeve):
+			sleeve.position.y = float(station["sleeve_retracted_y"])
+			sleeve.position.z = move_toward(sleeve.position.z, base_z, centering_board_speed * delta)
+
+
+func _update_real_cushion_pins_home(delta: float) -> void:
+	for station in _cushion_pin_stations:
+		var body := station["body"] as Node3D
+		if is_instance_valid(body):
+			body.position.z = move_toward(body.position.z, float(station["base_z"]), cushion_pin_speed * delta)
+
+
+func _position_pin_raised_y_for_board(station: Dictionary, board: RigidBody3D) -> float:
+	var thickness := _get_board_thickness_for_body(board)
+	var board_top_y := to_local(board.global_position).y + thickness * 0.5
+	var pin_center_for_board_top := board_top_y - position_pin_height * 0.5 + 0.012
+	return clampf(pin_center_for_board_top, float(station["retracted_y"]), float(station["raised_y"]))
+
+
+func _real_position_pin_raised_y(station: Dictionary) -> float:
+	var thickness := _get_board_thickness_for_body(_real_active_board)
+	var board_top_y := _board_center_y() + thickness * 0.5
+	if is_instance_valid(_real_active_board):
+		board_top_y = to_local(_real_active_board.global_position).y + thickness * 0.5
+	var pin_center_for_board_top := board_top_y - position_pin_height * 0.5 + 0.012
+	return clampf(pin_center_for_board_top, float(station["retracted_y"]), float(station["raised_y"]))
+
+
+func _real_position_pin_sleeve_raised_y(station: Dictionary, pin_target_y: float) -> float:
+	return float(station["sleeve_retracted_y"]) + maxf(pin_target_y - float(station["retracted_y"]), 0.0)
+
+
+func _real_position_pin_target_z(index: int, active: bool, push_board: bool) -> float:
+	var station: Dictionary = _position_pin_stations[index]
+	var base_z := float(station["z"])
+	if not active or not push_board or not _real_active_pin_indices.has(index):
+		return base_z
+	if not is_instance_valid(_real_active_board):
+		return base_z
+
+	var global_bounds := _get_board_global_z_bounds_for_body(_real_active_board)
+	var board_minus_edge_global_z := global_bounds.x
+	var pin_node := station["pin"] as Node3D
+	var parent_node: Node3D = null
+	if is_instance_valid(pin_node):
+		parent_node = pin_node.get_parent() as Node3D
+	var board_minus_edge_local_z := board_minus_edge_global_z
+	if is_instance_valid(parent_node):
+		board_minus_edge_local_z = parent_node.to_local(Vector3(_real_active_board.global_position.x, _real_active_board.global_position.y, board_minus_edge_global_z)).z
+	return board_minus_edge_local_z - position_pin_radius
+
+
+func _real_cushion_target_z(index: int, active: bool) -> float:
+	var station: Dictionary = _cushion_pin_stations[index]
+	var base_z := float(station["base_z"])
+	if not active or not _real_active_pin_indices.has(index):
+		return base_z
+
+	var fully_extended_z := base_z - cushion_pin_extension
+	var body := station["body"] as Node3D
+	if not is_instance_valid(body) or not is_instance_valid(_real_active_board):
+		return fully_extended_z
+
+	var global_bounds := _get_board_global_z_bounds_for_body(_real_active_board)
+	var board_plus_edge_global_z := global_bounds.y
+	var parent_node := body.get_parent() as Node3D
+	var board_plus_edge_local_z := board_plus_edge_global_z
+	if is_instance_valid(parent_node):
+		board_plus_edge_local_z = parent_node.to_local(Vector3(_real_active_board.global_position.x, _real_active_board.global_position.y, board_plus_edge_global_z)).z
+
+	var pad_contact_offset := CUSHION_PAD_CONTACT_OFFSET_Z - cushion_pin_extension * 0.5
+	var pad := body.get_node_or_null("CushionPad") as Node3D
+	if is_instance_valid(pad):
+		pad_contact_offset = pad.position.z - 0.0225
+
+	var contact_z := board_plus_edge_local_z - pad_contact_offset
+	return clampf(contact_z, fully_extended_z, base_z)
+
+
+func _select_real_board_contact_position_pins(board: RigidBody3D) -> Array[int]:
+	var selected: Array[int] = []
+	if _position_pin_stations.is_empty():
+		return selected
+	
+	var local_center := to_local(board.global_position)
+	var board_start_x := local_center.x - SAMPLE_BOARD_LENGTH * 0.5
+	var board_end_x := local_center.x + SAMPLE_BOARD_LENGTH * 0.5
+	var contact_min_x := board_start_x + PIN_BOARD_X_CONTACT_MARGIN
+	var contact_max_x := board_end_x - PIN_BOARD_X_CONTACT_MARGIN
+
+	var candidates: Array[Dictionary] = []
+	for i in range(_position_pin_stations.size()):
+		var station: Dictionary = _position_pin_stations[i]
+		var station_x := float(station["x"])
+		if station_x < contact_min_x or station_x > contact_max_x:
+			continue
+		candidates.append({
+			"index": i,
+			"x": station_x,
+			"start_distance": absf(station_x - board_start_x),
+			"end_distance": absf(station_x - board_end_x),
+		})
+
+	if candidates.is_empty():
+		return selected
+
+	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["start_distance"]) < float(b["start_distance"])
+	)
+	selected.append(int(candidates[0]["index"]))
+
+	if candidates.size() > 1:
+		candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+			return float(a["end_distance"]) < float(b["end_distance"])
+		)
+		for candidate in candidates:
+			var index := int(candidate["index"])
+			if not selected.has(index):
+				selected.append(index)
+				break
+	return selected
+
+
+func _active_real_pins_are_raised() -> bool:
+	for index in _real_active_pin_indices:
+		if index < 0 or index >= _position_pin_stations.size():
+			continue
+		var station: Dictionary = _position_pin_stations[index]
+		var pin := station["pin"] as Node3D
+		var pin_target_y := _real_position_pin_raised_y(station)
+		if is_instance_valid(pin) and absf(pin.position.y - pin_target_y) > PIN_READY_TOLERANCE:
+			return false
+		var sleeve := station["sleeve"] as Node3D
+		if is_instance_valid(sleeve) and absf(sleeve.position.y - _real_position_pin_sleeve_raised_y(station, pin_target_y)) > PIN_READY_TOLERANCE:
+			return false
+	return not _real_active_pin_indices.is_empty()
+
+
+func _active_real_pins_are_at_board_edge() -> bool:
+	for index in _real_active_pin_indices:
+		if index < 0 or index >= _position_pin_stations.size():
+			continue
+		var station: Dictionary = _position_pin_stations[index]
+		var target_z := _real_position_pin_target_z(index, true, true)
+		var pin := station["pin"] as Node3D
+		if is_instance_valid(pin) and absf(pin.position.z - target_z) > PIN_READY_TOLERANCE:
+			return false
+		var sleeve := station["sleeve"] as Node3D
+		if is_instance_valid(sleeve) and absf(sleeve.position.z - target_z) > PIN_READY_TOLERANCE:
+			return false
+	return not _real_active_pin_indices.is_empty()
+
+
+func _active_real_cushions_are_at_target() -> bool:
+	for index in _real_active_pin_indices:
+		if index < 0 or index >= _cushion_pin_stations.size():
+			continue
+		var station: Dictionary = _cushion_pin_stations[index]
+		var body := station["body"] as Node3D
+		var target_z := _real_cushion_target_z(index, true)
+		if is_instance_valid(body) and absf(body.position.z - target_z) > PIN_READY_TOLERANCE:
+			return false
+	return not _real_active_pin_indices.is_empty()
+
+
+func _real_pins_are_retracted_down() -> bool:
+	for index in _real_active_pin_indices:
+		if index < 0 or index >= _position_pin_stations.size():
+			continue
+		var station: Dictionary = _position_pin_stations[index]
+		var pin := station["pin"] as Node3D
+		if is_instance_valid(pin) and absf(pin.position.y - float(station["retracted_y"])) > PIN_READY_TOLERANCE:
+			return false
+		var sleeve := station["sleeve"] as Node3D
+		if is_instance_valid(sleeve) and absf(sleeve.position.y - float(station["sleeve_retracted_y"])) > PIN_READY_TOLERANCE:
+			return false
+	return true
+
+
+func _real_cushions_are_home() -> bool:
+	for index in _real_active_pin_indices:
+		if index < 0 or index >= _cushion_pin_stations.size():
+			continue
+		var station: Dictionary = _cushion_pin_stations[index]
+		var body := station["body"] as Node3D
+		if is_instance_valid(body) and absf(body.position.z - float(station["base_z"])) > PIN_READY_TOLERANCE:
+			return false
+	return true
+
+
+func _real_pins_and_cushions_are_home() -> bool:
+	for station in _position_pin_stations:
+		var pin := station["pin"] as Node3D
+		if is_instance_valid(pin) and (absf(pin.position.y - float(station["retracted_y"])) > PIN_READY_TOLERANCE or absf(pin.position.z - float(station["z"])) > PIN_READY_TOLERANCE):
+			return false
+	for station in _cushion_pin_stations:
+		var body := station["body"] as Node3D
+		if is_instance_valid(body) and absf(body.position.z - float(station["base_z"])) > PIN_READY_TOLERANCE:
+			return false
+	return true
+
+
+func _real_ramps_are_home_nodes() -> bool:
+	for station in _parking_ramp_stations:
+		var nodes: Array = station["nodes"]
+		for node in nodes:
+			var ramp := node as Node3D
+			if is_instance_valid(ramp) and absf(ramp.rotation.x - float(ramp.get_meta("retracted_angle", 0.0))) > PIN_READY_TOLERANCE:
+				return false
+	return true
+
+
+func _real_board_is_on_chain() -> bool:
+	if not is_instance_valid(_real_active_board):
+		return false
+	var target_y := _board_chain_center_global_y()
+	var y_axis := global_transform.basis.y.normalized()
+	var current_y := _real_active_board.global_position.dot(y_axis)
+	return absf(current_y - target_y) <= CENTERING_TOLERANCE + 0.02
+
+
+func _board_pin_clear_z_real(board: RigidBody3D) -> float:
+	var pin_z := 0.0
+	var found_pin := false
+	var active_indices := _select_real_board_contact_position_pins(board)
+	for index in active_indices:
+		if index < 0 or index >= _position_pin_stations.size():
+			continue
+		var pin := _position_pin_stations[index]["pin"] as Node3D
+		if is_instance_valid(pin):
+			pin_z = pin.position.z if not found_pin else maxf(pin_z, pin.position.z)
+			found_pin = true
+	if not found_pin:
+		return -1.12
+	var width := _get_board_width_for_body(board)
+	return maxf(-1.12, pin_z + width * 0.5 + PIN_BOARD_CLEARANCE)
+
+
+func _board_chain_center_global_y() -> float:
+	return to_global(Vector3(0.0, _preview_board_center_y(), 0.0)).y
+
+
+func _get_board_local_z_bounds_for_body(board: RigidBody3D) -> Vector2:
+	if not is_instance_valid(board):
+		return Vector2(-SAMPLE_BOARD_WIDTH * 0.5, SAMPLE_BOARD_WIDTH * 0.5)
+
+	var col_shape := board.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	if col_shape != null and col_shape.shape != null:
+		var parent_node := col_shape.get_parent() as Node3D
+		if col_shape.shape is BoxShape3D:
+			var box := col_shape.shape as BoxShape3D
+			var sz := box.size
+			var corners := [
+				Vector3(-sz.x * 0.5, -sz.y * 0.5, -sz.z * 0.5),
+				Vector3(sz.x * 0.5, -sz.y * 0.5, -sz.z * 0.5),
+				Vector3(-sz.x * 0.5, sz.y * 0.5, -sz.z * 0.5),
+				Vector3(sz.x * 0.5, sz.y * 0.5, -sz.z * 0.5),
+				Vector3(-sz.x * 0.5, -sz.y * 0.5, sz.z * 0.5),
+				Vector3(sz.x * 0.5, -sz.y * 0.5, sz.z * 0.5),
+				Vector3(-sz.x * 0.5, sz.y * 0.5, sz.z * 0.5),
+				Vector3(sz.x * 0.5, sz.y * 0.5, sz.z * 0.5),
+			]
+			var min_z := INF
+			var max_z := -INF
+			for pt in corners:
+				var global_pt := parent_node.to_global(pt)
+				var local_pt := to_local(global_pt)
+				min_z = minf(min_z, local_pt.z)
+				max_z = maxf(max_z, local_pt.z)
+			return Vector2(min_z, max_z)
+		elif col_shape.shape is ConvexPolygonShape3D:
+			var convex := col_shape.shape as ConvexPolygonShape3D
+			var min_z := INF
+			var max_z := -INF
+			for pt in convex.points:
+				var global_pt := parent_node.to_global(pt)
+				var local_pt := to_local(global_pt)
+				min_z = minf(min_z, local_pt.z)
+				max_z = maxf(max_z, local_pt.z)
+			if min_z < max_z:
+				return Vector2(min_z, max_z)
+
+	var local_center := to_local(board.global_position)
+	return Vector2(local_center.z - SAMPLE_BOARD_WIDTH * 0.5, local_center.z + SAMPLE_BOARD_WIDTH * 0.5)
+
+
+func _get_board_width_for_body(board: RigidBody3D) -> float:
+	var bounds := _get_board_local_z_bounds_for_body(board)
+	return bounds.y - bounds.x
+
+
+func _get_board_local_z_center_for_body(board: RigidBody3D) -> float:
+	var bounds := _get_board_local_z_bounds_for_body(board)
+	return (bounds.x + bounds.y) * 0.5
+
+
+func _get_board_global_z_bounds_for_body(board: RigidBody3D) -> Vector2:
+	var local_bounds := _get_board_local_z_bounds_for_body(board)
+	var global_min_z := to_global(Vector3(0.0, 0.0, local_bounds.x)).z
+	var global_max_z := to_global(Vector3(0.0, 0.0, local_bounds.y)).z
+	return Vector2(global_min_z, global_max_z)
+
+
+func _get_board_thickness_for_body(board: RigidBody3D) -> float:
+	if not is_instance_valid(board):
+		return SAMPLE_BOARD_THICKNESS
+	var col_shape := board.get_node_or_null("CollisionShape3D") as CollisionShape3D
+	if col_shape != null and col_shape.shape != null:
+		if col_shape.shape is BoxShape3D:
+			return (col_shape.shape as BoxShape3D).size.y
+		elif col_shape.shape is ConvexPolygonShape3D:
+			var convex := col_shape.shape as ConvexPolygonShape3D
+			var min_y := INF
+			var max_y := -INF
+			for p in convex.points:
+				min_y = minf(min_y, p.y)
+				max_y = maxf(max_y, p.y)
+			if min_y < max_y:
+				return max_y - min_y
+	return SAMPLE_BOARD_THICKNESS
+
