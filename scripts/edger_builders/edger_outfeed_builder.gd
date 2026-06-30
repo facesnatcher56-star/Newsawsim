@@ -18,7 +18,7 @@ func build_hold_downs() -> void:
 		var suffix := "_%02d" % (i + 1)
 		edger._add_box("HoldDownCrosshead" + suffix, Vector3(x, roller_y + 0.34, 0), Vector3(0.12, 0.12, 1.20), edger._mat_frame)
 		edger._add_box("HoldDownTopPressureBox" + suffix, Vector3(x, roller_y + 0.60, 0), Vector3(0.32, 0.22, 0.92), edger._mat_frame)
-		var hold_down := edger._add_cylinder("HoldDownRoller" + suffix, Vector3(x, roller_y, 0), SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.HOLD_DOWN_ROLLER_LENGTH, edger._mat_warning, Vector3(PI * 0.5, 0, 0), 28)
+		var hold_down := edger._add_physics_cylinder("HoldDownRoller" + suffix, Vector3(x, roller_y, 0), SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.HOLD_DOWN_ROLLER_LENGTH, edger._mat_warning, Vector3(PI * 0.5, 0, 0), 28)
 		edger._hold_down_rollers.append(hold_down)
 		var moving_nodes: Array[Node3D] = [hold_down]
 		var axle := edger._add_cylinder("HoldDownAxle" + suffix, Vector3(x, roller_y, 0), 0.026, 1.12, edger._mat_hydraulic, Vector3(PI * 0.5, 0, 0), 20)
@@ -73,7 +73,7 @@ func build_lower_feed_rollers() -> void:
 	for i in range(roller_count):
 		var x := roller_start + spacing * float(i)
 		var suffix := "_%02d" % (i + 1)
-		var roller := edger._add_cylinder("FeedRoller" + suffix, Vector3(x, roller_y, 0), SawmillEdger.FEED_ROLLER_RADIUS, SawmillEdger.FEED_ROLLER_LENGTH, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 28)
+		var roller := edger._add_physics_cylinder("FeedRoller" + suffix, Vector3(x, roller_y, 0), SawmillEdger.FEED_ROLLER_RADIUS, SawmillEdger.FEED_ROLLER_LENGTH, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 28)
 		edger._feed_rollers.append(roller)
 		edger._add_cylinder("RollerShaft" + suffix, Vector3(x, roller_y, 0), 0.025, edger.machine_width + 0.18, edger._mat_blade, Vector3(PI * 0.5, 0, 0), 20)
 	edger._pop_editor_group()

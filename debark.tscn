@@ -1178,46 +1178,44 @@ shape = SubResource("BoxShape3D_jhoeu")
 
 [node name="SawmillEdger" parent="." unique_id=1576143709 instance=ExtResource("12_fjvqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.42477167, 18.073616)
+show_waste_chutes = false
 
-[node name="FrameAssembly" type="Node3D" parent="SawmillEdger" unique_id=557943252]
+[node name="FrameAssembly" type="Node3D" parent="SawmillEdger" unique_id=1689379776]
 metadata/edger_editor_group = true
 
-[node name="SideFenceAssembly" type="Node3D" parent="SawmillEdger" unique_id=1102533196]
+[node name="SideFenceAssembly" type="Node3D" parent="SawmillEdger" unique_id=287772857]
 metadata/edger_editor_group = true
 
-[node name="InfeedChainAssembly" type="Node3D" parent="SawmillEdger" unique_id=60814491]
+[node name="InfeedChainAssembly" type="Node3D" parent="SawmillEdger" unique_id=1460494695]
 metadata/edger_editor_group = true
 
-[node name="ParkingRampAssembly" type="Node3D" parent="SawmillEdger" unique_id=842358590]
+[node name="ParkingRampAssembly" type="Node3D" parent="SawmillEdger" unique_id=1787928727]
 metadata/edger_editor_group = true
 
-[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="SawmillEdger" unique_id=693727579]
+[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="SawmillEdger" unique_id=1429902161]
 metadata/edger_editor_group = true
 
-[node name="PositionPinAssembly" type="Node3D" parent="SawmillEdger" unique_id=288715356]
+[node name="PositionPinAssembly" type="Node3D" parent="SawmillEdger" unique_id=322993924]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.2555873)
 metadata/edger_editor_group = true
 
-[node name="CushionPinAssembly" type="Node3D" parent="SawmillEdger" unique_id=1176784438]
+[node name="CushionPinAssembly" type="Node3D" parent="SawmillEdger" unique_id=766630593]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.28710675)
 metadata/edger_editor_group = true
 
-[node name="LowerFeedRollerAssembly" type="Node3D" parent="SawmillEdger" unique_id=75103755]
+[node name="LowerFeedRollerAssembly" type="Node3D" parent="SawmillEdger" unique_id=1736213448]
 metadata/edger_editor_group = true
 
-[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="SawmillEdger" unique_id=625327834]
+[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="SawmillEdger" unique_id=248590129]
 metadata/edger_editor_group = true
 
-[node name="SawBladeAndGuardAssembly" type="Node3D" parent="SawmillEdger" unique_id=1338435443]
+[node name="SawBladeAndGuardAssembly" type="Node3D" parent="SawmillEdger" unique_id=526577436]
 metadata/edger_editor_group = true
 
-[node name="MotorDriveAssembly" type="Node3D" parent="SawmillEdger" unique_id=829074916]
+[node name="MotorDriveAssembly" type="Node3D" parent="SawmillEdger" unique_id=249730749]
 metadata/edger_editor_group = true
 
-[node name="WasteHandlingAssembly" type="Node3D" parent="SawmillEdger" unique_id=1052823680]
-metadata/edger_editor_group = true
-
-[node name="ReferenceBoardAssembly" type="Node3D" parent="SawmillEdger" unique_id=61396374]
+[node name="ReferenceBoardAssembly" type="Node3D" parent="SawmillEdger" unique_id=13729529]
 metadata/edger_editor_group = true
 
 [editable path="Ground/ReSawDeck1"]

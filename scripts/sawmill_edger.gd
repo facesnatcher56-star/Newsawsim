@@ -197,12 +197,12 @@ enum CenteringPreviewPhase {
 	FEED_BOARD,
 }
 
-var _feed_rollers: Array[CSGCylinder3D] = []
+var _feed_rollers: Array[Node3D] = []
 var _infeed_chain_links: Array[Node3D] = []
 var _infeed_chain_bases: Array[Vector3] = []
-var _hold_down_rollers: Array[CSGCylinder3D] = []
+var _hold_down_rollers: Array[Node3D] = []
 var _hold_down_stations: Array[Dictionary] = []
-var _infeed_hold_down_rollers: Array[CSGCylinder3D] = []
+var _infeed_hold_down_rollers: Array[Node3D] = []
 var _infeed_hold_down_stations: Array[Dictionary] = []
 var _parking_ramp_stations: Array[Dictionary] = []
 var _position_pin_stations: Array[Dictionary] = []
@@ -326,6 +326,8 @@ func _apply_board_edge_lift(body: RigidBody3D, local_z: float, target_axis_y: fl
 
 func _apply_centering_pin_contacts(body: RigidBody3D, local_center: Vector3, delta: float) -> void:
 	if body != _real_active_board or _real_centering_phase != CenteringPreviewPhase.CENTER_BOARD:
+		return
+	if not _active_real_pins_are_at_board_edge():
 		return
 	var z_axis := global_transform.basis.z.normalized()
 	var z_error := -local_center.z
@@ -471,9 +473,9 @@ func _parking_ramp_nodes() -> Array[Node3D]:
 	return ramps
 
 
-func _contact_rollers(prefix: String) -> Array[CSGCylinder3D]:
-	var rollers: Array[CSGCylinder3D] = []
-	var source: Array[CSGCylinder3D] = []
+func _contact_rollers(prefix: String) -> Array[Node3D]:
+	var rollers: Array[Node3D] = []
+	var source: Array[Node3D] = []
 	if prefix == "InfeedHoldDownRoller":
 		source = _infeed_hold_down_rollers
 	else:
@@ -483,8 +485,8 @@ func _contact_rollers(prefix: String) -> Array[CSGCylinder3D]:
 			rollers.append(roller)
 	if not rollers.is_empty():
 		return rollers
-	for node in find_children(prefix + "*", "CSGCylinder3D", true, false):
-		var roller := node as CSGCylinder3D
+	for node in find_children(prefix + "*", "Node3D", true, false):
+		var roller := node as Node3D
 		if is_instance_valid(roller):
 			rollers.append(roller)
 	return rollers
@@ -605,21 +607,24 @@ func _collect_generated_parts() -> void:
 	_sample_board = null
 
 	for node in find_children("*", "Node3D", true, false):
-		if node.name.begins_with("FeedRoller") and node is CSGCylinder3D:
-			_feed_rollers.append(node)
-		elif node.name.begins_with("InfeedChainLink"):
-			_infeed_chain_links.append(node)
-			_infeed_chain_bases.append(node.position)
-		elif node.name.begins_with("HoldDownRoller") and node is CSGCylinder3D:
-			_hold_down_rollers.append(node)
-		elif node.name.begins_with("InfeedHoldDownRoller") and node is CSGCylinder3D:
-			_infeed_hold_down_rollers.append(node)
-		elif node.name.begins_with("EdgerSawBlade") and node is CSGCylinder3D:
-			_saw_blades.append(node)
-		elif node.name.begins_with("EdgerSawTeeth"):
-			_saw_teeth_roots.append(node)
-		elif node.name.begins_with("ReferenceCutBoard") and node is Node3D:
-			_sample_board = node
+		var node_3d := node as Node3D
+		if not is_instance_valid(node_3d):
+			continue
+		if node_3d.name.begins_with("FeedRoller"):
+			_feed_rollers.append(node_3d)
+		elif node_3d.name.begins_with("InfeedChainLink"):
+			_infeed_chain_links.append(node_3d)
+			_infeed_chain_bases.append(node_3d.position)
+		elif node_3d.name.begins_with("HoldDownRoller"):
+			_hold_down_rollers.append(node_3d)
+		elif node_3d.name.begins_with("InfeedHoldDownRoller"):
+			_infeed_hold_down_rollers.append(node_3d)
+		elif node_3d.name.begins_with("EdgerSawBlade") and node_3d is CSGCylinder3D:
+			_saw_blades.append(node_3d as CSGCylinder3D)
+		elif node_3d.name.begins_with("EdgerSawTeeth"):
+			_saw_teeth_roots.append(node_3d)
+		elif node_3d.name.begins_with("ReferenceCutBoard"):
+			_sample_board = node_3d
 	_collect_infeed_hold_down_stations_from_scene()
 
 
@@ -636,7 +641,7 @@ func _collect_infeed_hold_down_stations_from_scene() -> void:
 		var parts: Dictionary = station_parts[station_id]
 		if node.name.begins_with("InfeedHoldDownCrosshead"):
 			parts["crosshead"] = node
-		elif node.name.begins_with("InfeedHoldDownRoller") and node is CSGCylinder3D:
+		elif node.name.begins_with("InfeedHoldDownRoller"):
 			parts["roller"] = node
 		elif node.name.begins_with("InfeedHoldDownAxle"):
 			parts["axle"] = node
@@ -650,7 +655,7 @@ func _collect_infeed_hold_down_stations_from_scene() -> void:
 	for station_id in station_ids:
 		var parts: Dictionary = station_parts[station_id]
 		var crosshead := parts.get("crosshead") as Node3D
-		var roller := parts.get("roller") as CSGCylinder3D
+		var roller := parts.get("roller") as Node3D
 		if not is_instance_valid(crosshead) or not is_instance_valid(roller):
 			continue
 
@@ -962,7 +967,7 @@ func _add_box_child(parent: Node3D, node_name: String, local_position: Vector3, 
 	return box
 
 
-func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int) -> CSGCylinder3D:
+func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int, collision: bool = true) -> CSGCylinder3D:
 	var cylinder := CSGCylinder3D.new()
 	cylinder.name = node_name
 	cylinder.position = local_position
@@ -971,10 +976,76 @@ func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vect
 	cylinder.height = height
 	cylinder.sides = sides
 	cylinder.material = material
-	cylinder.use_collision = true
+	cylinder.use_collision = collision
 	parent.add_child(cylinder)
 	_adopt_new_node(cylinder)
 	return cylinder
+
+
+func _add_physics_box(node_name: String, local_position: Vector3, size: Vector3, material: Material, local_rotation: Vector3 = Vector3.ZERO) -> AnimatableBody3D:
+	var body := AnimatableBody3D.new()
+	body.name = _friendly_part_name(node_name, local_position)
+	body.position = local_position
+	body.rotation = local_rotation
+	body.sync_to_physics = true
+	_current_part_parent().add_child(body)
+	_adopt_new_node(body)
+	_add_box_contact_child(body, "Visual", Vector3.ZERO, size, material)
+	return body
+
+
+func _add_physics_cylinder(node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int) -> AnimatableBody3D:
+	var body := AnimatableBody3D.new()
+	body.name = _friendly_part_name(node_name, local_position)
+	body.position = local_position
+	body.rotation = local_rotation
+	body.sync_to_physics = true
+	_current_part_parent().add_child(body)
+	_adopt_new_node(body)
+
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = "Visual"
+	var mesh := CylinderMesh.new()
+	mesh.top_radius = radius
+	mesh.bottom_radius = radius
+	mesh.height = height
+	mesh.radial_segments = sides
+	mesh_instance.mesh = mesh
+	mesh_instance.material_override = material
+	body.add_child(mesh_instance)
+	_adopt_new_node(mesh_instance)
+
+	var collision := CollisionShape3D.new()
+	collision.name = "CollisionShape3D"
+	var shape := CylinderShape3D.new()
+	shape.radius = radius
+	shape.height = height
+	collision.shape = shape
+	body.add_child(collision)
+	_adopt_new_node(collision)
+	return body
+
+
+func _add_box_contact_child(parent: Node3D, node_name: String, local_position: Vector3, size: Vector3, material: Material) -> MeshInstance3D:
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.name = node_name
+	mesh_instance.position = local_position
+	var mesh := BoxMesh.new()
+	mesh.size = size
+	mesh_instance.mesh = mesh
+	mesh_instance.material_override = material
+	parent.add_child(mesh_instance)
+	_adopt_new_node(mesh_instance)
+
+	var collision := CollisionShape3D.new()
+	collision.name = node_name + "Collision"
+	collision.position = local_position
+	var shape := BoxShape3D.new()
+	shape.size = size
+	collision.shape = shape
+	parent.add_child(collision)
+	_adopt_new_node(collision)
+	return mesh_instance
 
 
 func _create_chain_grip_tooth_mesh() -> ArrayMesh:
@@ -1362,7 +1433,7 @@ func _real_position_pin_target_z(index: int, active: bool, push_board: bool) -> 
 	var board_minus_edge_local_z := board_minus_edge_global_z
 	if is_instance_valid(parent_node):
 		board_minus_edge_local_z = parent_node.to_local(Vector3(_real_active_board.global_position.x, _real_active_board.global_position.y, board_minus_edge_global_z)).z
-	return maxf(base_z, board_minus_edge_local_z - position_pin_radius)
+	return board_minus_edge_local_z - position_pin_radius
 
 
 func _real_cushion_target_z(index: int, active: bool) -> float:
@@ -1442,6 +1513,21 @@ func _active_real_pins_are_raised() -> bool:
 			return false
 		var sleeve := station["sleeve"] as Node3D
 		if is_instance_valid(sleeve) and absf(sleeve.position.y - _real_position_pin_sleeve_raised_y(station, pin_target_y)) > PIN_READY_TOLERANCE:
+			return false
+	return not _real_active_pin_indices.is_empty()
+
+
+func _active_real_pins_are_at_board_edge() -> bool:
+	for index in _real_active_pin_indices:
+		if index < 0 or index >= _position_pin_stations.size():
+			continue
+		var station: Dictionary = _position_pin_stations[index]
+		var target_z := _real_position_pin_target_z(index, true, true)
+		var pin := station["pin"] as Node3D
+		if is_instance_valid(pin) and absf(pin.position.z - target_z) > PIN_READY_TOLERANCE:
+			return false
+		var sleeve := station["sleeve"] as Node3D
+		if is_instance_valid(sleeve) and absf(sleeve.position.z - target_z) > PIN_READY_TOLERANCE:
 			return false
 	return not _real_active_pin_indices.is_empty()
 

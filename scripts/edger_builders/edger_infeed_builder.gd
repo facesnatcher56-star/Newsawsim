@@ -69,15 +69,16 @@ func build_parking_ramps(chain_start: float, chain_end: float, chain_top: float)
 			var pivot_z := z + side_sign * ramp_z_size * 0.5
 			var plate_local_z := -side_sign * ramp_z_size * 0.5
 			var parked_angle := -0.24 if z < 0.0 else 0.24
-			var ramp_root := Node3D.new()
+			var ramp_root := AnimatableBody3D.new()
 			ramp_root.name = edger._friendly_part_name("ParkingRampPivot" + suffix, Vector3(x, retracted_y, z))
 			ramp_root.position = Vector3(x, retracted_y, pivot_z)
+			ramp_root.sync_to_physics = true
 			ramp_root.set_meta("retracted_angle", 0.0)
 			ramp_root.set_meta("parked_angle", parked_angle)
 			ramp_root.set_meta("board_lift_span", ramp_z_size)
 			edger._current_part_parent().add_child(ramp_root)
 			edger._adopt_new_node(ramp_root)
-			edger._add_box_child(ramp_root, "ParkingRampPlate", Vector3(0.0, 0.0, plate_local_z), Vector3(ramp_x_size, ramp_y_size, ramp_z_size), edger._mat_hydraulic)
+			edger._add_box_contact_child(ramp_root, "ParkingRampPlate", Vector3(0.0, 0.0, plate_local_z), Vector3(ramp_x_size, ramp_y_size, ramp_z_size), edger._mat_hydraulic)
 			station_nodes.append(ramp_root)
 
 			var shaft_height := 0.09
@@ -114,7 +115,7 @@ func build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
 		var crosshead := edger._add_box("InfeedHoldDownCrosshead" + suffix, Vector3(x, crosshead_y, 0.0), Vector3(0.21, crosshead_y_size, crosshead_z_size), edger._mat_frame)
 		var top_box_y := contact_y + 0.66
 		edger._add_box("InfeedHoldDownTopBox" + suffix, Vector3(x, top_box_y, 0.0), Vector3(0.28, 0.18, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH), edger._mat_frame)
-		var roller := edger._add_cylinder("InfeedHoldDownRoller" + suffix, Vector3(x, raised_y, 0.0), SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH, edger._mat_infeed_hold_down, Vector3(PI * 0.5, 0.0, 0.0), 30)
+		var roller := edger._add_physics_cylinder("InfeedHoldDownRoller" + suffix, Vector3(x, raised_y, 0.0), SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH, edger._mat_infeed_hold_down, Vector3(PI * 0.5, 0.0, 0.0), 30)
 		var axle := edger._add_cylinder("InfeedHoldDownAxle" + suffix, Vector3(x, raised_y, 0.0), 0.024, bearing_z * 2.0, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 18)
 		var moving_nodes: Array[Node3D] = [crosshead, roller, axle]
 		for z in [-bearing_z, bearing_z]:
