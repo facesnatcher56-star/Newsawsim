@@ -127,6 +127,7 @@ func build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
 		edger._infeed_hold_down_rollers.append(roller)
 		edger._infeed_hold_down_stations.append({
 			"x": x,
+			"roller": roller,
 			"nodes": moving_nodes,
 			"y_offsets": y_offsets,
 			"raised_y": raised_y,

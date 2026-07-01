@@ -141,6 +141,8 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 8.0, 0.01, "or_greater") var position_pin_speed: float = 1.6
 @export_range(0.0, 8.0, 0.01, "or_greater") var cushion_pin_speed: float = 2.2
 @export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
+@export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_lower_speed: float = 0.6
+@export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_raise_speed: float = 0.45
 
 @export_category("Position Pin Behavior")
 @export_range(0.0, 10.0, 0.1) var position_pin_raise_height: float = 5.0
@@ -221,6 +223,7 @@ func _physics_process(delta: float) -> void:
 
 func _apply_real_board_contacts(delta: float) -> void:
 	var boards := _real_cut_boards()
+	_update_real_infeed_hold_downs(delta, boards)
 	if boards.is_empty():
 		return
 
@@ -338,17 +341,14 @@ func _apply_centering_pin_contacts(body: RigidBody3D, local_center: Vector3, del
 func _apply_hold_down_contacts(body: RigidBody3D, local_center: Vector3) -> void:
 	var has_contact := false
 	for station in _infeed_hold_down_stations:
+		if not bool(station.get("down", false)):
+			continue
 		if _board_overlaps_x_range(local_center.x, float(station["x"]) - INFEED_HOLD_DOWN_ROLLER_RADIUS, float(station["x"]) + INFEED_HOLD_DOWN_ROLLER_RADIUS):
 			has_contact = true
 			break
 	if not has_contact:
 		for roller in _contact_rollers("HoldDownRoller"):
 			if _board_overlaps_x_range(local_center.x, roller.position.x - HOLD_DOWN_ROLLER_RADIUS, roller.position.x + HOLD_DOWN_ROLLER_RADIUS):
-				has_contact = true
-				break
-	if not has_contact:
-		for roller in _contact_rollers("InfeedHoldDownRoller"):
-			if _board_overlaps_x_range(local_center.x, roller.position.x - INFEED_HOLD_DOWN_ROLLER_RADIUS, roller.position.x + INFEED_HOLD_DOWN_ROLLER_RADIUS):
 				has_contact = true
 				break
 	if not has_contact:
@@ -372,6 +372,101 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 		else:
 			target_angle = float(ramp.get_meta("retracted_angle", 0.0))
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
+
+
+func _update_real_infeed_hold_downs(delta: float, boards: Array[RigidBody3D]) -> void:
+	var roller_half_length := INFEED_HOLD_DOWN_ROLLER_LENGTH * 0.5
+	for station in _infeed_hold_down_stations:
+		var nodes: Array = station["nodes"]
+		var y_offsets: Array = station["y_offsets"]
+		if nodes.is_empty() or not is_instance_valid(nodes[0] as Node3D):
+			continue
+		var station_x := float(station["x"])
+		var raised_y := float(station["raised_y"])
+
+		# Find the board directly under this roller (x overlap + z overlap with the roller span)
+		var board_under: RigidBody3D = null
+		var board_top_y := -INF
+		for body in boards:
+			var local_center := to_local(body.global_position)
+			if absf(local_center.z) > 4.5 or absf(local_center.y - working_height) > 0.6:
+				continue
+			if not _board_overlaps_x_range(local_center.x, station_x - INFEED_HOLD_DOWN_ROLLER_RADIUS, station_x + INFEED_HOLD_DOWN_ROLLER_RADIUS):
+				continue
+			var z_bounds := _get_board_local_z_bounds_for_body(body)
+			if z_bounds.y < -roller_half_length or z_bounds.x > roller_half_length:
+				continue
+			var top_y := local_center.y + _get_board_thickness_for_body(body) * 0.5
+			if top_y > board_top_y:
+				board_top_y = top_y
+				board_under = body
+
+		var current_y := (nodes[0] as Node3D).position.y - float(y_offsets[0])
+		var new_y := current_y
+		var target_y := raised_y
+		var is_descended := bool(station.get("descended", false))
+		
+		# Once delay timer starts and board is present, mark as descended and stay descended
+		if not is_descended and is_instance_valid(board_under) and _pin_retract_delay_elapsed > 0.0:
+			is_descended = true
+			station["descended"] = true
+		
+		# If descended (or board still present), follow the board down
+		if is_descended and is_instance_valid(board_under):
+			target_y = board_top_y + INFEED_HOLD_DOWN_ROLLER_RADIUS
+			new_y = _lower_infeed_hold_down(current_y, board_top_y)
+		# Only retract when board is completely gone
+		elif not is_instance_valid(board_under):
+			is_descended = false
+			station["descended"] = false
+			new_y = _retract_infeed_hold_down(current_y, raised_y)
+		
+		for i in range(nodes.size()):
+			var node := nodes[i] as Node3D
+			if is_instance_valid(node):
+				node.position.y = new_y + float(y_offsets[i])
+
+		var resting := is_instance_valid(board_under) and absf(new_y - target_y) <= 0.02 and target_y < raised_y - 0.01
+		station["down"] = resting
+
+		# Idler roller: spun only by the board sliding underneath it
+		if resting:
+			var roller := station.get("roller") as Node3D
+			if is_instance_valid(roller):
+				var board_speed := board_under.linear_velocity.dot(global_transform.basis.x.normalized())
+				if absf(board_speed) > 0.005:
+					roller.rotate_object_local(Vector3.UP, (board_speed / maxf(INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)) * delta)
+
+		var actuator: Dictionary = station.get("actuator", {})
+		if not actuator.is_empty():
+			_stretch_infeed_hold_down_actuator(actuator, raised_y - new_y)
+
+
+func _lower_infeed_hold_down(current_y: float, board_top_y: float) -> float:
+	var target_y := board_top_y + INFEED_HOLD_DOWN_ROLLER_RADIUS
+	return move_toward(current_y, target_y, hold_down_lower_speed * get_physics_process_delta_time())
+
+
+func _retract_infeed_hold_down(current_y: float, raised_y: float) -> float:
+	return move_toward(current_y, raised_y, hold_down_raise_speed * get_physics_process_delta_time())
+
+
+func _stretch_infeed_hold_down_actuator(actuator: Dictionary, drop: float) -> void:
+	var rod := actuator.get("rod") as CSGCylinder3D
+	if is_instance_valid(rod):
+		if not actuator.has("rod_base_height"):
+			actuator["rod_base_height"] = rod.height
+		var rod_top_y := float(actuator.get("rod_top_y", rod.position.y + rod.height * 0.5))
+		rod.height = float(actuator["rod_base_height"]) + drop
+		rod.position.y = rod_top_y - rod.height * 0.5
+	for key: String in ["clevis", "pin_hole"]:
+		var part := actuator.get(key) as Node3D
+		if not is_instance_valid(part):
+			continue
+		var base_key := key + "_base_y"
+		if not actuator.has(base_key):
+			actuator[base_key] = part.position.y
+		part.position.y = float(actuator[base_key]) - drop
 
 
 func _select_position_pins_for_board(board: RigidBody3D) -> Array[int]:
@@ -559,9 +654,6 @@ func _spin_real_contact_parts(delta: float, boards: Array[RigidBody3D]) -> void:
 	var hold_down_step := (infeed_chain_feed_speed / maxf(HOLD_DOWN_ROLLER_RADIUS, 0.001)) * hold_down_roller_spin_speed * delta
 	for roller in _contact_rollers("HoldDownRoller"):
 		roller.rotate_object_local(Vector3.UP, hold_down_step)
-	var infeed_hold_down_step := (infeed_chain_feed_speed / maxf(INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)) * hold_down_roller_spin_speed * delta
-	for roller in _contact_rollers("InfeedHoldDownRoller"):
-		roller.rotate_object_local(Vector3.UP, infeed_hold_down_step)
 
 
 func _parking_ramp_edge_lifts_for_board(body: RigidBody3D, local_center: Vector3) -> Vector2:
@@ -912,6 +1004,7 @@ func _collect_infeed_hold_down_stations_from_scene() -> void:
 
 		var station := {
 			"x": roller.position.x,
+			"roller": roller,
 			"nodes": moving_nodes,
 			"y_offsets": y_offsets,
 			"raised_y": raised_y,

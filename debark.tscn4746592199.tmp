@@ -1196,8 +1196,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.73172, -0.26604617, 19.879
 [node name="SawmillEdger" parent="." unique_id=1576143709 instance=ExtResource("12_fjvqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.4878755, 18.297045)
 cushion_pin_extension = 0.12
-show_waste_chutes = false
 cushion_pin_speed = 0.61
+show_waste_chutes = false
 position_pin_raise_height = 0.2
 position_pin_z_travel_speed = 0.57
 retraction_delay = 3.0
