@@ -296,7 +296,7 @@ transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
-transform = Transform3D(0.22108892, 0.32153153, -0.9207264, 0, 0.9440892, 0.32969016, 0.9752537, -0.07289083, 0.20872764, 37.573933, 1.0856225, 16.871769)
+transform = Transform3D(0.22108892, 0.32153153, -0.9207264, 0, 0.9440892, 0.32969016, 0.9752537, -0.07289083, 0.20872764, 37.573933, 0.38568306, 18.2681)
 current = true
 script = ExtResource("1_cam")
 
@@ -1112,6 +1112,9 @@ transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 37.215958, 0.
 [node name="InclineLogDeck" parent="InclineOutfeed" index="0" unique_id=428629830]
 transform = Transform3D(1, 0, 0, 0, 0.9724839, -0.23297013, 0, 0.23297013, 0.9724839, 16.518269, 0.13039482, 4.092802)
 
+[node name="SlopeRoot" parent="InclineOutfeed/InclineLogDeck" index="0"]
+transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.3746067, 0, -0.3746067, 0.9271841, 0, 0, 0)
+
 [node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone" index="0"]
 transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99998295, 0, -0.07921165, -0.30083942)
 
@@ -1185,20 +1188,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.0589113)
 shape = SubResource("BoxShape3D_rky8w")
 
 [node name="SlidingPlate" parent="." unique_id=419412460 instance=ExtResource("13_plate")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.76953, -0.30339658, 19.87921)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.76953, -0.26604617, 19.87921)
 
 [node name="SlidingPlate2" parent="." unique_id=1076047872 instance=ExtResource("13_plate")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.723957, -0.30339658, 19.87921)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 43.723957, -0.26604617, 19.87921)
 
 [node name="SlidingPlate3" parent="." unique_id=1439341819 instance=ExtResource("13_plate")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.73172, -0.30339658, 19.87921)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.73172, -0.26604617, 19.87921)
 
 [node name="SawmillEdger" parent="." unique_id=1576143709 instance=ExtResource("12_fjvqp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.46477965, 18.297045)
 show_waste_chutes = false
 position_pin_raise_height = 0.2
 position_pin_z_travel_speed = 0.57
-position_pin_z_travel_delay = 0.99
 
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]

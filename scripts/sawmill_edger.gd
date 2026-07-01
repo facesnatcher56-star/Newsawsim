@@ -146,8 +146,7 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 10.0, 0.1) var position_pin_raise_height: float = 5.0
 @export_range(0.0, 10.0, 0.1, "or_greater") var position_pin_z_travel: float = 5.0
 @export_range(0.0, 10.0, 0.01, "or_greater") var position_pin_z_travel_speed: float = 0.95
-@export_range(0.0, 2.0, 0.01) var position_pin_z_travel_delay: float = 0.0
-@export var position_pin_target_z: float = 18.825495
+@export var position_pin_target_z: float = 18.27
 
 @export_category("Board Physics")
 @export var enable_board_physics_contacts: bool = true
@@ -227,36 +226,21 @@ func _apply_real_board_contacts(delta: float) -> void:
 	# Check if any board is in the top_zone to trigger pin engagement
 	var boards_in_top_zone := _get_boards_in_top_zone()
 
-	# State machine: keep centering until the board reaches target Z-limit (centered on chain at local Z = 0.0)
-	if is_instance_valid(_centering_board):
-		if not _centering_completed:
-			var board_center_global_z = _centering_board.global_position.z
-			# Target Z is the edger's global Z position, which aligns with local Z = 0.0 (chain center)
-			if board_center_global_z >= global_position.z - CENTERING_TOLERANCE:
-				_centering_completed = true
-				print("[SawmillEdger TRACE] Centering completed!")
-				print("   - Board center global Z: %.4f" % board_center_global_z)
-				print("   - Target global Z (chain center): %.4f" % global_position.z)
-				print("   - Board center offset from target: %.4f" % (board_center_global_z - global_position.z))
-				for i in range(_position_pin_stations.size()):
-					var station = _position_pin_stations[i]
-					var pin = station["pin"] as Node3D
-					if is_instance_valid(pin):
-						print("   - Position Pin %d local Z: %.4f, global Z: %.4f" % [i + 1, pin.position.z, pin.global_position.z])
-		
-		# Reset once centering is completed and the board has left the top zone
-		if _centering_completed and not boards_in_top_zone.has(_centering_board):
-			print("[SawmillEdger TRACE] Resetting centering cycle. Board left top zone.")
-			_centering_board = null
-			_centering_completed = false
-	
+	# Mark centering complete when board reaches target global Z
+	if is_instance_valid(_centering_board) and not _centering_completed:
+		if _centering_board.global_position.z >= position_pin_target_z:
+			_centering_completed = true
+
+	# Reset once centering is completed and the board has left the top zone
+	if _centering_completed and not boards_in_top_zone.has(_centering_board):
+		_centering_board = null
+		_centering_completed = false
+
+	# Start centering when new board enters top zone
 	if not is_instance_valid(_centering_board):
 		if not boards_in_top_zone.is_empty():
 			_centering_board = boards_in_top_zone[0]
 			_centering_completed = false
-			print("[SawmillEdger TRACE] Centering started for: ", _centering_board.name)
-			print("   - Initial board center global Z: %.4f" % _centering_board.global_position.z)
-			print("   - Target global Z (chain center): %.4f" % global_position.z)
 
 	_update_real_parking_ramps(delta, boards)
 	_update_real_position_pins(delta, boards)
@@ -373,10 +357,14 @@ func _update_real_parking_ramps(delta: float, _boards: Array[RigidBody3D]) -> vo
 	var ramps := _parking_ramp_nodes()
 	if ramps.is_empty():
 		return
-	# Ramps stay retracted - position and cushion pins handle board positioning
-	var should_raise := false
+	# Raise ramps when board enters top zone, retract only when board leaves
+	var should_raise := is_instance_valid(_centering_board)
 	for ramp in ramps:
-		var target_angle := float(ramp.get_meta("retracted_angle", 0.0))
+		var target_angle: float
+		if should_raise:
+			target_angle = float(ramp.get_meta("parked_angle", 0.0))
+		else:
+			target_angle = float(ramp.get_meta("retracted_angle", 0.0))
 		ramp.rotation.x = move_toward(ramp.rotation.x, target_angle, parking_ramp_speed * delta)
 
 
@@ -452,9 +440,10 @@ func _board_has_pins_engaged(board: RigidBody3D) -> bool:
 
 
 func _update_real_position_pins(delta: float, _boards: Array[RigidBody3D]) -> void:
-	# If there's an active board being centered, select which pins should be active
-	var active_pin_indices: Array[int] = []
+	# Simple pusher: raise → push forward until board reaches target Z → retract → home
 	var active_board: RigidBody3D = null
+	var active_pin_indices: Array[int] = []
+
 	if is_instance_valid(_centering_board) and not _centering_completed:
 		active_board = _centering_board
 		active_pin_indices = _select_position_pins_for_board(active_board)
@@ -463,44 +452,42 @@ func _update_real_position_pins(delta: float, _boards: Array[RigidBody3D]) -> vo
 		var station: Dictionary = _position_pin_stations[i]
 		var pin: Node3D = station["pin"] as Node3D
 		var sleeve: Node3D = station["sleeve"] as Node3D
+
 		if not is_instance_valid(pin) and not is_instance_valid(sleeve):
 			continue
 
-		var target_y: float = float(station["retracted_y"])
-		var sleeve_target_y: float = float(station["sleeve_retracted_y"])
-		var target_z: float = float(station["z"])
-		var base_z: float = float(station["z"])
+		var retracted_y: float = float(station["retracted_y"])
+		var raised_y: float = retracted_y + position_pin_raise_height
+		var home_z: float = float(station["z"])
+		var push_z: float = home_z + position_pin_z_travel
 
-		# Only engage this pin if it's selected for the active board
-		if active_pin_indices.has(i):
-			target_y = float(station["retracted_y"]) + position_pin_raise_height
-			sleeve_target_y = float(station["sleeve_retracted_y"]) + position_pin_raise_height
+		var target_y: float = retracted_y
+		var target_z: float = home_z
 
-			# Track elapsed time for Z travel delay
-			if not station.has("z_travel_elapsed"):
-				station["z_travel_elapsed"] = 0.0
-			station["z_travel_elapsed"] += delta
+		# If this pin is selected and board is active
+		if active_pin_indices.has(i) and is_instance_valid(active_board):
+			if active_board.global_position.z < position_pin_target_z:
+				# Still pushing: raise up first, then push forward
+				target_y = raised_y
 
-			# Only start Z movement after delay
-			if station["z_travel_elapsed"] >= position_pin_z_travel_delay:
-				if is_instance_valid(active_board):
-					# Align the board center to local Z = 0.0 (chain center)
-					# The pin touches the negative Z edge of the board. We subtract the parent assembly's Z
-					# to convert from edger-local coordinate space to pin-local coordinate space:
-					var assembly = get_node_or_null("PositionPinAssembly") as Node3D
-					var assembly_z = assembly.position.z if is_instance_valid(assembly) else 0.0
-					target_z = -_get_board_width_for_body(active_board) / 2.0 - assembly_z
+				# Only start Z movement after Y is fully raised
+				if absf(pin.position.y - raised_y) < 0.01:
+					target_z = push_z
 				else:
-					target_z = base_z + position_pin_z_travel
-		else:
-			# Reset delay when pin is not active
-			station["z_travel_elapsed"] = 0.0
+					target_z = home_z  # Keep Z home while raising Y
+			else:
+				# Board reached target: retract down and return home
+				target_y = retracted_y
+				target_z = home_z
+		# else: not selected, stay at home position (already set above)
 
+		# Apply movement
 		if is_instance_valid(pin):
 			pin.position.y = move_toward(pin.position.y, target_y, position_pin_speed * delta)
 			pin.position.z = move_toward(pin.position.z, target_z, position_pin_z_travel_speed * delta)
+
 		if is_instance_valid(sleeve):
-			sleeve.position.y = move_toward(sleeve.position.y, sleeve_target_y, position_pin_speed * delta)
+			sleeve.position.y = move_toward(sleeve.position.y, target_y, position_pin_speed * delta)
 			sleeve.position.z = move_toward(sleeve.position.z, target_z, position_pin_z_travel_speed * delta)
 
 
