@@ -50,8 +50,10 @@ height = 0.26
 sides = 16
 material = SubResource("StandardMaterial3D_f87vt")
 
-[node name="CushionPinAssembly_01_Infeed_Back_Mid" type="Node3D" parent="." unique_id=283357895]
+[node name="CushionPinAssembly_01_Infeed_Back_Mid" type="RigidBody3D" parent="." unique_id=283357895]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.12, 0.8, 0.273)
+freeze_mode = 2
+linear_velocity_z = 0.0
 
 [node name="CushionRod" type="CSGCylinder3D" parent="CushionPinAssembly_01_Infeed_Back_Mid" unique_id=1978069546]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.115529776)
@@ -67,8 +69,9 @@ use_collision = true
 size = Vector3(0.16, 0.12, 0.045)
 material = SubResource("StandardMaterial3D_4kxpm")
 
-[node name="CushionPinAssembly_02_Infeed_Back_Mid" type="Node3D" parent="." unique_id=1456581173]
+[node name="CushionPinAssembly_02_Infeed_Back_Mid" type="RigidBody3D" parent="." unique_id=1456581173]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.64, 0.8, 0.273)
+freeze_mode = 2
 
 [node name="CushionRod" type="CSGCylinder3D" parent="CushionPinAssembly_02_Infeed_Back_Mid" unique_id=162574964]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.115529776)
@@ -84,8 +87,9 @@ use_collision = true
 size = Vector3(0.16, 0.12, 0.045)
 material = SubResource("StandardMaterial3D_4kxpm")
 
-[node name="CushionPinAssembly_03_Infeed_Back_Mid" type="Node3D" parent="." unique_id=1429640370]
+[node name="CushionPinAssembly_03_Infeed_Back_Mid" type="RigidBody3D" parent="." unique_id=1429640370]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.16, 0.8, 0.273)
+freeze_mode = 2
 
 [node name="CushionRod" type="CSGCylinder3D" parent="CushionPinAssembly_03_Infeed_Back_Mid" unique_id=433691051]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.115529776)
@@ -101,8 +105,9 @@ use_collision = true
 size = Vector3(0.16, 0.12, 0.045)
 material = SubResource("StandardMaterial3D_4kxpm")
 
-[node name="CushionPinAssembly_04_Infeed_Back_Mid" type="Node3D" parent="." unique_id=485977626]
+[node name="CushionPinAssembly_04_Infeed_Back_Mid" type="RigidBody3D" parent="." unique_id=485977626]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.68, 0.8, 0.273)
+freeze_mode = 2
 
 [node name="CushionRod" type="CSGCylinder3D" parent="CushionPinAssembly_04_Infeed_Back_Mid" unique_id=1482569597]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.115529776)

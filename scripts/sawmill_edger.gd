@@ -147,6 +147,7 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.0, 10.0, 0.1, "or_greater") var position_pin_z_travel: float = 5.0
 @export_range(0.0, 10.0, 0.01, "or_greater") var position_pin_z_travel_speed: float = 0.95
 @export var position_pin_target_z: float = 18.27
+@export_range(0.0, 10.0, 0.1) var retraction_delay: float = 0.5
 
 @export_category("Board Physics")
 @export var enable_board_physics_contacts: bool = true
@@ -226,15 +227,20 @@ func _apply_real_board_contacts(delta: float) -> void:
 	# Check if any board is in the top_zone to trigger pin engagement
 	var boards_in_top_zone := _get_boards_in_top_zone()
 
-	# Mark centering complete when board reaches target global Z
+	# Track delay when board reaches target global Z
 	if is_instance_valid(_centering_board) and not _centering_completed:
 		if _centering_board.global_position.z >= position_pin_target_z:
-			_centering_completed = true
+			_pin_retract_delay_elapsed += delta
+			if _pin_retract_delay_elapsed >= retraction_delay:
+				_centering_completed = true
+		else:
+			_pin_retract_delay_elapsed = 0.0
 
 	# Reset once centering is completed and the board has left the top zone
 	if _centering_completed and not boards_in_top_zone.has(_centering_board):
 		_centering_board = null
 		_centering_completed = false
+		_pin_retract_delay_elapsed = 0.0
 
 	# Start centering when new board enters top zone
 	if not is_instance_valid(_centering_board):
@@ -475,10 +481,20 @@ func _update_real_position_pins(delta: float, _boards: Array[RigidBody3D]) -> vo
 					target_z = push_z
 				else:
 					target_z = home_z  # Keep Z home while raising Y
+			elif _pin_retract_delay_elapsed < retraction_delay:
+				# Board at target but delay not finished: hold current Z position
+				target_y = raised_y
+				target_z = pin.position.z  # Hold current Z, don't advance further
 			else:
-				# Board reached target: retract down and return home
-				target_y = retracted_y
-				target_z = home_z
+				# Delay finished: sequential retraction (Y first, then Z)
+				# First retract Y down
+				if absf(pin.position.y - retracted_y) > 0.01:
+					target_y = retracted_y
+					target_z = pin.position.z  # Keep Z at current position while Y retracts
+				else:
+					# Y is fully retracted, now return Z home
+					target_y = retracted_y
+					target_z = home_z
 		# else: not selected, stay at home position (already set above)
 
 		# Apply movement
