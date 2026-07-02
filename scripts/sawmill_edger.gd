@@ -137,6 +137,7 @@ var _mat_rubber: StandardMaterial3D
 @export_range(0.1, 8.0, 0.1, "or_greater") var infeed_chain_feed_speed: float = 1.4
 @export_range(0.0, 20.0, 0.1, "or_greater") var feed_roller_spin_speed: float = 1.0
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_roller_spin_speed: float = 1.0
+@export_range(0.0, 20.0, 0.1, "or_greater") var hold_down_roller_spin_resistance: float = 1.5
 @export_range(0.0, 8.0, 0.01, "or_greater") var parking_ramp_speed: float = 1.8
 @export_range(0.0, 8.0, 0.01, "or_greater") var position_pin_speed: float = 1.6
 @export_range(0.0, 8.0, 0.01, "or_greater") var cushion_pin_speed: float = 2.2
@@ -186,6 +187,7 @@ const CUSHION_PAD_CONTACT_OFFSET_Z := -0.08 - 0.0225
 var _feed_rollers: Array[Node3D] = []
 var _infeed_chain_links: Array[Node3D] = []
 var _infeed_chain_bases: Array[Vector3] = []
+var _infeed_chain_travel: float = 0.0
 var _hold_down_rollers: Array[Node3D] = []
 var _hold_down_stations: Array[Dictionary] = []
 var _infeed_hold_down_rollers: Array[Node3D] = []
@@ -224,6 +226,7 @@ func _physics_process(delta: float) -> void:
 func _apply_real_board_contacts(delta: float) -> void:
 	var boards := _real_cut_boards()
 	_update_real_infeed_hold_downs(delta, boards)
+	_update_real_hold_downs(delta, boards)
 	if boards.is_empty():
 		return
 
@@ -255,8 +258,8 @@ func _apply_real_board_contacts(delta: float) -> void:
 	_update_real_position_pins(delta, boards)
 	_update_real_cushion_pins(delta, boards)
 
-	# Pause deck if board is active and centering has not finished
-	var should_pause_deck = is_instance_valid(_centering_board) and not _centering_completed
+	# Pause deck while centering board is present
+	var should_pause_deck = is_instance_valid(_centering_board)
 	_set_infeed_deck_pause(should_pause_deck)
 
 	_spin_real_contact_parts(delta, boards)
@@ -268,7 +271,6 @@ func _apply_real_board_contacts(delta: float) -> void:
 		if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x() - 0.35, bed_length * 0.5 + 0.55):
 			continue
 		body.sleeping = false
-		_apply_feed_contact(body, local_center)
 		_apply_parking_ramp_edge_contacts(body, local_center)
 		_apply_centering_pin_contacts(body, local_center, delta)
 		_apply_hold_down_contacts(body, local_center)
@@ -291,11 +293,7 @@ func _real_cut_boards() -> Array[RigidBody3D]:
 func _apply_feed_contact(body: RigidBody3D, local_center: Vector3) -> void:
 	if not _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), bed_length * 0.5):
 		return
-
-	# Feed boards through the chain
-	if local_center.x > _centering_section_end_x() + 0.2:
-		pass  # Allow feeding
-	else:
+	if not _real_ramps_are_home(_parking_ramp_nodes()):
 		return
 
 	var x_axis := global_transform.basis.x.normalized()
@@ -347,15 +345,17 @@ func _apply_hold_down_contacts(body: RigidBody3D, local_center: Vector3) -> void
 			has_contact = true
 			break
 	if not has_contact:
-		for roller in _contact_rollers("HoldDownRoller"):
-			if _board_overlaps_x_range(local_center.x, roller.position.x - HOLD_DOWN_ROLLER_RADIUS, roller.position.x + HOLD_DOWN_ROLLER_RADIUS):
+		for station in _hold_down_stations:
+			if not bool(station.get("down", false)):
+				continue
+			if _board_overlaps_x_range(local_center.x, float(station["x"]) - HOLD_DOWN_ROLLER_RADIUS, float(station["x"]) + HOLD_DOWN_ROLLER_RADIUS):
 				has_contact = true
 				break
 	if not has_contact:
 		return
 
 	var y_axis := global_transform.basis.y.normalized()
-	body.apply_central_force(-y_axis * hold_down_contact_force)
+	# body.apply_central_force(-y_axis * hold_down_contact_force)
 	_apply_feed_contact(body, local_center)
 
 
@@ -429,17 +429,79 @@ func _update_real_infeed_hold_downs(delta: float, boards: Array[RigidBody3D]) ->
 		var resting := is_instance_valid(board_under) and absf(new_y - target_y) <= 0.02 and target_y < raised_y - 0.01
 		station["down"] = resting
 
-		# Idler roller: spun only by the board sliding underneath it
+		# Idler roller: spun by the board sliding underneath it, coasting to a stop when empty
+		var spin_vel: float = station.get("spin_velocity", 0.0)
 		if resting:
+			var board_speed := board_under.linear_velocity.dot(global_transform.basis.x.normalized())
+			spin_vel = board_speed / maxf(INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)
+		else:
+			spin_vel = move_toward(spin_vel, 0.0, hold_down_roller_spin_resistance * delta)
+		
+		station["spin_velocity"] = spin_vel
+		if absf(spin_vel) > 0.001:
 			var roller := station.get("roller") as Node3D
 			if is_instance_valid(roller):
-				var board_speed := board_under.linear_velocity.dot(global_transform.basis.x.normalized())
-				if absf(board_speed) > 0.005:
-					roller.rotate_object_local(Vector3.UP, (board_speed / maxf(INFEED_HOLD_DOWN_ROLLER_RADIUS, 0.001)) * delta)
+				roller.rotate_object_local(Vector3.UP, spin_vel * delta)
 
 		var actuator: Dictionary = station.get("actuator", {})
 		if not actuator.is_empty():
 			_stretch_infeed_hold_down_actuator(actuator, raised_y - new_y)
+
+
+func _update_real_hold_downs(delta: float, boards: Array[RigidBody3D]) -> void:
+	for station in _hold_down_stations:
+		var nodes: Array = station["nodes"]
+		if nodes.is_empty() or not is_instance_valid(nodes[0] as Node3D):
+			continue
+		var station_x := float(station["x"])
+		var bases: Array[Vector3] = station["bases"]
+		var offset := float(station.get("offset", 0.0))
+		var raised_y := bases[0].y + offset
+
+		# Find board under this roller
+		var board_under: RigidBody3D = null
+		var board_top_y := -INF
+		for body in boards:
+			var local_center := to_local(body.global_position)
+			if absf(local_center.z) > 4.5 or absf(local_center.y - working_height) > 0.6:
+				continue
+			if not _board_overlaps_x_range(local_center.x, station_x - HOLD_DOWN_ROLLER_RADIUS, station_x + HOLD_DOWN_ROLLER_RADIUS):
+				continue
+			var top_y := local_center.y + _get_board_thickness_for_body(body) * 0.5
+			if top_y > board_top_y:
+				board_top_y = top_y
+				board_under = body
+
+		var target_y := raised_y
+		if is_instance_valid(board_under):
+			target_y = board_top_y + HOLD_DOWN_ROLLER_RADIUS
+
+		var current_y := (nodes[0] as Node3D).position.y
+		var speed := hold_down_lower_speed if target_y < current_y else hold_down_raise_speed
+		var new_y := move_toward(current_y, target_y, speed * delta)
+
+		# Apply new Y to all moving nodes, preserving their relative offsets
+		var y_delta := new_y - current_y
+		for node in nodes:
+			if is_instance_valid(node):
+				node.position.y += y_delta
+
+		var is_down := is_instance_valid(board_under) and absf(new_y - target_y) <= 0.02
+		station["down"] = is_down
+
+		# Passive spin from board contact, coasting to a stop when empty
+		var spin_vel: float = station.get("spin_velocity", 0.0)
+		if is_down:
+			var board_speed := board_under.linear_velocity.dot(global_transform.basis.x.normalized())
+			spin_vel = board_speed / maxf(HOLD_DOWN_ROLLER_RADIUS, 0.001)
+		else:
+			spin_vel = move_toward(spin_vel, 0.0, hold_down_roller_spin_resistance * delta)
+		
+		station["spin_velocity"] = spin_vel
+		if absf(spin_vel) > 0.001:
+			var roller := nodes[0] as Node3D  # First node is the roller
+			if is_instance_valid(roller):
+				roller.rotate_object_local(Vector3.UP, spin_vel * delta)
 
 
 func _lower_infeed_hold_down(current_y: float, board_top_y: float) -> float:
@@ -639,21 +701,35 @@ func _update_real_cushion_pins(delta: float, _boards: Array[RigidBody3D]) -> voi
 
 
 func _spin_real_contact_parts(delta: float, boards: Array[RigidBody3D]) -> void:
-	var board_in_machine := false
-	for body in boards:
-		var local_center := to_local(body.global_position)
-		if _board_overlaps_x_range(local_center.x, _infeed_chain_start_x(), bed_length * 0.5):
-			board_in_machine = true
+	var chain_should_run := false
+	for station in _infeed_hold_down_stations:
+		if bool(station.get("down", false)):
+			chain_should_run = true
 			break
-	if not board_in_machine:
+	if not chain_should_run:
+		for station in _hold_down_stations:
+			if bool(station.get("down", false)):
+				chain_should_run = true
+				break
+
+	if not chain_should_run:
 		return
+
 	var feed_step := (infeed_chain_feed_speed / maxf(FEED_ROLLER_RADIUS, 0.001)) * feed_roller_spin_speed * delta
 	for roller in _feed_rollers:
 		if is_instance_valid(roller):
 			roller.rotate_object_local(Vector3.UP, -feed_step)
-	var hold_down_step := (infeed_chain_feed_speed / maxf(HOLD_DOWN_ROLLER_RADIUS, 0.001)) * hold_down_roller_spin_speed * delta
-	for roller in _contact_rollers("HoldDownRoller"):
-		roller.rotate_object_local(Vector3.UP, hold_down_step)
+
+	var chain_length := INFEED_CHAIN_END_X - _infeed_chain_start_x()
+	if chain_length > 0.0:
+		var chain_step := infeed_chain_feed_speed * delta
+		_infeed_chain_travel = fmod(_infeed_chain_travel + chain_step, chain_length)
+		for i in range(_infeed_chain_links.size()):
+			var link := _infeed_chain_links[i]
+			if is_instance_valid(link):
+				var base_x := _infeed_chain_bases[i].x
+				var new_x := _infeed_chain_start_x() + fmod((base_x - _infeed_chain_start_x()) + _infeed_chain_travel, chain_length)
+				link.position.x = new_x
 
 
 func _parking_ramp_edge_lifts_for_board(body: RigidBody3D, local_center: Vector3) -> Vector2:
@@ -780,6 +856,7 @@ func _rebuild() -> void:
 	_feed_rollers.clear()
 	_infeed_chain_links.clear()
 	_infeed_chain_bases.clear()
+	_infeed_chain_travel = 0.0
 	_hold_down_rollers.clear()
 	_hold_down_stations.clear()
 	_infeed_hold_down_rollers.clear()
@@ -1275,19 +1352,20 @@ func _add_infeed_chain_link(node_name: String, local_position: Vector3, index: i
 		tooth.material_override = _mat_chain_grip
 		tooth.position = Vector3(tooth_xs[tooth_i], CHAIN_LINK_THICKNESS * 0.5, 0.0)
 		tooth.rotation.y = PI if (index + tooth_i) % 2 == 1 else 0.0
+		tooth.scale.y = 0.4030368
 		link_root.add_child(tooth)
 		_adopt_new_node(tooth)
 
 	return link_root
 
 
-func _add_box_child(parent: Node3D, node_name: String, local_position: Vector3, size: Vector3, material: Material) -> CSGBox3D:
+func _add_box_child(parent: Node3D, node_name: String, local_position: Vector3, size: Vector3, material: Material, collision: bool = true) -> CSGBox3D:
 	var box := CSGBox3D.new()
 	box.name = node_name
 	box.position = local_position
 	box.size = size
 	box.material = material
-	box.use_collision = true
+	box.use_collision = collision
 	parent.add_child(box)
 	_adopt_new_node(box)
 	return box

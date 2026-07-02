@@ -4,7 +4,7 @@
 friction = 0.2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_js36l"]
-size = Vector3(0.22781754, 0.09295654, 0.871727)
+size = Vector3(0.08851814, 0.09295654, 0.47602463)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plate"]
 albedo_color = Color(0.4, 0.4, 0.45, 1)
@@ -15,10 +15,10 @@ roughness = 0.2
 physics_material_override = SubResource("PhysicsMaterial_plate")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=582867989]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9480007, 0.49197388, -1.8065681)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0176504, 0.49197388, -2.0044193)
 shape = SubResource("BoxShape3D_js36l")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=1138548671]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.9452744, 0.4816475, -1.8081665)
-size = Vector3(0.23291016, 0.1, 0.85583496)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.019371, 0.4816475, -2.000885)
+size = Vector3(0.0847168, 0.1, 0.47039795)
 material = SubResource("StandardMaterial3D_plate")

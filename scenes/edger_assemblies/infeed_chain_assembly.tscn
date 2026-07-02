@@ -1,4 +1,4 @@
-[gd_scene format=4]
+[gd_scene format=4 uid="uid://bqitkhgnd625r"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bnj1n"]
 albedo_color = Color(0.3, 0.32, 0.34, 1)
@@ -701,22 +701,6 @@ use_collision = true
 size = Vector3(7.3, 0.045, 0.1225)
 material = SubResource("StandardMaterial3D_bnj1n")
 
-[node name="InfeedChainIdler_01_Entry_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1249259372]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -7.66, 0.721, 0)
-use_collision = true
-radius = 0.065
-height = 0.1225
-sides = 18
-material = SubResource("StandardMaterial3D_f87vt")
-
-[node name="InfeedChainIdler_01_SawEnd_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1164303117]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.36, 0.721, 0)
-use_collision = true
-radius = 0.065
-height = 0.1225
-sides = 18
-material = SubResource("StandardMaterial3D_f87vt")
-
 [node name="InfeedChainLink_01_01" type="Node3D" parent="." unique_id=1235081662]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.66, 0.721, 0)
 
@@ -747,12 +731,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_01" unique_id=1121385996]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_fvo1g")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_01" unique_id=1449560692]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_fvo1g")
 
@@ -786,12 +770,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_02" unique_id=48934187]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_kqg06")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_02" unique_id=1575944691]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_kqg06")
 
@@ -825,12 +809,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_03" unique_id=741436194]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_74sh3")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_03" unique_id=1840878958]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_74sh3")
 
@@ -864,12 +848,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_04" unique_id=139930206]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_u5q0y")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_04" unique_id=35399346]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_u5q0y")
 
@@ -903,12 +887,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_05" unique_id=1804360235]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_8j475")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_05" unique_id=2093069674]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_8j475")
 
@@ -942,12 +926,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_06" unique_id=1552906862]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_6108c")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_06" unique_id=1728564386]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_6108c")
 
@@ -981,12 +965,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_07" unique_id=767988890]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_rwua2")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_07" unique_id=1780411370]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_rwua2")
 
@@ -1020,12 +1004,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_08" unique_id=1642495582]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_njrpb")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_08" unique_id=1441729803]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_njrpb")
 
@@ -1059,12 +1043,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_09" unique_id=577748898]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ayvw5")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_09" unique_id=149537786]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ayvw5")
 
@@ -1098,12 +1082,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_10" unique_id=241592614]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_hehna")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_10" unique_id=640650356]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_hehna")
 
@@ -1137,12 +1121,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_11" unique_id=667932718]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_57hw1")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_11" unique_id=1648763168]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_57hw1")
 
@@ -1176,12 +1160,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_12" unique_id=1787329399]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_7ah55")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_12" unique_id=536770897]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_7ah55")
 
@@ -1215,12 +1199,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_13" unique_id=808638330]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2mn0h")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_13" unique_id=635906415]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2mn0h")
 
@@ -1254,12 +1238,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_14" unique_id=2027144404]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ysa2b")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_14" unique_id=609554279]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ysa2b")
 
@@ -1293,12 +1277,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_15" unique_id=310943585]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_5qbv6")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_15" unique_id=1805969419]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_5qbv6")
 
@@ -1332,12 +1316,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_16" unique_id=347411898]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_1mc7o")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_16" unique_id=1536183052]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_1mc7o")
 
@@ -1371,12 +1355,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_17" unique_id=2045540523]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_nphnl")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_17" unique_id=1925397551]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_nphnl")
 
@@ -1410,12 +1394,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_18" unique_id=132488867]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ymsca")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_18" unique_id=259356487]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ymsca")
 
@@ -1449,12 +1433,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_19" unique_id=529508872]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_b348b")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_19" unique_id=2086703902]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_b348b")
 
@@ -1488,12 +1472,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_20" unique_id=128756904]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_7aj33")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_20" unique_id=1375690514]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_7aj33")
 
@@ -1527,12 +1511,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_21" unique_id=135269628]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_32536")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_21" unique_id=1533484094]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_32536")
 
@@ -1566,12 +1550,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_22" unique_id=1182335711]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_mrve4")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_22" unique_id=1449568352]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_mrve4")
 
@@ -1605,12 +1589,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_23" unique_id=1269975502]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_vxfrj")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_23" unique_id=847207372]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_vxfrj")
 
@@ -1644,12 +1628,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_24" unique_id=193902193]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_6jpux")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_24" unique_id=1836784192]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_6jpux")
 
@@ -1683,12 +1667,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_25" unique_id=773842662]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_nhhxu")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_25" unique_id=1835853261]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_nhhxu")
 
@@ -1722,12 +1706,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_26" unique_id=1945511329]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ga05k")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_26" unique_id=470585454]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_ga05k")
 
@@ -1761,12 +1745,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_27" unique_id=276938100]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_r65t6")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_27" unique_id=543597122]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_r65t6")
 
@@ -1800,12 +1784,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_28" unique_id=1523423425]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_1n7yl")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_28" unique_id=284396800]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_1n7yl")
 
@@ -1839,12 +1823,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_29" unique_id=1511565045]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2xqfv")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_29" unique_id=723494279]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2xqfv")
 
@@ -1878,12 +1862,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_30" unique_id=1253353727]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_pq2x4")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_30" unique_id=1136222914]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_pq2x4")
 
@@ -1917,12 +1901,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_31" unique_id=1538807038]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_c3mn5")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_31" unique_id=1188823089]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_c3mn5")
 
@@ -1956,12 +1940,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_32" unique_id=498992461]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_co442")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_32" unique_id=1742248360]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_co442")
 
@@ -1995,12 +1979,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_33" unique_id=919713769]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_m72n1")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_33" unique_id=1015019724]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_m72n1")
 
@@ -2034,12 +2018,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_34" unique_id=1123998279]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020591974, 0.013999999, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_uy021")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_34" unique_id=2073824086]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_uy021")
 
@@ -2073,12 +2057,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_35" unique_id=1285641494]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_emmge")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_35" unique_id=1470167462]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_emmge")
 
@@ -2112,12 +2096,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_36" unique_id=1668514371]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_61ksn")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_36" unique_id=426179063]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_61ksn")
 
@@ -2151,12 +2135,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_37" unique_id=2118157267]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_7skli")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_37" unique_id=1056754356]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_7skli")
 
@@ -2190,12 +2174,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_38" unique_id=192091840]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_v8b3r")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_38" unique_id=70279727]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_v8b3r")
 
@@ -2229,12 +2213,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_39" unique_id=1891855374]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_vlsy0")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_39" unique_id=1448619543]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_vlsy0")
 
@@ -2268,12 +2252,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_40" unique_id=2127505744]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_w6n2j")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_40" unique_id=666372968]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_w6n2j")
 
@@ -2307,12 +2291,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_41" unique_id=864784562]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_5lth5")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_41" unique_id=166522237]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_5lth5")
 
@@ -2346,12 +2330,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_42" unique_id=1969179675]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_uobij")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_42" unique_id=307525848]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_uobij")
 
@@ -2385,12 +2369,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_43" unique_id=1854627189]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_nf816")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_43" unique_id=2032113730]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_nf816")
 
@@ -2424,12 +2408,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_44" unique_id=75341370]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_jfv4c")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_44" unique_id=1380164788]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_jfv4c")
 
@@ -2463,12 +2447,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_45" unique_id=674655470]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_fboqn")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_45" unique_id=1779933610]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_fboqn")
 
@@ -2502,12 +2486,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_46" unique_id=1391960053]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_tid3q")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_46" unique_id=1593705120]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_tid3q")
 
@@ -2541,12 +2525,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_47" unique_id=1933386200]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_kghl4")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_47" unique_id=1647372573]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_kghl4")
 
@@ -2580,12 +2564,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_48" unique_id=1479566998]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2ij22")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_48" unique_id=1203314360]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2ij22")
 
@@ -2619,12 +2603,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_49" unique_id=851827029]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_gveii")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_49" unique_id=1251757121]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_gveii")
 
@@ -2658,12 +2642,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_50" unique_id=1233911553]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_15rii")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_50" unique_id=417586582]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_15rii")
 
@@ -2697,12 +2681,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_51" unique_id=500058299]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_wrdvl")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_51" unique_id=1529847732]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_wrdvl")
 
@@ -2736,12 +2720,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_52" unique_id=1805885542]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2cdct")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_52" unique_id=408909938]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_2cdct")
 
@@ -2775,12 +2759,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_53" unique_id=1119445376]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_oqvhw")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_53" unique_id=1724571481]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_oqvhw")
 
@@ -2814,12 +2798,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_54" unique_id=725384428]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_64qp6")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_54" unique_id=334223053]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_64qp6")
 
@@ -2853,12 +2837,12 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_55" unique_id=1437554700]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_jc28j")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_55" unique_id=658995913]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_jc28j")
 
@@ -2892,11 +2876,11 @@ sides = 10
 material = SubResource("StandardMaterial3D_6fh1k")
 
 [node name="GripTooth_01" type="MeshInstance3D" parent="InfeedChainLink_01_56" unique_id=1844828593]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 0.4030368, 0, 8.742278e-08, 0, -1, -0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_73jag")
 
 [node name="GripTooth_02" type="MeshInstance3D" parent="InfeedChainLink_01_56" unique_id=50346970]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.020592, 0.014, 0)
+transform = Transform3D(1, 0, 0, 0, 0.4030368, 0, 0, 0, 1, 0.020592, 0.014, 0)
 material_override = SubResource("StandardMaterial3D_61ivt")
 mesh = SubResource("ArrayMesh_73jag")

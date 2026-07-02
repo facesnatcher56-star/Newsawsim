@@ -26,8 +26,7 @@ func build_infeed_chains() -> void:
 		var z := chain_zs[lane_i]
 		var lane_suffix := "_%02d" % (lane_i + 1)
 		edger._add_box("InfeedChainWearRail" + lane_suffix, Vector3((chain_start + chain_end) * 0.5, chain_top - 0.07, z), Vector3(chain_length, 0.045, SawmillEdger.CHAIN_LINK_WIDTH + 0.035), edger._mat_frame)
-		edger._add_cylinder("InfeedChainIdler" + lane_suffix + "_Entry", Vector3(chain_start, chain_y, z), 0.065, SawmillEdger.CHAIN_LINK_WIDTH + 0.035, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 18)
-		edger._add_cylinder("InfeedChainIdler" + lane_suffix + "_SawEnd", Vector3(chain_end, chain_y, z), 0.065, SawmillEdger.CHAIN_LINK_WIDTH + 0.035, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 18)
+
 
 		var link_count := maxi(6, int(chain_length / SawmillEdger.CHAIN_LINK_LENGTH))
 		for i in range(link_count):
@@ -112,11 +111,11 @@ func build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
 	for i in range(roller_count):
 		var x := chain_start + ramp_spacing * float(i + 1)
 		var suffix := "_%02d" % (i + 1)
-		var crosshead := edger._add_box("InfeedHoldDownCrosshead" + suffix, Vector3(x, crosshead_y, 0.0), Vector3(0.21, crosshead_y_size, crosshead_z_size), edger._mat_frame)
+		var crosshead := edger._add_box("InfeedHoldDownCrosshead" + suffix, Vector3(x, crosshead_y, 0.0), Vector3(0.21, crosshead_y_size, crosshead_z_size), edger._mat_frame, Vector3.ZERO, false)
 		var top_box_y := contact_y + 0.66
-		edger._add_box("InfeedHoldDownTopBox" + suffix, Vector3(x, top_box_y, 0.0), Vector3(0.28, 0.18, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH), edger._mat_frame)
+		edger._add_box("InfeedHoldDownTopBox" + suffix, Vector3(x, top_box_y, 0.0), Vector3(0.28, 0.18, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH), edger._mat_frame, Vector3.ZERO, false)
 		var roller := edger._add_physics_cylinder("InfeedHoldDownRoller" + suffix, Vector3(x, raised_y, 0.0), SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.INFEED_HOLD_DOWN_ROLLER_LENGTH, edger._mat_infeed_hold_down, Vector3(PI * 0.5, 0.0, 0.0), 30)
-		var axle := edger._add_cylinder("InfeedHoldDownAxle" + suffix, Vector3(x, raised_y, 0.0), 0.024, bearing_z * 2.0, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 18)
+		var axle := edger._add_cylinder("InfeedHoldDownAxle" + suffix, Vector3(x, raised_y, 0.0), 0.024, bearing_z * 2.0, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 18, false)
 		var moving_nodes: Array[Node3D] = [crosshead, roller, axle]
 		for z in [-bearing_z, bearing_z]:
 			var side_suffix := suffix + ("_F" if z < 0.0 else "_B")
@@ -143,12 +142,12 @@ func add_infeed_hold_down_pneumatic_cylinder(suffix: String, local_position: Vec
 	edger._current_part_parent().add_child(root)
 	edger._adopt_new_node(root)
 
-	edger._add_cylinder_child(root, "CylinderHead", Vector3.ZERO, 0.04248047, 0.012, edger._mat_frame, Vector3.ZERO, 24)
-	var body := edger._add_cylinder_child(root, "CylinderBody", Vector3(0.0, -0.075, 0.0), 0.020, 0.150, edger._mat_frame, Vector3.ZERO, 20)
+	edger._add_cylinder_child(root, "CylinderHead", Vector3.ZERO, 0.04248047, 0.012, edger._mat_frame, Vector3.ZERO, 24, false)
+	var body := edger._add_cylinder_child(root, "CylinderBody", Vector3(0.0, -0.075, 0.0), 0.020, 0.150, edger._mat_frame, Vector3.ZERO, 20, false)
 	body.scale = Vector3(1.5, 1.0, 1.5)
-	var rod := edger._add_cylinder_child(root, "PistonRod", Vector3(0.0, -0.15970206, 0.0), 0.008, 0.200, edger._mat_hydraulic, Vector3.ZERO, 16)
+	var rod := edger._add_cylinder_child(root, "PistonRod", Vector3(0.0, -0.15970206, 0.0), 0.008, 0.200, edger._mat_hydraulic, Vector3.ZERO, 16, false)
 	rod.scale = Vector3(1.5, 1.0, 1.5)
-	var clevis := edger._add_box_child(root, "RodClevis", Vector3(0.0, -0.287, 0.0), Vector3(0.018, 0.035, 0.042), edger._mat_frame)
+	var clevis := edger._add_box_child(root, "RodClevis", Vector3(0.0, -0.287, 0.0), Vector3(0.018, 0.035, 0.042), edger._mat_frame, false)
 
 	var pin_hole := CSGCylinder3D.new()
 	pin_hole.name = "ClevisPinHole"
@@ -178,9 +177,9 @@ func add_infeed_hold_down_pillow_block(node_name: String, local_position: Vector
 	edger._current_part_parent().add_child(root)
 	edger._adopt_new_node(root)
 
-	edger._add_box_child(root, "BearingMountBase", Vector3(0.0, 0.0425, 0.0), Vector3(0.21, 0.075, 0.115), edger._mat_frame)
-	edger._add_box_child(root, "BearingLeftFoot", Vector3(-0.060, -0.009, 0.0), Vector3(0.054, 0.045, 0.105), edger._mat_frame)
-	edger._add_box_child(root, "BearingRightFoot", Vector3(0.060, -0.009, 0.0), Vector3(0.054, 0.045, 0.105), edger._mat_frame)
+	edger._add_box_child(root, "BearingMountBase", Vector3(0.0, 0.0425, 0.0), Vector3(0.21, 0.075, 0.115), edger._mat_frame, false)
+	edger._add_box_child(root, "BearingLeftFoot", Vector3(-0.060, -0.009, 0.0), Vector3(0.054, 0.045, 0.105), edger._mat_frame, false)
+	edger._add_box_child(root, "BearingRightFoot", Vector3(0.060, -0.009, 0.0), Vector3(0.054, 0.045, 0.105), edger._mat_frame, false)
 
 	var housing := CSGCombiner3D.new()
 	housing.name = "HalfRoundHousing"
@@ -217,11 +216,11 @@ func add_infeed_hold_down_pillow_block(node_name: String, local_position: Vector
 	housing.add_child(bore_cut)
 	edger._adopt_new_node(bore_cut)
 
-	edger._add_cylinder_child(root, "BearingInnerRace", Vector3(0.0, -0.035, 0.0), 0.031, 0.080, edger._mat_dark, Vector3(PI * 0.5, 0.0, 0.0), 24)
-	edger._add_cylinder_child(root, "BearingShaftStub", Vector3(0.0, -0.035, 0.0), 0.021, 0.092, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 16)
+	edger._add_cylinder_child(root, "BearingInnerRace", Vector3(0.0, -0.035, 0.0), 0.031, 0.080, edger._mat_dark, Vector3(PI * 0.5, 0.0, 0.0), 24, false)
+	edger._add_cylinder_child(root, "BearingShaftStub", Vector3(0.0, -0.035, 0.0), 0.021, 0.092, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 16, false)
 
 	var bolt_y := 0.049
 	for bolt_x in [-0.058, 0.058]:
-		edger._add_cylinder_child(root, "BoltHole", Vector3(bolt_x, bolt_y, 0.0), 0.019, 0.006, edger._mat_dark, Vector3.ZERO, 16)
-		edger._add_cylinder_child(root, "BoltHead", Vector3(bolt_x, bolt_y + 0.006, 0.0), 0.014, 0.008, edger._mat_hydraulic, Vector3.ZERO, 12)
+		edger._add_cylinder_child(root, "BoltHole", Vector3(bolt_x, bolt_y, 0.0), 0.019, 0.006, edger._mat_dark, Vector3.ZERO, 16, false)
+		edger._add_cylinder_child(root, "BoltHead", Vector3(bolt_x, bolt_y + 0.006, 0.0), 0.014, 0.008, edger._mat_hydraulic, Vector3.ZERO, 12, false)
 	return root

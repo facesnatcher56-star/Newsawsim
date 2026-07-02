@@ -9,48 +9,46 @@ cushion_pin_extension = 0.26
 cushion_pin_spacing = 1.48
 infeed_chain_feed_speed = 5.199999999999999
 hold_down_roller_spin_speed = 3.15
-hold_down_roller_spin_accel = 25.0
-hold_down_roller_spin_stop_rate = 2.7
 position_pin_speed = 0.68
 cushion_pin_speed = 1.04
-centering_board_speed = 0.95
-pin_retract_delay = 0.71
-feed_chain_start_delay = 0.19
 
-[node name="FrameAssembly" type="Node3D" parent="." unique_id=1726946572]
+[node name="FrameAssembly" type="Node3D" parent="." unique_id=1088793362]
 metadata/edger_editor_group = true
 
-[node name="SideFenceAssembly" type="Node3D" parent="." unique_id=1265338694]
+[node name="SideFenceAssembly" type="Node3D" parent="." unique_id=1271964748]
 metadata/edger_editor_group = true
 
-[node name="InfeedChainAssembly" type="Node3D" parent="." unique_id=755896789]
+[node name="InfeedChainAssembly" type="Node3D" parent="." unique_id=761504909]
+transform = Transform3D(1, 0, 0, 0, 1.0276102, 0, 0, 0, 1, 0, -0.010154724, 0)
 metadata/edger_editor_group = true
 
-[node name="ParkingRampAssembly" type="Node3D" parent="." unique_id=1297069452]
+[node name="ParkingRampAssembly" type="Node3D" parent="." unique_id=1301703290]
+transform = Transform3D(1, 0, 0, 0, 0.97815233, 0, 0, 0, 1, 0, 0, 0)
 metadata/edger_editor_group = true
 
-[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="." unique_id=840951013]
+[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="." unique_id=1674245410]
 metadata/edger_editor_group = true
 
-[node name="PositionPinAssembly" type="Node3D" parent="." unique_id=633221807]
+[node name="PositionPinAssembly" type="Node3D" parent="." unique_id=676120000]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.4021559)
 metadata/edger_editor_group = true
 
-[node name="CushionPinAssembly" type="Node3D" parent="." unique_id=1525465781]
+[node name="CushionPinAssembly" type="Node3D" parent="." unique_id=2035918937]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05816233)
 metadata/edger_editor_group = true
 
-[node name="LowerFeedRollerAssembly" type="Node3D" parent="." unique_id=1309539097]
+[node name="LowerFeedRollerAssembly" type="Node3D" parent="." unique_id=419397477]
 metadata/edger_editor_group = true
 
-[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="." unique_id=1700723961]
+[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="." unique_id=899547544]
 metadata/edger_editor_group = true
 
-[node name="SawBladeAndGuardAssembly" type="Node3D" parent="." unique_id=105609917]
+[node name="SawBladeAndGuardAssembly" type="Node3D" parent="." unique_id=1275621771]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0356884, 0)
 metadata/edger_editor_group = true
 
-[node name="MotorDriveAssembly" type="Node3D" parent="." unique_id=209236384]
+[node name="MotorDriveAssembly" type="Node3D" parent="." unique_id=226024655]
 metadata/edger_editor_group = true
 
-[node name="WasteHandlingAssembly" type="Node3D" parent="." unique_id=2144817955]
+[node name="WasteHandlingAssembly" type="Node3D" parent="." unique_id=2011887382]
 metadata/edger_editor_group = true

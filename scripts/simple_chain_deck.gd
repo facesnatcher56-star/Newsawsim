@@ -719,6 +719,9 @@ func _process(delta: float) -> void:
 		if _start_delay_timer <= 0.0:
 			set_running(true)
 
+	if running and _on_deck.is_empty():
+		set_running(false)
+
 	var blocked_now := is_blocked_at_top()
 	if not running:
 		if not _on_deck.is_empty() and not blocked_now:
@@ -845,6 +848,9 @@ func _on_deck_area_body_entered(body: Node3D) -> void:
 
 func _on_deck_area_body_exited(body: Node3D) -> void:
 	if _is_log_or_board(body):
+		var l_node := body as RigidBody3D
+		if is_instance_valid(l_node):
+			_unlock_log(l_node)
 		_on_deck.erase(body.get_instance_id())
 
 
@@ -866,6 +872,9 @@ func _on_top_zone_body_entered(body: Node3D) -> void:
 
 func _on_top_zone_body_exited(body: Node3D) -> void:
 	if _is_log_or_board(body):
+		var l_node := body as RigidBody3D
+		if is_instance_valid(l_node):
+			_unlock_log(l_node)
 		_on_deck.erase(body.get_instance_id())
 
 

@@ -331,7 +331,6 @@ mesh = SubResource("ArrayMesh_xck04")
 
 [node name="BladeHub_01_Infeed_Front_Mid" type="CSGCylinder3D" parent="." unique_id=1163657411]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, -0.41)
-use_collision = true
 radius = 0.12
 height = 0.07
 sides = 32
@@ -594,7 +593,6 @@ mesh = SubResource("ArrayMesh_kilfl")
 
 [node name="BladeHub_02_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=956240705]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0)
-use_collision = true
 radius = 0.12
 height = 0.07
 sides = 32
@@ -857,7 +855,6 @@ mesh = SubResource("ArrayMesh_1utt7")
 
 [node name="BladeHub_03_Infeed_Back_Mid" type="CSGCylinder3D" parent="." unique_id=625745262]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0.41)
-use_collision = true
 radius = 0.12
 height = 0.07
 sides = 32
@@ -870,7 +867,6 @@ material = SubResource("StandardMaterial3D_hpx5k")
 
 [node name="SawArbor_Infeed_CenterZ_Mid" type="CSGCylinder3D" parent="." unique_id=1636610753]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, -0.18, 0.82, 0)
-use_collision = true
 radius = 0.045
 height = 2.06
 sides = 28

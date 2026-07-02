@@ -22,10 +22,10 @@ func build_saw_box() -> void:
 		var blade := edger._add_cylinder("EdgerSawBlade" + suffix, Vector3(SawmillEdger.SAW_X, edger.working_height + 0.2, z), edger.blade_radius, 0.035, edger._mat_blade, Vector3(PI * 0.5, 0, 0), 64, false)
 		edger._saw_blades.append(blade)
 		edger._saw_teeth_roots.append(edger._add_saw_teeth("EdgerSawTeeth" + suffix, Vector3(SawmillEdger.SAW_X, edger.working_height + 0.2, z), edger.blade_radius))
-		edger._add_cylinder("BladeHub" + suffix, Vector3(SawmillEdger.SAW_X, edger.working_height + 0.2, z), 0.12, 0.07, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 32)
+		edger._add_cylinder("BladeHub" + suffix, Vector3(SawmillEdger.SAW_X, edger.working_height + 0.2, z), 0.12, 0.07, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 32, false)
 		edger._add_box("BladeKerfGuard" + suffix, Vector3(SawmillEdger.SAW_X + 0.12, edger.working_height + 0.39, z), Vector3(0.34, 0.06, 0.09), edger._mat_warning, Vector3.ZERO, false)
 
-	edger._add_cylinder("SawArbor", Vector3(SawmillEdger.SAW_X, edger.working_height + 0.2, 0), 0.045, edger.machine_width + 0.36, edger._mat_blade, Vector3(PI * 0.5, 0, 0), 28)
+	edger._add_cylinder("SawArbor", Vector3(SawmillEdger.SAW_X, edger.working_height + 0.2, 0), 0.045, edger.machine_width + 0.36, edger._mat_blade, Vector3(PI * 0.5, 0, 0), 28, false)
 	edger._pop_editor_group()
 
 func build_motors_and_drives() -> void:
