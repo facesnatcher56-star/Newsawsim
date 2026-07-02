@@ -33,8 +33,9 @@ func build_infeed_chains() -> void:
 			var t := float(i) / float(link_count)
 			var x := lerpf(chain_start, chain_end, t)
 			var link := edger._add_infeed_chain_link("InfeedChainLink" + lane_suffix + "_%02d" % (i + 1), Vector3(x, chain_y, z), i)
-			edger._infeed_chain_links.append(link)
-			edger._infeed_chain_bases.append(link.position)
+			if is_instance_valid(edger.infeed_system):
+				edger.infeed_system.chain_links.append(link)
+				edger.infeed_system.chain_bases.append(link.position)
 	edger._pop_editor_group()
 
 	var centering_start: float = chain_start
@@ -103,7 +104,8 @@ func build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
 	var ramp_spacing: float = usable_length / float(ramp_count)
 	var board_top := edger._board_center_y() + SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.5
 	var contact_y := board_top + SawmillEdger.INFEED_HOLD_DOWN_ROLLER_RADIUS - 0.006
-	var raised_y := contact_y + edger.hold_down_raised_offset
+	var _hold_down_raised_offset := edger.hold_down_system.hold_down_raised_offset if is_instance_valid(edger.hold_down_system) else 0.24
+	var raised_y := contact_y + _hold_down_raised_offset
 	var bearing_z := 0.28423208
 	var crosshead_y_size := 0.035351563
 	var crosshead_z_size := bearing_z * 2.0 + 0.0575
@@ -123,14 +125,13 @@ func build_infeed_hold_downs(chain_start: float, chain_end: float) -> void:
 		var y_offsets: Array[float] = []
 		for node in moving_nodes:
 			y_offsets.append(node.position.y - raised_y)
-		edger._infeed_hold_down_rollers.append(roller)
 		edger._infeed_hold_down_stations.append({
 			"x": x,
 			"roller": roller,
 			"nodes": moving_nodes,
 			"y_offsets": y_offsets,
 			"raised_y": raised_y,
-			"offset": edger.hold_down_raised_offset,
+			"offset": _hold_down_raised_offset,
 			"actuator": add_infeed_hold_down_pneumatic_cylinder(suffix, Vector3(x, top_box_y - 0.0967043, 0.0), crosshead),
 		})
 	edger._pop_editor_group()

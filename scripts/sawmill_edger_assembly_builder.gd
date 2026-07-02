@@ -68,5 +68,3 @@ func build_motors_and_drives() -> void:
 
 func build_waste_handling() -> void:
 	outfeed_builder.build_waste_handling()
-
-

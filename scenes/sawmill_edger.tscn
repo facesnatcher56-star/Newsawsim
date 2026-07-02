@@ -1,54 +1,74 @@
 [gd_scene format=3 uid="uid://c35h6ymar3a40"]
 
 [ext_resource type="Script" uid="uid://dphvcoarcngwm" path="res://scripts/sawmill_edger.gd" id="1_edger"]
+[ext_resource type="Script" path="res://scripts/edger_components/edger_infeed_system.gd" id="2_infeed"]
+[ext_resource type="Script" path="res://scripts/edger_components/edger_hold_down_system.gd" id="3_holddown"]
+[ext_resource type="Script" path="res://scripts/edger_components/edger_parking_ramp_system.gd" id="4_parkingramp"]
+[ext_resource type="Script" path="res://scripts/edger_components/edger_pin_system.gd" id="5_pin"]
 
 [node name="SawmillEdger" type="StaticBody3D" unique_id=1576143709]
 script = ExtResource("1_edger")
 position_pin_spacing = 1.48
 cushion_pin_extension = 0.26
 cushion_pin_spacing = 1.48
+
+[node name="InfeedSystem" type="Node3D" parent="." unique_id=100000001]
+script = ExtResource("2_infeed")
+metadata/edger_controller = true
 infeed_chain_feed_speed = 5.199999999999999
-hold_down_roller_spin_speed = 3.15
+feed_roller_spin_speed = 3.15
+
+[node name="HoldDownSystem" type="Node3D" parent="." unique_id=100000002]
+script = ExtResource("3_holddown")
+metadata/edger_controller = true
+
+[node name="ParkingRampSystem" type="Node3D" parent="." unique_id=100000003]
+script = ExtResource("4_parkingramp")
+metadata/edger_controller = true
+
+[node name="PinSystem" type="Node3D" parent="." unique_id=100000004]
+script = ExtResource("5_pin")
+metadata/edger_controller = true
 position_pin_speed = 0.68
 cushion_pin_speed = 1.04
 
-[node name="FrameAssembly" type="Node3D" parent="." unique_id=1088793362]
+[node name="FrameAssembly" type="Node3D" parent="." unique_id=839799094]
 metadata/edger_editor_group = true
 
-[node name="SideFenceAssembly" type="Node3D" parent="." unique_id=1271964748]
+[node name="SideFenceAssembly" type="Node3D" parent="." unique_id=1223127762]
 metadata/edger_editor_group = true
 
-[node name="InfeedChainAssembly" type="Node3D" parent="." unique_id=761504909]
+[node name="InfeedChainAssembly" type="Node3D" parent="." unique_id=226668257]
 transform = Transform3D(1, 0, 0, 0, 1.0276102, 0, 0, 0, 1, 0, -0.010154724, 0)
 metadata/edger_editor_group = true
 
-[node name="ParkingRampAssembly" type="Node3D" parent="." unique_id=1301703290]
+[node name="ParkingRampAssembly" type="Node3D" parent="." unique_id=724035060]
 transform = Transform3D(1, 0, 0, 0, 0.97815233, 0, 0, 0, 1, 0, 0, 0)
 metadata/edger_editor_group = true
 
-[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="." unique_id=1674245410]
+[node name="InfeedHoldDownRollerAssembly" type="Node3D" parent="." unique_id=1379265833]
 metadata/edger_editor_group = true
 
-[node name="PositionPinAssembly" type="Node3D" parent="." unique_id=676120000]
+[node name="PositionPinAssembly" type="Node3D" parent="." unique_id=1251863094]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.4021559)
 metadata/edger_editor_group = true
 
-[node name="CushionPinAssembly" type="Node3D" parent="." unique_id=2035918937]
+[node name="CushionPinAssembly" type="Node3D" parent="." unique_id=118021764]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05816233)
 metadata/edger_editor_group = true
 
-[node name="LowerFeedRollerAssembly" type="Node3D" parent="." unique_id=419397477]
+[node name="LowerFeedRollerAssembly" type="Node3D" parent="." unique_id=789556200]
 metadata/edger_editor_group = true
 
-[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="." unique_id=899547544]
+[node name="UpperHoldDownRollerAssembly" type="Node3D" parent="." unique_id=1277382578]
 metadata/edger_editor_group = true
 
-[node name="SawBladeAndGuardAssembly" type="Node3D" parent="." unique_id=1275621771]
+[node name="SawBladeAndGuardAssembly" type="Node3D" parent="." unique_id=1314323130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0356884, 0)
 metadata/edger_editor_group = true
 
-[node name="MotorDriveAssembly" type="Node3D" parent="." unique_id=226024655]
+[node name="MotorDriveAssembly" type="Node3D" parent="." unique_id=1687269341]
 metadata/edger_editor_group = true
 
-[node name="WasteHandlingAssembly" type="Node3D" parent="." unique_id=2011887382]
+[node name="WasteHandlingAssembly" type="Node3D" parent="." unique_id=1864454359]
 metadata/edger_editor_group = true

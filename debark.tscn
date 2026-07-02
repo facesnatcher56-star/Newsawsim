@@ -1197,13 +1197,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.73172, -0.26604617, 19.879
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.4878755, 18.297045)
 cushion_pin_extension = 0.12
 show_waste_chutes = false
-infeed_chain_feed_speed = 3.4
-hold_down_roller_spin_speed = 2.17
-hold_down_roller_spin_resistance = 1.0
+
+[node name="InfeedSystem" parent="SawmillEdger"]
+infeed_chain_feed_speed = 3.8000000000000003
+feed_roller_spin_speed = 1.6600000000000001
+
+[node name="HoldDownSystem" parent="SawmillEdger"]
+hold_down_roller_spin_resistance = 2.5
+
+[node name="PinSystem" parent="SawmillEdger"]
 cushion_pin_speed = 0.61
 position_pin_raise_height = 0.2
-position_pin_z_travel_speed = 0.57
-retraction_delay = 3.0
+position_pin_z_travel_speed = 0.71
+retraction_delay = 1.5
 
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]

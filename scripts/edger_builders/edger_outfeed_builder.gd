@@ -12,6 +12,7 @@ func build_hold_downs() -> void:
 	edger._push_editor_group("UpperHoldDownRollerAssembly")
 	var hold_down_xs: Array[float] = [-1.75, -0.95, 0.45, 1.25]
 	var board_top := edger._board_center_y() + SawmillEdger.SAMPLE_BOARD_THICKNESS * 0.5
+	var _hold_down_raised_offset := edger.hold_down_system.hold_down_raised_offset if is_instance_valid(edger.hold_down_system) else 0.24
 	var roller_y := board_top + SawmillEdger.HOLD_DOWN_ROLLER_RADIUS - 0.008
 	for i in range(hold_down_xs.size()):
 		var x := hold_down_xs[i]
@@ -19,7 +20,6 @@ func build_hold_downs() -> void:
 		edger._add_box("HoldDownCrosshead" + suffix, Vector3(x, roller_y + 0.34, 0), Vector3(0.12, 0.12, 1.20), edger._mat_frame)
 		edger._add_box("HoldDownTopPressureBox" + suffix, Vector3(x, roller_y + 0.60, 0), Vector3(0.32, 0.22, 0.92), edger._mat_frame)
 		var hold_down := edger._add_physics_cylinder("HoldDownRoller" + suffix, Vector3(x, roller_y, 0), SawmillEdger.HOLD_DOWN_ROLLER_RADIUS, SawmillEdger.HOLD_DOWN_ROLLER_LENGTH, edger._mat_warning, Vector3(PI * 0.5, 0, 0), 28)
-		edger._hold_down_rollers.append(hold_down)
 		var moving_nodes: Array[Node3D] = [hold_down]
 		var axle := edger._add_cylinder("HoldDownAxle" + suffix, Vector3(x, roller_y, 0), 0.026, 1.12, edger._mat_hydraulic, Vector3(PI * 0.5, 0, 0), 20)
 		moving_nodes.append(axle)
@@ -39,12 +39,12 @@ func build_hold_downs() -> void:
 		var base_positions: Array[Vector3] = []
 		for node in moving_nodes:
 			base_positions.append(node.position)
-			node.position.y += edger.hold_down_raised_offset
+			node.position.y += _hold_down_raised_offset
 		edger._hold_down_stations.append({
 			"x": x,
 			"nodes": moving_nodes,
 			"bases": base_positions,
-			"offset": edger.hold_down_raised_offset,
+			"offset": _hold_down_raised_offset,
 		})
 	edger._pop_editor_group()
 
@@ -74,6 +74,7 @@ func build_lower_feed_rollers() -> void:
 		var x := roller_start + spacing * float(i)
 		var suffix := "_%02d" % (i + 1)
 		var roller := edger._add_physics_cylinder("FeedRoller" + suffix, Vector3(x, roller_y, 0), SawmillEdger.FEED_ROLLER_RADIUS, SawmillEdger.FEED_ROLLER_LENGTH, edger._mat_dark, Vector3(PI * 0.5, 0, 0), 28)
-		edger._feed_rollers.append(roller)
+		if is_instance_valid(edger.infeed_system):
+			edger.infeed_system.feed_rollers.append(roller)
 		edger._add_cylinder("RollerShaft" + suffix, Vector3(x, roller_y, 0), 0.025, edger.machine_width + 0.18, edger._mat_blade, Vector3(PI * 0.5, 0, 0), 20)
 	edger._pop_editor_group()
