@@ -9,6 +9,7 @@ var edger: SawmillEdger
 @export_range(0.0, 2.0, 0.01, "or_greater") var hold_down_raised_offset: float = 0.24
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_lower_speed: float = 0.6
 @export_range(0.0, 4.0, 0.01, "or_greater") var hold_down_raise_speed: float = 0.45
+@export_range(0.0, 3000.0, 1.0, "or_greater") var hold_down_board_force: float = 260.0
 
 
 func _ready() -> void:
@@ -151,6 +152,8 @@ func apply_contacts(body: RigidBody3D, local_center: Vector3) -> void:
 				has_contact = true
 				break
 	if has_contact:
+		var down_axis := -edger.global_transform.basis.y.normalized()
+		body.apply_central_force(down_axis * hold_down_board_force)
 		edger.infeed_system.apply_feed_contact(body, local_center)
 
 

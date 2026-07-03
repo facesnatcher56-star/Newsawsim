@@ -8,6 +8,8 @@ var edger: SawmillEdger
 @export_range(0.1, 8.0, 0.1, "or_greater") var infeed_chain_feed_speed: float = 1.4
 @export_range(0.0, 20.0, 0.1, "or_greater") var feed_roller_spin_speed: float = 1.0
 @export_range(0.0, 2000.0, 1.0, "or_greater") var board_feed_force: float = 420.0
+@export_range(0.0, 2000.0, 1.0, "or_greater") var board_grip_force: float = 180.0
+@export_range(0.0, 80.0, 0.1, "or_greater") var board_grip_damping: float = 14.0
 
 var feed_rollers: Array[Node3D] = []
 var chain_links: Array[Node3D] = []
@@ -68,3 +70,8 @@ func apply_feed_contact(body: RigidBody3D, local_center: Vector3) -> void:
 	var speed_error := infeed_chain_feed_speed - current_speed
 	var force := clampf(speed_error * body.mass * 18.0, -board_feed_force, board_feed_force)
 	body.apply_central_force(x_axis * force)
+
+	var z_axis := edger.global_transform.basis.z.normalized()
+	var side_speed := body.linear_velocity.dot(z_axis)
+	var grip_force := clampf(-side_speed * body.mass * board_grip_damping, -board_grip_force, board_grip_force)
+	body.apply_central_force(z_axis * grip_force)
