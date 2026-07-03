@@ -1,6 +1,9 @@
 @tool
 extends StaticBody3D
 
+const ChainTroughFrameBuilder := preload("res://scripts/chain_trough_builders/chain_trough_frame_builder.gd")
+const ChainTroughChainBuilder := preload("res://scripts/chain_trough_builders/chain_trough_chain_builder.gd")
+
 ## chain_trough_conveyor.gd
 ##
 ## A conveyor with a V-trough bed, 4 parallel chains running along the bottom center,
@@ -279,166 +282,15 @@ func _build_visuals() -> void:
 
 
 func _build_trough_bed() -> void:
-	var bed_comb := CSGCombiner3D.new()
-	bed_comb.name = "TroughBed"
-	bed_comb.use_collision = false # Collision is handled by parent CollisionShape3D
-	_visuals_root.add_child(bed_comb)
-
-	var mat_metal := StandardMaterial3D.new()
-	mat_metal.albedo_color = Color(0.24, 0.26, 0.28)
-	mat_metal.metallic = 0.8
-	mat_metal.roughness = 0.45
-
-	# Read wall positions from scene if they exist, otherwise fallback to default conveyor_width
-	var left_wall_x := -conveyor_width * 0.5
-	var right_wall_x := conveyor_width * 0.5
-	
-	var left_wall_node = get_node_or_null("LeftWall")
-	var right_wall_node = get_node_or_null("RightWall")
-	
-	if left_wall_node:
-		left_wall_x = left_wall_node.position.x
-	if right_wall_node:
-		right_wall_x = right_wall_node.position.x
-
-	# Update effective width
-	var eff_width = right_wall_x - left_wall_x
-
-	# Flat bottom width is centered around the outer chains
-	var max_x := 0.0
-	for tx in track_x_positions:
-		max_x = maxf(max_x, absf(tx))
-	var bottom_width := max_x * 2.0 + 0.10 # 5cm margin on each side of outer chains
-	bottom_width = clampf(bottom_width, 0.20, eff_width - 0.05)
-
-	# Bottom flat channel
-	var bottom_plate := CSGBox3D.new()
-	bottom_plate.name = "BottomPlate"
-	bottom_plate.size = Vector3(bottom_width, BED_PLATE_T, conveyor_length)
-	bottom_plate.position = Vector3((left_wall_x + right_wall_x) * 0.5, -0.02, 0.0)
-	bottom_plate.material = mat_metal
-	bed_comb.add_child(bottom_plate)
-
-	# Slopes
-	var theta := deg_to_rad(25.0)
-	var left_dx := absf(left_wall_x) - bottom_width * 0.5
-	var right_dx := right_wall_x - bottom_width * 0.5
-	
-	# Left slope
-	if left_dx > 0.01:
-		var W_slope: float = left_dx / cos(theta)
-		var dy: float = left_dx * tan(theta)
-		var left_slope := CSGBox3D.new()
-		left_slope.name = "LeftSlope"
-		left_slope.size = Vector3(W_slope, BED_PLATE_T, conveyor_length)
-		left_slope.position = Vector3(left_wall_x + left_dx * 0.5, -0.02 + dy * 0.5 + 0.015, 0.0)
-		left_slope.rotation_degrees = Vector3(0.0, 0.0, -25.0)
-		left_slope.material = mat_metal
-		bed_comb.add_child(left_slope)
-
-	# Right slope
-	if right_dx > 0.01:
-		var W_slope: float = right_dx / cos(theta)
-		var dy: float = right_dx * tan(theta)
-		var right_slope := CSGBox3D.new()
-		right_slope.name = "RightSlope"
-		right_slope.size = Vector3(W_slope, BED_PLATE_T, conveyor_length)
-		right_slope.position = Vector3(right_wall_x - right_dx * 0.5, -0.02 + dy * 0.5 + 0.015, 0.0)
-		right_slope.rotation_degrees = Vector3(0.0, 0.0, 25.0)
-		right_slope.material = mat_metal
-		bed_comb.add_child(right_slope)
+	ChainTroughFrameBuilder.new(self).build_trough_bed()
 
 
 func _build_shafts_and_sprockets() -> void:
-	var mat_hardware := StandardMaterial3D.new()
-	mat_hardware.albedo_color = Color(0.3, 0.32, 0.35)
-	mat_hardware.metallic = 0.9
-	mat_hardware.roughness = 0.35
-
-	var half_z = conveyor_length * 0.5
-	
-	# Drive and Idle shafts
-	for end_idx in range(2):
-		var z = -half_z if end_idx == 0 else half_z
-		var suffix = "Infeed" if end_idx == 0 else "Discharge"
-
-		var shaft := MeshInstance3D.new()
-		var shaft_mesh := CylinderMesh.new()
-		shaft_mesh.top_radius = 0.03
-		shaft_mesh.bottom_radius = 0.03
-		shaft_mesh.height = 0.45
-		shaft.mesh = shaft_mesh
-		shaft.name = "%sShaft" % suffix
-		shaft.material_override = mat_hardware
-		shaft.rotation_degrees.z = 90.0
-		shaft.position = Vector3(0.0, _sprocket_cy, z)
-		_visuals_root.add_child(shaft)
-		_rotating_parts.append(shaft)
-
-		# 4 sprockets per shaft
-		for i in range(track_x_positions.size()):
-			var tx = track_x_positions[i]
-
-			var spr := MeshInstance3D.new()
-			var spr_mesh := CylinderMesh.new()
-			spr_mesh.top_radius = sprocket_radius
-			spr_mesh.bottom_radius = sprocket_radius
-			spr_mesh.height = SPROCKET_HUB_T
-			spr_mesh.radial_segments = SPROCKET_SEGS
-			spr.mesh = spr_mesh
-			spr.name = "%sSprocket_%d" % [suffix, i]
-			spr.material_override = mat_hardware
-			spr.rotation_degrees.z = 90.0
-			spr.position = Vector3(tx, _sprocket_cy, z)
-			_visuals_root.add_child(spr)
-			_rotating_parts.append(spr)
+	ChainTroughChainBuilder.new(self).build_shafts_and_sprockets()
 
 
 func _build_chains() -> void:
-	_num_links = int(ceil(_loop_len / link_spacing)) + 2
-	var num_tracks := track_x_positions.size()
-	
-	var mat_chain := StandardMaterial3D.new()
-	mat_chain.albedo_color = Color(0.18, 0.18, 0.19)
-	mat_chain.metallic = 0.95
-	mat_chain.roughness = 0.3
-
-	# 1. Plates MultiMesh
-	_multimesh_plates = MultiMeshInstance3D.new()
-	_multimesh_plates.name = "PlatesMultiMesh"
-	var mm_plates := MultiMesh.new()
-	mm_plates.transform_format = MultiMesh.TRANSFORM_3D
-	mm_plates.use_custom_data = false
-	mm_plates.use_colors = false
-	
-	var plate_mesh := BoxMesh.new()
-	plate_mesh.size = Vector3(CHAIN_PLATE_W, CHAIN_PLATE_H, CHAIN_PLATE_D)
-	mm_plates.mesh = plate_mesh
-	mm_plates.instance_count = _num_links * num_tracks * 2
-	_multimesh_plates.multimesh = mm_plates
-	_multimesh_plates.material_override = mat_chain
-	_visuals_root.add_child(_multimesh_plates)
-
-	# 2. Rollers MultiMesh
-	_multimesh_rollers = MultiMeshInstance3D.new()
-	_multimesh_rollers.name = "RollersMultiMesh"
-	var mm_rollers := MultiMesh.new()
-	mm_rollers.transform_format = MultiMesh.TRANSFORM_3D
-	mm_rollers.use_custom_data = false
-	mm_rollers.use_colors = false
-	
-	var roller_mesh := CylinderMesh.new()
-	roller_mesh.top_radius = CHAIN_ROLLER_R
-	roller_mesh.bottom_radius = CHAIN_ROLLER_R
-	roller_mesh.height = CHAIN_SPAN + CHAIN_PLATE_W * 2.0 + 0.005
-	roller_mesh.radial_segments = 6
-	mm_rollers.mesh = roller_mesh
-	mm_rollers.instance_count = _num_links * num_tracks
-	_multimesh_rollers.multimesh = mm_rollers
-	_multimesh_rollers.material_override = mat_chain
-	_visuals_root.add_child(_multimesh_rollers)
-
-	_update_chain_positions(0.0)
+	ChainTroughChainBuilder.new(self).build_chains()
 
 
 func _get_loop_transform(d: float, loop_length: float) -> Transform3D:
@@ -533,61 +385,4 @@ func _rebuild_everything() -> void:
 
 
 func _rebuild_collision() -> void:
-	var col_bottom := get_node_or_null("CollisionBottom") as CollisionShape3D
-	var col_left := get_node_or_null("CollisionLeft") as CollisionShape3D
-	var col_right := get_node_or_null("CollisionRight") as CollisionShape3D
-	var log_area := get_node_or_null("LogArea") as Area3D
-	var log_area_col := log_area.get_node_or_null("CollisionShape3D") as CollisionShape3D if log_area else null
-
-	var left_wall_node = get_node_or_null("LeftWall")
-	var right_wall_node = get_node_or_null("RightWall")
-	var left_wall_x: float = left_wall_node.position.x if left_wall_node else -conveyor_width * 0.5
-	var right_wall_x: float = right_wall_node.position.x if right_wall_node else conveyor_width * 0.5
-	var eff_width: float = right_wall_x - left_wall_x
-
-	# Flat bottom width is centered around the outer chains
-	var max_x: float = 0.0
-	for tx in track_x_positions:
-		max_x = maxf(max_x, absf(tx))
-	var bottom_width: float = max_x * 2.0 + 0.10
-	bottom_width = clampf(bottom_width, 0.20, eff_width - 0.05)
-
-	if col_bottom:
-		var shape := BoxShape3D.new()
-		shape.size = Vector3(bottom_width, BED_PLATE_T, conveyor_length)
-		col_bottom.shape = shape
-		col_bottom.position = Vector3((left_wall_x + right_wall_x) * 0.5, -0.02, 0.0)
-
-	var theta: float = deg_to_rad(25.0)
-	var left_dx: float = absf(left_wall_x) - bottom_width * 0.5
-	var right_dx: float = right_wall_x - bottom_width * 0.5
-	
-	if col_left:
-		if left_dx > 0.01:
-			var W_slope: float = left_dx / cos(theta)
-			var dy: float = left_dx * tan(theta)
-			var shape := BoxShape3D.new()
-			shape.size = Vector3(W_slope, BED_PLATE_T, conveyor_length)
-			col_left.shape = shape
-			col_left.position = Vector3(left_wall_x + left_dx * 0.5, -0.02 + dy * 0.5 + 0.015, 0.0)
-			col_left.rotation_degrees = Vector3(0.0, 0.0, -25.0)
-		else:
-			col_left.shape = null
-
-	if col_right:
-		if right_dx > 0.01:
-			var W_slope: float = right_dx / cos(theta)
-			var dy: float = right_dx * tan(theta)
-			var shape := BoxShape3D.new()
-			shape.size = Vector3(W_slope, BED_PLATE_T, conveyor_length)
-			col_right.shape = shape
-			col_right.position = Vector3(right_wall_x - right_dx * 0.5, -0.02 + dy * 0.5 + 0.015, 0.0)
-			col_right.rotation_degrees = Vector3(0.0, 0.0, 25.0)
-		else:
-			col_right.shape = null
-
-	if log_area_col:
-		var shape := BoxShape3D.new()
-		shape.size = Vector3(eff_width - 0.05, 0.8, conveyor_length + 0.05)
-		log_area_col.shape = shape
-		log_area.position = Vector3((left_wall_x + right_wall_x) * 0.5, 0.3, 0.0)
+	ChainTroughFrameBuilder.new(self).rebuild_collision()

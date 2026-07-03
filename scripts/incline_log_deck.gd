@@ -2,14 +2,11 @@
 extends Node3D
 
 ## incline_log_deck.gd
-## Chain-driven incline log deck with proper sprocket/chain/race geometry.
+## Chain-driven incline log deck: lug physics, trigger zones, and start/stop
+## control with headrig backpressure.
 ##
-## Each track runs a full roller-chain loop:
-##   top run (surface, +Z / uphill)  →  top sprocket wrap
-##   → return run (under frame, -Z)  →  bottom sprocket wrap  →  repeat
-##
-## AnimatableBody3D lugs handle log physics.
-## MeshInstance3D chain links handle visuals (animated in _process).
+## AnimatableBody3D lugs handle log physics. All procedural meshes and the
+## chain-link animation live in InclineDeckVisuals (incline_deck_visuals.gd).
 
 @export var incline_angle_deg: float = 22.0
 @export var incline_length:    float = 5.0
@@ -32,49 +29,13 @@ extends Node3D
 
 signal log_reached_top(l_node: RigidBody3D)
 
-# ── Geometry constants ───────────────────────────────────────────────────────
-const PLATE_T       := 0.12
-const LUG_W         := 0.125
-const LUG_H         := 0.27
-const LUG_D         := 0.12
-const LUG_BASE_H    := 0.055
-const LUG_BASE_D    := 0.27
-const LUG_POST_W    := 0.11
-const LUG_POST_D    := 0.11
-const RAIL_T        := 0.06
-const RAIL_H        := 0.22
-const STRINGER_W    := 0.08
-const STRINGER_H    := 0.18
-
-# Sprocket
-const SPROCKET_R    := 0.15    # pitch-circle radius
-const SPROCKET_T    := 0.045   # outer ring thickness (axial)
-const SPROCKET_HUB_R:= 0.055   # hub radius
-const SPROCKET_HUB_T:= 0.075   # hub length
-const SPROCKET_SEGS := 10      # polygon segments → gear silhouette
-
-# Chain link assembly
-const CHAIN_SPAN    := 0.10    # X gap between inner faces of side plates
-const CHAIN_PLATE_W := 0.014   # side plate X thickness
-const CHAIN_PLATE_H := 0.042   # side plate height
-const CHAIN_PLATE_D := 0.195   # side plate depth (along chain, < pitch)
-const CHAIN_ROLLER_R:= 0.024   # cross-pin / roller radius
-const CHAIN_PITCH   := 0.24    # centre-to-centre link spacing along chain
-
-# Chain race (guide channel per track)
-const RACE_WALL_T   := 0.010
-const RACE_WALL_H   := 0.038
-
 # ── Runtime state ────────────────────────────────────────────────────────────
 var _start_delay_timer: float = 0.0   # counts down before chain starts
 var _slope_root:    Node3D
+var _visuals:       InclineDeckVisuals
 var _active_log:    RigidBody3D       # log that triggered the current chain run
 var _on_deck:       Dictionary = {}   # instance_id → RigidBody3D, all logs currently on incline
 var _was_blocked_at_top: bool = false # detects top-zone cleared transition
-
-# ── Lug tracer ───────────────────────────────────────────────────────────────
-var _lug_trace_start: Array[Vector3] = []
-var _lug_trace_done: bool = false
 
 # Lugs (physics)
 var _lugs:          Array[AnimatableBody3D] = []
@@ -83,31 +44,14 @@ var _lug_track_x:   Array[float]            = []
 var _slot:          Array[float]            = []
 var _slot_visible:  Array[bool]             = []
 
-# Chain links (visuals)
-var _multimesh_plates: MultiMeshInstance3D
-var _multimesh_rollers: MultiMeshInstance3D
-var _num_links:      int            = 0
-var _chain_travel:  float          = 0.0
-
-# Sprocket nodes (for rotation animation)
-var _sprocket_nodes: Array[Node3D] = []
-
 # Derived
 var _cycle_len:  float
-var _surface_y:  float
-var _hidden_y:   float
-var _spr_cy:     float   # sprocket centre Y in slope-local space
-var _loop_len:   float   # full chain loop length per track
 
 
 
 
 func _ready() -> void:
 	_cycle_len = float(lugs_per_track) * lug_spacing
-	_surface_y = PLATE_T * 0.5
-	_hidden_y  = -(PLATE_T * 0.5 + LUG_H + LUG_BASE_H + 0.08)
-	_spr_cy    = PLATE_T * 0.5 - SPROCKET_R        # sprocket centre just below surface
-	_loop_len  = 2.0 * incline_length + 2.0 * PI * SPROCKET_R
 
 	if _slope_root == null:
 		_slope_root = get_node_or_null("SlopeRoot")
@@ -121,16 +65,23 @@ func _ready() -> void:
 			
 	_slope_root.rotation_degrees.x = -incline_angle_deg
 
-	# Always build the frame/visuals as they are procedural based on exports
-	_build_frame()
-	_spawn_chain_links()
-	_update_chain_links()
+	# Visuals child (re)builds all procedural geometry from the exports.
+	_visuals = _slope_root.get_node_or_null("Visuals") as InclineDeckVisuals
+	if _visuals == null:
+		_visuals = InclineDeckVisuals.new()
+		_visuals.name = "Visuals"
+		_slope_root.add_child(_visuals)
+	_visuals.build(incline_length, incline_width, track_x_positions)
+
 	_spawn_lugs()
 
-	# Resolve zones
-	load_zone = _slope_root.get_node_or_null("LoadZone")
-	top_zone = _slope_root.get_node_or_null("TopZone")
-	deck_area = _slope_root.get_node_or_null("DeckArea")
+	# Resolve zones from SlopeRoot when not wired via export.
+	if load_zone == null:
+		load_zone = _slope_root.get_node_or_null("LoadZone")
+	if top_zone == null:
+		top_zone = _slope_root.get_node_or_null("TopZone")
+	if deck_area == null:
+		deck_area = _slope_root.get_node_or_null("DeckArea")
 
 	if not Engine.is_editor_hint():
 		# Resolve carriage by group lookup if not wired via export.
@@ -153,340 +104,6 @@ func _ready() -> void:
 				deck_area.body_entered.connect(_on_deck_area_body_entered)
 			if not deck_area.body_exited.is_connected(_on_deck_area_body_exited):
 				deck_area.body_exited.connect(_on_deck_area_body_exited)
-		# Lug tracer — record and mark starting positions of top-surface lugs.
-		for i in _lugs.size():
-			if _slot[i] < incline_length:
-				_lug_trace_start.append(_lugs[i].global_position)
-				_spawn_trace_sphere(_lugs[i].global_position, Color.GREEN)
-		print("[LUG TRACE] Start positions (%d lugs on surface):" % _lug_trace_start.size())
-		for p in _lug_trace_start:
-			print("  START  %.3f, %.3f, %.3f" % [p.x, p.y, p.z])
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-#  FRAME
-# ─────────────────────────────────────────────────────────────────────────────
-
-func _build_frame() -> void:
-	var frame := StaticBody3D.new()
-	frame.name = "Frame"
-	var pm := PhysicsMaterial.new()
-	pm.friction = 1.8
-	pm.rough    = true
-	frame.physics_material_override = pm
-
-	_build_bed(frame)
-	_build_side_rails(frame)
-	_build_chain_races(frame)
-	_build_subframe(frame)
-	_build_sprockets(frame)
-
-	_slope_root.add_child(frame)
-
-
-func _build_bed(frame: StaticBody3D) -> void:
-	var size := Vector3(incline_width, PLATE_T, incline_length)
-	var mat  := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.18, 0.40, 0.22)
-	mat.metallic     = 0.65
-	mat.roughness    = 0.50
-
-	var mi  := MeshInstance3D.new()
-	mi.name = "BedPlate"
-	var bm  := BoxMesh.new()
-	bm.size = size
-	mi.mesh = bm
-	mi.material_override = mat
-	frame.add_child(mi)
-
-	var col := CollisionShape3D.new()
-	var bs  := BoxShape3D.new()
-	bs.size = size
-	col.shape = bs
-	frame.add_child(col)
-
-
-func _build_side_rails(frame: StaticBody3D) -> void:
-	var mat       := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.22, 0.22, 0.25)
-	mat.metallic     = 0.82
-	mat.roughness    = 0.44
-	var rail_size := Vector3(RAIL_T, RAIL_H, incline_length)
-	var rail_y    := PLATE_T * 0.5 + RAIL_H * 0.5
-
-	for side: float in [-1.0, 1.0]:
-		var rx := side * (incline_width * 0.5 + RAIL_T * 0.5)
-		var mi  := MeshInstance3D.new()
-		mi.name = "SideRail_%s" % ("L" if side < 0.0 else "R")
-		var bm  := BoxMesh.new()
-		bm.size = rail_size
-		mi.mesh = bm
-		mi.material_override = mat
-		mi.position = Vector3(rx, rail_y, 0.0)
-		frame.add_child(mi)
-
-		var col  := CollisionShape3D.new()
-		var bs   := BoxShape3D.new()
-		bs.size  = rail_size
-		col.shape    = bs
-		col.position = Vector3(rx, rail_y, 0.0)
-		frame.add_child(col)
-
-
-func _build_chain_races(frame: StaticBody3D) -> void:
-	# Per-track U-channel guides that constrain the chain laterally.
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.30, 0.28, 0.26)
-	mat.metallic     = 0.85
-	mat.roughness    = 0.42
-
-	var wall_y    := PLATE_T * 0.5 + RACE_WALL_H * 0.5
-	var wall_size := Vector3(RACE_WALL_T, RACE_WALL_H, incline_length)
-	var half_span := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W + RACE_WALL_T * 0.5
-
-	for tx: float in track_x_positions:
-		for side: float in [-1.0, 1.0]:
-			var mi  := MeshInstance3D.new()
-			mi.name = "Race_%s_%s" % [tx, ("L" if side < 0.0 else "R")]
-			var bm  := BoxMesh.new()
-			bm.size = wall_size
-			mi.mesh = bm
-			mi.material_override = mat
-			mi.position = Vector3(tx + side * half_span, wall_y, 0.0)
-			frame.add_child(mi)
-
-
-func _build_subframe(frame: StaticBody3D) -> void:
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.20, 0.20, 0.22)
-	mat.metallic     = 0.78
-	mat.roughness    = 0.55
-	var sy := -(PLATE_T * 0.5 + STRINGER_H * 0.5)
-
-	for side: float in [-1.0, 1.0]:
-		var sx  := side * (incline_width * 0.5 - STRINGER_W * 0.5 - 0.04)
-		var mi  := MeshInstance3D.new()
-		mi.name = "Stringer_%s" % ("L" if side < 0.0 else "R")
-		var bm  := BoxMesh.new()
-		bm.size = Vector3(STRINGER_W, STRINGER_H, incline_length)
-		mi.mesh = bm
-		mi.material_override = mat
-		mi.position = Vector3(sx, sy, 0.0)
-		frame.add_child(mi)
-
-	var count := int(ceil(incline_length / 0.9)) + 1
-	for i in range(count):
-		var cz := -incline_length * 0.5 + i * 0.9
-		if cz > incline_length * 0.5 + 0.01:
-			break
-		var mi  := MeshInstance3D.new()
-		mi.name = "Cross_%d" % i
-		var bm  := BoxMesh.new()
-		bm.size = Vector3(incline_width + 0.08, STRINGER_H * 0.55, 0.055)
-		mi.mesh = bm
-		mi.material_override = mat
-		mi.position = Vector3(0.0, sy + STRINGER_H * 0.22, cz)
-		frame.add_child(mi)
-
-
-func _build_sprockets(frame: StaticBody3D) -> void:
-	var mat_sp := StandardMaterial3D.new()
-	mat_sp.albedo_color = Color(0.28, 0.26, 0.24)
-	mat_sp.metallic     = 0.90
-	mat_sp.roughness    = 0.38
-
-	var mat_hub := StandardMaterial3D.new()
-	mat_hub.albedo_color = Color(0.35, 0.32, 0.28)
-	mat_hub.metallic     = 0.88
-	mat_hub.roughness    = 0.42
-
-	# Drive shaft (one per end, spans full width)
-	var shaft_mesh := CylinderMesh.new()
-	shaft_mesh.top_radius    = SPROCKET_HUB_R * 0.6
-	shaft_mesh.bottom_radius = SPROCKET_HUB_R * 0.6
-	shaft_mesh.height        = incline_width + 0.30
-
-	for end_idx in range(2):
-		var ez     := -incline_length * 0.5 if end_idx == 0 else incline_length * 0.5
-		var suffix := "Bot" if end_idx == 0 else "Top"
-
-		var shaft := MeshInstance3D.new()
-		shaft.name = "DriveShaft_%s" % suffix
-		shaft.mesh = shaft_mesh
-		shaft.material_override = mat_hub
-		shaft.rotation_degrees.z = 90.0
-		shaft.position = Vector3(0.0, _spr_cy, ez)
-		frame.add_child(shaft)
-
-		# One sprocket assembly per track
-		for si in range(track_x_positions.size()):
-			var tx: float = track_x_positions[si]
-			var sp_root := Node3D.new()
-			sp_root.name = "Sprocket_%s_%d" % [suffix, si]
-			sp_root.rotation_degrees.z = 90.0
-			sp_root.position = Vector3(tx, _spr_cy, ez)
-			frame.add_child(sp_root)
-
-			# Outer toothed ring (polygon silhouette)
-			var outer_mesh := CylinderMesh.new()
-			outer_mesh.top_radius    = SPROCKET_R
-			outer_mesh.bottom_radius = SPROCKET_R
-			outer_mesh.height        = SPROCKET_T
-			outer_mesh.radial_segments = SPROCKET_SEGS
-			var outer := MeshInstance3D.new()
-			outer.mesh = outer_mesh
-			outer.material_override = mat_sp
-			sp_root.add_child(outer)
-
-			# Inner hub boss
-			var hub_mesh := CylinderMesh.new()
-			hub_mesh.top_radius    = SPROCKET_HUB_R
-			hub_mesh.bottom_radius = SPROCKET_HUB_R
-			hub_mesh.height        = SPROCKET_HUB_T
-			hub_mesh.radial_segments = 8
-			var hub := MeshInstance3D.new()
-			hub.mesh = hub_mesh
-			hub.material_override = mat_hub
-			sp_root.add_child(hub)
-
-			_sprocket_nodes.append(sp_root)
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-#  CHAIN LINKS
-# ─────────────────────────────────────────────────────────────────────────────
-
-func _spawn_chain_links() -> void:
-	_num_links = int(ceil(_loop_len / CHAIN_PITCH)) + 2
-	var num_tracks := track_x_positions.size()
-
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.20, 0.20, 0.23)
-	mat.metallic     = 0.93
-	mat.roughness    = 0.30
-
-	# Clean up any existing chain links or MultiMeshInstance3D nodes
-	for child in _slope_root.get_children():
-		if child.name.begins_with("ChainLink_") or child is MultiMeshInstance3D:
-			if Engine.is_editor_hint():
-				_slope_root.remove_child(child)
-			child.queue_free()
-
-	# 1. Plates MultiMesh
-	_multimesh_plates = MultiMeshInstance3D.new()
-	_multimesh_plates.name = "PlatesMultiMesh"
-	var mm_plates := MultiMesh.new()
-	mm_plates.transform_format = MultiMesh.TRANSFORM_3D
-	mm_plates.use_custom_data = false
-	mm_plates.use_colors = false
-	
-	var plate_mesh := BoxMesh.new()
-	plate_mesh.size = Vector3(CHAIN_PLATE_W, CHAIN_PLATE_H, CHAIN_PLATE_D)
-	mm_plates.mesh = plate_mesh
-	mm_plates.instance_count = _num_links * num_tracks * 2
-	_multimesh_plates.multimesh = mm_plates
-	_multimesh_plates.material_override = mat
-	_slope_root.add_child(_multimesh_plates)
-
-	# 2. Rollers MultiMesh
-	_multimesh_rollers = MultiMeshInstance3D.new()
-	_multimesh_rollers.name = "RollersMultiMesh"
-	var mm_rollers := MultiMesh.new()
-	mm_rollers.transform_format = MultiMesh.TRANSFORM_3D
-	mm_rollers.use_custom_data = false
-	mm_rollers.use_colors = false
-	
-	var roller_mesh := CylinderMesh.new()
-	roller_mesh.top_radius    = CHAIN_ROLLER_R
-	roller_mesh.bottom_radius = CHAIN_ROLLER_R
-	roller_mesh.height        = CHAIN_SPAN + CHAIN_PLATE_W * 2.0 + 0.01
-	roller_mesh.radial_segments = 6
-	mm_rollers.mesh = roller_mesh
-	mm_rollers.instance_count = _num_links * num_tracks
-	_multimesh_rollers.multimesh = mm_rollers
-	_multimesh_rollers.material_override = mat
-	_slope_root.add_child(_multimesh_rollers)
-
-	_update_chain_links()
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-#  CHAIN LOOP PATH
-# ─────────────────────────────────────────────────────────────────────────────
-
-func _get_loop_xform(d: float) -> Transform3D:
-	d = fposmod(d, _loop_len)
-
-	var R    := SPROCKET_R
-	var piR  := PI * R
-	var L    := incline_length
-	var half := L * 0.5
-	var cy   := _spr_cy          # sprocket centre Y
-	var top_y := cy + R          # chain top-run Y  (≈ bed surface)
-	var bot_y := cy - R          # chain return-run Y (below frame)
-
-	var y: float
-	var z: float
-	var rot_x: float
-
-	if d < L:
-		# Top run: +Z (uphill)
-		z     = -half + d
-		y     = top_y
-		rot_x = 0.0
-	elif d < L + piR:
-		# Top sprocket wrap
-		var theta: float = (d - L) / R
-		z     = half  + R * sin(theta)
-		y     = cy    + R * cos(theta)
-		rot_x = theta - TAU
-	elif d < 2.0 * L + piR:
-		# Return run: -Z (back under frame)
-		var d_ret: float = d - (L + piR)
-		z     = half - d_ret
-		y     = bot_y
-		rot_x = -PI
-	else:
-		# Bottom sprocket wrap
-		var theta: float = (d - (2.0 * L + piR)) / R
-		z     = -half - R * sin(theta)
-		y     = cy    - R * cos(theta)
-		rot_x = theta - PI
-
-	return Transform3D(Basis(Vector3.RIGHT, rot_x), Vector3(0.0, y, z))
-
-
-func _update_chain_links() -> void:
-	if not is_instance_valid(_multimesh_plates) or not is_instance_valid(_multimesh_rollers):
-		return
-	var num_tracks := track_x_positions.size()
-	var inner_x := CHAIN_SPAN * 0.5 + CHAIN_PLATE_W * 0.5
-	
-	var plate_idx := 0
-	var roller_idx := 0
-	
-	for xi in num_tracks:
-		var tx := track_x_positions[xi]
-		for j in _num_links:
-			var slot := fposmod(float(j) * CHAIN_PITCH + _chain_travel, _loop_len)
-			var xf   := _get_loop_xform(slot)
-			var link_pos := Vector3(tx, xf.origin.y, xf.origin.z)
-			var link_xf := Transform3D(xf.basis, link_pos)
-			
-			# Left Plate
-			var lp_xf := link_xf * Transform3D(Basis(), Vector3(-inner_x, 0.0, 0.0))
-			_multimesh_plates.multimesh.set_instance_transform(plate_idx, lp_xf)
-			plate_idx += 1
-			
-			# Right Plate
-			var rp_xf := link_xf * Transform3D(Basis(), Vector3(inner_x, 0.0, 0.0))
-			_multimesh_plates.multimesh.set_instance_transform(plate_idx, rp_xf)
-			plate_idx += 1
-			
-			# Joint Roller
-			var ro_xf := link_xf * Transform3D(Basis(Vector3.FORWARD, deg_to_rad(90.0)), Vector3.ZERO)
-			_multimesh_rollers.multimesh.set_instance_transform(roller_idx, ro_xf)
-			roller_idx += 1
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -494,13 +111,8 @@ func _update_chain_links() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _spawn_lugs() -> void:
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = Color(0.105, 0.10, 0.09)
-	mat.metallic     = 0.82
-	mat.roughness    = 0.58
-
 	var lug_shape := BoxShape3D.new()
-	lug_shape.size = Vector3(LUG_POST_W, LUG_H, LUG_POST_D)
+	lug_shape.size = Vector3(InclineDeckVisuals.LUG_POST_W, InclineDeckVisuals.LUG_H, InclineDeckVisuals.LUG_POST_D)
 
 	for xi in range(track_x_positions.size()):
 		var tx: float = track_x_positions[xi]
@@ -511,11 +123,11 @@ func _spawn_lugs() -> void:
 			lug.name     = "Lug_%d_%d" % [xi, j]
 			lug.sync_to_physics = true
 
-			_build_log_pusher_lug(lug, mat)
+			_visuals.build_lug_visuals(lug)
 
 			var cs    := CollisionShape3D.new()
 			cs.shape  = lug_shape
-			cs.position = Vector3(0.0, LUG_BASE_H + LUG_H * 0.5, 0.055)
+			cs.position = Vector3(0.0, InclineDeckVisuals.LUG_BASE_H + InclineDeckVisuals.LUG_H * 0.5, 0.055)
 			cs.disabled = slot0 >= incline_length
 			lug.add_child(cs)
 
@@ -529,53 +141,13 @@ func _spawn_lugs() -> void:
 			_slot_visible.append(slot0 < incline_length)
 
 
-func _build_log_pusher_lug(lug: AnimatableBody3D, material: Material) -> void:
-	var visuals := Node3D.new()
-	visuals.name = "FabricatedPusher"
-	lug.add_child(visuals)
-
-	# Wide chain shoe and heel plate anchor the pusher to the moving chain.
-	_add_lug_box(visuals, "ChainShoe", Vector3(LUG_W, LUG_BASE_H, LUG_BASE_D),
-		Vector3(0.0, LUG_BASE_H * 0.5, -0.045), Vector3.ZERO, material)
-	_add_lug_box(visuals, "HeelPlate", Vector3(LUG_W * 0.90, 0.07, 0.09),
-		Vector3(0.0, 0.065, -0.125), Vector3.ZERO, material)
-
-	# Broad upright face contacts the log. It sits toward uphill travel (+Z).
-	_add_lug_box(visuals, "PusherPost", Vector3(LUG_POST_W, LUG_H, LUG_POST_D),
-		Vector3(0.0, LUG_BASE_H + LUG_H * 0.5, 0.055), Vector3.ZERO, material)
-	# Two trailing braces give the lug the triangular, fabricated profile.
-	var brace_angle := deg_to_rad(32.0)
-	for brace_x in [-0.035, 0.035]:
-		_add_lug_box(visuals, "RearBrace", Vector3(0.025, 0.225, 0.055),
-			Vector3(brace_x, 0.145, -0.04), Vector3(brace_angle, 0.0, 0.0), material)
-
-
-func _add_lug_box(
-	parent: Node3D,
-	part_name: String,
-	size: Vector3,
-	part_position: Vector3,
-	part_rotation: Vector3,
-	material: Material
-) -> void:
-	var mesh := BoxMesh.new()
-	mesh.size = size
-	var part := MeshInstance3D.new()
-	part.name = part_name
-	part.mesh = mesh
-	part.material_override = material
-	part.position = part_position
-	part.rotation = part_rotation
-	parent.add_child(part)
-
-
 func _set_lug_position(lug: AnimatableBody3D, tx: float, slot: float) -> void:
 	var half := incline_length * 0.5
 	if slot < incline_length:
-		lug.position = Vector3(tx, _surface_y, -half + slot)
+		lug.position = Vector3(tx, _visuals.surface_y, -half + slot)
 	else:
 		var t: float = (slot - incline_length) / maxf(_cycle_len - incline_length, 0.001)
-		lug.position = Vector3(tx, _hidden_y, lerp(half, -half, t))
+		lug.position = Vector3(tx, _visuals.hidden_y, lerp(half, -half, t))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -598,9 +170,6 @@ func _process(_delta: float) -> void:
 		# not just moved it temporarily out of the zone mid-cut.
 		if _was_blocked_at_top and not blocked_now and _is_headrig_free():
 			set_running(true, true)
-			if not _lug_trace_done:
-				_lug_trace_done = true
-				_compare_lug_positions()
 		# Also restart freely when headrig is free and deck has logs.
 		elif not _on_deck.is_empty() and not blocked_now and _is_headrig_free():
 			set_running(true)
@@ -624,7 +193,7 @@ func _process(_delta: float) -> void:
 	if is_blocked_at_top():
 		return
 
-	_update_chain_links()
+	_visuals.refresh_chain_links()
 
 
 func _physics_process(delta: float) -> void:
@@ -649,13 +218,7 @@ func _physics_process(delta: float) -> void:
 			advance = dist_to_align
 			set_running(false)
 
-	_chain_travel += advance
-
-	# Spin sprockets: angular velocity matches chain surface speed
-	var ang_vel := advance / SPROCKET_R
-	for sp in _sprocket_nodes:
-		if is_instance_valid(sp):
-			sp.rotate(Vector3.RIGHT, ang_vel)
+	_visuals.advance_chain(advance)
 
 	for i in range(_lugs.size()):
 		_slot[i] = fmod(_slot[i] + advance, _cycle_len)
@@ -739,25 +302,6 @@ func is_blocked_at_top() -> bool:
 #  TRIGGER ZONES
 # ─────────────────────────────────────────────────────────────────────────────
 
-func _build_deck_area() -> void:
-	# Skip if already exists (added in scene editor)
-	if _slope_root.has_node("DeckArea"):
-		return
-	# Area spanning the full incline surface — tracks every log currently on the deck.
-	var zone := Area3D.new()
-	zone.name = "DeckArea"
-	var cs    := CollisionShape3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = Vector3(incline_width + 0.4, 1.2, incline_length)
-	cs.shape    = shape
-	cs.position = Vector3(0.0, 0.5, 0.0)
-	zone.add_child(cs)
-	_slope_root.add_child(zone)
-	if Engine.is_editor_hint():
-		zone.owner = get_tree().edited_scene_root
-		cs.owner = get_tree().edited_scene_root
-
-
 func _on_deck_area_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs") and body is RigidBody3D:
 		var l_node := body as RigidBody3D
@@ -774,49 +318,10 @@ func _on_deck_area_body_exited(body: Node3D) -> void:
 		_on_deck.erase(body.get_instance_id())
 
 
-func _build_load_zone() -> void:
-	# Skip if already exists (added in scene editor)
-	if _slope_root.has_node("LoadZone"):
-		return
-	# Area at the bottom of the incline — any log landing here starts the chain.
-	var zone := Area3D.new()
-	zone.name = "LoadZone"
-	var cs    := CollisionShape3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = Vector3(incline_width, 0.7, 1.4)
-	cs.shape    = shape
-	cs.position = Vector3(0.0, 0.35, -incline_length * 0.5 + 0.7)
-	zone.add_child(cs)
-	_slope_root.add_child(zone)
-	if Engine.is_editor_hint():
-		zone.owner = get_tree().edited_scene_root
-		cs.owner = get_tree().edited_scene_root
-
-
 func _on_load_zone_body_entered(body: Node3D) -> void:
 	if body.is_in_group("logs") and not running and _start_delay_timer <= 0.0:
 		_active_log = body as RigidBody3D
 		_start_delay_timer = 2.0
-
-
-func _build_top_zone() -> void:
-	# Skip if already exists (added in scene editor)
-	if _slope_root.has_node("TopZone"):
-		return
-	# Thin zone at the very tip — only emits the signal so the transfer station
-	# knows which log to kick. The transfer station stops the chain, not us.
-	var zone := Area3D.new()
-	zone.name = "TopZone"
-	var cs    := CollisionShape3D.new()
-	var shape := BoxShape3D.new()
-	shape.size = Vector3(incline_width, 0.8, 0.5)
-	cs.shape    = shape
-	cs.position = Vector3(0.0, 0.4, incline_length * 0.5 - 0.2)
-	zone.add_child(cs)
-	_slope_root.add_child(zone)
-	if Engine.is_editor_hint():
-		zone.owner = get_tree().edited_scene_root
-		cs.owner = get_tree().edited_scene_root
 
 
 func _on_top_zone_body_entered(body: Node3D) -> void:
@@ -832,43 +337,3 @@ func _on_top_zone_body_exited(body: Node3D) -> void:
 	# Log was kicked sideways off the incline — remove from deck tracking.
 	if body.is_in_group("logs"):
 		_on_deck.erase(body.get_instance_id())
-
-
-# ── Lug tracer helpers ───────────────────────────────────────────────────────
-
-func _spawn_trace_sphere(world_pos: Vector3, color: Color) -> void:
-	var mi := MeshInstance3D.new()
-	var sphere := SphereMesh.new()
-	sphere.radius = 0.06
-	sphere.height = 0.12
-	mi.mesh = sphere
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = color
-	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mi.material_override = mat
-	var pos := world_pos
-	get_tree().root.add_child.call_deferred(mi)
-	mi.set_deferred("global_position", pos)
-
-
-func _compare_lug_positions() -> void:
-	# Called right when the first post-headrig jog is triggered.
-	# Waits one physics frame for the chain to actually move, then compares.
-	await get_tree().physics_frame
-	await get_tree().physics_frame
-	var after: Array[Vector3] = []
-	for i in _lugs.size():
-		if _slot[i] < incline_length:
-			after.append(_lugs[i].global_position)
-			_spawn_trace_sphere(_lugs[i].global_position, Color.RED)
-	print("[LUG TRACE] After first jog (%d lugs on surface):" % after.size())
-	for j in after.size():
-		var a := after[j]
-		print("  AFTER  %.3f, %.3f, %.3f" % [a.x, a.y, a.z])
-	if _lug_trace_start.size() == after.size():
-		print("[LUG TRACE] Delta from start:")
-		for j in after.size():
-			var d := after[j] - _lug_trace_start[j]
-			print("  DELTA  %.4f, %.4f, %.4f  (len=%.4f)" % [d.x, d.y, d.z, d.length()])
-	else:
-		print("[LUG TRACE] Different lug count — start=%d  after=%d" % [_lug_trace_start.size(), after.size()])

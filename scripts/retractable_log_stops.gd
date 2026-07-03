@@ -277,10 +277,8 @@ func _suppress_upward_rebound() -> void:
 
 func _dumped_logs_are_seated() -> bool:
 	if _dump_target == null:
-		print("DEBUG SEATED: _dump_target is null!")
 		return false
 	if _dumping_logs.is_empty():
-		print("DEBUG SEATED: _dumping_logs is empty!")
 		return false
 	var maximum_center_height = _get_bottom_surface_height() + settle_height_above_bottom
 	var valid_log_found := false
@@ -289,13 +287,9 @@ func _dumped_logs_are_seated() -> bool:
 			continue
 		valid_log_found = true
 		if body.global_position.y > maximum_center_height:
-			print("DEBUG SEATED: Log Y (", body.global_position.y, ") > maximum_center_height (", maximum_center_height, ")")
 			return false
 		if abs(body.linear_velocity.y) > settle_vertical_speed:
-			print("DEBUG SEATED: Log vel Y (", body.linear_velocity.y, ") > settle_vertical_speed (", settle_vertical_speed, ")")
 			return false
-	if not valid_log_found:
-		print("DEBUG SEATED: No valid logs found!")
 	return valid_log_found
 
 func _is_log_on_deck() -> bool:

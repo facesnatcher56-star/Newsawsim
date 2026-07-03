@@ -3,6 +3,8 @@ class_name SawmillEdger
 extends StaticBody3D
 
 const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assembly_builder.gd")
+const SawmillEdgerPartFactory := preload("res://scripts/edger_builders/edger_part_factory.gd")
+const SawmillEdgerSceneCollector := preload("res://scripts/edger_builders/edger_scene_collector.gd")
 
 ## Industrial board edger sized for the sawmill board line.
 ## X is feed direction, Z is board-length/cross-machine width.
@@ -92,23 +94,6 @@ const SawmillEdgerAssemblyBuilder := preload("res://scripts/sawmill_edger_assemb
 			_adopt_generated_parts()
 
 @export var auto_rebuild_generated_parts: bool = true
-@export var use_saved_assembly_scenes: bool = false:
-	set(value):
-		use_saved_assembly_scenes = value
-		_queue_rebuild()
-
-@export var frame_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/frame_assembly.tscn")
-@export var side_fence_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/side_fence_assembly.tscn")
-@export var infeed_chain_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/infeed_chain_assembly.tscn")
-@export var parking_ramp_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/parking_ramp_assembly.tscn")
-@export var infeed_hold_down_roller_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/infeed_hold_down_roller_assembly.tscn")
-@export var position_pin_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/position_pin_assembly.tscn")
-@export var cushion_pin_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/cushion_pin_assembly.tscn")
-@export var lower_feed_roller_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/lower_feed_roller_assembly.tscn")
-@export var upper_hold_down_roller_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/upper_hold_down_roller_assembly.tscn")
-@export var saw_blade_and_guard_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/saw_blade_and_guard_assembly.tscn")
-@export var motor_drive_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/motor_drive_assembly.tscn")
-@export var waste_handling_assembly_scene: PackedScene = preload("res://scenes/edger_assemblies/waste_handling_assembly.tscn")
 
 var _rebuild_queued := false
 var _mat_frame: StandardMaterial3D
@@ -159,10 +144,9 @@ var _cushion_pin_stations: Array[Dictionary] = []
 var _saw_blades: Array[CSGCylinder3D] = []
 var _saw_teeth_roots: Array[Node3D] = []
 var _pin_retract_delay_elapsed := 0.0
-var _generated_name_counts: Dictionary = {}
-var _editor_group_stack: Array[Node3D] = []
-var _preserved_editor_group_transforms: Dictionary = {}
 var _assembly_builder: RefCounted
+var _part_factory: RefCounted
+var _scene_collector: RefCounted
 var _centering_board: RigidBody3D = null
 var _centering_completed := false
 
@@ -318,12 +302,16 @@ func _queue_rebuild() -> void:
 
 
 func _rebuild() -> void:
+	if _scene_collector == null:
+		_scene_collector = SawmillEdgerSceneCollector.new(self)
+
 	if Engine.is_editor_hint() and not auto_rebuild_generated_parts and get_child_count() > 0:
-		_collect_generated_parts()
+		_scene_collector.collect_generated_parts()
 		if (is_instance_valid(infeed_system) and not infeed_system.feed_rollers.is_empty()) or not _saw_blades.is_empty():
 			return
 
-	_preserve_editor_group_transforms()
+	_part_factory = SawmillEdgerPartFactory.new(self)
+	_part_factory._preserve_editor_group_transforms()
 	for child in get_children():
 		if child.get_meta("edger_controller", false):
 			continue
@@ -340,242 +328,16 @@ func _rebuild() -> void:
 	_cushion_pin_stations.clear()
 	_saw_blades.clear()
 	_saw_teeth_roots.clear()
-	_generated_name_counts.clear()
-	_editor_group_stack.clear()
 
 	_make_materials()
-	_assembly_builder = SawmillEdgerAssemblyBuilder.new(self)
-	if use_saved_assembly_scenes:
-		_instantiate_saved_assembly_scenes()
-		_collect_generated_parts()
-	else:
-		_build_frame()
-		_build_feed_deck()
-		_build_hold_downs()
-		_build_saw_box()
-		_build_motors_and_drives()
-		_build_waste_handling()
+	_assembly_builder = SawmillEdgerAssemblyBuilder.new(self, _part_factory)
+	_build_frame()
+	_build_feed_deck()
+	_build_hold_downs()
+	_build_saw_box()
+	_build_motors_and_drives()
+	_build_waste_handling()
 	_adopt_generated_parts()
-
-
-func _instantiate_saved_assembly_scenes() -> void:
-	var assembly_scenes: Array[PackedScene] = [
-		frame_assembly_scene,
-		side_fence_assembly_scene,
-		infeed_chain_assembly_scene,
-		parking_ramp_assembly_scene,
-		infeed_hold_down_roller_assembly_scene,
-		position_pin_assembly_scene,
-		cushion_pin_assembly_scene,
-		lower_feed_roller_assembly_scene,
-		upper_hold_down_roller_assembly_scene,
-		saw_blade_and_guard_assembly_scene,
-		motor_drive_assembly_scene,
-		waste_handling_assembly_scene,
-	]
-	for assembly_scene in assembly_scenes:
-		if assembly_scene == null:
-			continue
-		var instance := assembly_scene.instantiate()
-		if _preserved_editor_group_transforms.has(instance.name):
-			instance.transform = _preserved_editor_group_transforms[instance.name]
-		add_child(instance)
-		_adopt_new_node(instance)
-
-
-
-func _collect_generated_parts() -> void:
-	if is_instance_valid(infeed_system):
-		infeed_system.clear()
-	_hold_down_stations.clear()
-	_infeed_hold_down_stations.clear()
-	_parking_ramp_stations.clear()
-	_position_pin_stations.clear()
-	_cushion_pin_stations.clear()
-	_saw_blades.clear()
-	_saw_teeth_roots.clear()
-
-	for node in find_children("*", "Node3D", true, false):
-		var node_3d := node as Node3D
-		if not is_instance_valid(node_3d):
-			continue
-		if node_3d.name.begins_with("FeedRoller"):
-			if is_instance_valid(infeed_system):
-				infeed_system.feed_rollers.append(node_3d)
-		elif node_3d.name.begins_with("InfeedChainLink"):
-			if is_instance_valid(infeed_system):
-				infeed_system.chain_links.append(node_3d)
-				infeed_system.chain_bases.append(node_3d.position)
-		elif node_3d.name.begins_with("EdgerSawBlade") and node_3d is CSGCylinder3D:
-			_saw_blades.append(node_3d as CSGCylinder3D)
-		elif node_3d.name.begins_with("EdgerSawTeeth"):
-			_saw_teeth_roots.append(node_3d)
-	_collect_infeed_hold_down_stations_from_scene()
-
-	# Collect position pin stations if using saved assembly scenes
-	var pos_assembly := get_node_or_null("PositionPinAssembly") as Node3D
-	if is_instance_valid(pos_assembly):
-		var pins_map := {}
-		var sleeves_map := {}
-		for child in pos_assembly.get_children():
-			if not child is Node3D:
-				continue
-			var name_parts := child.name.split("_")
-			if name_parts.size() < 2:
-				continue
-			var suffix := name_parts[1]
-			if child.name.begins_with("PositionPinSleeve"):
-				sleeves_map[suffix] = child
-			elif child.name.begins_with("PositionPin"):
-				pins_map[suffix] = child
-		
-		var suffixes := pins_map.keys()
-		suffixes.sort()
-		for suffix in suffixes:
-			var pin = pins_map[suffix] as Node3D
-			var sleeve = sleeves_map.get(suffix) as Node3D
-			if is_instance_valid(pin):
-				var front_z: float = pin.position.z
-				var retracted_y: float = pin.position.y
-				var raised_y: float = retracted_y + 0.314
-				var sleeve_retracted_y: float = 0.0
-				var sleeve_raised_y: float = 0.0
-				if is_instance_valid(sleeve):
-					sleeve_retracted_y = sleeve.position.y
-					sleeve_raised_y = sleeve_retracted_y + 0.314
-				
-				_position_pin_stations.append({
-					"x": pin.position.x,
-					"pin": pin,
-					"sleeve": sleeve,
-					"z": front_z,
-					"retracted_y": retracted_y,
-					"raised_y": raised_y,
-					"sleeve_retracted_y": sleeve_retracted_y,
-					"sleeve_raised_y": sleeve_raised_y,
-					"extended": false,
-				})
-
-	# Collect cushion pin stations if using saved assembly scenes
-	var cushion_assembly := get_node_or_null("CushionPinAssembly") as Node3D
-	if is_instance_valid(cushion_assembly):
-		var station_nodes := {}
-		var barrels_map := {}
-		for child in cushion_assembly.get_children():
-			if not child is Node3D:
-				continue
-			var name_parts := child.name.split("_")
-			if name_parts.size() < 2:
-				continue
-			var suffix := name_parts[1]
-			if child.name.begins_with("CushionCylinder"):
-				barrels_map[suffix] = child
-			elif child.name.begins_with("CushionPinAssembly"):
-				station_nodes[suffix] = child
-				
-		var suffixes := station_nodes.keys()
-		suffixes.sort()
-		for suffix in suffixes:
-			var body = station_nodes[suffix] as Node3D
-			var barrel = barrels_map.get(suffix) as Node3D
-			var rod = body.get_node_or_null("CushionRod") as Node3D
-			var pad = body.get_node_or_null("CushionPad") as Node3D
-			
-			_cushion_pin_stations.append({
-				"x": body.position.x,
-				"body": body,
-				"barrel": barrel,
-				"rod": rod,
-				"pad": pad,
-				"base_z": body.position.z,
-				"extended": false,
-			})
-
-
-func _collect_infeed_hold_down_stations_from_scene() -> void:
-	var station_parts := {}
-	for node in find_children("*", "Node3D", true, false):
-		var station_id := _hold_down_station_id(String(node.name))
-		if station_id.is_empty():
-			continue
-		if not station_parts.has(station_id):
-			station_parts[station_id] = {
-				"bearings": [],
-			}
-		var parts: Dictionary = station_parts[station_id]
-		if node.name.begins_with("InfeedHoldDownCrosshead"):
-			parts["crosshead"] = node
-		elif node.name.begins_with("InfeedHoldDownRoller"):
-			parts["roller"] = node
-		elif node.name.begins_with("InfeedHoldDownAxle"):
-			parts["axle"] = node
-		elif node.name.begins_with("InfeedHoldDownBearing"):
-			parts["bearings"].append(node)
-		elif node.name.begins_with("PneumaticCylinder"):
-			parts["actuator_root"] = node
-
-	var station_ids := station_parts.keys()
-	station_ids.sort()
-	for station_id in station_ids:
-		var parts: Dictionary = station_parts[station_id]
-		var crosshead := parts.get("crosshead") as Node3D
-		var roller := parts.get("roller") as Node3D
-		if not is_instance_valid(crosshead) or not is_instance_valid(roller):
-			continue
-
-		var moving_nodes: Array[Node3D] = [crosshead, roller]
-		var axle := parts.get("axle") as Node3D
-		if is_instance_valid(axle):
-			moving_nodes.append(axle)
-		var bearings: Array = parts["bearings"]
-		for bearing in bearings:
-			var bearing_node := bearing as Node3D
-			if is_instance_valid(bearing_node):
-				moving_nodes.append(bearing_node)
-
-		var raised_y := roller.position.y
-		var y_offsets: Array[float] = []
-		for moving_node in moving_nodes:
-			y_offsets.append(moving_node.position.y - raised_y)
-
-		var station := {
-			"x": roller.position.x,
-			"roller": roller,
-			"nodes": moving_nodes,
-			"y_offsets": y_offsets,
-			"raised_y": raised_y,
-			"offset": hold_down_system.hold_down_raised_offset if is_instance_valid(hold_down_system) else 0.24,
-		}
-		var actuator_root := parts.get("actuator_root") as Node3D
-		if is_instance_valid(actuator_root):
-			var rod := actuator_root.get_node_or_null("PistonRod") as CSGCylinder3D
-			var rod_top_y := -0.087
-			if is_instance_valid(rod):
-				rod_top_y = rod.position.y + rod.height * 0.5
-			station["actuator"] = {
-				"root": actuator_root,
-				"attach_node": crosshead,
-				"rod": rod,
-				"clevis": actuator_root.get_node_or_null("RodClevis"),
-				"pin_hole": actuator_root.get_node_or_null("ClevisPinHole"),
-				"rod_top_y": rod_top_y,
-			}
-		_infeed_hold_down_stations.append(station)
-
-
-func _hold_down_station_id(node_name: String) -> String:
-	if not (
-		node_name.begins_with("InfeedHoldDownCrosshead")
-		or node_name.begins_with("InfeedHoldDownRoller")
-		or node_name.begins_with("InfeedHoldDownAxle")
-		or node_name.begins_with("InfeedHoldDownBearing")
-		or node_name.begins_with("PneumaticCylinder")
-	):
-		return ""
-	var name_parts := node_name.split("_")
-	if name_parts.size() < 2:
-		return ""
-	return name_parts[1]
 
 
 func _adopt_generated_parts() -> void:
@@ -589,13 +351,6 @@ func _adopt_generated_parts() -> void:
 	for child in get_children():
 		if child.get_meta("edger_editor_group", false):
 			child.owner = scene_root
-
-
-func _preserve_editor_group_transforms() -> void:
-	_preserved_editor_group_transforms.clear()
-	for child in get_children():
-		if child is Node3D and child.get_meta("edger_editor_group", false):
-			_preserved_editor_group_transforms[child.name] = child.transform
 
 
 func _make_materials() -> void:
@@ -652,27 +407,7 @@ void fragment() {
 	return material
 
 
-func _push_editor_group(group_name: String) -> Node3D:
-	var group := Node3D.new()
-	group.name = group_name
-	group.set_meta("edger_editor_group", true)
-	if _preserved_editor_group_transforms.has(group_name):
-		group.transform = _preserved_editor_group_transforms[group_name]
-	_current_part_parent().add_child(group)
-	_adopt_new_node(group)
-	_editor_group_stack.append(group)
-	return group
 
-
-func _pop_editor_group() -> void:
-	if not _editor_group_stack.is_empty():
-		_editor_group_stack.pop_back()
-
-
-func _current_part_parent() -> Node:
-	if _editor_group_stack.is_empty():
-		return self
-	return _editor_group_stack.back()
 
 
 func _build_frame() -> void:
@@ -745,319 +480,6 @@ func _infeed_chain_start_x() -> float:
 
 
 
-
-
-func _add_infeed_chain_link(node_name: String, local_position: Vector3, index: int) -> Node3D:
-	var link_root := Node3D.new()
-	link_root.name = node_name
-	link_root.position = local_position
-	_current_part_parent().add_child(link_root)
-	_adopt_new_node(link_root)
-
-	var link_length := CHAIN_LINK_LENGTH * 0.72
-	var side_plate_width := CHAIN_LINK_WIDTH * 0.22
-	var side_plate_z := CHAIN_LINK_WIDTH * 0.5 - side_plate_width * 0.5
-	_add_box_child(link_root, "OuterPlate_L", Vector3(0.0, 0.0, -side_plate_z), Vector3(link_length, CHAIN_LINK_THICKNESS, side_plate_width), _mat_dark)
-	_add_box_child(link_root, "OuterPlate_R", Vector3(0.0, 0.0, side_plate_z), Vector3(link_length, CHAIN_LINK_THICKNESS, side_plate_width), _mat_dark)
-	_add_box_child(link_root, "CenterPad", Vector3(0.0, CHAIN_LINK_THICKNESS * 0.18, 0.0), Vector3(link_length * 0.54, CHAIN_LINK_THICKNESS * 0.55, CHAIN_LINK_WIDTH * 0.42), _mat_chain_grip)
-	_add_cylinder_child(link_root, "CrossPin", Vector3(0.0, -CHAIN_LINK_THICKNESS * 0.05, 0.0), 0.011, CHAIN_LINK_WIDTH + 0.02, _mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 10)
-
-	var tooth_mesh := _create_chain_grip_tooth_mesh()
-	var tooth_xs: Array[float] = [-link_length * 0.22, link_length * 0.22]
-	for tooth_i in range(tooth_xs.size()):
-		var tooth := MeshInstance3D.new()
-		tooth.name = "GripTooth_%02d" % (tooth_i + 1)
-		tooth.mesh = tooth_mesh
-		tooth.material_override = _mat_chain_grip
-		tooth.position = Vector3(tooth_xs[tooth_i], CHAIN_LINK_THICKNESS * 0.5, 0.0)
-		tooth.rotation.y = PI if (index + tooth_i) % 2 == 1 else 0.0
-		tooth.scale.y = 0.4030368
-		link_root.add_child(tooth)
-		_adopt_new_node(tooth)
-
-	return link_root
-
-
-func _add_box_child(parent: Node3D, node_name: String, local_position: Vector3, size: Vector3, material: Material, collision: bool = true) -> CSGBox3D:
-	var box := CSGBox3D.new()
-	box.name = node_name
-	box.position = local_position
-	box.size = size
-	box.material = material
-	box.use_collision = collision
-	parent.add_child(box)
-	_adopt_new_node(box)
-	return box
-
-
-func _add_cylinder_child(parent: Node3D, node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int, collision: bool = true) -> CSGCylinder3D:
-	var cylinder := CSGCylinder3D.new()
-	cylinder.name = node_name
-	cylinder.position = local_position
-	cylinder.rotation = local_rotation
-	cylinder.radius = radius
-	cylinder.height = height
-	cylinder.sides = sides
-	cylinder.material = material
-	cylinder.use_collision = collision
-	parent.add_child(cylinder)
-	_adopt_new_node(cylinder)
-	return cylinder
-
-
-func _add_physics_box(node_name: String, local_position: Vector3, size: Vector3, material: Material, local_rotation: Vector3 = Vector3.ZERO) -> AnimatableBody3D:
-	var body := AnimatableBody3D.new()
-	body.name = _friendly_part_name(node_name, local_position)
-	body.position = local_position
-	body.rotation = local_rotation
-	body.sync_to_physics = false
-	_current_part_parent().add_child(body)
-	_adopt_new_node(body)
-	_add_box_contact_child(body, "Visual", Vector3.ZERO, size, material)
-	return body
-
-
-func _add_physics_cylinder(node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int) -> AnimatableBody3D:
-	var body := AnimatableBody3D.new()
-	body.name = _friendly_part_name(node_name, local_position)
-	body.position = local_position
-	body.rotation = local_rotation
-	body.sync_to_physics = false
-	_current_part_parent().add_child(body)
-	_adopt_new_node(body)
-
-	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.name = "Visual"
-	var mesh := CylinderMesh.new()
-	mesh.top_radius = radius
-	mesh.bottom_radius = radius
-	mesh.height = height
-	mesh.radial_segments = sides
-	mesh_instance.mesh = mesh
-	mesh_instance.material_override = material
-	body.add_child(mesh_instance)
-	_adopt_new_node(mesh_instance)
-
-	var collision := CollisionShape3D.new()
-	collision.name = "CollisionShape3D"
-	var shape := CylinderShape3D.new()
-	shape.radius = radius
-	shape.height = height
-	collision.shape = shape
-	body.add_child(collision)
-	_adopt_new_node(collision)
-	return body
-
-
-func _add_box_contact_child(parent: Node3D, node_name: String, local_position: Vector3, size: Vector3, material: Material) -> MeshInstance3D:
-	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.name = node_name
-	mesh_instance.position = local_position
-	var mesh := BoxMesh.new()
-	mesh.size = size
-	mesh_instance.mesh = mesh
-	mesh_instance.material_override = material
-	parent.add_child(mesh_instance)
-	_adopt_new_node(mesh_instance)
-
-	var collision := CollisionShape3D.new()
-	collision.name = node_name + "Collision"
-	collision.position = local_position
-	var shape := BoxShape3D.new()
-	shape.size = size
-	collision.shape = shape
-	parent.add_child(collision)
-	_adopt_new_node(collision)
-	return mesh_instance
-
-
-func _create_chain_grip_tooth_mesh() -> ArrayMesh:
-	var mesh := ArrayMesh.new()
-	var vertices := PackedVector3Array()
-	var normals := PackedVector3Array()
-	var indices := PackedInt32Array()
-
-	var half_l := CHAIN_GRIP_TOOTH_LENGTH * 0.5
-	var half_w := CHAIN_GRIP_TOOTH_WIDTH * 0.5
-	var front := [
-		Vector3(-half_l, 0.0, half_w),
-		Vector3(half_l, 0.0, half_w),
-		Vector3(half_l * 0.35, CHAIN_GRIP_TOOTH_HEIGHT, half_w),
-		Vector3(-half_l * 0.75, CHAIN_GRIP_TOOTH_HEIGHT * 0.28, half_w),
-	]
-	var back := []
-	for point in front:
-		back.append(Vector3(point.x, point.y, -half_w))
-
-	_add_mesh_face(vertices, normals, indices, front, Vector3(0, 0, 1))
-	var reversed_back := back.duplicate()
-	reversed_back.reverse()
-	_add_mesh_face(vertices, normals, indices, reversed_back, Vector3(0, 0, -1))
-	for i in range(front.size()):
-		var next_i := (i + 1) % front.size()
-		_add_mesh_quad(vertices, normals, indices, front[i], front[next_i], back[next_i], back[i])
-
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_INDEX] = indices
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return mesh
-
-
-func _add_saw_teeth(node_name: String, center: Vector3, radius: float) -> Node3D:
-	var teeth_root := Node3D.new()
-	teeth_root.name = node_name
-	teeth_root.position = center
-	_current_part_parent().add_child(teeth_root)
-	_adopt_new_node(teeth_root)
-
-	var tooth_mesh := _create_saw_tooth_mesh()
-	var tooth_count := 48
-	var tooth_root_radius := radius - 0.012
-	for i in range(tooth_count):
-		var angle := TAU * float(i) / float(tooth_count)
-		var tooth := MeshInstance3D.new()
-		tooth.name = "Tooth_%02d" % (i + 1)
-		tooth.mesh = tooth_mesh
-		tooth.material_override = _mat_blade
-		tooth.position = Vector3(cos(angle) * tooth_root_radius, sin(angle) * tooth_root_radius, 0.0)
-		tooth.rotation = Vector3(0.0, 0.0, angle)
-		teeth_root.add_child(tooth)
-		_adopt_new_node(tooth)
-	return teeth_root
-
-
-func _create_saw_tooth_mesh() -> ArrayMesh:
-	var mesh := ArrayMesh.new()
-	var vertices := PackedVector3Array()
-	var normals := PackedVector3Array()
-	var indices := PackedInt32Array()
-
-	var tooth_depth := 0.055
-	var tangential_root := 0.026
-	var tangential_tip := 0.006
-	var half_thickness := 0.018
-	var front := [
-		Vector3(0.0, -tangential_root, half_thickness),
-		Vector3(tooth_depth * 0.70, -tangential_tip, half_thickness),
-		Vector3(tooth_depth, tangential_tip, half_thickness),
-		Vector3(0.0, tangential_root, half_thickness),
-	]
-	var back := []
-	for point in front:
-		back.append(Vector3(point.x, point.y, -half_thickness))
-
-	_add_mesh_face(vertices, normals, indices, front, Vector3(0, 0, 1))
-	var reversed_back := back.duplicate()
-	reversed_back.reverse()
-	_add_mesh_face(vertices, normals, indices, reversed_back, Vector3(0, 0, -1))
-	for i in range(front.size()):
-		var next_i := (i + 1) % front.size()
-		_add_mesh_quad(vertices, normals, indices, front[i], front[next_i], back[next_i], back[i])
-
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_INDEX] = indices
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return mesh
-
-
-func _add_mesh_face(vertices: PackedVector3Array, normals: PackedVector3Array, indices: PackedInt32Array, points: Array, normal: Vector3) -> void:
-	var start := vertices.size()
-	for point in points:
-		vertices.append(point)
-		normals.append(normal)
-	for i in range(1, points.size() - 1):
-		indices.append_array(PackedInt32Array([start, start + i, start + i + 1]))
-
-
-func _add_mesh_quad(vertices: PackedVector3Array, normals: PackedVector3Array, indices: PackedInt32Array, a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> void:
-	var normal := (b - a).cross(c - a).normalized()
-	var start := vertices.size()
-	for point in [a, b, c, d]:
-		vertices.append(point)
-		normals.append(normal)
-	indices.append_array(PackedInt32Array([start, start + 1, start + 2, start, start + 2, start + 3]))
-
-
-func _add_box(node_name: String, local_position: Vector3, size: Vector3, material: Material, local_rotation: Vector3 = Vector3.ZERO, collision: bool = true) -> CSGBox3D:
-	var box := CSGBox3D.new()
-	box.name = _friendly_part_name(node_name, local_position)
-	box.position = local_position
-	box.rotation = local_rotation
-	box.size = size
-	box.material = material
-	box.use_collision = collision
-	_current_part_parent().add_child(box)
-	_adopt_new_node(box)
-	return box
-
-
-func _add_cylinder(node_name: String, local_position: Vector3, radius: float, height: float, material: Material, local_rotation: Vector3, sides: int, collision: bool = true) -> CSGCylinder3D:
-	var cylinder := CSGCylinder3D.new()
-	cylinder.name = _friendly_part_name(node_name, local_position)
-	cylinder.position = local_position
-	cylinder.rotation = local_rotation
-	cylinder.radius = radius
-	cylinder.height = height
-	cylinder.sides = sides
-	cylinder.material = material
-	cylinder.use_collision = collision
-	_current_part_parent().add_child(cylinder)
-	_adopt_new_node(cylinder)
-	return cylinder
-
-
-func _adopt_new_node(node: Node) -> void:
-	if not Engine.is_editor_hint() or not expose_generated_parts or not is_inside_tree():
-		return
-	if not node.get_meta("edger_editor_group", false):
-		return
-	var scene_root := get_tree().edited_scene_root
-	if scene_root == null or scene_root != self:
-		return
-	if node != scene_root:
-		node.owner = scene_root
-
-
-func _friendly_part_name(base_name: String, local_position: Vector3) -> String:
-	var node_name_str := "%s_%s" % [base_name, _position_name_suffix(local_position)]
-	node_name_str = node_name_str.replace("__", "_").strip_edges(false, true)
-	var used_count := int(_generated_name_counts.get(node_name_str, 0)) + 1
-	_generated_name_counts[node_name_str] = used_count
-	if used_count > 1:
-		node_name_str = "%s_%02d" % [node_name_str, used_count]
-	return node_name_str
-
-
-func _position_name_suffix(local_position: Vector3) -> String:
-	var parts: Array[String] = []
-	if local_position.x < -0.18:
-		parts.append("Infeed")
-	elif local_position.x > 0.18:
-		parts.append("Outfeed")
-	else:
-		parts.append("CenterX")
-
-	if local_position.z < -0.08:
-		parts.append("Front")
-	elif local_position.z > 0.08:
-		parts.append("Back")
-	else:
-		parts.append("CenterZ")
-
-	if local_position.y < working_height - 0.12:
-		parts.append("Lower")
-	elif local_position.y > working_height + 0.32:
-		parts.append("Upper")
-	else:
-		parts.append("Mid")
-
-	return "_".join(PackedStringArray(parts))
 
 
 # ── Runtime Centering Cycle State Machine ───────────────────────────────────

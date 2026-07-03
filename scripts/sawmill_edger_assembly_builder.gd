@@ -8,6 +8,7 @@ const OutfeedBuilder := preload("res://scripts/edger_builders/edger_outfeed_buil
 const SawBuilder := preload("res://scripts/edger_builders/edger_saw_builder.gd")
 
 var edger: SawmillEdger
+var factory: RefCounted
 var frame_builder: RefCounted
 var infeed_builder: RefCounted
 var pin_builder: RefCounted
@@ -15,13 +16,14 @@ var outfeed_builder: RefCounted
 var saw_builder: RefCounted
 
 
-func _init(p_edger: SawmillEdger) -> void:
+func _init(p_edger: SawmillEdger, p_factory: RefCounted) -> void:
 	edger = p_edger
-	frame_builder = FrameBuilder.new(edger)
-	pin_builder = PinBuilder.new(edger)
-	infeed_builder = InfeedBuilder.new(edger, pin_builder)
-	outfeed_builder = OutfeedBuilder.new(edger)
-	saw_builder = SawBuilder.new(edger)
+	factory = p_factory
+	frame_builder = FrameBuilder.new(edger, factory)
+	pin_builder = PinBuilder.new(edger, factory)
+	infeed_builder = InfeedBuilder.new(edger, factory, pin_builder)
+	outfeed_builder = OutfeedBuilder.new(edger, factory)
+	saw_builder = SawBuilder.new(edger, factory)
 
 
 func build_frame() -> void:

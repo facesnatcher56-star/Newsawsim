@@ -34,3 +34,5 @@ ETXTBSY: text file is busy, copyfile .../ziva/zivacode/linux_x86_64/zivacode -> 
 ```
 
 That means the Codex-side MCP bridge is currently running from `.../data/ziva-local/bin/zivacode` while Ziva's UI status/client setup RPC is trying to update the same binary. The MCP runtime can still be healthy in this state, but Ziva's UI status call fails. The clean recovery is to stop the Codex MCP bridge process using that binary, let Ziva perform its client/status setup, then start a fresh Codex session so it loads the updated bridge and advertises the full tool list.
+
+## Imported Claude Cowork project instructions
