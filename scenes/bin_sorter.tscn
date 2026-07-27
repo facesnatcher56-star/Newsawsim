@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/bin_sorter.gd" id="1_bin_sorter"]
+
+[node name="BinSorter" type="StaticBody3D"]
+script = ExtResource("1_bin_sorter")
+num_bins = 4
+bin_width = 1.8
+bin_depth = 4.2
+sorter_height = 4.0
+conveyor_speed = 2.5
+gate_speed = 6.0
