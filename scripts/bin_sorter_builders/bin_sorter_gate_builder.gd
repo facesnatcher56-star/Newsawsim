@@ -40,9 +40,10 @@ func _build_infeed_laser_scanner() -> void:
 		leg.material = sorter._mat_yellow
 		scanner.add_child(leg)
 
-	# Optical sensor optic heads (Dark steel body + Red LED lens)
-	for s in range(5):
-		var sz: float = (s - 2) * (bin_d * 0.2)
+	# Optical sensor optic heads (7 laser heads across the expanded Z depth)
+	var num_lasers: int = 7
+	for s in range(num_lasers):
+		var sz: float = (s - (num_lasers - 1) * 0.5) * (bin_d * 0.14)
 		var sensor_head := CSGCylinder3D.new()
 		sensor_head.name = "LaserOpticHead_%d" % s
 		sensor_head.radius = 0.035
@@ -63,16 +64,47 @@ func _build_infeed_laser_scanner() -> void:
 	sorter.add_child(scanner)
 
 
+func _get_track_positions() -> Array[float]:
+	var bin_d: float = sorter.bin_depth
+	var usable_depth: float = bin_d - 1.2
+	var step_z: float = usable_depth / 4.0
+	var track_positions: Array[float] = []
+	for c_idx in range(5):
+		track_positions.append(-usable_depth * 0.5 + c_idx * step_z)
+	return track_positions
+
+
 func _build_bay_gates_and_actuators() -> void:
 	var num_bins: int = sorter.num_bins
 	var bin_w: float = sorter.bin_width
 	var bin_d: float = sorter.bin_depth
 	var sorter_h: float = sorter.sorter_height
-	var track_spacing: float = 1.6
+	var track_positions: Array[float] = _get_track_positions()
 
 	sorter._gate_nodes.clear()
 	sorter._piston_nodes.clear()
 	sorter._status_led_nodes.clear()
+
+	# Continuous Chrome Pneumatic Air Supply Header Pipes along Outer Gantry Sides
+	for side in [-1.0, 1.0]:
+		var side_z: float = side * (bin_d * 0.5 + 0.15)
+		var air_header := CSGCylinder3D.new()
+		air_header.name = "PneumaticAirHeader_Z%d" % int(side)
+		air_header.radius = 0.02
+		air_header.height = num_bins * bin_w + 1.0
+		air_header.rotation = Vector3(0.0, 0.0, PI * 0.5)
+		air_header.position = Vector3((num_bins * bin_w + 1.0) * 0.5 - 0.5, sorter_h + 0.40, side_z)
+		air_header.material = sorter._mat_chrome
+		sorter.add_child(air_header)
+
+		for b in range(num_bins):
+			var bay_x: float = b * bin_w
+			var clamp_mesh := CSGBox3D.new()
+			clamp_mesh.name = "HeaderClamp_B%d_Z%d" % [b, int(side)]
+			clamp_mesh.size = Vector3(0.05, 0.05, 0.05)
+			clamp_mesh.position = Vector3(bay_x + 0.35, sorter_h + 0.39, side_z)
+			clamp_mesh.material = sorter._mat_cast_iron
+			sorter.add_child(clamp_mesh)
 
 	for b in range(num_bins):
 		var bay_x: float = b * bin_w
@@ -81,67 +113,123 @@ func _build_bay_gates_and_actuators() -> void:
 		var bay_group := Node3D.new()
 		bay_group.name = "BayMechanics_%d" % b
 
-		# 1. Dual Safety Orange Hinged Drop Gate Arms (Front & Back)
-		# Mounted under the drag chain channels at Z = ±0.8m.
-		# Closed: lies flat bridging the bay gap. Open: tilts down to drop board into bin.
+		# 1. Photo-Matched Wedge-Tapered Orange Tipples & Flush Fixed Deck Plates (Photo 2 Match)
 		var gate_pivot := AnimatableBody3D.new()
 		gate_pivot.name = "DropGatePivot_%d" % b
-		gate_pivot.position = Vector3(bay_x + 0.1, sorter_h + 0.12, 0.0)
+		gate_pivot.position = Vector3((b + 1.0) * bin_w - 0.15, sorter_h + 0.10, 0.0)
 		gate_pivot.sync_to_physics = true
 
+		# Round Torque Shaft with Flange Mounting Collars (Photo 2 Match)
+		var torque_shaft := CSGCylinder3D.new()
+		torque_shaft.name = "TorqueShaft"
+		torque_shaft.radius = 0.045
+		torque_shaft.height = bin_d + 0.4
+		torque_shaft.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+		torque_shaft.material = sorter._mat_orange
+		gate_pivot.add_child(torque_shaft)
+
 		var arm_length: float = bin_w - 0.25
-		var arm_width: float = 0.22  # Narrow gate arm under each chain track
+		var arm_width: float = 0.22
 
-		for side in [-1.0, 1.0]:
-			var gate_arm := CSGBox3D.new()
-			gate_arm.name = "GateArm_Z%d" % int(side)
-			gate_arm.size = Vector3(arm_length, 0.04, arm_width)
-			gate_arm.position = Vector3(arm_length * 0.5, 0.0, side * track_spacing * 0.5)
-			gate_arm.material = sorter._mat_orange
-			gate_arm.use_collision = true
-			gate_pivot.add_child(gate_arm)
+		for t_idx in range(track_positions.size()):
+			var track_z: float = track_positions[t_idx]
 
-			# Safety Hazard Yellow Striping on outer edge of gate arm
+			# Wedge-Tapered Orange Tipple Arm (Lies 100% flat and flush at 0 deg closed matching Photo 2)
+			var tipple_base := CSGBox3D.new()
+			tipple_base.name = "WedgeTippleArm_T%d" % t_idx
+			tipple_base.size = Vector3(arm_length, 0.035, arm_width)
+			tipple_base.position = Vector3(-arm_length * 0.5, 0.0, track_z)
+			tipple_base.material = sorter._mat_orange
+			tipple_base.use_collision = true
+
+			# Flange Mounting Collar to round torque shaft (Photo 2 Match)
+			var collar := CSGCylinder3D.new()
+			collar.name = "TorqueFlangeCollar"
+			collar.radius = 0.065
+			collar.height = 0.04
+			collar.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+			collar.position = Vector3(arm_length * 0.5, 0.0, 0.0)
+			collar.material = sorter._mat_cast_iron
+			tipple_base.add_child(collar)
+
+			# Safety Hazard Yellow Striping on outer edge
 			var stripe := CSGBox3D.new()
 			stripe.name = "HazardStripe"
-			stripe.size = Vector3(arm_length, 0.045, 0.03)
-			stripe.position = Vector3(arm_length * 0.5, 0.0, side * (track_spacing * 0.5 + arm_width * 0.5 + 0.015))
+			stripe.size = Vector3(arm_length, 0.04, 0.02)
+			stripe.position = Vector3(0.0, 0.0, arm_width * 0.5 + 0.01)
 			stripe.material = sorter._mat_yellow
-			gate_pivot.add_child(stripe)
+			tipple_base.add_child(stripe)
+
+			gate_pivot.add_child(tipple_base)
+
+			# Fixed Chamfered Blue Deck Plate at bay bridge division (Photo 2 Match)
+			var fixed_deck := CSGBox3D.new()
+			fixed_deck.name = "FixedDeckPlate_B%d_T%d" % [b, t_idx]
+			fixed_deck.size = Vector3(0.20, 0.04, arm_width + 0.04)
+			fixed_deck.position = Vector3((b + 1.0) * bin_w - 0.02, sorter_h + 0.10, track_z)
+			fixed_deck.material = sorter._mat_green
+			fixed_deck.use_collision = true
+			sorter.add_child(fixed_deck)
+
+		# Side Torque Crank Arms attached to ends of pivot shaft outside lumber path
+		for side in [-1.0, 1.0]:
+			var crank := CSGBox3D.new()
+			crank.name = "SideTorqueCrank_Z%d" % int(side)
+			crank.size = Vector3(0.06, 0.22, 0.06)
+			crank.position = Vector3(-0.08, 0.10, side * (bin_d * 0.5 + 0.15))
+			crank.material = sorter._mat_cast_iron
+			gate_pivot.add_child(crank)
 
 		bay_group.add_child(gate_pivot)
 		sorter._gate_nodes.append(gate_pivot)
 
-		# 2. Dual Pneumatic Cylinder Actuators (Front and Back)
-		# Mounted vertically above the drop gate arms on top of the cross beam
+		# 2. Dual Side-Mounted Pneumatic Cylinder Actuators (On gantry columns, leaving chain races 100% clear)
 		var pistons_in_bay: Array[Node3D] = []
 		for side in [-1.0, 1.0]:
+			var side_z: float = side * (bin_d * 0.5 + 0.15)
 			var cyl_mount := Node3D.new()
-			cyl_mount.name = "PneumaticCylinder_Z%d" % int(side)
-			cyl_mount.position = Vector3(bay_center_x, sorter_h + 0.55, side * track_spacing * 0.5)
+			cyl_mount.name = "SidePneumaticActuator_Z%d" % int(side)
+			cyl_mount.position = Vector3(bay_x + 0.35, sorter_h + 0.30, side_z)
 
-			# Cylinder Body (Industrial Green)
+			# Column Mounting Bracket (Cast Iron)
+			var bracket := CSGBox3D.new()
+			bracket.name = "ColumnMountBracket"
+			bracket.size = Vector3(0.14, 0.12, 0.12)
+			bracket.position = Vector3(0.0, 0.0, 0.0)
+			bracket.material = sorter._mat_cast_iron
+			cyl_mount.add_child(bracket)
+
+			# Cylinder Body (Industrial Green, angled down toward torque crank)
 			var cyl_body := CSGCylinder3D.new()
 			cyl_body.name = "CylinderBody"
-			cyl_body.radius = 0.055
-			cyl_body.height = 0.38
-			cyl_body.rotation = Vector3(0.0, 0.0, -0.30)  # Angled down toward gate arm
+			cyl_body.radius = 0.06
+			cyl_body.height = 0.40
+			cyl_body.rotation = Vector3(0.0, 0.0, -0.45)
+			cyl_body.position = Vector3(-0.08, -0.15, 0.0)
 			cyl_body.material = sorter._mat_green
 			cyl_mount.add_child(cyl_body)
 
-			# Safety Orange End Caps
-			for cap_y in [-0.19, 0.19]:
+			# End Caps & Brass Fittings
+			for cap_y in [-0.20, 0.20]:
 				var cap := CSGCylinder3D.new()
-				cap.radius = 0.065
+				cap.radius = 0.07
 				cap.height = 0.035
 				cap.position = Vector3(0.0, cap_y, 0.0)
 				cap.material = sorter._mat_orange
 				cyl_body.add_child(cap)
 
-			# Chrome Piston Shaft (extending down from cylinder to gate arm)
+				var fitting := CSGCylinder3D.new()
+				fitting.radius = 0.015
+				fitting.height = 0.04
+				fitting.position = Vector3(0.06, cap_y, 0.0)
+				fitting.rotation = Vector3(0.0, 0.0, PI * 0.5)
+				fitting.material = sorter._mat_brass
+				cyl_body.add_child(fitting)
+
+			# Chrome Piston Shaft connected to Torque Crank Arm
 			var shaft := CSGCylinder3D.new()
 			shaft.name = "PistonShaft"
-			shaft.radius = 0.025
+			shaft.radius = 0.028
 			shaft.height = 0.35
 			shaft.position = Vector3(0.0, -0.25, 0.0)
 			shaft.material = sorter._mat_chrome
@@ -155,7 +243,7 @@ func _build_bay_gates_and_actuators() -> void:
 		# 3. Optical Photo-Eye Sensor in bay (Detecting board passage)
 		var sensor := Node3D.new()
 		sensor.name = "PhotoEyeSensor_%d" % b
-		sensor.position = Vector3(bay_x + 0.2, sorter_h + 0.35, -track_spacing * 0.5 - 0.15)
+		sensor.position = Vector3(bay_x + 0.2, sorter_h + 0.35, -bin_d * 0.45)
 
 		var sensor_housing := CSGBox3D.new()
 		sensor_housing.name = "SensorHousing"

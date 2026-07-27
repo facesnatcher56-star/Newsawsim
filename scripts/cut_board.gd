@@ -6,12 +6,24 @@ extends RigidBody3D
 @export var lifetime: float = 20.0
 @export var product_length: float = 4.958
 
+## When enabled, prints every physics contact (what the board is touching,
+## the contact normal, and the push impulse) plus current velocity.
+@export var debug_contacts: bool = true
+@export var debug_interval: float = 0.25
+
+var _debug_timer: float = 0.0
+var _prev_velocity: Vector3 = Vector3.ZERO
+
 func _ready() -> void:
 	_apply_product_length(product_length)
 
 	# Thin lumber can move farther than its thickness in one physics step.
 	# Continuous collision detection prevents tunneling into roller geometry.
 	continuous_cd = true
+
+	# Hold-down rollers read our colliding bodies to stop descending on touch.
+	contact_monitor = true
+	max_contacts_reported = 8
 
 	# Add to a group if needed
 	add_to_group("cut_boards")
@@ -25,6 +37,37 @@ func _physics_process(_delta: float) -> void:
 	# Safe fallback if it falls out of the world
 	if global_position.y < -5.0:
 		queue_free()
+
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+	if not debug_contacts:
+		return
+	_debug_timer += state.step
+	if _debug_timer < debug_interval:
+		return
+	_debug_timer = 0.0
+
+	# Velocity change since last report reveals scripted pushes (conveyor code
+	# using apply_force / setting velocity) that never appear as contacts.
+	var vel := state.linear_velocity
+	var accel := (vel - _prev_velocity) / debug_interval
+	_prev_velocity = vel
+
+	var lines := PackedStringArray()
+	lines.append("[%s] vel=%s accel=%s contacts=%d" % [
+		name, _fmt_vec(vel), _fmt_vec(accel), state.get_contact_count()])
+	for i in range(state.get_contact_count()):
+		var collider := state.get_contact_collider_object(i)
+		var collider_desc := "<unknown>"
+		if collider is Node:
+			collider_desc = "%s (%s)" % [(collider as Node).name, collider.get_class()]
+		var normal := state.get_contact_local_normal(i)
+		var impulse := state.get_contact_impulse(i)
+		lines.append("    touching %s | normal=%s | impulse=%s |%.3f|" % [
+			collider_desc, _fmt_vec(normal), _fmt_vec(impulse), impulse.length()])
+	print("\n".join(lines))
+
+static func _fmt_vec(v: Vector3) -> String:
+	return "(%.2f, %.2f, %.2f)" % [v.x, v.y, v.z]
 
 func configure_length(length: float) -> void:
 	product_length = maxf(length, 0.1)

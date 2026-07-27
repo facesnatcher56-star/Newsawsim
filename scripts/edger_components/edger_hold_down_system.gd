@@ -51,9 +51,13 @@ func update_infeed(delta: float, boards: Array[RigidBody3D]) -> void:
 			is_descended = true
 			station["descended"] = true
 
+		var touching := is_instance_valid(board_under) and _roller_touching_board(board_under, nodes)
 		if is_descended and is_instance_valid(board_under):
 			target_y = board_top_y + edger.INFEED_HOLD_DOWN_ROLLER_RADIUS
-			new_y = _lower_infeed_hold_down(current_y, board_top_y)
+			if touching:
+				new_y = current_y
+			else:
+				new_y = _lower_infeed_hold_down(current_y, board_top_y)
 		elif not is_instance_valid(board_under):
 			is_descended = false
 			station["descended"] = false
@@ -64,7 +68,7 @@ func update_infeed(delta: float, boards: Array[RigidBody3D]) -> void:
 			if is_instance_valid(node):
 				node.position.y = new_y + float(y_offsets[i])
 
-		var resting := is_instance_valid(board_under) and absf(new_y - target_y) <= 0.02 and target_y < raised_y - 0.01
+		var resting := is_instance_valid(board_under) and (touching or absf(new_y - target_y) <= 0.02) and target_y < raised_y - 0.01
 		station["down"] = resting
 
 		var spin_vel: float = station.get("spin_velocity", 0.0)
@@ -111,16 +115,19 @@ func update(delta: float, boards: Array[RigidBody3D]) -> void:
 		if is_instance_valid(board_under):
 			target_y = board_top_y + edger.HOLD_DOWN_ROLLER_RADIUS
 
+		var touching := is_instance_valid(board_under) and _roller_touching_board(board_under, nodes)
 		var current_y := (nodes[0] as Node3D).position.y
 		var speed := hold_down_lower_speed if target_y < current_y else hold_down_raise_speed
 		var new_y := move_toward(current_y, target_y, speed * delta)
+		if touching and target_y < current_y:
+			new_y = current_y
 
 		var y_delta := new_y - current_y
 		for node in nodes:
 			if is_instance_valid(node):
 				node.position.y += y_delta
 
-		var is_down := is_instance_valid(board_under) and absf(new_y - target_y) <= 0.02
+		var is_down := is_instance_valid(board_under) and (touching or absf(new_y - target_y) <= 0.02)
 		station["down"] = is_down
 
 		var spin_vel: float = station.get("spin_velocity", 0.0)
@@ -155,6 +162,15 @@ func apply_contacts(body: RigidBody3D, local_center: Vector3) -> void:
 		var down_axis := -edger.global_transform.basis.y.normalized()
 		body.apply_central_force(down_axis * hold_down_board_force)
 		edger.infeed_system.apply_feed_contact(body, local_center)
+
+
+func _roller_touching_board(board: RigidBody3D, nodes: Array) -> bool:
+	if not board.contact_monitor:
+		return false
+	for body in board.get_colliding_bodies():
+		if nodes.has(body):
+			return true
+	return false
 
 
 func _lower_infeed_hold_down(current_y: float, board_top_y: float) -> float:

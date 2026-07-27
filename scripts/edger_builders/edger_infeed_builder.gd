@@ -27,7 +27,7 @@ func build_infeed_chains() -> void:
 	for lane_i in range(chain_zs.size()):
 		var z := chain_zs[lane_i]
 		var lane_suffix := "_%02d" % (lane_i + 1)
-		factory._add_box("InfeedChainWearRail" + lane_suffix, Vector3((chain_start + chain_end) * 0.5, chain_top - 0.07, z), Vector3(chain_length, 0.045, SawmillEdger.CHAIN_LINK_WIDTH + 0.035), edger._mat_frame)
+		factory._add_box("InfeedChainWearRail" + lane_suffix, Vector3((chain_start + chain_end) * 0.5, chain_top - 0.07, z), Vector3(chain_length, 0.045, SawmillEdger.CHAIN_LINK_WIDTH + 0.035), edger._mat_frame, Vector3.ZERO, false)
 
 
 		var link_count := maxi(6, int(chain_length / SawmillEdger.CHAIN_LINK_LENGTH))
@@ -38,6 +38,24 @@ func build_infeed_chains() -> void:
 			if is_instance_valid(edger.infeed_system):
 				edger.infeed_system.chain_links.append(link)
 				edger.infeed_system.chain_bases.append(link.position)
+
+	# One continuous conveyor surface replaces per-link collision: its top sits
+	# flush with the link tops, and constant_linear_velocity (set by the infeed
+	# system) drags boards along by friction like a real feed chain.
+	var belt := StaticBody3D.new()
+	belt.name = "InfeedChainFeedBelt"
+	belt.position = Vector3((chain_start + chain_end) * 0.5, chain_top - 0.03, 0.0)
+	factory._current_part_parent().add_child(belt)
+	factory._adopt_new_node(belt)
+	var belt_shape := CollisionShape3D.new()
+	belt_shape.name = "CollisionShape3D"
+	var belt_box := BoxShape3D.new()
+	belt_box.size = Vector3(chain_length, 0.06, SawmillEdger.CHAIN_LINK_WIDTH)
+	belt_shape.shape = belt_box
+	belt.add_child(belt_shape)
+	factory._adopt_new_node(belt_shape)
+	if is_instance_valid(edger.infeed_system):
+		edger.infeed_system.feed_belt = belt
 	factory._pop_editor_group()
 
 	var centering_start: float = chain_start

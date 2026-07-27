@@ -56,10 +56,12 @@ func _add_infeed_chain_link(node_name: String, local_position: Vector3, index: i
 	var link_length := SawmillEdger.CHAIN_LINK_LENGTH * 0.72
 	var side_plate_width := SawmillEdger.CHAIN_LINK_WIDTH * 0.22
 	var side_plate_z := SawmillEdger.CHAIN_LINK_WIDTH * 0.5 - side_plate_width * 0.5
-	_add_box_child(link_root, "OuterPlate_L", Vector3(0.0, 0.0, -side_plate_z), Vector3(link_length, SawmillEdger.CHAIN_LINK_THICKNESS, side_plate_width), edger._mat_dark)
-	_add_box_child(link_root, "OuterPlate_R", Vector3(0.0, 0.0, side_plate_z), Vector3(link_length, SawmillEdger.CHAIN_LINK_THICKNESS, side_plate_width), edger._mat_dark)
-	_add_box_child(link_root, "CenterPad", Vector3(0.0, SawmillEdger.CHAIN_LINK_THICKNESS * 0.18, 0.0), Vector3(link_length * 0.54, SawmillEdger.CHAIN_LINK_THICKNESS * 0.55, SawmillEdger.CHAIN_LINK_WIDTH * 0.42), edger._mat_chain_grip)
-	_add_cylinder_child(link_root, "CrossPin", Vector3(0.0, -SawmillEdger.CHAIN_LINK_THICKNESS * 0.05, 0.0), 0.011, SawmillEdger.CHAIN_LINK_WIDTH + 0.02, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 10)
+	# Links are visual-only; the InfeedChainFeedBelt static body carries boards,
+	# so per-link collision would only add seams for board edges to snag on.
+	_add_box_child(link_root, "OuterPlate_L", Vector3(0.0, 0.0, -side_plate_z), Vector3(link_length, SawmillEdger.CHAIN_LINK_THICKNESS, side_plate_width), edger._mat_dark, false)
+	_add_box_child(link_root, "OuterPlate_R", Vector3(0.0, 0.0, side_plate_z), Vector3(link_length, SawmillEdger.CHAIN_LINK_THICKNESS, side_plate_width), edger._mat_dark, false)
+	_add_box_child(link_root, "CenterPad", Vector3(0.0, SawmillEdger.CHAIN_LINK_THICKNESS * 0.18, 0.0), Vector3(link_length * 0.54, SawmillEdger.CHAIN_LINK_THICKNESS * 0.55, SawmillEdger.CHAIN_LINK_WIDTH * 0.42), edger._mat_chain_grip, false)
+	_add_cylinder_child(link_root, "CrossPin", Vector3(0.0, -SawmillEdger.CHAIN_LINK_THICKNESS * 0.05, 0.0), 0.011, SawmillEdger.CHAIN_LINK_WIDTH + 0.02, edger._mat_hydraulic, Vector3(PI * 0.5, 0.0, 0.0), 10, false)
 
 	var tooth_mesh := _create_chain_grip_tooth_mesh()
 	var tooth_xs: Array[float] = [-link_length * 0.22, link_length * 0.22]
