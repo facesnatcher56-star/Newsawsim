@@ -202,9 +202,10 @@ func _build_floor_haul_out_conveyor() -> void:
 	var total_length: float = num_bins * bin_w + 1.0
 	var track_positions: Array[float] = _get_track_positions()
 
-	var haul_out := Node3D.new()
+	var haul_out := AnimatableBody3D.new()
 	haul_out.name = "FloorHaulOutConveyor"
 	haul_out.position = Vector3(total_length * 0.5 - 0.5, 0.20, 0.0)
+	haul_out.sync_to_physics = true
 
 	for t_idx in range(track_positions.size()):
 		var track_z: float = track_positions[t_idx]
@@ -224,9 +225,17 @@ func _build_floor_haul_out_conveyor() -> void:
 	var motor := _make_cylinder("FloorHaulOutMotor", 0.16, 0.45, Vector3(total_length * 0.5 + 0.3, 0.10, bin_d * 0.40), sorter._mat_green, Vector3(0.0, 0.0, PI * 0.5))
 	haul_out.add_child(motor)
 
-	sorter.add_child(haul_out)
+	# High friction PhysicsMaterial override for floor haul-out conveyor so boards are carried away along +X
+	var mat_floor := PhysicsMaterial.new()
+	mat_floor.friction = 1.0
+	mat_floor.rough = true
+	mat_floor.bounce = 0.0
+	haul_out.physics_material_override = mat_floor
 
-	_add_box_col(sorter, "FloorConveyorBedCol", Vector3(total_length, 0.14, bin_d - 0.3), Vector3(total_length * 0.5 - 0.5, 0.20, 0.0))
+	_add_box_col(haul_out, "FloorConveyorBedCol", Vector3(total_length, 0.14, bin_d - 0.3), Vector3(0.0, 0.0, 0.0))
+
+	sorter.add_child(haul_out)
+	sorter._floor_haulout_body = haul_out
 
 
 func _build_support_gantry() -> void:
@@ -255,6 +264,21 @@ func _build_support_gantry() -> void:
 
 			var base_plate := _make_box("BasePlate", Vector3(0.40, 0.03, 0.40), Vector3(x_pos, 0.015, side * half_d), sorter._mat_dark_steel)
 			sorter.add_child(base_plate)
+
+			if i < num_bins:
+				var bay_num: int = i + 1
+				var lbl := Label3D.new()
+				lbl.name = "BayNumberLabel_B%d_Z%d" % [bay_num, int(side)]
+				lbl.text = "%d" % bay_num
+				lbl.position = Vector3(x_pos - 0.11, 1.0, side * half_d)
+				lbl.rotation = Vector3(0.0, -PI * 0.5, 0.0)  # Facing -X (facing away from haulout chain)
+				lbl.pixel_size = 0.006
+				lbl.font_size = 72
+				lbl.modulate = Color(1.0, 1.0, 1.0)
+				lbl.outline_modulate = Color(0.0, 0.0, 0.0)
+				lbl.outline_size = 8
+				lbl.render_priority = 10
+				sorter.add_child(lbl)
 
 		var cb_pos := Vector3(x_pos, sorter_h - 0.11, 0.0)
 		var cb_size := Vector3(0.18, 0.22, bin_d + 0.3)
@@ -439,7 +463,7 @@ func _build_bin_hoppers() -> void:
 			var bot_flange := _make_box("WeldedFlangeBot_B%d_P%d" % [b, p], Vector3(0.14, 0.04, 0.14), Vector3(bay_x - 0.15, clear_height + 0.02, pz), sorter._mat_dark_steel)
 			hopper.add_child(bot_flange)
 
-		# Solid physics colliders with zero friction smooth PhysicsMaterial so board ends never hang up on walls
+		# Solid physics collider for bay divider wall boundary at X = bay_x - 0.15m
 		var mat_smooth_wall := PhysicsMaterial.new()
 		mat_smooth_wall.friction = 0.0
 		mat_smooth_wall.bounce = 0.0
@@ -449,13 +473,6 @@ func _build_bin_hoppers() -> void:
 		wall_static.physics_material_override = mat_smooth_wall
 		_add_box_col(wall_static, "DividerWallCol", Vector3(0.06, post_h + 0.2, bin_d - 0.3), Vector3(bay_x - 0.15, post_y, 0.0))
 		hopper.add_child(wall_static)
-
-		var end_stop_static := StaticBody3D.new()
-		end_stop_static.name = "RearEndStopsStatic_%d" % b
-		end_stop_static.physics_material_override = mat_smooth_wall
-		_add_box_col(end_stop_static, "StopColFront", Vector3(bin_w + 0.1, sorter_h, 0.15), Vector3(bay_center_x, sorter_h * 0.5, -bin_d * 0.48))
-		_add_box_col(end_stop_static, "StopColRear", Vector3(bin_w + 0.1, sorter_h, 0.15), Vector3(bay_center_x, sorter_h * 0.5, bin_d * 0.48))
-		hopper.add_child(end_stop_static)
 
 		# 3. Horizontal Bottom Tie Beam connecting all vertical posts across Z at Y = 1.34m (offset back at X = bay_x - 0.15m)
 		var tie_beam := _make_box("BottomDividerTieBeam_%d" % b, Vector3(0.10, 0.12, bin_d - 0.5), Vector3(bay_x - 0.15, clear_height - 0.06, 0.0), sorter._mat_green)

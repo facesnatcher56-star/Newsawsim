@@ -226,9 +226,16 @@ func _build_bay_gates_and_actuators() -> void:
 			var mat := StandardMaterial3D.new()
 			mat.albedo_color = color
 			mat.emission_enabled = true
-			mat.emission = color * 0.4
-			mat.emission_energy_multiplier = 0.5
+			mat.emission = color
+			mat.emission_energy_multiplier = 0.05
 			led_mesh.material_override = mat
+
+			var omni := OmniLight3D.new()
+			omni.name = "LEDLight_" + led_name
+			omni.light_color = color
+			omni.light_energy = 0.0
+			omni.omni_range = 2.0
+			led_mesh.add_child(omni)
 
 			light_stack.add_child(led_mesh)
 			leds[led_name] = led_mesh

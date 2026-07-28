@@ -14,7 +14,8 @@ material = SubResource("2")
 size = Vector3(4.958, 0.04, 0.35)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wood"]
-friction = 0.9
+friction = 1.0
+rough = true
 bounce = 0.0
 
 [node name="CutBoard" type="RigidBody3D" unique_id=1116529731]
@@ -23,8 +24,7 @@ mass = 50.0
 physics_material_override = SubResource("PhysicsMaterial_wood")
 gravity_scale = 4.5
 linear_damp = 0.4
-angular_damp = 2.0
-axis_lock_angular_x = true
+angular_damp = 1.0
 can_sleep = false
 script = ExtResource("1")
 

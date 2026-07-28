@@ -33,6 +33,8 @@ port_override=6550
 [physics]
 
 3d/physics_engine="Jolt Physics"
+3d/solver/solver_iterations=32
+3d/solver/contact_max_allowed_penetration=0.001
 
 [rendering]
 

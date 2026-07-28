@@ -19,9 +19,8 @@ func _ready() -> void:
 
 	# Thin lumber can move farther than its thickness in one physics step.
 	continuous_cd = true
-	axis_lock_angular_x = true
 	linear_damp = 0.4
-	angular_damp = 2.0
+	angular_damp = 1.0
 	mass = 50.0
 	gravity_scale = 4.5
 	can_sleep = false
@@ -30,10 +29,49 @@ func _ready() -> void:
 	contact_monitor = true
 	max_contacts_reported = 8
 
+	input_ray_pickable = true
+	input_event.connect(_on_board_input_event)
+
 	# Add to a group if needed
 	add_to_group("cut_boards")
 	if scene_file_path.ends_with("cut_slab.tscn") or name.to_lower().contains("slab"):
 		add_to_group("cut_slabs")
+
+
+func _on_board_input_event(_camera: Node, event: InputEvent, _pos: Vector3, _normal: Vector3, _shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		_inspect_board()
+
+
+func _inspect_board() -> void:
+	var gpos: Vector3 = global_position
+	var rot_deg := Vector3(rad_to_deg(rotation.x), rad_to_deg(rotation.y), rad_to_deg(rotation.z))
+	var vel := linear_velocity
+	var colliding := get_colliding_bodies()
+
+	print("\n==================================================")
+	print(" 🔍 [BOARD INSPECTION] Node: '%s'" % name)
+	print(" Global Position: (X: %.3f, Y: %.3f, Z: %.3f)" % [gpos.x, gpos.y, gpos.z])
+	print(" Rotation (Deg):  (X: %.1f°, Y: %.1f°, Z: %.1f°)" % [rot_deg.x, rot_deg.y, rot_deg.z])
+	print(" Linear Velocity: (X: %.2f, Y: %.2f, Z: %.2f) m/s" % [vel.x, vel.y, vel.z])
+	print(" Colliding Bodies (%d):" % colliding.size())
+	for body in colliding:
+		if is_instance_valid(body):
+			print("   - Touching: '%s' (%s) at pos %s" % [body.name, body.get_class(), _fmt_vec(body.global_position)])
+	print("==================================================\n")
+
+	var mi := get_node_or_null("MeshInstance3D") as MeshInstance3D
+	if is_instance_valid(mi):
+		var mat := StandardMaterial3D.new()
+		mat.albedo_color = Color(1.0, 0.85, 0.1)
+		mat.emission_enabled = true
+		mat.emission = Color(1.0, 0.85, 0.1)
+		mat.emission_energy_multiplier = 2.5
+		mi.material_override = mat
+		get_tree().create_timer(0.6).timeout.connect(func():
+			if is_instance_valid(mi):
+				mi.material_override = null
+		)
 	
 	# Auto-destroy after lifetime to keep scene clean (disabled for now)
 	# get_tree().create_timer(lifetime).timeout.connect(queue_free)

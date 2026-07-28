@@ -86,6 +86,8 @@ var _bay_discharging: Array[bool] = []
 var _discharge_timers: Array[float] = []
 var _photo_eye_rays: Array[RayCast3D] = []
 var _photo_eye_timers: Array[float] = []
+var _floor_haulout_body: AnimatableBody3D = null
+var _active_unloading_bay: int = -1
 
 # MultiMesh drag chain lug system & physical pusher body
 var _multimesh_lugs: MultiMeshInstance3D = null
@@ -162,6 +164,8 @@ func _do_rebuild() -> void:
 	_discharge_timers.clear()
 	_photo_eye_rays.clear()
 	_photo_eye_timers.clear()
+	_active_unloading_bay = -1
+	_floor_haulout_body = null
 
 	var top_cradle_y: float = sorter_height - 0.70
 
@@ -186,6 +190,10 @@ func _do_rebuild() -> void:
 	# Create Overhead Drag Chain MultiMesh Lugs & Physical Lug Pushers
 	_build_overhead_chain_lugs()
 
+	# All active bays in normal operation default to Green status LED
+	for b in range(num_bins):
+		_set_bay_status_led(b, "Green")
+
 
 func _setup_standalone_camera() -> void:
 	if Engine.is_editor_hint():
@@ -199,6 +207,22 @@ func _setup_standalone_camera() -> void:
 		test_cam.current = is_standalone
 	if is_instance_valid(test_light):
 		test_light.visible = is_standalone
+		test_light.light_energy = 0.35
+
+	# Dark industrial night environment so status LEDs glow vividly in the dark
+	var env_node := get_node_or_null("TestEnvironment") as WorldEnvironment
+	if not is_instance_valid(env_node):
+		env_node = WorldEnvironment.new()
+		env_node.name = "TestEnvironment"
+		add_child(env_node)
+
+	var env := Environment.new()
+	env.background_mode = Environment.BG_COLOR
+	env.background_color = Color(0.02, 0.03, 0.06)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(0.08, 0.10, 0.14)
+	env.ambient_light_energy = 0.80
+	env_node.environment = env
 
 
 func _init_materials() -> void:
@@ -382,6 +406,26 @@ func spawn_test_board() -> RigidBody3D:
 	return board_inst
 
 
+func _find_available_bay(desired_bay: int) -> int:
+	if desired_bay >= 0 and desired_bay < num_bins:
+		if _bay_board_counts[desired_bay] < max_boards_per_bay and not _bay_discharging[desired_bay]:
+			return desired_bay
+
+	for offset in range(num_bins):
+		var test_b: int = (desired_bay + offset) % num_bins
+		if _bay_board_counts[test_b] < max_boards_per_bay and not _bay_discharging[test_b]:
+			return test_b
+
+	return -1
+
+
+func _are_all_bays_full() -> bool:
+	for b in range(num_bins):
+		if _bay_board_counts[b] < max_boards_per_bay and not _bay_discharging[b]:
+			return false
+	return true
+
+
 func _on_infeed_body_entered(body: Node3D) -> void:
 	if Engine.is_editor_hint():
 		return
@@ -392,9 +436,9 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 		if data.board == body:
 			return
 
-	var target_b: int = 0
+	var raw_target: int = 0
 	if random_bay_sorting:
-		target_b = randi() % num_bins
+		raw_target = randi() % num_bins
 	else:
 		var board_length: float = 4.958
 		var aabb_size := Vector3.ZERO
@@ -407,13 +451,18 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 			board_length = max_dim
 
 		if board_length < 3.0:
-			target_b = 0
+			raw_target = 0
 		elif board_length < 4.0:
-			target_b = min(1, num_bins - 1)
+			raw_target = min(1, num_bins - 1)
 		elif board_length < 4.8:
-			target_b = min(2, num_bins - 1)
+			raw_target = min(2, num_bins - 1)
 		else:
-			target_b = min(3, num_bins - 1)
+			raw_target = min(3, num_bins - 1)
+
+	var target_b: int = _find_available_bay(raw_target)
+	if target_b < 0:
+		# All bays are full: do not trigger gate, let board wait at infeed
+		return
 
 	var tracking := BoardTrackingData.new()
 	tracking.board = body as RigidBody3D
@@ -426,13 +475,16 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
+	var all_full: bool = _are_all_bays_full()
+	var cur_speed: float = 0.0 if all_full else conveyor_speed
+
 	# Advance MultiMesh & physical lug pushers forward along +X
 	var total_length: float = num_bins * bin_width + 1.0
-	_chain_offset = fmod(_chain_offset + conveyor_speed * delta, total_length)
+	_chain_offset = fmod(_chain_offset + cur_speed * delta, total_length)
 	_update_lug_multimesh()
 
-	# Lug-Synchronized Continuous Infeed Board Spawner
-	if continuous_infeed_spawner:
+	# Lug-Synchronized Continuous Infeed Board Spawner (Paused when all bays are full)
+	if continuous_infeed_spawner and not all_full:
 		_spawn_cooldown -= delta
 		var lug_spacing: float = 1.2
 		var lug_phase: float = fmod(_chain_offset, lug_spacing)
@@ -454,14 +506,15 @@ func _physics_process(delta: float) -> void:
 
 		# Propel board along sorter deck level
 		if local_pos.y >= sorter_height - 0.6:
-			tracking.board.linear_velocity.x = conveyor_speed
+			tracking.board.linear_velocity.x = cur_speed
 
-		# Trigger gate when board approaches target bin bay (Tipples rotate UPWARDS to -0.185 rad)
+		# Trigger gate when board approaches target bin bay (only if target bay is not full)
 		if not tracking.gate_triggered and local_pos.x >= target_x - 0.65 and local_pos.x <= target_x + 0.35:
-			_target_gate_angles[tracking.target_bin] = -0.185
-			_gate_hold_timers[tracking.target_bin] = 1.6
-			_set_bay_status_led(tracking.target_bin, "Yellow")
-			tracking.gate_triggered = true
+			if _bay_board_counts[tracking.target_bin] < max_boards_per_bay and not _bay_discharging[tracking.target_bin]:
+				_target_gate_angles[tracking.target_bin] = -0.185
+				_gate_hold_timers[tracking.target_bin] = 1.6
+				_set_bay_status_led(tracking.target_bin, "Yellow")
+				tracking.gate_triggered = true
 
 		# Board drops down into bin hopper below deck level
 		if local_pos.y < sorter_height - 0.8:
@@ -475,7 +528,7 @@ func _physics_process(delta: float) -> void:
 				tracking.active = false
 		i -= 1
 
-	# Actuate pneumatic drop gates and piston rods (Upward angle = -0.185 rad)
+	# Actuate pneumatic drop gates and piston rods
 	for b in range(num_bins):
 		if b >= _gate_nodes.size():
 			continue
@@ -499,9 +552,12 @@ func _physics_process(delta: float) -> void:
 				_target_gate_angles[b] = 0.0
 				_set_bay_status_led(b, "Green")
 
-	# Photo Eye Optical Sensing, Indexing Motion, and 10-Board Discharge Lifecycle
+	# Photo Eye Optical Sensing, Indexing Motion, and Interlocked 10-Board Discharge Lifecycle
 	var top_cradle_y: float = sorter_height - 0.70
-	var floor_cradle_y: float = 0.30
+	var staging_cradle_y: float = 1.55  # Above 1.34m divider posts so boards CANNOT slide under posts!
+	var floor_cradle_y: float = 0.12    # Dips cradle forks below floor chain bed (0.27m) to transfer lumber pack onto floor chains!
+
+	var any_bay_unloading_on_floor: bool = false
 
 	for b in range(num_bins):
 		if b >= _cradle_nodes.size():
@@ -515,17 +571,29 @@ func _physics_process(delta: float) -> void:
 
 		if is_full or _bay_discharging[b]:
 			_bay_discharging[b] = true
-			_cradle_target_heights[b] = floor_cradle_y
-			_set_bay_status_led(b, "Red")
 
-			if is_equal_approx(_cradle_heights[b], floor_cradle_y):
-				_discharge_timers[b] += delta
-				if _discharge_timers[b] >= 2.5:
-					_bay_board_counts[b] = 0
-					_bay_discharging[b] = false
-					_discharge_timers[b] = 0.0
-					_cradle_target_heights[b] = top_cradle_y
-					_set_bay_status_led(b, "Green")
+			# Single-Bay Interlock Queue: Only 1 bay can unload onto floor chains at a time
+			if _active_unloading_bay == -1 or _active_unloading_bay == b:
+				_active_unloading_bay = b
+				any_bay_unloading_on_floor = true
+				_cradle_target_heights[b] = floor_cradle_y
+				_set_bay_status_led(b, "Red")
+
+				# Once cradle reaches floor elevation, wait until ALL boards have cleared the cradle forks
+				if is_equal_approx(_cradle_heights[b], floor_cradle_y):
+					_discharge_timers[b] += delta
+					var forks_clear: bool = _are_forks_clear_of_boards(b)
+					if _discharge_timers[b] >= 2.0 and forks_clear:
+						_bay_board_counts[b] = 0
+						_bay_discharging[b] = false
+						_discharge_timers[b] = 0.0
+						_active_unloading_bay = -1  # Release interlock for next bay
+						_cradle_target_heights[b] = top_cradle_y
+						_set_bay_status_led(b, "Green")
+			else:
+				# Another bay is unloading: STAGE AND WAIT at Y = 1.55m (above clear_height = 1.34m)
+				_cradle_target_heights[b] = staging_cradle_y
+				_set_bay_status_led(b, "Yellow")
 
 		else:
 			# Photo Eye Raycast sensing (requires 1.5s continuous obstruction before indexing down)
@@ -549,6 +617,25 @@ func _physics_process(delta: float) -> void:
 			_cradle_heights[b] = move_toward(_cradle_heights[b], _cradle_target_heights[b], indexing_speed * delta)
 			cradle.position.y = _cradle_heights[b]
 
+	# Actuate Floor Haul-Out Conveyor physical velocity along +X when a bay is unloading on floor chains
+	if is_instance_valid(_floor_haulout_body):
+		if any_bay_unloading_on_floor:
+			_floor_haulout_body.constant_linear_velocity = Vector3(conveyor_speed * 1.2, 0.0, 0.0)
+		else:
+			_floor_haulout_body.constant_linear_velocity = Vector3.ZERO
+
+
+func _are_forks_clear_of_boards(bay_idx: int) -> bool:
+	var min_x: float = bay_idx * bin_width - 0.10
+	var max_x: float = (bay_idx + 1) * bin_width + 0.10
+	var boards := get_tree().get_nodes_in_group("cut_boards")
+	for board_node in boards:
+		if is_instance_valid(board_node) and board_node is RigidBody3D:
+			var bpos: Vector3 = to_local((board_node as RigidBody3D).global_position)
+			if bpos.x >= min_x and bpos.x <= max_x and bpos.y < 0.75:
+				return false
+	return true
+
 
 func _set_bay_status_led(bay_index: int, state: String) -> void:
 	if bay_index < 0 or bay_index >= _status_led_nodes.size():
@@ -560,8 +647,18 @@ func _set_bay_status_led(bay_index: int, state: String) -> void:
 		if not is_instance_valid(mesh) or not (mesh.material_override is StandardMaterial3D):
 			continue
 		var mat: StandardMaterial3D = mesh.material_override
+		var omni: OmniLight3D = mesh.get_node_or_null("LEDLight_" + led_name) as OmniLight3D
 
-		if (state == "Yellow" and led_name == "YellowLED") or (state == "Green" and led_name == "GreenLED") or (state == "Red" and led_name == "RedLED"):
-			mat.emission_energy_multiplier = 2.5
+		var is_active: bool = (state == "Yellow" and led_name == "YellowLED") or \
+		                      (state == "Green" and led_name == "GreenLED") or \
+		                      (state == "Red" and led_name == "RedLED")
+
+		if is_active:
+			mat.emission_enabled = true
+			mat.emission_energy_multiplier = 16.0
+			if is_instance_valid(omni):
+				omni.light_energy = 4.0
 		else:
-			mat.emission_energy_multiplier = 0.3
+			mat.emission_energy_multiplier = 0.05
+			if is_instance_valid(omni):
+				omni.light_energy = 0.0

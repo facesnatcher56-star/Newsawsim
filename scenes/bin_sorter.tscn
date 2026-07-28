@@ -3,6 +3,9 @@
 [ext_resource type="Script" uid="uid://c8tlcejknxxrd" path="res://scripts/bin_sorter.gd" id="1_bin_sorter"]
 [ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://scripts/free_fly_camera.gd" id="2_free_cam"]
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_c8t47"]
+friction = 0.0
+
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.38, 0.55, 0.78, 1)
 sky_horizon_color = Color(0.64, 0.72, 0.82, 1)
@@ -16,11 +19,12 @@ sky = SubResource("Sky_env")
 ambient_light_color = Color(0.6, 0.6, 0.6, 1)
 
 [node name="BinSorter" type="StaticBody3D" unique_id=754893477]
-constant_linear_velocity = Vector3(0.5, 0, 0)
+physics_material_override = SubResource("PhysicsMaterial_c8t47")
+constant_linear_velocity = Vector3(1, 0, 0)
 script = ExtResource("1_bin_sorter")
 num_bins = 9
 continuous_infeed_spawner = true
-conveyor_speed = 0.5
+conveyor_speed = 1.0
 gate_speed = 4.0
 
 [node name="TestCamera" type="Camera3D" parent="." unique_id=2064592850]
