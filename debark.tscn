@@ -288,6 +288,9 @@ size = Vector3(2.4, 0.8, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_js36l"]
 size = Vector3(2.198, 0.942, 2.7)
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_miayt"]
+friction = 0.0
+
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
@@ -298,7 +301,7 @@ transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602
 shadow_enabled = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
-transform = Transform3D(0.22108892, 0.32153153, -0.9207264, 0, 0.9440892, 0.32969016, 0.9752537, -0.07289083, 0.20872764, 10.998216, 4.4892836, 18.2681)
+transform = Transform3D(0.22108892, 0.32153153, -0.9207264, 0, 0.9440892, 0.32969016, 0.9752537, -0.07289083, 0.20872764, 47.557087, 2.4041243, 3.8661594)
 current = true
 script = ExtResource("1_cam")
 
@@ -1220,7 +1223,8 @@ retraction_delay = 1.5
 cushion_pin_speed = 0.61
 
 [node name="BinSorter" parent="." unique_id=754893477 instance=ExtResource("15_0cce1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.847195, -1.2882519, 17.225597)
+transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, 53.346573, -1.2882519, 4.732377)
+physics_material_override = SubResource("PhysicsMaterial_miayt")
 
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]

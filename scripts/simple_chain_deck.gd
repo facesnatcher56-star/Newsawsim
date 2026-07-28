@@ -643,6 +643,9 @@ func is_blocked_at_top() -> bool:
 func _on_deck_area_body_entered(body: Node3D) -> void:
 	if _is_log_or_board(body) and body is RigidBody3D:
 		var l_node: RigidBody3D = body as RigidBody3D
+		var local_pos := to_local(l_node.global_position)
+		if absf(local_pos.x) > 3.5 or absf(local_pos.z) > 3.5 or absf(local_pos.y) > 2.0:
+			return
 		_on_deck[l_node.get_instance_id()] = l_node
 		if running:
 			l_node.freeze = false

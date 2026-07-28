@@ -19,7 +19,7 @@ var current_cut_face: int = 0
 
 const CUT_DEPTH_PER_PASS: float = 0.05
 const LOG_CORE_LENGTH: float = 4.922
-const LOG_PRODUCT_LENGTH: float = 4.958
+const LOG_PRODUCT_LENGTH: float = 4.877
 const CUT_BOX_LENGTH_CLEARANCE: float = 0.24
 const CUT_PRODUCT_FORWARD_SPEED: float = 0.35
 const CUT_PRODUCT_DROP_SPEED: float = -0.22

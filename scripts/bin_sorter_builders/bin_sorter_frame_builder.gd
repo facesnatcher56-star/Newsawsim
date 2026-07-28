@@ -23,6 +23,7 @@ func build_all() -> void:
 	_build_bin_hoppers()
 	_build_floor_haul_out_conveyor()
 	_build_drive_motors()
+	_build_building_lights()
 
 
 func _get_track_positions() -> Array[float]:
@@ -232,7 +233,7 @@ func _build_floor_haul_out_conveyor() -> void:
 	mat_floor.bounce = 0.0
 	haul_out.physics_material_override = mat_floor
 
-	_add_box_col(haul_out, "FloorConveyorBedCol", Vector3(total_length, 0.14, bin_d - 0.3), Vector3(0.0, 0.0, 0.0))
+	_add_box_col(haul_out, "FloorConveyorBedCol", Vector3(total_length, 0.16, bin_d - 0.3), Vector3(0.0, 0.01, 0.0))
 
 	sorter.add_child(haul_out)
 	sorter._floor_haulout_body = haul_out
@@ -362,11 +363,34 @@ func _build_overhead_track_channels() -> void:
 	var total_length: float = num_bins * bin_w + 1.0
 	var track_positions: Array[float] = _get_track_positions()
 
-	var table_pos := Vector3(-0.20, sorter_h + 0.10, 0.0)
-	var table_size := Vector3(0.60, 0.04, bin_d - 0.3)
-	var infeed_table := _make_box("InfeedTransferTable", table_size, table_pos, sorter._mat_dark_steel)
-	sorter.add_child(infeed_table)
-	_add_box_col(sorter, "InfeedTableCol", table_size, table_pos)
+	# Slotted Infeed Transfer Table with open chain slot channels for lug clearance
+	var table_pos_x: float = -0.20
+	var table_size_x: float = 0.60
+	var table_size_y: float = 0.04
+	var table_y: float = sorter_h + 0.10
+
+	var visual_table := _make_box("InfeedTransferTable", Vector3(table_size_x, table_size_y, bin_d - 0.3), Vector3(table_pos_x, table_y, 0.0), sorter._mat_dark_steel)
+	sorter.add_child(visual_table)
+
+	var z_min: float = - (bin_d - 0.3) * 0.5
+	var z_max: float = (bin_d - 0.3) * 0.5
+	var slot_half_w: float = 0.08
+	var current_z: float = z_min
+
+	for t_idx in range(track_positions.size()):
+		var track_z: float = track_positions[t_idx]
+		var seg_start: float = current_z
+		var seg_end: float = track_z - slot_half_w
+		if seg_end > seg_start + 0.02:
+			var seg_len: float = seg_end - seg_start
+			var seg_z: float = (seg_start + seg_end) * 0.5
+			_add_box_col(sorter, "InfeedTableSegCol_%d" % t_idx, Vector3(table_size_x, table_size_y, seg_len), Vector3(table_pos_x, table_y, seg_z))
+		current_z = track_z + slot_half_w
+
+	if z_max > current_z + 0.02:
+		var seg_len: float = z_max - current_z
+		var seg_z: float = (current_z + z_max) * 0.5
+		_add_box_col(sorter, "InfeedTableSegCol_End", Vector3(table_size_x, table_size_y, seg_len), Vector3(table_pos_x, table_y, seg_z))
 
 	var channel_start_x: float = -0.35
 	var channel_end_x: float = total_length - 0.65
@@ -493,20 +517,7 @@ func _build_bin_hoppers() -> void:
 		var beam_line := _make_box("PhotoEyeBeam_B%d" % b, Vector3(bin_w + 0.10, 0.012, 0.012), Vector3(bay_x + (bin_w - 0.20) * 0.5, eye_y, 0.0), sorter._mat_red)
 		hopper.add_child(beam_line)
 
-		# 4. Bin Pocket Base (Floor Level)
-		var bin_pocket := StaticBody3D.new()
-		bin_pocket.name = "OpenBinPocketFloor"
-		bin_pocket.position = Vector3(bay_center_x, 0.4, 0.0)
-
-		var col := CollisionShape3D.new()
-		col.name = "FloorCol"
-		var shape := BoxShape3D.new()
-		shape.size = Vector3(bin_w - 0.12, 0.10, bin_d - 0.4)
-		col.shape = shape
-		bin_pocket.add_child(col)
-		hopper.add_child(bin_pocket)
-
-		# 5. Option A Indexing Sling Cradle Assembly (AnimatableBody3D starting at Top Elevation Y = sorter_h - 0.70m)
+		# 4. Option A Indexing Sling Cradle Assembly (AnimatableBody3D starting at Top Elevation Y = sorter_h - 0.70m)
 		var top_cradle_y: float = sorter_h - 0.70
 		var cradle_group := AnimatableBody3D.new()
 		cradle_group.name = "OptionACradle_B%d" % b
@@ -539,11 +550,11 @@ func _build_bin_hoppers() -> void:
 			var hoist_cable := _make_cylinder("GantryHoistCable", 0.015, sorter_h * 0.8, Vector3(bay_x, sorter_h * 0.40, side_z), sorter._mat_dark_steel)
 			hopper.add_child(hoist_cable)
 
-		# 4 Slender 100% Procedural Smooth Curved J-Cradle Forks per bin (spaced evenly along depth Z)
+		# 7 Slender 100% Procedural Smooth Curved J-Cradle Forks per bin (spaced densely along Z to support even 6ft short boards)
 		var arm_len: float = bin_w - 0.15
-		var fork_count: int = 4
+		var fork_count: int = 7
 		for fk_idx in range(fork_count):
-			var fk_z: float = - (bin_d * 0.38) + fk_idx * (bin_d * 0.76 / (fork_count - 1))
+			var fk_z: float = - (bin_d * 0.42) + fk_idx * (bin_d * 0.84 / (fork_count - 1))
 			var fork_mesh := _make_smooth_curved_fork_mesh("SmoothTaperedLFork_%d" % fk_idx, arm_len, Vector3(-bin_w * 0.5, 0.0, fk_z), sorter._mat_orange)
 			cradle_group.add_child(fork_mesh)
 
@@ -653,6 +664,7 @@ func _add_curved_fork_colliders(cradle_group: AnimatableBody3D, arm_len: float, 
 	for s in range(num_segs):
 		var t0: float = float(s) / float(num_segs)
 		var t1: float = float(s + 1) / float(num_segs)
+		var t_mid: float = (t0 + t1) * 0.5
 
 		var inv0: float = 1.0 - t0
 		var pt0 := inv0 * inv0 * inv0 * P0 + 3.0 * inv0 * inv0 * t0 * P1 + 3.0 * inv0 * (t0 * t0) * P2 + (t0 * t0 * t0) * P3
@@ -664,15 +676,69 @@ func _add_curved_fork_colliders(cradle_group: AnimatableBody3D, arm_len: float, 
 		var seg_dir: Vector2 = pt1 - pt0
 		var seg_len: float = seg_dir.length()
 		var angle: float = atan2(seg_dir.y, seg_dir.x)
+		var h: float = lerp(0.14, 0.08, t_mid)
 
-		var col_pos := Vector3(-sorter.bin_width * 0.5 + seg_center.x, seg_center.y - 0.02, fk_z)
+		var col_pos := Vector3(-sorter.bin_width * 0.5 + seg_center.x, seg_center.y, fk_z)
 		var col_rot := Vector3(0.0, 0.0, angle)
 
 		var col := CollisionShape3D.new()
 		col.name = "CurvedForkSegCol_%d" % s
 		var box := BoxShape3D.new()
-		box.size = Vector3(seg_len + 0.02, 0.05, 0.16)
+		box.size = Vector3(seg_len + 0.01, h, 0.14)
 		col.shape = box
 		col.position = col_pos
 		col.rotation = col_rot
 		cradle_group.add_child(col)
+
+
+func _build_building_lights() -> void:
+	var num_bins: int = sorter.num_bins
+	var bin_w: float = sorter.bin_width
+	var bin_d: float = sorter.bin_depth
+	var sorter_h: float = sorter.sorter_height
+
+	var lights_group := Node3D.new()
+	lights_group.name = "IndustrialHighBayLights"
+
+	var mat_fixture := StandardMaterial3D.new()
+	mat_fixture.albedo_color = Color(0.15, 0.16, 0.18)
+	mat_fixture.metallic = 0.80
+	mat_fixture.roughness = 0.30
+
+	var mat_bulb := StandardMaterial3D.new()
+	mat_bulb.albedo_color = Color(0.98, 0.95, 0.85)
+	mat_bulb.emission_enabled = true
+	mat_bulb.emission = Color(0.98, 0.95, 0.85)
+	mat_bulb.emission_energy_multiplier = 4.0
+
+	var step_b: int = 3
+	for b in range(0, num_bins, step_b):
+		var lx: float = (b + 0.5) * bin_w
+		var ly: float = sorter_h + 0.75
+
+		for side in [-0.25, 0.25]:
+			var lz: float = side * bin_d
+			var fixture := Node3D.new()
+			fixture.name = "HighBayFixture_B%d_S%.1f" % [b, side]
+			fixture.position = Vector3(lx, ly, lz)
+
+			var housing := _make_cylinder("ReflectorBell", 0.18, 0.16, Vector3.ZERO, mat_fixture)
+			fixture.add_child(housing)
+
+			var bulb := _make_cylinder("BulbLens", 0.12, 0.04, Vector3(0.0, -0.07, 0.0), mat_bulb)
+			fixture.add_child(bulb)
+
+			var spot := SpotLight3D.new()
+			spot.name = "HighBaySpotLight"
+			spot.position = Vector3(0.0, -0.09, 0.0)
+			spot.rotation = Vector3(-PI * 0.5, 0.0, 0.0)
+			spot.spot_range = 7.5
+			spot.spot_angle = 55.0
+			spot.light_color = Color(0.98, 0.94, 0.86)
+			spot.light_energy = 1.4
+			spot.light_specular = 0.2
+			fixture.add_child(spot)
+
+			lights_group.add_child(fixture)
+
+	sorter.add_child(lights_group)

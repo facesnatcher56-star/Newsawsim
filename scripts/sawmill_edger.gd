@@ -221,6 +221,9 @@ func _real_cut_boards() -> Array[RigidBody3D]:
 			continue
 		if body.freeze:
 			continue
+		var local_center := to_local(body.global_position)
+		if absf(local_center.z) > 4.5 or absf(local_center.y - working_height) > 1.2 or absf(local_center.x) > 6.0:
+			continue
 		boards.append(body)
 	return boards
 

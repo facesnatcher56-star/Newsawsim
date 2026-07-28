@@ -13,6 +13,7 @@ extends StaticBody3D
 const BinSorterFrameBuilder := preload("res://scripts/bin_sorter_builders/bin_sorter_frame_builder.gd")
 const BinSorterGateBuilder := preload("res://scripts/bin_sorter_builders/bin_sorter_gate_builder.gd")
 const CutBoardScene := preload("res://scenes/cut_board.tscn")
+const LumberLibrary := preload("res://scripts/lumber_library.gd")
 
 ## Number of sorting bays (2 to 50).
 @export_range(2, 50, 1) var num_bins: int = 4:
@@ -207,9 +208,10 @@ func _setup_standalone_camera() -> void:
 		test_cam.current = is_standalone
 	if is_instance_valid(test_light):
 		test_light.visible = is_standalone
-		test_light.light_energy = 0.35
+		test_light.light_color = Color(0.98, 0.95, 0.88)
+		test_light.light_energy = 1.1
 
-	# Dark industrial night environment so status LEDs glow vividly in the dark
+	# Industrial sawmill building interior environment
 	var env_node := get_node_or_null("TestEnvironment") as WorldEnvironment
 	if not is_instance_valid(env_node):
 		env_node = WorldEnvironment.new()
@@ -218,10 +220,10 @@ func _setup_standalone_camera() -> void:
 
 	var env := Environment.new()
 	env.background_mode = Environment.BG_COLOR
-	env.background_color = Color(0.02, 0.03, 0.06)
+	env.background_color = Color(0.12, 0.14, 0.18)
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color(0.08, 0.10, 0.14)
-	env.ambient_light_energy = 0.80
+	env.ambient_light_color = Color(0.35, 0.38, 0.42)
+	env.ambient_light_energy = 1.0
 	env_node.environment = env
 
 
@@ -330,7 +332,7 @@ func _build_overhead_chain_lugs() -> void:
 	mm.use_custom_data = false
 
 	var lug_mesh := BoxMesh.new()
-	lug_mesh.size = Vector3(0.08, 0.38, 0.08)
+	lug_mesh.size = Vector3(0.08, 0.35, 0.08)
 	mm.mesh = lug_mesh
 	mm.instance_count = total_instances
 	_multimesh_lugs.multimesh = mm
@@ -343,7 +345,7 @@ func _build_overhead_chain_lugs() -> void:
 	_lug_pusher_body.constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
 
 	var shape_box := BoxShape3D.new()
-	shape_box.size = Vector3(0.08, 0.38, 0.08)
+	shape_box.size = Vector3(0.08, 0.35, 0.08)
 
 	var col_idx: int = 0
 	for t_idx in range(_track_positions.size()):
@@ -353,7 +355,7 @@ func _build_overhead_chain_lugs() -> void:
 			var col := CollisionShape3D.new()
 			col.name = "LugCol_%d" % col_idx
 			col.shape = shape_box
-			col.position = Vector3(base_x, sorter_height + 0.28, track_z)
+			col.position = Vector3(base_x, sorter_height + 0.20, track_z)
 			_lug_pusher_body.add_child(col)
 			col_idx += 1
 
@@ -386,23 +388,29 @@ func _update_lug_multimesh() -> void:
 			var x_pos: float = fmod(raw_x + 0.5, total_length) - 0.5
 			if x_pos < -0.5:
 				x_pos += total_length
-			var xform := Transform3D(Basis(), Vector3(x_pos, sorter_height + 0.28, track_z))
+			var xform := Transform3D(Basis(), Vector3(x_pos, sorter_height + 0.20, track_z))
 			mm.set_instance_transform(idx, xform)
 
 			if idx < pusher_cols.size() and pusher_cols[idx] is CollisionShape3D:
-				(pusher_cols[idx] as CollisionShape3D).position = Vector3(x_pos, sorter_height + 0.28, track_z)
-
+				(pusher_cols[idx] as CollisionShape3D).transform = xform
 			idx += 1
 
 
 func spawn_test_board() -> RigidBody3D:
-	if CutBoardScene == null:
-		return null
-	var board_inst: RigidBody3D = CutBoardScene.instantiate() as RigidBody3D
-	board_inst.name = "TestCutBoard_4.958m"
-	board_inst.position = Vector3(-0.3, sorter_height + 0.14, 0.0)
-	board_inst.rotation = Vector3(0.0, PI * 0.5, 0.0)
-	add_child(board_inst)
+	var rand_size: String = LumberLibrary.NOMINAL_SIZES[randi() % LumberLibrary.NOMINAL_SIZES.size()]
+	var rand_len: int = LumberLibrary.EVEN_LENGTHS_FEET[randi() % LumberLibrary.EVEN_LENGTHS_FEET.size()]
+	var board_inst: RigidBody3D = LumberLibrary.create_board(rand_size, rand_len)
+	if board_inst != null:
+		# Catwalk side even-ending zero fence line alignment
+		var z_front: float = -bin_depth * 0.42
+		var board_z: float = z_front + (board_inst.product_length * 0.5)
+		var board_h: float = 0.038
+		if board_inst.has_method("get") and board_inst.get("board_thickness") != null:
+			board_h = float(board_inst.get("board_thickness"))
+		var spawn_y: float = sorter_height + 0.12 + (board_h * 0.5) + 0.005
+		board_inst.position = Vector3(-0.3, spawn_y, board_z)
+		board_inst.rotation = Vector3(0.0, PI * 0.5, 0.0)
+		add_child(board_inst)
 	return board_inst
 
 
@@ -426,6 +434,33 @@ func _are_all_bays_full() -> bool:
 	return true
 
 
+func _get_board_sorting_grade(body: Node3D) -> int:
+	var nominal: String = "2x8"
+	var len_ft: int = 16
+
+	if body.has_method("get"):
+		if body.get("nominal_size") != null:
+			nominal = str(body.get("nominal_size"))
+		if body.get("length_feet") != null:
+			len_ft = int(body.get("length_feet"))
+		elif body.get("product_length") != null:
+			var len_m: float = float(body.get("product_length"))
+			len_ft = int(round(len_m / 0.3048))
+
+	var profiles: Array[String] = [
+		"1x4", "1x6", "1x8", "1x10", "1x12",
+		"2x4", "2x6", "2x8", "2x10", "2x12"
+	]
+	var profile_idx: int = profiles.find(nominal)
+	if profile_idx == -1:
+		profile_idx = 7
+
+	# Length Grouping: Group 0 = <= 12ft (6ft, 8ft, 10ft, 12ft), Group 1 = 14-16ft (14ft, 16ft)
+	var is_long: bool = (len_ft > 12)
+	var grade: int = profile_idx + (10 if is_long else 0)
+	return grade
+
+
 func _on_infeed_body_entered(body: Node3D) -> void:
 	if Engine.is_editor_hint():
 		return
@@ -440,24 +475,8 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 	if random_bay_sorting:
 		raw_target = randi() % num_bins
 	else:
-		var board_length: float = 4.958
-		var aabb_size := Vector3.ZERO
-		for child in body.get_children():
-			if child is CollisionShape3D and is_instance_valid(child.shape):
-				if child.shape is BoxShape3D:
-					aabb_size = child.shape.size
-		var max_dim: float = maxf(aabb_size.x, aabb_size.z)
-		if max_dim > 0.1:
-			board_length = max_dim
-
-		if board_length < 3.0:
-			raw_target = 0
-		elif board_length < 4.0:
-			raw_target = min(1, num_bins - 1)
-		elif board_length < 4.8:
-			raw_target = min(2, num_bins - 1)
-		else:
-			raw_target = min(3, num_bins - 1)
+		var grade: int = _get_board_sorting_grade(body)
+		raw_target = grade % num_bins
 
 	var target_b: int = _find_available_bay(raw_target)
 	if target_b < 0:
@@ -509,7 +528,8 @@ func _physics_process(delta: float) -> void:
 			tracking.board.linear_velocity.x = cur_speed
 
 		# Trigger gate when board approaches target bin bay (only if target bay is not full)
-		if not tracking.gate_triggered and local_pos.x >= target_x - 0.65 and local_pos.x <= target_x + 0.35:
+		var bay_x_start: float = tracking.target_bin * bin_width
+		if not tracking.gate_triggered and local_pos.x >= bay_x_start - 0.15 and local_pos.x <= bay_x_start + bin_width * 0.6:
 			if _bay_board_counts[tracking.target_bin] < max_boards_per_bay and not _bay_discharging[tracking.target_bin]:
 				_target_gate_angles[tracking.target_bin] = -0.185
 				_gate_hold_timers[tracking.target_bin] = 1.6
@@ -550,7 +570,10 @@ func _physics_process(delta: float) -> void:
 			_gate_hold_timers[b] -= delta
 			if _gate_hold_timers[b] <= 0.0:
 				_target_gate_angles[b] = 0.0
-				_set_bay_status_led(b, "Green")
+				if _bay_board_counts[b] >= max_boards_per_bay or _bay_discharging[b]:
+					_set_bay_status_led(b, "Red")
+				else:
+					_set_bay_status_led(b, "Green")
 
 	# Photo Eye Optical Sensing, Indexing Motion, and Interlocked 10-Board Discharge Lifecycle
 	var top_cradle_y: float = sorter_height - 0.70
@@ -571,13 +594,13 @@ func _physics_process(delta: float) -> void:
 
 		if is_full or _bay_discharging[b]:
 			_bay_discharging[b] = true
+			_set_bay_status_led(b, "Red")
 
 			# Single-Bay Interlock Queue: Only 1 bay can unload onto floor chains at a time
 			if _active_unloading_bay == -1 or _active_unloading_bay == b:
 				_active_unloading_bay = b
 				any_bay_unloading_on_floor = true
 				_cradle_target_heights[b] = floor_cradle_y
-				_set_bay_status_led(b, "Red")
 
 				# Once cradle reaches floor elevation, wait until ALL boards have cleared the cradle forks
 				if is_equal_approx(_cradle_heights[b], floor_cradle_y):
@@ -593,7 +616,7 @@ func _physics_process(delta: float) -> void:
 			else:
 				# Another bay is unloading: STAGE AND WAIT at Y = 1.55m (above clear_height = 1.34m)
 				_cradle_target_heights[b] = staging_cradle_y
-				_set_bay_status_led(b, "Yellow")
+				_set_bay_status_led(b, "Red")
 
 		else:
 			# Photo Eye Raycast sensing (requires 1.5s continuous obstruction before indexing down)
@@ -617,12 +640,23 @@ func _physics_process(delta: float) -> void:
 			_cradle_heights[b] = move_toward(_cradle_heights[b], _cradle_target_heights[b], indexing_speed * delta)
 			cradle.position.y = _cradle_heights[b]
 
-	# Actuate Floor Haul-Out Conveyor physical velocity along +X when a bay is unloading on floor chains
+	# Actuate Floor Haul-Out Conveyor physical velocity along +X when a bay is unloading or boards are on floor chains
 	if is_instance_valid(_floor_haulout_body):
-		if any_bay_unloading_on_floor:
+		if any_bay_unloading_on_floor or _has_boards_on_floor_conveyor():
 			_floor_haulout_body.constant_linear_velocity = Vector3(conveyor_speed * 1.2, 0.0, 0.0)
 		else:
 			_floor_haulout_body.constant_linear_velocity = Vector3.ZERO
+
+
+func _has_boards_on_floor_conveyor() -> bool:
+	var total_length: float = num_bins * bin_width + 1.0
+	var boards := get_tree().get_nodes_in_group("cut_boards")
+	for board_node in boards:
+		if is_instance_valid(board_node) and board_node is RigidBody3D:
+			var bpos: Vector3 = to_local((board_node as RigidBody3D).global_position)
+			if bpos.y < 0.75 and bpos.x >= -0.5 and bpos.x <= total_length + 2.0:
+				return true
+	return false
 
 
 func _are_forks_clear_of_boards(bay_idx: int) -> bool:
@@ -650,14 +684,14 @@ func _set_bay_status_led(bay_index: int, state: String) -> void:
 		var omni: OmniLight3D = mesh.get_node_or_null("LEDLight_" + led_name) as OmniLight3D
 
 		var is_active: bool = (state == "Yellow" and led_name == "YellowLED") or \
-		                      (state == "Green" and led_name == "GreenLED") or \
-		                      (state == "Red" and led_name == "RedLED")
+							  (state == "Green" and led_name == "GreenLED") or \
+							  (state == "Red" and led_name == "RedLED")
 
 		if is_active:
 			mat.emission_enabled = true
-			mat.emission_energy_multiplier = 16.0
+			mat.emission_energy_multiplier = 3.0
 			if is_instance_valid(omni):
-				omni.light_energy = 4.0
+				omni.light_energy = 0.4
 		else:
 			mat.emission_energy_multiplier = 0.05
 			if is_instance_valid(omni):

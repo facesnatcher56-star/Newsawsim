@@ -119,15 +119,6 @@ func _build_bay_gates_and_actuators() -> void:
 		var arm_length: float = bin_w - 0.15
 		var arm_width: float = 0.22
 
-		# Add solid Tipple Gate CollisionShape3D directly to AnimatableBody3D gate_pivot
-		var gate_col := CollisionShape3D.new()
-		gate_col.name = "TippleGateCol_%d" % b
-		var gate_shape := BoxShape3D.new()
-		gate_shape.size = Vector3(arm_length, 0.04, bin_d - 0.3)
-		gate_col.shape = gate_shape
-		gate_col.position = Vector3(-arm_length * 0.5, 0.0, 0.0)
-		gate_pivot.add_child(gate_col)
-
 		var torque_shaft := _make_cylinder("TorqueShaft", 0.045, bin_d + 0.4, Vector3.ZERO, sorter._mat_orange, Vector3(PI * 0.5, 0.0, 0.0))
 		gate_pivot.add_child(torque_shaft)
 
@@ -144,18 +135,27 @@ func _build_bay_gates_and_actuators() -> void:
 
 			gate_pivot.add_child(tipple_base)
 
+			# Individual Tipple Arm CollisionShape3D per track arm
+			var gate_col := CollisionShape3D.new()
+			gate_col.name = "TippleGateCol_%d_%d" % [b, t_idx]
+			var gate_shape := BoxShape3D.new()
+			gate_shape.size = Vector3(arm_length, 0.04, arm_width)
+			gate_col.shape = gate_shape
+			gate_col.position = Vector3(-arm_length * 0.5, 0.0, track_z)
+			gate_pivot.add_child(gate_col)
+
 			# Fixed Chamfered Deck Plate mesh
 			var fixed_deck := _make_box("FixedDeckPlate_B%d_T%d" % [b, t_idx], Vector3(0.20, 0.04, arm_width + 0.04), Vector3((b + 1.0) * bin_w - 0.02, sorter_h + 0.10, track_z), sorter._mat_green)
 			sorter.add_child(fixed_deck)
 
-		# Add Fixed Deck CollisionShape3D directly to sorter (StaticBody3D)
-		var fd_col := CollisionShape3D.new()
-		fd_col.name = "FixedDeckCol_%d" % b
-		var fd_shape := BoxShape3D.new()
-		fd_shape.size = Vector3(0.20, 0.04, bin_d - 0.3)
-		fd_col.shape = fd_shape
-		fd_col.position = Vector3((b + 1.0) * bin_w - 0.02, sorter_h + 0.10, 0.0)
-		sorter.add_child(fd_col)
+			# Individual Fixed Deck CollisionShape3D per track plate
+			var fd_col := CollisionShape3D.new()
+			fd_col.name = "FixedDeckCol_%d_%d" % [b, t_idx]
+			var fd_shape := BoxShape3D.new()
+			fd_shape.size = Vector3(0.20, 0.04, arm_width + 0.04)
+			fd_col.shape = fd_shape
+			fd_col.position = Vector3((b + 1.0) * bin_w - 0.02, sorter_h + 0.10, track_z)
+			sorter.add_child(fd_col)
 
 		for side in [-1.0, 1.0]:
 			var crank := _make_box("SideTorqueCrank_Z%d" % int(side), Vector3(0.06, 0.22, 0.06), Vector3(-0.08, 0.10, side * (bin_d * 0.5 + 0.15)), sorter._mat_cast_iron)
@@ -234,7 +234,8 @@ func _build_bay_gates_and_actuators() -> void:
 			omni.name = "LEDLight_" + led_name
 			omni.light_color = color
 			omni.light_energy = 0.0
-			omni.omni_range = 2.0
+			omni.omni_range = 0.8
+			omni.light_specular = 0.0
 			led_mesh.add_child(omni)
 
 			light_stack.add_child(led_mesh)
