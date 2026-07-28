@@ -13,9 +13,19 @@ roughness = 0.8
 material = SubResource("2")
 size = Vector3(4.958, 0.04, 0.35)
 
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wood"]
+friction = 0.9
+bounce = 0.0
+
 [node name="CutBoard" type="RigidBody3D" unique_id=1116529731]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-mass = 10.0
+mass = 50.0
+physics_material_override = SubResource("PhysicsMaterial_wood")
+gravity_scale = 4.5
+linear_damp = 0.4
+angular_damp = 2.0
+axis_lock_angular_x = true
+can_sleep = false
 script = ExtResource("1")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1966856323]

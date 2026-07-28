@@ -8,7 +8,7 @@ extends RigidBody3D
 
 ## When enabled, prints every physics contact (what the board is touching,
 ## the contact normal, and the push impulse) plus current velocity.
-@export var debug_contacts: bool = true
+@export var debug_contacts: bool = false
 @export var debug_interval: float = 0.25
 
 var _debug_timer: float = 0.0
@@ -18,8 +18,13 @@ func _ready() -> void:
 	_apply_product_length(product_length)
 
 	# Thin lumber can move farther than its thickness in one physics step.
-	# Continuous collision detection prevents tunneling into roller geometry.
 	continuous_cd = true
+	axis_lock_angular_x = true
+	linear_damp = 0.4
+	angular_damp = 2.0
+	mass = 50.0
+	gravity_scale = 4.5
+	can_sleep = false
 
 	# Hold-down rollers read our colliding bodies to stop descending on touch.
 	contact_monitor = true

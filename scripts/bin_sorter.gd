@@ -4,8 +4,8 @@
 ## - Industrial Green structural steel gantry & open-bottom gravity collection hoppers.
 ## - Safety Yellow catwalks, handrails, and safety toe-kick plates.
 ## - Safety Orange hinged diverter drop gates & pneumatic cylinders.
-## - Automatic optical laser scanner at infeed for length measurement.
-## - Real-time physics overhead drag chain transport & pneumatic drop gate actuation.
+## - Automatic optical laser scanner & Photo Eye optical sensor raycasts.
+## - Real-time physics overhead drag chain transport & lug-synchronized infeed spawner.
 ## High-performance implementation: MeshInstance3D / MultiMeshInstance3D + Physical Lug Pushers.
 @tool
 extends StaticBody3D
@@ -14,9 +14,21 @@ const BinSorterFrameBuilder := preload("res://scripts/bin_sorter_builders/bin_so
 const BinSorterGateBuilder := preload("res://scripts/bin_sorter_builders/bin_sorter_gate_builder.gd")
 const CutBoardScene := preload("res://scenes/cut_board.tscn")
 
-## Number of sorting bays (2 to 8).
-@export_range(2, 8, 1) var num_bins: int = 4:
+## Number of sorting bays (2 to 50).
+@export_range(2, 50, 1) var num_bins: int = 4:
 	set(v): num_bins = v; _rebuild()
+
+## Maximum boards per bay before triggering pack discharge & reset (default 10).
+@export_range(1, 50, 1) var max_boards_per_bay: int = 10
+
+## Continuous infeed spawner toggle (lug-synchronized).
+@export var continuous_infeed_spawner: bool = false
+
+## Randomly assign target bays to incoming boards (true) or use length (false).
+@export var random_bay_sorting: bool = true
+
+## Speed at which cradles lower during indexing (m/s).
+@export_range(0.1, 2.0, 0.05) var indexing_speed: float = 0.40
 
 ## Width of each bin bay (meters).
 @export_range(0.6, 3.5, 0.1) var bin_width: float = 0.9:
@@ -37,8 +49,11 @@ const CutBoardScene := preload("res://scenes/cut_board.tscn")
 		constant_linear_velocity = Vector3(v, 0.0, 0.0)
 
 ## Pneumatic drop gate actuation speed (rad/s).
-@export_range(1.0, 10.0, 0.5) var gate_speed: float = 6.0:
+@export_range(1.0, 25.0, 0.5) var gate_speed: float = 12.0:
 	set(v): gate_speed = v
+
+## Duration (seconds) the photo eye laser must be continuously blocked before indexing down (default 1.5s).
+@export_range(0.1, 5.0, 0.1) var photo_eye_delay: float = 1.5
 
 ## Automatically spawn 4.958m CutBoard test instance at infeed for physics testing.
 @export var auto_spawn_test_board: bool = true
@@ -60,7 +75,17 @@ var _gate_nodes: Array[AnimatableBody3D] = []
 var _piston_nodes: Array[Array] = []
 var _status_led_nodes: Array[Dictionary] = []
 var _target_gate_angles: Array[float] = []
-var _gate_hold_timers: Array[float] = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+var _gate_hold_timers: Array[float] = []
+
+# Indexing Cradle & Photo Eye state management
+var _cradle_nodes: Array[Node3D] = []
+var _cradle_heights: Array[float] = []
+var _cradle_target_heights: Array[float] = []
+var _bay_board_counts: Array[int] = []
+var _bay_discharging: Array[bool] = []
+var _discharge_timers: Array[float] = []
+var _photo_eye_rays: Array[RayCast3D] = []
+var _photo_eye_timers: Array[float] = []
 
 # MultiMesh drag chain lug system & physical pusher body
 var _multimesh_lugs: MultiMeshInstance3D = null
@@ -69,6 +94,7 @@ var _lug_count_per_track: int = 0
 var _track_positions: Array[float] = []
 var _chain_offset: float = 0.0
 var _rebuild_pending: bool = false
+var _spawn_cooldown: float = 0.0
 
 # Dynamic board tracking state
 class BoardTrackingData:
@@ -77,6 +103,7 @@ class BoardTrackingData:
 	var infeed_time: float
 	var active: bool = true
 	var gate_triggered: bool = false
+	var dropped_into_bay: bool = false
 
 var _tracked_boards: Array[BoardTrackingData] = []
 
@@ -115,20 +142,46 @@ func _do_rebuild() -> void:
 	_init_materials()
 	constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
 
+	# Set zero friction PhysicsMaterial on BinSorter static frame so all vertical columns and I-beams have 0.0 friction
+	var mat_smooth_frame := PhysicsMaterial.new()
+	mat_smooth_frame.friction = 0.0
+	mat_smooth_frame.bounce = 0.0
+	physics_material_override = mat_smooth_frame
+
 	# Reset mechanics lists
 	_gate_nodes.clear()
 	_piston_nodes.clear()
 	_status_led_nodes.clear()
 	_target_gate_angles.clear()
+	_gate_hold_timers.clear()
+	_cradle_nodes.clear()
+	_cradle_heights.clear()
+	_cradle_target_heights.clear()
+	_bay_board_counts.clear()
+	_bay_discharging.clear()
+	_discharge_timers.clear()
+	_photo_eye_rays.clear()
+	_photo_eye_timers.clear()
+
+	var top_cradle_y: float = sorter_height - 0.70
+
 	for i in range(num_bins):
 		_target_gate_angles.append(0.0)
+		_gate_hold_timers.append(0.0)
+		_cradle_heights.append(top_cradle_y)
+		_cradle_target_heights.append(top_cradle_y)
+		_bay_board_counts.append(0)
+		_bay_discharging.append(false)
+		_discharge_timers.append(0.0)
+		_photo_eye_timers.append(0.0)
 
 	# Execute procedural builders
 	BinSorterFrameBuilder.new(self).build_all()
 	BinSorterGateBuilder.new(self).build_all()
 
-	# Create Infeed Optical Scanner Detection Area
+	# Create Infeed Optical Scanner Detection Area & Photo Eye Raycasts
 	_build_infeed_trigger_zone()
+	_build_photo_eye_rays()
 
 	# Create Overhead Drag Chain MultiMesh Lugs & Physical Lug Pushers
 	_build_overhead_chain_lugs()
@@ -160,14 +213,14 @@ func _init_materials() -> void:
 	_mat_yellow.roughness = 0.40
 
 	_mat_orange = StandardMaterial3D.new()
-	_mat_orange.albedo_color = Color(0.95, 0.45, 0.05)
+	_mat_orange.albedo_color = Color(0.92, 0.42, 0.08)
 	_mat_orange.metallic = 0.50
 	_mat_orange.roughness = 0.35
 
 	_mat_dark_steel = StandardMaterial3D.new()
-	_mat_dark_steel.albedo_color = Color(0.22, 0.24, 0.26)
+	_mat_dark_steel.albedo_color = Color(0.15, 0.17, 0.20)
 	_mat_dark_steel.metallic = 0.85
-	_mat_dark_steel.roughness = 0.30
+	_mat_dark_steel.roughness = 0.25
 
 	_mat_chrome = StandardMaterial3D.new()
 	_mat_chrome.albedo_color = Color(0.85, 0.88, 0.90)
@@ -175,28 +228,27 @@ func _init_materials() -> void:
 	_mat_chrome.roughness = 0.10
 
 	_mat_rubber = StandardMaterial3D.new()
-	_mat_rubber.albedo_color = Color(0.12, 0.12, 0.14)
-	_mat_rubber.metallic = 0.10
-	_mat_rubber.roughness = 0.80
+	_mat_rubber.albedo_color = Color(0.08, 0.08, 0.08)
+	_mat_rubber.roughness = 0.90
 
 	_mat_red = StandardMaterial3D.new()
-	_mat_red.albedo_color = Color(0.95, 0.10, 0.10)
+	_mat_red.albedo_color = Color(0.95, 0.10, 0.05)
 	_mat_red.emission_enabled = true
-	_mat_red.emission = Color(0.95, 0.10, 0.10)
-	_mat_red.emission_energy_multiplier = 1.2
+	_mat_red.emission = Color(1.0, 0.1, 0.05)
+	_mat_red.emission_energy_multiplier = 2.0
 
 	_mat_sprocket_steel = StandardMaterial3D.new()
-	_mat_sprocket_steel.albedo_color = Color(0.35, 0.38, 0.42)
-	_mat_sprocket_steel.metallic = 0.90
-	_mat_sprocket_steel.roughness = 0.25
+	_mat_sprocket_steel.albedo_color = Color(0.30, 0.32, 0.35)
+	_mat_sprocket_steel.metallic = 0.80
+	_mat_sprocket_steel.roughness = 0.30
 
 	_mat_cast_iron = StandardMaterial3D.new()
-	_mat_cast_iron.albedo_color = Color(0.15, 0.16, 0.18)
+	_mat_cast_iron.albedo_color = Color(0.22, 0.24, 0.26)
 	_mat_cast_iron.metallic = 0.60
-	_mat_cast_iron.roughness = 0.55
+	_mat_cast_iron.roughness = 0.50
 
 	_mat_brass = StandardMaterial3D.new()
-	_mat_brass.albedo_color = Color(0.85, 0.68, 0.20)
+	_mat_brass.albedo_color = Color(0.85, 0.68, 0.15)
 	_mat_brass.metallic = 0.85
 	_mat_brass.roughness = 0.30
 
@@ -218,6 +270,20 @@ func _build_infeed_trigger_zone() -> void:
 	add_child(trigger_area)
 
 
+func _build_photo_eye_rays() -> void:
+	for b in range(num_bins):
+		var bay_x: float = b * bin_width
+		var ray := RayCast3D.new()
+		ray.name = "PhotoEyeRay_B%d" % b
+		# Raycast starts inside bay at X = bay_x + 0.05 and stops before opposite wall at X = bay_x + bin_w - 0.05
+		ray.position = Vector3(bay_x + 0.05, sorter_height - 0.50, 0.0)
+		ray.target_position = Vector3(bin_width - 0.10, 0.0, 0.0)
+		ray.collide_with_bodies = true
+		ray.collide_with_areas = false
+		add_child(ray)
+		_photo_eye_rays.append(ray)
+
+
 func _build_overhead_chain_lugs() -> void:
 	var total_length: float = num_bins * bin_width + 1.0
 	var lug_spacing: float = 1.2
@@ -231,7 +297,6 @@ func _build_overhead_chain_lugs() -> void:
 
 	var total_instances: int = _lug_count_per_track * _track_positions.size()
 
-	# 1. Visual MultiMesh Lugs
 	_multimesh_lugs = MultiMeshInstance3D.new()
 	_multimesh_lugs.name = "DragLugsMultiMesh"
 
@@ -248,7 +313,6 @@ func _build_overhead_chain_lugs() -> void:
 	_multimesh_lugs.material_override = _mat_orange
 	add_child(_multimesh_lugs)
 
-	# 2. Single AnimatableBody3D containing physical lug colliders for board pushing
 	_lug_pusher_body = AnimatableBody3D.new()
 	_lug_pusher_body.name = "PhysicalDragLugPushers"
 	_lug_pusher_body.sync_to_physics = true
@@ -284,6 +348,12 @@ func _update_lug_multimesh() -> void:
 	var lug_spacing: float = 1.2
 	var mm: MultiMesh = _multimesh_lugs.multimesh
 
+	var pusher_cols: Array[Node] = []
+	if is_instance_valid(_lug_pusher_body):
+		_lug_pusher_body.position.x = 0.0
+		_lug_pusher_body.constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
+		pusher_cols = _lug_pusher_body.get_children()
+
 	var idx: int = 0
 	for t_idx in range(_track_positions.size()):
 		var track_z: float = _track_positions[t_idx]
@@ -294,11 +364,11 @@ func _update_lug_multimesh() -> void:
 				x_pos += total_length
 			var xform := Transform3D(Basis(), Vector3(x_pos, sorter_height + 0.28, track_z))
 			mm.set_instance_transform(idx, xform)
-			idx += 1
 
-	if is_instance_valid(_lug_pusher_body):
-		_lug_pusher_body.position.x = _chain_offset
-		_lug_pusher_body.constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
+			if idx < pusher_cols.size() and pusher_cols[idx] is CollisionShape3D:
+				(pusher_cols[idx] as CollisionShape3D).position = Vector3(x_pos, sorter_height + 0.28, track_z)
+
+			idx += 1
 
 
 func spawn_test_board() -> RigidBody3D:
@@ -322,27 +392,28 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 		if data.board == body:
 			return
 
-	var board_length: float = 4.958
-	var aabb_size := Vector3.ZERO
-
-	for child in body.get_children():
-		if child is CollisionShape3D and is_instance_valid(child.shape):
-			if child.shape is BoxShape3D:
-				aabb_size = child.shape.size
-
-	var max_dim: float = maxf(aabb_size.x, aabb_size.z)
-	if max_dim > 0.1:
-		board_length = max_dim
-
 	var target_b: int = 0
-	if board_length < 3.0:
-		target_b = 0
-	elif board_length < 4.0:
-		target_b = min(1, num_bins - 1)
-	elif board_length < 4.8:
-		target_b = min(2, num_bins - 1)
+	if random_bay_sorting:
+		target_b = randi() % num_bins
 	else:
-		target_b = min(3, num_bins - 1)
+		var board_length: float = 4.958
+		var aabb_size := Vector3.ZERO
+		for child in body.get_children():
+			if child is CollisionShape3D and is_instance_valid(child.shape):
+				if child.shape is BoxShape3D:
+					aabb_size = child.shape.size
+		var max_dim: float = maxf(aabb_size.x, aabb_size.z)
+		if max_dim > 0.1:
+			board_length = max_dim
+
+		if board_length < 3.0:
+			target_b = 0
+		elif board_length < 4.0:
+			target_b = min(1, num_bins - 1)
+		elif board_length < 4.8:
+			target_b = min(2, num_bins - 1)
+		else:
+			target_b = min(3, num_bins - 1)
 
 	var tracking := BoardTrackingData.new()
 	tracking.board = body as RigidBody3D
@@ -360,6 +431,15 @@ func _physics_process(delta: float) -> void:
 	_chain_offset = fmod(_chain_offset + conveyor_speed * delta, total_length)
 	_update_lug_multimesh()
 
+	# Lug-Synchronized Continuous Infeed Board Spawner
+	if continuous_infeed_spawner:
+		_spawn_cooldown -= delta
+		var lug_spacing: float = 1.2
+		var lug_phase: float = fmod(_chain_offset, lug_spacing)
+		if _spawn_cooldown <= 0.0 and lug_phase >= 0.05 and lug_phase <= 0.25:
+			spawn_test_board()
+			_spawn_cooldown = lug_spacing / conveyor_speed
+
 	# Process active tracked boards
 	var i: int = _tracked_boards.size() - 1
 	while i >= 0:
@@ -376,19 +456,26 @@ func _physics_process(delta: float) -> void:
 		if local_pos.y >= sorter_height - 0.6:
 			tracking.board.linear_velocity.x = conveyor_speed
 
-		# Trigger gate when board approaches target bin bay (Tipples rotate UPWARDS to -0.65 rad)
-		if not tracking.gate_triggered and local_pos.x >= target_x - 0.9 and local_pos.x <= target_x + 0.6:
-			_target_gate_angles[tracking.target_bin] = -0.65
-			_gate_hold_timers[tracking.target_bin] = 2.0
+		# Trigger gate when board approaches target bin bay (Tipples rotate UPWARDS to -0.185 rad)
+		if not tracking.gate_triggered and local_pos.x >= target_x - 0.65 and local_pos.x <= target_x + 0.35:
+			_target_gate_angles[tracking.target_bin] = -0.185
+			_gate_hold_timers[tracking.target_bin] = 1.6
 			_set_bay_status_led(tracking.target_bin, "Yellow")
 			tracking.gate_triggered = true
 
 		# Board drops down into bin hopper below deck level
 		if local_pos.y < sorter_height - 0.8:
-			tracking.active = false
+			if not tracking.dropped_into_bay:
+				tracking.dropped_into_bay = true
+				if tracking.target_bin < _bay_board_counts.size():
+					_bay_board_counts[tracking.target_bin] += 1
+
+			# Board dropped all the way into hopper
+			if local_pos.y < sorter_height - 1.5:
+				tracking.active = false
 		i -= 1
 
-	# Actuate pneumatic drop gates and piston rods (Upward angle = -0.65 rad)
+	# Actuate pneumatic drop gates and piston rods (Upward angle = -0.185 rad)
 	for b in range(num_bins):
 		if b >= _gate_nodes.size():
 			continue
@@ -401,16 +488,66 @@ func _physics_process(delta: float) -> void:
 			gate.rotation.z = move_toward(cur_angle, target_angle, gate_speed * delta)
 
 			if b < _piston_nodes.size():
-				var extension: float = (abs(gate.rotation.z) / 0.65) * 0.15
+				var extension: float = (abs(gate.rotation.z) / 0.185) * 0.06
 				for piston in _piston_nodes[b]:
 					if is_instance_valid(piston):
 						piston.position.y = -0.25 - extension
 
-		if _target_gate_angles[b] != 0.0 and is_equal_approx(gate.rotation.z, -0.65):
+		if _target_gate_angles[b] != 0.0 and is_equal_approx(gate.rotation.z, -0.185):
 			_gate_hold_timers[b] -= delta
 			if _gate_hold_timers[b] <= 0.0:
 				_target_gate_angles[b] = 0.0
 				_set_bay_status_led(b, "Green")
+
+	# Photo Eye Optical Sensing, Indexing Motion, and 10-Board Discharge Lifecycle
+	var top_cradle_y: float = sorter_height - 0.70
+	var floor_cradle_y: float = 0.30
+
+	for b in range(num_bins):
+		if b >= _cradle_nodes.size():
+			continue
+
+		var cradle: Node3D = _cradle_nodes[b]
+		if not is_instance_valid(cradle):
+			continue
+
+		var is_full: bool = (_bay_board_counts[b] >= max_boards_per_bay)
+
+		if is_full or _bay_discharging[b]:
+			_bay_discharging[b] = true
+			_cradle_target_heights[b] = floor_cradle_y
+			_set_bay_status_led(b, "Red")
+
+			if is_equal_approx(_cradle_heights[b], floor_cradle_y):
+				_discharge_timers[b] += delta
+				if _discharge_timers[b] >= 2.5:
+					_bay_board_counts[b] = 0
+					_bay_discharging[b] = false
+					_discharge_timers[b] = 0.0
+					_cradle_target_heights[b] = top_cradle_y
+					_set_bay_status_led(b, "Green")
+
+		else:
+			# Photo Eye Raycast sensing (requires 1.5s continuous obstruction before indexing down)
+			var eye_blocked: bool = false
+			if b < _photo_eye_rays.size() and is_instance_valid(_photo_eye_rays[b]):
+				if _photo_eye_rays[b].is_colliding():
+					var col_obj = _photo_eye_rays[b].get_collider()
+					if col_obj is RigidBody3D:
+						eye_blocked = true
+
+			if eye_blocked:
+				_photo_eye_timers[b] += delta
+				if _photo_eye_timers[b] >= photo_eye_delay:
+					_cradle_target_heights[b] = maxf(_cradle_target_heights[b] - indexing_speed * delta, floor_cradle_y)
+					_set_bay_status_led(b, "Yellow")
+			else:
+				_photo_eye_timers[b] = maxf(0.0, _photo_eye_timers[b] - delta * 2.0)
+
+		# Move cradle height toward target height
+		if not is_equal_approx(_cradle_heights[b], _cradle_target_heights[b]):
+			_cradle_heights[b] = move_toward(_cradle_heights[b], _cradle_target_heights[b], indexing_speed * delta)
+			cradle.position.y = _cradle_heights[b]
 
 
 func _set_bay_status_led(bay_index: int, state: String) -> void:

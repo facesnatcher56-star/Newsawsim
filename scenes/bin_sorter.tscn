@@ -18,8 +18,10 @@ ambient_light_color = Color(0.6, 0.6, 0.6, 1)
 [node name="BinSorter" type="StaticBody3D" unique_id=754893477]
 constant_linear_velocity = Vector3(0.5, 0, 0)
 script = ExtResource("1_bin_sorter")
+num_bins = 9
+continuous_infeed_spawner = true
 conveyor_speed = 0.5
-gate_speed = 2.0
+gate_speed = 4.0
 
 [node name="TestCamera" type="Camera3D" parent="." unique_id=2064592850]
 transform = Transform3D(0.93969274, -0.14674623, 0.3089387, 0, 0.9032773, 0.42905748, -0.34201992, -0.40318227, 0.8488029, 4, 6.5, 4.58079)

@@ -439,11 +439,44 @@ func _build_bin_hoppers() -> void:
 			var bot_flange := _make_box("WeldedFlangeBot_B%d_P%d" % [b, p], Vector3(0.14, 0.04, 0.14), Vector3(bay_x - 0.15, clear_height + 0.02, pz), sorter._mat_dark_steel)
 			hopper.add_child(bot_flange)
 
+		# Solid physics colliders with zero friction smooth PhysicsMaterial so board ends never hang up on walls
+		var mat_smooth_wall := PhysicsMaterial.new()
+		mat_smooth_wall.friction = 0.0
+		mat_smooth_wall.bounce = 0.0
+
+		var wall_static := StaticBody3D.new()
+		wall_static.name = "DividerWallStatic_%d" % b
+		wall_static.physics_material_override = mat_smooth_wall
+		_add_box_col(wall_static, "DividerWallCol", Vector3(0.06, post_h + 0.2, bin_d - 0.3), Vector3(bay_x - 0.15, post_y, 0.0))
+		hopper.add_child(wall_static)
+
+		var end_stop_static := StaticBody3D.new()
+		end_stop_static.name = "RearEndStopsStatic_%d" % b
+		end_stop_static.physics_material_override = mat_smooth_wall
+		_add_box_col(end_stop_static, "StopColFront", Vector3(bin_w + 0.1, sorter_h, 0.15), Vector3(bay_center_x, sorter_h * 0.5, -bin_d * 0.48))
+		_add_box_col(end_stop_static, "StopColRear", Vector3(bin_w + 0.1, sorter_h, 0.15), Vector3(bay_center_x, sorter_h * 0.5, bin_d * 0.48))
+		hopper.add_child(end_stop_static)
+
 		# 3. Horizontal Bottom Tie Beam connecting all vertical posts across Z at Y = 1.34m (offset back at X = bay_x - 0.15m)
 		var tie_beam := _make_box("BottomDividerTieBeam_%d" % b, Vector3(0.10, 0.12, bin_d - 0.5), Vector3(bay_x - 0.15, clear_height - 0.06, 0.0), sorter._mat_green)
 		hopper.add_child(tie_beam)
 
-		# 3. Bin Pocket Base (Floor Level)
+		# 3. Photo Eye Optical Sensor Housing (Shooting laser beam along X at Y = sorter_h - 0.50m)
+		var eye_y: float = sorter_h - 0.50
+		var emitter := _make_box("PhotoEyeEmitter_B%d" % b, Vector3(0.08, 0.10, 0.08), Vector3(bay_x - 0.15, eye_y, 0.0), sorter._mat_yellow)
+		var emitter_lens := _make_cylinder("LensRed", 0.025, 0.02, Vector3(0.04, 0.0, 0.0), sorter._mat_red, Vector3(0.0, 0.0, PI * 0.5))
+		emitter.add_child(emitter_lens)
+		hopper.add_child(emitter)
+
+		var receiver := _make_box("PhotoEyeReceiver_B%d" % b, Vector3(0.08, 0.10, 0.08), Vector3(bay_x + bin_w - 0.05, eye_y, 0.0), sorter._mat_yellow)
+		var recv_lens := _make_cylinder("LensDark", 0.025, 0.02, Vector3(-0.04, 0.0, 0.0), sorter._mat_dark_steel, Vector3(0.0, 0.0, PI * 0.5))
+		receiver.add_child(recv_lens)
+		hopper.add_child(receiver)
+
+		var beam_line := _make_box("PhotoEyeBeam_B%d" % b, Vector3(bin_w + 0.10, 0.012, 0.012), Vector3(bay_x + (bin_w - 0.20) * 0.5, eye_y, 0.0), sorter._mat_red)
+		hopper.add_child(beam_line)
+
+		# 4. Bin Pocket Base (Floor Level)
 		var bin_pocket := StaticBody3D.new()
 		bin_pocket.name = "OpenBinPocketFloor"
 		bin_pocket.position = Vector3(bay_center_x, 0.4, 0.0)
@@ -454,24 +487,38 @@ func _build_bin_hoppers() -> void:
 		shape.size = Vector3(bin_w - 0.12, 0.10, bin_d - 0.4)
 		col.shape = shape
 		bin_pocket.add_child(col)
+		hopper.add_child(bin_pocket)
 
-		# 4. Corrected Option A Indexing Sling Cradle Assembly
-		var cradle_group := Node3D.new()
-		cradle_group.name = "CorrectedOptionACradle"
+		# 5. Option A Indexing Sling Cradle Assembly (AnimatableBody3D starting at Top Elevation Y = sorter_h - 0.70m)
+		var top_cradle_y: float = sorter_h - 0.70
+		var cradle_group := AnimatableBody3D.new()
+		cradle_group.name = "OptionACradle_B%d" % b
+		cradle_group.position = Vector3(bay_x + bin_w * 0.5, top_cradle_y, 0.0)
+		cradle_group.sync_to_physics = true
 
-		# Main Orange Support Beam running along Z at X = bay_x (sitting ON TOP / ABOVE floor chains at world Y = 0.30m)
-		var main_cradle_beam_z := _make_box("OrangeCradleBeamZ", Vector3(0.16, 0.16, bin_d - 0.3), Vector3(-bin_w * 0.5, -0.10, 0.0), sorter._mat_orange)
+		# High-friction, zero-bounce PhysicsMaterial override to prevent boards from landing and sliding forward
+		var mat_cradle := PhysicsMaterial.new()
+		mat_cradle.friction = 1.0
+		mat_cradle.rough = true
+		mat_cradle.bounce = 0.0
+		cradle_group.physics_material_override = mat_cradle
+
+		# Solid physics collider for Main Orange Support Beam
+		_add_box_col(cradle_group, "MainCradleBeamCol", Vector3(0.16, 0.16, bin_d - 0.3), Vector3(-bin_w * 0.5, 0.0, 0.0))
+
+		# Main Orange Support Beam running along Z at X = bay_x
+		var main_cradle_beam_z := _make_box("OrangeCradleBeamZ", Vector3(0.16, 0.16, bin_d - 0.3), Vector3(-bin_w * 0.5, 0.0, 0.0), sorter._mat_orange)
 		cradle_group.add_child(main_cradle_beam_z)
 
 		# Outer End Guide Brackets attached to the ends of the orange Z-beam at Z = -bin_d/2 and Z = +bin_d/2
 		for side in [-1.0, 1.0]:
 			var side_z: float = side * (bin_d * 0.46)
-			var bracket := _make_box("OuterIBeamGuideBracket_Z%d" % int(side), Vector3(0.24, 0.32, 0.20), Vector3(-bin_w * 0.5, -0.10, side_z), sorter._mat_orange)
+			var bracket := _make_box("OuterIBeamGuideBracket_Z%d" % int(side), Vector3(0.24, 0.32, 0.20), Vector3(-bin_w * 0.5, 0.0, side_z), sorter._mat_orange)
 			var shoe := _make_box("WhiteGuideShoe", Vector3(0.04, 0.28, 0.04), Vector3(0.0, 0.0, -side * 0.11), sorter._mat_chrome)
 			bracket.add_child(shoe)
 			cradle_group.add_child(bracket)
 
-			# Hoist cable extending up to gantry ledger at X = bay_x
+			# Dynamic Hoist Cable extending up to upper gantry ledger at X = bay_x
 			var hoist_cable := _make_cylinder("GantryHoistCable", 0.015, sorter_h * 0.8, Vector3(bay_x, sorter_h * 0.40, side_z), sorter._mat_dark_steel)
 			hopper.add_child(hoist_cable)
 
@@ -480,11 +527,14 @@ func _build_bin_hoppers() -> void:
 		var fork_count: int = 4
 		for fk_idx in range(fork_count):
 			var fk_z: float = - (bin_d * 0.38) + fk_idx * (bin_d * 0.76 / (fork_count - 1))
-			var fork_mesh := _make_smooth_curved_fork_mesh("SmoothTaperedLFork_%d" % fk_idx, arm_len, Vector3(-bin_w * 0.5, -0.10, fk_z), sorter._mat_orange)
+			var fork_mesh := _make_smooth_curved_fork_mesh("SmoothTaperedLFork_%d" % fk_idx, arm_len, Vector3(-bin_w * 0.5, 0.0, fk_z), sorter._mat_orange)
 			cradle_group.add_child(fork_mesh)
 
-		bin_pocket.add_child(cradle_group)
-		hopper.add_child(bin_pocket)
+			# Solid 5-segment Bezier curved physics colliders matching the visual curved fork 100%
+			_add_curved_fork_colliders(cradle_group, arm_len, fk_z)
+
+		hopper.add_child(cradle_group)
+		sorter._cradle_nodes.append(cradle_group)
 		sorter.add_child(hopper)
 
 
@@ -574,3 +624,38 @@ func _build_pillow_block(parent: Node, pos: Vector3) -> void:
 			block.add_child(bolt)
 
 	parent.add_child(block)
+
+
+func _add_curved_fork_colliders(cradle_group: AnimatableBody3D, arm_len: float, fk_z: float) -> void:
+	var P0 := Vector2(0.0, 0.0)
+	var P1 := Vector2(arm_len * 0.20, -0.06)
+	var P2 := Vector2(arm_len * 0.60, -0.10)
+	var P3 := Vector2(arm_len, -0.11)
+
+	var num_segs: int = 5
+	for s in range(num_segs):
+		var t0: float = float(s) / float(num_segs)
+		var t1: float = float(s + 1) / float(num_segs)
+
+		var inv0: float = 1.0 - t0
+		var pt0 := inv0 * inv0 * inv0 * P0 + 3.0 * inv0 * inv0 * t0 * P1 + 3.0 * inv0 * (t0 * t0) * P2 + (t0 * t0 * t0) * P3
+
+		var inv1: float = 1.0 - t1
+		var pt1 := inv1 * inv1 * inv1 * P0 + 3.0 * inv1 * inv1 * t1 * P1 + 3.0 * inv1 * (t1 * t1) * P2 + (t1 * t1 * t1) * P3
+
+		var seg_center: Vector2 = (pt0 + pt1) * 0.5
+		var seg_dir: Vector2 = pt1 - pt0
+		var seg_len: float = seg_dir.length()
+		var angle: float = atan2(seg_dir.y, seg_dir.x)
+
+		var col_pos := Vector3(-sorter.bin_width * 0.5 + seg_center.x, seg_center.y - 0.02, fk_z)
+		var col_rot := Vector3(0.0, 0.0, angle)
+
+		var col := CollisionShape3D.new()
+		col.name = "CurvedForkSegCol_%d" % s
+		var box := BoxShape3D.new()
+		box.size = Vector3(seg_len + 0.02, 0.05, 0.16)
+		col.shape = box
+		col.position = col_pos
+		col.rotation = col_rot
+		cradle_group.add_child(col)
