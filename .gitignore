@@ -1,6 +1,12 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+*.log
+*.tmp
+*.tscn*.tmp
+/.validation_runtime/
+/dev/performance/logs/*
+!/dev/performance/logs/.gdignore
 
 # Local AI/editor tooling (not game content)
 .claude/

@@ -1,0 +1,189 @@
+extends RigidBody3D
+
+const LogBark = preload("res://game/lumber/log_bark.gd")
+
+# Log with bark and board cutting mechanics
+# The bark is represented by a child MeshInstance3D "Bark"
+# Boards are represented by child MeshInstance3D nodes under a "Boards" container.
+# Bark and boards are removed when the log passes specific processing stations.
+
+@export var bark_enabled: bool = true
+@export var board_count: int = 4  # Number of cuttable boards attached to the log
+@export var debarker_node_path: NodePath = "../DebarkerStation/DebarkerRing/Model"
+@export var debarker_peel_radius: float = 0.04
+@export var debarker_alignment_radius: float = 0.85
+
+var max_boards: int = 4
+var cuts_on_current_face: int = 0
+var current_cut_face: int = 0
+
+const CUT_DEPTH_PER_PASS: float = 0.05
+const LOG_CORE_LENGTH: float = 4.922
+const LOG_PRODUCT_LENGTH: float = 4.877
+const CUT_BOX_LENGTH_CLEARANCE: float = 0.24
+const CUT_PRODUCT_FORWARD_SPEED: float = 0.35
+const CUT_PRODUCT_DROP_SPEED: float = -0.22
+const CUT_PRODUCT_BELT_KICK_SPEED: float = -1.35
+
+# Positions of processing stations (approximate world coordinates)
+const DEBARKER_RING_POS: Vector3 = Vector3(5.165, 0.714, 2.072)
+const BANDSaw_POS: Vector3 = Vector3(19, -0.083, 6.13)  # Position of the Bandsaw node
+const PROCESS_RADIUS: float = 0.5  # Proximity radius to trigger processing
+
+var bark_controller = null
+
+func _ready() -> void:
+	add_to_group("logs")
+	if board_count <= 0:
+		board_count = 4
+	max_boards = board_count
+	bark_controller = LogBark.new()
+	bark_controller.setup(
+		self,
+		bark_enabled,
+		debarker_node_path,
+		debarker_peel_radius,
+		debarker_alignment_radius,
+		DEBARKER_RING_POS
+	)
+	bark_enabled = bark_controller.is_enabled()
+	_create_boards()
+	_setup_csg_cut()
+
+# Create a container with board meshes that can be cut off
+func _create_boards() -> void:
+	if has_node("Boards"):
+		return
+	var boards_root = Node3D.new()
+	boards_root.name = "Boards"
+	add_child(boards_root)
+	for i in range(board_count):
+		var board_node = MeshInstance3D.new()
+		board_node.name = "Board_%d" % i
+		var plane = BoxMesh.new()
+		plane.size = Vector3(0.3, 0.02, 0.6)  # Thin board
+		board_node.mesh = plane
+		var mat = StandardMaterial3D.new()
+		mat.albedo_color = Color(0.8, 0.7, 0.5)
+		board_node.material_override = mat
+		# Position boards along the log length
+		board_node.transform.origin = Vector3(0, 0.9 - i * 0.3, 0)
+		boards_root.add_child(board_node)
+
+func _process(delta: float) -> void:
+	if bark_controller:
+		bark_controller.update()
+		bark_enabled = bark_controller.is_enabled()
+	if not freeze and board_count > 0 and global_transform.origin.distance_to(BANDSaw_POS) < PROCESS_RADIUS:
+		cut_board(BANDSaw_POS)
+
+func _remove_bark() -> void:
+	if bark_controller:
+		bark_controller.remove_bark()
+		bark_enabled = bark_controller.is_enabled()
+
+func _get_log_core_length() -> float:
+	var wood_core := get_node_or_null("WoodCore") as CSGCylinder3D
+	if wood_core:
+		return wood_core.height
+	return LOG_CORE_LENGTH
+
+func get_log_core_length() -> float:
+	return _get_log_core_length()
+
+func get_log_product_length() -> float:
+	return LOG_PRODUCT_LENGTH
+
+var cut_box_face_a: CSGBox3D = null
+var cut_box_face_b: CSGBox3D = null
+
+func _setup_csg_cut() -> void:
+	var wood_core = get_node_or_null("WoodCore")
+	if wood_core is CSGShape3D:
+		cut_box_face_a = _get_or_create_cut_box(wood_core, "CutBoxFaceA")
+		cut_box_face_b = _get_or_create_cut_box(wood_core, "CutBoxFaceB")
+
+func _get_or_create_cut_box(wood_core: CSGShape3D, box_name: String) -> CSGBox3D:
+	var box := wood_core.get_node_or_null(box_name) as CSGBox3D
+	if box == null:
+		box = CSGBox3D.new()
+		box.name = box_name
+		box.operation = CSGShape3D.OPERATION_SUBTRACTION
+		box.material = wood_core.material
+		box.position = Vector3(0.0, 0.0, 10.0)
+		wood_core.add_child(box)
+	box.size = Vector3(1.0, _get_log_core_length() + CUT_BOX_LENGTH_CLEARANCE, 1.0)
+	return box
+
+func _update_csg_cut_position() -> void:
+	var wood_core = get_node_or_null("WoodCore")
+	if wood_core is CSGShape3D:
+		if cut_box_face_a == null or cut_box_face_b == null:
+			_setup_csg_cut()
+		var cut_depth := cuts_on_current_face * CUT_DEPTH_PER_PASS
+		if current_cut_face == 0 and cut_box_face_a:
+			var cut_z := 0.245 - cut_depth
+			cut_box_face_a.position = Vector3(0.0, 0.0, cut_z + 0.5)
+			pass
+		elif current_cut_face == 1 and cut_box_face_b:
+			var cut_z := -0.245 + cut_depth
+			cut_box_face_b.position = Vector3(0.0, 0.0, cut_z - 0.5)
+			pass
+
+func cut_board(_saw_pos: Vector3, travel_direction: Vector3 = Vector3.RIGHT) -> void:
+	if board_count <= 0:
+		return
+	
+	# The first cut on every face removes the curved roundback/slab.
+	var is_roundback: bool = cuts_on_current_face == 0
+	var prefab_path = "res://game/lumber/cut_board.tscn"
+	if is_roundback:
+		prefab_path = "res://game/lumber/cut_slab.tscn"
+		
+	# Spawn physical board
+	var board_scene = load(prefab_path)
+	if board_scene:
+		var board_node = board_scene.instantiate()
+		get_parent().add_child(board_node)
+		if board_node.has_method("configure_length"):
+			board_node.configure_length(LOG_PRODUCT_LENGTH)
+		
+		# Spawn with the board center where the cut product is when its tail clears the blade.
+		var product_center := _saw_pos + travel_direction.normalized() * (LOG_PRODUCT_LENGTH * 0.5)
+		board_node.global_position = Vector3(product_center.x, global_position.y + 0.08, 5.7)
+		
+		board_node.linear_velocity = (
+			travel_direction.normalized() * CUT_PRODUCT_FORWARD_SPEED
+			+ Vector3(0.0, CUT_PRODUCT_DROP_SPEED, CUT_PRODUCT_BELT_KICK_SPEED)
+		)
+		if is_roundback:
+			board_node.angular_velocity = Vector3(
+				randf_range(-1.2, 1.2),
+				randf_range(-0.15, 0.15),
+				randf_range(-0.15, 0.15)
+			)
+		else:
+			board_node.angular_velocity = Vector3(
+				randf_range(-0.5, 0.5),
+				0.0,
+				randf_range(-0.5, 0.5)
+			)
+		
+		board_node.add_collision_exception_with(self)
+		pass
+		
+	board_count -= 1
+	cuts_on_current_face += 1
+	
+	# Perform visual flat cut using CSG Subtraction!
+	_update_csg_cut_position()
+
+func start_new_cut_face() -> void:
+	cuts_on_current_face = 0
+	current_cut_face = mini(current_cut_face + 1, 1)
+
+func get_current_radius() -> float:
+	return 0.245
+
+func get_cut_depth_per_pass() -> float:
+	return CUT_DEPTH_PER_PASS

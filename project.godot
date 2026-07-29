@@ -11,13 +11,14 @@ config_version=5
 [application]
 
 config/name="Sawmill Sim"
-run/main_scene="res://debark.tscn"
+run/main_scene="res://game/levels/mill_prototype.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 MCPGameBridge="res://addons/godot_mcp/game_bridge/mcp_game_bridge.gd"
+PerformanceRecorder="*res://dev/performance/performance_recorder.gd"
 
 [editor_plugins]
 
