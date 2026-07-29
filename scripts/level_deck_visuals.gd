@@ -527,6 +527,7 @@ func _spawn_chain_links() -> void:
 	mm_plates.instance_count = _num_links * num_tracks * 2
 	_multimesh_plates.multimesh = mm_plates
 	_multimesh_plates.material_override = mat
+	_multimesh_plates.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_multimesh_plates)
 
 	# 2. Rollers MultiMesh
@@ -546,6 +547,7 @@ func _spawn_chain_links() -> void:
 	mm_rollers.instance_count = _num_links * num_tracks
 	_multimesh_rollers.multimesh = mm_rollers
 	_multimesh_rollers.material_override = mat
+	_multimesh_rollers.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(_multimesh_rollers)
 
 

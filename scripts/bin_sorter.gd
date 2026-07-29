@@ -47,7 +47,8 @@ const LumberLibrary := preload("res://scripts/lumber_library.gd")
 @export_range(0.5, 6.0, 0.1) var conveyor_speed: float = 2.5:
 	set(v):
 		conveyor_speed = v
-		constant_linear_velocity = Vector3(v, 0.0, 0.0)
+		if is_inside_tree():
+			_update_conveyor_velocities()
 
 ## Pneumatic drop gate actuation speed (rad/s).
 @export_range(1.0, 25.0, 0.5) var gate_speed: float = 12.0:
@@ -111,8 +112,15 @@ class BoardTrackingData:
 var _tracked_boards: Array[BoardTrackingData] = []
 
 
+func _update_conveyor_velocities() -> void:
+	var world_vel := global_transform.basis * Vector3(conveyor_speed, 0.0, 0.0)
+	constant_linear_velocity = world_vel
+	if is_instance_valid(_lug_pusher_body):
+		_lug_pusher_body.constant_linear_velocity = world_vel
+
+
 func _ready() -> void:
-	constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
+	_update_conveyor_velocities()
 	if Engine.is_editor_hint():
 		_rebuild()
 	else:
@@ -143,7 +151,7 @@ func _do_rebuild() -> void:
 		child.queue_free()
 
 	_init_materials()
-	constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
+	_update_conveyor_velocities()
 
 	# Set zero friction PhysicsMaterial on BinSorter static frame so all vertical columns and I-beams have 0.0 friction
 	var mat_smooth_frame := PhysicsMaterial.new()
@@ -342,7 +350,7 @@ func _build_overhead_chain_lugs() -> void:
 	_lug_pusher_body = AnimatableBody3D.new()
 	_lug_pusher_body.name = "PhysicalDragLugPushers"
 	_lug_pusher_body.sync_to_physics = true
-	_lug_pusher_body.constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
+	_lug_pusher_body.constant_linear_velocity = global_transform.basis * Vector3(conveyor_speed, 0.0, 0.0)
 
 	var shape_box := BoxShape3D.new()
 	shape_box.size = Vector3(0.08, 0.35, 0.08)
@@ -377,7 +385,7 @@ func _update_lug_multimesh() -> void:
 	var pusher_cols: Array[Node] = []
 	if is_instance_valid(_lug_pusher_body):
 		_lug_pusher_body.position.x = 0.0
-		_lug_pusher_body.constant_linear_velocity = Vector3(conveyor_speed, 0.0, 0.0)
+		_lug_pusher_body.constant_linear_velocity = global_transform.basis * Vector3(conveyor_speed, 0.0, 0.0)
 		pusher_cols = _lug_pusher_body.get_children()
 
 	var idx: int = 0
@@ -525,7 +533,9 @@ func _physics_process(delta: float) -> void:
 
 		# Propel board along sorter deck level
 		if local_pos.y >= sorter_height - 0.6:
-			tracking.board.linear_velocity.x = cur_speed
+			var world_flow := global_transform.basis * Vector3(cur_speed, 0.0, 0.0)
+			tracking.board.linear_velocity.x = world_flow.x
+			tracking.board.linear_velocity.z = world_flow.z
 
 		# Trigger gate when board approaches target bin bay (only if target bay is not full)
 		var bay_x_start: float = tracking.target_bin * bin_width
@@ -643,17 +653,18 @@ func _physics_process(delta: float) -> void:
 	# Actuate Floor Haul-Out Conveyor physical velocity along +X when a bay is unloading or boards are on floor chains
 	if is_instance_valid(_floor_haulout_body):
 		if any_bay_unloading_on_floor or _has_boards_on_floor_conveyor():
-			_floor_haulout_body.constant_linear_velocity = Vector3(conveyor_speed * 1.2, 0.0, 0.0)
+			_floor_haulout_body.constant_linear_velocity = global_transform.basis * Vector3(conveyor_speed * 1.2, 0.0, 0.0)
 		else:
 			_floor_haulout_body.constant_linear_velocity = Vector3.ZERO
 
 
 func _has_boards_on_floor_conveyor() -> bool:
+	if _tracked_boards.is_empty():
+		return false
 	var total_length: float = num_bins * bin_width + 1.0
-	var boards := get_tree().get_nodes_in_group("cut_boards")
-	for board_node in boards:
-		if is_instance_valid(board_node) and board_node is RigidBody3D:
-			var bpos: Vector3 = to_local((board_node as RigidBody3D).global_position)
+	for tracking in _tracked_boards:
+		if is_instance_valid(tracking.board) and tracking.active:
+			var bpos: Vector3 = to_local(tracking.board.global_position)
 			if bpos.y < 0.75 and bpos.x >= -0.5 and bpos.x <= total_length + 2.0:
 				return true
 	return false
@@ -662,11 +673,10 @@ func _has_boards_on_floor_conveyor() -> bool:
 func _are_forks_clear_of_boards(bay_idx: int) -> bool:
 	var min_x: float = bay_idx * bin_width - 0.10
 	var max_x: float = (bay_idx + 1) * bin_width + 0.10
-	var boards := get_tree().get_nodes_in_group("cut_boards")
-	for board_node in boards:
-		if is_instance_valid(board_node) and board_node is RigidBody3D:
-			var bpos: Vector3 = to_local((board_node as RigidBody3D).global_position)
-			if bpos.x >= min_x and bpos.x <= max_x and bpos.y < 0.75:
+	for tracking in _tracked_boards:
+		if is_instance_valid(tracking.board) and tracking.active:
+			var bpos: Vector3 = to_local(tracking.board.global_position)
+			if bpos.x >= min_x and bpos.x <= max_x and bpos.y < sorter_height - 0.5:
 				return false
 	return true
 

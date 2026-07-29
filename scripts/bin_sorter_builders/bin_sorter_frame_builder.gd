@@ -660,7 +660,7 @@ func _add_curved_fork_colliders(cradle_group: AnimatableBody3D, arm_len: float, 
 	var P2 := Vector2(arm_len * 0.60, -0.10)
 	var P3 := Vector2(arm_len, -0.11)
 
-	var num_segs: int = 5
+	var num_segs: int = 2
 	for s in range(num_segs):
 		var t0: float = float(s) / float(num_segs)
 		var t1: float = float(s + 1) / float(num_segs)

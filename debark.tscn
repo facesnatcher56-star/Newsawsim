@@ -291,6 +291,10 @@ size = Vector3(2.198, 0.942, 2.7)
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_miayt"]
 friction = 0.0
 
+[sub_resource type="BoxMesh" id="BoxMesh_Ground"]
+material = SubResource("Material_Ground")
+size = Vector3(80, 0.2, 60)
+
 [node name="DebarkScene" type="Node3D" unique_id=2093779747]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
@@ -299,6 +303,8 @@ environment = SubResource("Env_1")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=522720136]
 transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602545, -0.50000024, -0.74999994, 0.43301257, 11.351148, 5, 0)
 shadow_enabled = true
+directional_shadow_max_distance = 65.0
+directional_shadow_blend_splits = true
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1690760830]
 transform = Transform3D(0.22108892, 0.32153153, -0.9207264, 0, 0.9440892, 0.32969016, 0.9752537, -0.07289083, 0.20872764, 47.557087, 2.4041243, 3.8661594)
@@ -312,10 +318,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.805786, -0.9, 2)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.998535, -0.48825264, -0.010009766)
 shape = SubResource("BoxShape3D_ground")
 
-[node name="Visuals" type="CSGBox3D" parent="Ground" unique_id=100000042]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.960331, -0.5130632, -0.12728214)
-size = Vector3(80, 0.2, 60)
-material = SubResource("Material_Ground")
+[node name="Visuals" type="MeshInstance3D" parent="Ground" unique_id=100000042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.884544, -0.5130651, -0.121785164)
+mesh = SubResource("BoxMesh_Ground")
 
 [node name="ReSawDeck1" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 14.685764, 0.5144422, -0.6011386)
