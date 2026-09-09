@@ -13,7 +13,6 @@ extends StaticBody3D
 const BinSorterFrameBuilder := preload("res://game/machines/sorter/builders/bin_sorter_frame_builder.gd")
 const BinSorterGateBuilder := preload("res://game/machines/sorter/builders/bin_sorter_gate_builder.gd")
 const CutBoardScene := preload("res://game/lumber/cut_board.tscn")
-const LumberLibrary := preload("res://game/lumber/lumber_library.gd")
 
 ## Number of sorting bays (2 to 50).
 @export_range(2, 50, 1) var num_bins: int = 4:
@@ -108,6 +107,8 @@ class BoardTrackingData:
 	var active: bool = true
 	var gate_triggered: bool = false
 	var dropped_into_bay: bool = false
+	var released: bool = false
+	var previous_freeze_mode: int = 0
 
 var _tracked_boards: Array[BoardTrackingData] = []
 
@@ -210,7 +211,16 @@ func _setup_standalone_camera() -> void:
 	var test_cam: Camera3D = get_node_or_null("TestCamera")
 	var test_light: DirectionalLight3D = get_node_or_null("TestLight")
 
-	var is_standalone: bool = (get_tree().current_scene == self or get_tree().current_scene == get_parent())
+	var is_standalone: bool = (get_tree().current_scene == self)
+	if not is_standalone:
+		if is_instance_valid(test_cam):
+			test_cam.current = false
+		if is_instance_valid(test_light):
+			test_light.visible = false
+		var existing_env := get_node_or_null("TestEnvironment")
+		if existing_env != null:
+			existing_env.queue_free()
+		return
 
 	if is_instance_valid(test_cam):
 		test_cam.current = is_standalone
@@ -469,10 +479,23 @@ func _get_board_sorting_grade(body: Node3D) -> int:
 	return grade
 
 
+func can_accept_board(body: Node3D) -> bool:
+	if not body.is_in_group("cut_boards") or body.is_in_group("cut_slabs"):
+		return false
+	var target: int = _get_board_sorting_grade(body) % num_bins
+	if _bay_discharging[target] or _bay_board_counts[target] >= max_boards_per_bay:
+		return false
+	# Meter one board at a time until it has cleared the overhead track.
+	for data in _tracked_boards:
+		if is_instance_valid(data.board) and not data.dropped_into_bay:
+			return false
+	return true
+
+
 func _on_infeed_body_entered(body: Node3D) -> void:
 	if Engine.is_editor_hint():
 		return
-	if not (body is RigidBody3D):
+	if not (body is RigidBody3D) or not body.is_in_group("cut_boards") or body.is_in_group("cut_slabs") or body.freeze:
 		return
 
 	for data in _tracked_boards:
@@ -495,6 +518,9 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 	tracking.board = body as RigidBody3D
 	tracking.target_bin = target_b
 	tracking.infeed_time = Time.get_ticks_msec() / 1000.0
+	tracking.previous_freeze_mode = body.freeze_mode
+	body.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+	body.freeze = true
 	_tracked_boards.append(tracking)
 
 
@@ -529,33 +555,40 @@ func _physics_process(delta: float) -> void:
 			continue
 
 		var local_pos: Vector3 = to_local(tracking.board.global_position)
-		var target_x: float = (tracking.target_bin + 0.3) * bin_width
+		if tracking.dropped_into_bay and (local_pos.x > num_bins * bin_width + 2.0 or local_pos.y < -2.0):
+			_tracked_boards.remove_at(i)
+			i -= 1
+			continue
 
-		# Propel board along sorter deck level
-		if local_pos.y >= sorter_height - 0.6:
-			var world_flow := global_transform.basis * Vector3(cur_speed, 0.0, 0.0)
-			tracking.board.linear_velocity.x = world_flow.x
-			tracking.board.linear_velocity.z = world_flow.z
+		# Guided chain carriage keeps thin boards supported across deck slots.
+		# Release to gravity only after the selected gate has opened.
+		if not tracking.released:
+			var destination_x: float = (tracking.target_bin + 0.45) * bin_width
+			local_pos.x = move_toward(local_pos.x, destination_x, cur_speed * delta)
+			tracking.board.global_position = to_global(local_pos)
+			if tracking.gate_triggered and _gate_nodes[tracking.target_bin].rotation.z >= 1.2:
+				tracking.board.freeze_mode = tracking.previous_freeze_mode
+				tracking.board.freeze = false
+				tracking.board.linear_velocity = Vector3.ZERO
+				tracking.board.angular_velocity = Vector3.ZERO
+				tracking.released = true
 
 		# Trigger gate when board approaches target bin bay (only if target bay is not full)
 		var bay_x_start: float = tracking.target_bin * bin_width
-		if not tracking.gate_triggered and local_pos.x >= bay_x_start - 0.15 and local_pos.x <= bay_x_start + bin_width * 0.6:
+		if not tracking.gate_triggered and local_pos.x >= bay_x_start + bin_width * 0.35 and local_pos.x <= bay_x_start + bin_width * 0.7:
 			if _bay_board_counts[tracking.target_bin] < max_boards_per_bay and not _bay_discharging[tracking.target_bin]:
-				_target_gate_angles[tracking.target_bin] = -0.185
+				_target_gate_angles[tracking.target_bin] = 1.3
 				_gate_hold_timers[tracking.target_bin] = 1.6
 				_set_bay_status_led(tracking.target_bin, "Yellow")
 				tracking.gate_triggered = true
 
 		# Board drops down into bin hopper below deck level
-		if local_pos.y < sorter_height - 0.8:
+		if tracking.released and local_pos.y < sorter_height - 0.45 and local_pos.x >= bay_x_start and local_pos.x < bay_x_start + bin_width:
 			if not tracking.dropped_into_bay:
 				tracking.dropped_into_bay = true
 				if tracking.target_bin < _bay_board_counts.size():
 					_bay_board_counts[tracking.target_bin] += 1
 
-			# Board dropped all the way into hopper
-			if local_pos.y < sorter_height - 1.5:
-				tracking.active = false
 		i -= 1
 
 	# Actuate pneumatic drop gates and piston rods
@@ -571,12 +604,12 @@ func _physics_process(delta: float) -> void:
 			gate.rotation.z = move_toward(cur_angle, target_angle, gate_speed * delta)
 
 			if b < _piston_nodes.size():
-				var extension: float = (abs(gate.rotation.z) / 0.185) * 0.06
+				var extension: float = (abs(gate.rotation.z) / 1.3) * 0.06
 				for piston in _piston_nodes[b]:
 					if is_instance_valid(piston):
 						piston.position.y = -0.25 - extension
 
-		if _target_gate_angles[b] != 0.0 and is_equal_approx(gate.rotation.z, -0.185):
+		if _target_gate_angles[b] != 0.0 and is_equal_approx(gate.rotation.z, 1.3):
 			_gate_hold_timers[b] -= delta
 			if _gate_hold_timers[b] <= 0.0:
 				_target_gate_angles[b] = 0.0

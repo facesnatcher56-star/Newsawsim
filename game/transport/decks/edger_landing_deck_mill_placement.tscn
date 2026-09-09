@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://game/transport/decks/edger_landing_deck.tscn" id="1"]
+
+[node name="EdgerLandingDeck" instance=ExtResource("1")]
+position = Vector3(50.803027, 0.2271245, 18.297045)

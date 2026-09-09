@@ -11,3 +11,6 @@
 # Local AI/editor tooling (not game content)
 .claude/
 addons/ziva_agent/
+
+# Blender backup files
+*.blend1
