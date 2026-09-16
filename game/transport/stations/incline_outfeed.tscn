@@ -1,41 +1,32 @@
-[gd_scene format=3 uid="uid://incline_outfeed"]
+[gd_scene format=3 uid="uid://c0alpbtit8nxv"]
 
-[ext_resource type="PackedScene" path="res://game/transport/decks/incline_log_deck.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://game/transport/conveyors/incline_chain_conveyor.tscn" id="2"]
-[ext_resource type="PackedScene" path="res://game/props/semi_trailer.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://bb2nr6s7mraa0" path="res://game/transport/decks/incline_log_deck.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://dndnied0ni2ha" path="res://game/transport/conveyors/incline_chain_conveyor.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://d1mvyhaftsh6d" path="res://game/props/semi_trailer.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://cu6kodccm1rqk" path="res://game/transport/roller_beds/roller_bed.tscn" id="4"]
 
-[node name="InclineOutfeed" type="Node3D"]
+[node name="InclineOutfeed" type="Node3D" unique_id=2087427473]
 
-[node name="InclineLogDeck" parent="." unique_id=428629830 node_paths=PackedStringArray("carriage", "load_zone", "top_zone", "deck_area") instance=ExtResource("1")]
+[node name="InclineLogDeck" parent="." unique_id=428629830 instance=ExtResource("1")]
 transform = Transform3D(1, 0, 0, 0, 0.9724839, -0.23297013, 0, 0.23297013, 0.9724839, 14.081036, 0.13039482, 4.092802)
 incline_length = 3.0
-incline_width = 5.2
 lugs_per_track = 8
 lug_spacing = 0.75
-track_x_positions = Array[float]([-2.4, -1.8, -1.2, -0.6, 0, 0.6, 1.2, 1.8, 2.4])
-carriage = NodePath("")
 max_logs_on_deck = 4
-load_zone = NodePath("SlopeRoot/LoadZone")
-top_zone = NodePath("SlopeRoot/TopZone")
-deck_area = NodePath("SlopeRoot/DeckArea")
 
-[node name="SlopeRoot" parent="InclineLogDeck" index="0"]
-transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.37460667, 0, -0.37460667, 0.9271841, 0, 0, 0)
-
-[node name="LoadZone" parent="InclineLogDeck/SlopeRoot" index="0"]
+[node name="LoadZone" parent="InclineLogDeck/SlopeRoot" parent_id_path=PackedInt32Array(428629830, 2113999076) index="0" unique_id=1737171531]
 transform = Transform3D(1, 0, 0, 0, 0.3433884, 0, 0, -1.4901161e-08, 0.22496797, 0, 0.25579172, -1.17174)
 
-[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/LoadZone" index="0"]
+[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/LoadZone" index="0" unique_id=256738611]
 transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99999094, 0, 0.3895898, -0.08651161)
 
-[node name="TopZone" parent="InclineLogDeck/SlopeRoot" index="1"]
+[node name="TopZone" parent="InclineLogDeck/SlopeRoot" parent_id_path=PackedInt32Array(428629830, 2113999076) index="1" unique_id=837465067]
 transform = Transform3D(1, 0, 0, 0, 0.45403758, 0, 0, 7.450581e-09, 0.98132765, 0, 0.20258033, 1.1297617)
 
-[node name="DeckArea" parent="InclineLogDeck/SlopeRoot" index="2"]
+[node name="DeckArea" parent="InclineLogDeck/SlopeRoot" parent_id_path=PackedInt32Array(428629830, 2113999076) index="2" unique_id=803607564]
 transform = Transform3D(1, 0, 0, 0, 0.20432778, 7.450581e-09, 0, 1.8626451e-09, 0.4784084, 0, 0.1572035, -0.07479358)
 
-[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/DeckArea" index="0"]
+[node name="CollisionShape3D" parent="InclineLogDeck/SlopeRoot/DeckArea" index="0" unique_id=992939568]
 transform = Transform3D(0.99998146, 0, 0, 0, 0.9999908, -1.7881393e-06, 0, 4.4703484e-08, 0.99999547, 0, -3.5762787e-07, -0.3222046)
 
 [node name="InclineChainConveyor" parent="." unique_id=100000044 instance=ExtResource("2")]

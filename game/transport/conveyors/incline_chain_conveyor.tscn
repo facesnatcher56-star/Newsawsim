@@ -1,12 +1,12 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://dndnied0ni2ha"]
 
-[ext_resource type="Script" path="res://game/transport/conveyors/incline_chain_conveyor.gd" id="1"]
+[ext_resource type="Script" uid="uid://dakd1r1ydxff0" path="res://game/transport/conveyors/incline_chain_conveyor.gd" id="1"]
 
 [sub_resource type="BoxShape3D" id="1"]
-size = Vector3(1.0, 0.15, 9.0)
+size = Vector3(1, 0.15, 9)
 
 [sub_resource type="BoxShape3D" id="2"]
-size = Vector3(0.08, 0.5, 9.0)
+size = Vector3(0.08, 0.5, 9)
 
 [sub_resource type="StandardMaterial3D" id="Material_Bed"]
 albedo_color = Color(0.28, 0.28, 0.3, 1)
@@ -18,49 +18,48 @@ albedo_color = Color(0.2, 0.2, 0.22, 1)
 metallic = 0.9
 roughness = 0.4
 
-[node name="InclineChainConveyor" type="StaticBody3D"]
+[node name="InclineChainConveyor" type="StaticBody3D" unique_id=407768793]
 script = ExtResource("1")
-speed = 1.4
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1853724438]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
 shape = SubResource("1")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1181766320]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.25, 0)
 shape = SubResource("2")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=691356663]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.25, 0)
 shape = SubResource("2")
 
-[node name="Visuals" type="Node3D" parent="."]
+[node name="Visuals" type="Node3D" parent="." unique_id=647440871]
 
-[node name="Bed" type="CSGBox3D" parent="Visuals"]
+[node name="Bed" type="CSGBox3D" parent="Visuals" unique_id=1650815259]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
-size = Vector3(1, 0.1, 9.0)
+size = Vector3(1, 0.1, 9)
 material = SubResource("Material_Bed")
 
-[node name="WallLeft" type="CSGBox3D" parent="Visuals"]
+[node name="WallLeft" type="CSGBox3D" parent="Visuals" unique_id=1923639205]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.25, 0)
-size = Vector3(0.08, 0.5, 9.0)
+size = Vector3(0.08, 0.5, 9)
 material = SubResource("Material_Bed")
 
-[node name="WallRight" type="CSGBox3D" parent="Visuals"]
+[node name="WallRight" type="CSGBox3D" parent="Visuals" unique_id=1472180982]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.25, 0)
-size = Vector3(0.08, 0.5, 9.0)
+size = Vector3(0.08, 0.5, 9)
 material = SubResource("Material_Bed")
 
-[node name="Leg1" type="CSGCylinder3D" parent="Visuals"]
+[node name="Leg1" type="CSGCylinder3D" parent="Visuals" unique_id=1465324510]
 transform = Transform3D(1, 0, 0, 0, 0.894427, 0.447214, 0, -0.447214, 0.894427, 0, -1.5, 3.2)
 radius = 0.08
 height = 3.2
 material = SubResource("Material_Legs")
 
-[node name="Leg2" type="CSGCylinder3D" parent="Visuals"]
-transform = Transform3D(1, 0, 0, 0, 0.894427, 0.447214, 0, -0.447214, 0.894427, 0, -0.4, -2.0)
+[node name="Leg2" type="CSGCylinder3D" parent="Visuals" unique_id=1182697098]
+transform = Transform3D(1, 0, 0, 0, 0.894427, 0.447214, 0, -0.447214, 0.894427, 0, -0.4, -2)
 radius = 0.08
 height = 1.0
 material = SubResource("Material_Legs")
 
-[node name="ChainContainer" type="Node3D" parent="Visuals"]
+[node name="ChainContainer" type="Node3D" parent="Visuals" unique_id=1463818542]

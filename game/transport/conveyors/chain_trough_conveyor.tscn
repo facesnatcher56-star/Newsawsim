@@ -2,16 +2,16 @@
 
 [ext_resource type="Script" uid="uid://3pdrpgyr8mll" path="res://game/transport/conveyors/chain_trough_conveyor.gd" id="1_trough"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_4fx5w"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_abw71"]
 size = Vector3(0.4, 0.05, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_j8uv6"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_5rbxs"]
 size = Vector3(0.43031737, 0.05, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_ixebn"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_kkhg8"]
 size = Vector3(0.43031737, 0.05, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0t1bu"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_0c411"]
 size = Vector3(1.13, 0.8, 4.05)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
@@ -27,21 +27,21 @@ link_spacing = 0.15
 
 [node name="CollisionBottom" type="CollisionShape3D" parent="." unique_id=32245668]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
-shape = SubResource("BoxShape3D_4fx5w")
+shape = SubResource("BoxShape3D_abw71")
 
 [node name="CollisionLeft" type="CollisionShape3D" parent="." unique_id=426988166]
 transform = Transform3D(0.9063079, 0.42261833, 0, -0.42261833, 0.9063079, 0, 0, 0, 1, -0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_j8uv6")
+shape = SubResource("BoxShape3D_5rbxs")
 
 [node name="CollisionRight" type="CollisionShape3D" parent="." unique_id=558373768]
 transform = Transform3D(0.9063079, -0.42261833, 0, 0.42261833, 0.9063079, 0, 0, 0, 1, 0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_ixebn")
+shape = SubResource("BoxShape3D_kkhg8")
 
 [node name="LogArea" type="Area3D" parent="." unique_id=1655586341]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LogArea" unique_id=2087271807]
-shape = SubResource("BoxShape3D_0t1bu")
+shape = SubResource("BoxShape3D_0c411")
 
 [node name="LeftWall" type="CSGBox3D" parent="." unique_id=1514265469]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.59, 0.18, 0)

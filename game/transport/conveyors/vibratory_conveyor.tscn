@@ -1,9 +1,9 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://bjyof36pq14d3"]
 
-[ext_resource type="Script" path="res://game/transport/conveyors/vibratory_conveyor.gd" id="1"]
+[ext_resource type="Script" uid="uid://b77rn4xf7b66c" path="res://game/transport/conveyors/vibratory_conveyor.gd" id="1"]
 
 [sub_resource type="BoxShape3D" id="1"]
-size = Vector3(1.0, 0.1, 4.5)
+size = Vector3(1, 0.1, 4.5)
 
 [sub_resource type="BoxShape3D" id="2"]
 size = Vector3(0.08, 0.4, 4.5)
@@ -18,58 +18,57 @@ albedo_color = Color(0.4, 0.4, 0.45, 1)
 metallic = 0.9
 roughness = 0.2
 
-[node name="VibratoryConveyor" type="StaticBody3D"]
+[node name="VibratoryConveyor" type="StaticBody3D" unique_id=1782605354]
 script = ExtResource("1")
-speed = 1.2
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1944195183]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 shape = SubResource("1")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="." unique_id=1004740604]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.2, 0)
 shape = SubResource("2")
 
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="." unique_id=494088664]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.2, 0)
 shape = SubResource("2")
 
-[node name="Visuals" type="Node3D" parent="."]
+[node name="Visuals" type="Node3D" parent="." unique_id=1033480056]
 
-[node name="TroughBase" type="CSGBox3D" parent="Visuals"]
+[node name="TroughBase" type="CSGBox3D" parent="Visuals" unique_id=1272589024]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
 size = Vector3(1, 0.1, 4.5)
 material = SubResource("Material_Trough")
 
-[node name="WallLeft" type="CSGBox3D" parent="Visuals"]
+[node name="WallLeft" type="CSGBox3D" parent="Visuals" unique_id=2006563205]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.2, 0)
 size = Vector3(0.08, 0.4, 4.5)
 material = SubResource("Material_Trough")
 
-[node name="WallRight" type="CSGBox3D" parent="Visuals"]
+[node name="WallRight" type="CSGBox3D" parent="Visuals" unique_id=1957454174]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0.2, 0)
 size = Vector3(0.08, 0.4, 4.5)
 material = SubResource("Material_Trough")
 
-[node name="Spring1" type="CSGCylinder3D" parent="Visuals"]
+[node name="Spring1" type="CSGCylinder3D" parent="Visuals" unique_id=2023422108]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.25, -1.5)
 radius = 0.04
 height = 0.5
 material = SubResource("Material_Springs")
 
-[node name="Spring2" type="CSGCylinder3D" parent="Visuals"]
+[node name="Spring2" type="CSGCylinder3D" parent="Visuals" unique_id=2110769775]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, -1.5)
 radius = 0.04
 height = 0.5
 material = SubResource("Material_Springs")
 
-[node name="Spring3" type="CSGCylinder3D" parent="Visuals"]
+[node name="Spring3" type="CSGCylinder3D" parent="Visuals" unique_id=26759113]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, -0.25, 1.5)
 radius = 0.04
 height = 0.5
 material = SubResource("Material_Springs")
 
-[node name="Spring4" type="CSGCylinder3D" parent="Visuals"]
+[node name="Spring4" type="CSGCylinder3D" parent="Visuals" unique_id=596338486]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, -0.25, 1.5)
 radius = 0.04
 height = 0.5

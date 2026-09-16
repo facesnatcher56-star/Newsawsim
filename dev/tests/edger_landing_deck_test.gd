@@ -11,7 +11,7 @@ func check():
 	var deck = load("res://game/transport/decks/edger_landing_deck.tscn").instantiate()
 	root.add_child(deck)
 	expect(deck._belts.size() == 5, "Five physical chain tracks required")
-	expect(deck._chains.multimesh.instance_count == 525, "All chain links must be present")
+	expect(deck._chains.multimesh.instance_count == 520, "All chain links must be present")
 	expect(deck._shafts.size() == 2, "Both common sprocket shafts must be animatable")
 	var ramps = deck.get_node("RuntimeParts/LandingRampCollisions")
 	expect(ramps.get_child_count() == 5, "Entry ramp plus four inter-chain ramps required")

@@ -1,19 +1,9 @@
-[gd_scene format=3]
-
-[sub_resource type="StandardMaterial3D" id="Material_ConcreteWall"]
-albedo_color = Color(0.42, 0.43, 0.45, 1)
-roughness = 0.85
+[gd_scene format=3 uid="uid://chiwgy06idfte"]
 
 [sub_resource type="StandardMaterial3D" id="Material_Ceiling"]
 albedo_color = Color(0.2, 0.22, 0.25, 1)
 metallic = 0.6
 roughness = 0.4
-
-[sub_resource type="StandardMaterial3D" id="Material_WindowGlass"]
-transparency = 1
-albedo_color = Color(0.65, 0.75, 0.85, 0.15)
-roughness = 0.1
-metallic = 0.9
 
 [sub_resource type="StandardMaterial3D" id="Material_Pillar"]
 albedo_color = Color(0.18, 0.18, 0.2, 1)
@@ -25,621 +15,605 @@ albedo_color = Color(0.75, 0.35, 0.08, 1)
 metallic = 0.7
 roughness = 0.35
 
+[sub_resource type="StandardMaterial3D" id="Material_ConcreteWall"]
+albedo_color = Color(0.42, 0.43, 0.45, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Material_WindowGlass"]
+transparency = 1
+albedo_color = Color(0.65, 0.75, 0.85, 0.15)
+metallic = 0.9
+roughness = 0.1
+
 [sub_resource type="StandardMaterial3D" id="Material_EmissiveLight"]
 shading_mode = 0
 albedo_color = Color(1, 1, 0.9, 1)
 
-[node name="SawmillBuilding" type="Node3D"]
+[node name="SawmillBuilding" type="Node3D" unique_id=1111494041]
 
-[node name="Ceiling" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 7.1, 2.0)
+[node name="Ceiling" type="CSGBox3D" parent="." unique_id=1193345883]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 7.1, 2)
 use_collision = true
 size = Vector3(60, 0.2, 60)
 material = SubResource("Material_Ceiling")
 
-[node name="Pillar_L1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, -28.0)
+[node name="Pillar_L1" type="CSGBox3D" parent="." unique_id=1111915460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, -28)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_L2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, -8.0)
+[node name="Pillar_L2" type="CSGBox3D" parent="." unique_id=26978236]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, -8)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_L3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, 12.0)
+[node name="Pillar_L3" type="CSGBox3D" parent="." unique_id=999497487]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, 12)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_L4" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, 32.0)
+[node name="Pillar_L4" type="CSGBox3D" parent="." unique_id=1146686795]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 3.1, 32)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_R1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, -28.0)
+[node name="Pillar_R1" type="CSGBox3D" parent="." unique_id=49599861]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, -28)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_R2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, -8.0)
+[node name="Pillar_R2" type="CSGBox3D" parent="." unique_id=598707229]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, -8)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_R3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, 12.0)
+[node name="Pillar_R3" type="CSGBox3D" parent="." unique_id=902566483]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, 12)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_R4" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, 32.0)
+[node name="Pillar_R4" type="CSGBox3D" parent="." unique_id=717212165]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 3.1, 32)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_B1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 3.1, -28.0)
+[node name="Pillar_B1" type="CSGBox3D" parent="." unique_id=622508644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 3.1, -28)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_B2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 3.1, -28.0)
+[node name="Pillar_B2" type="CSGBox3D" parent="." unique_id=831468845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 3.1, -28)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_B3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8, 3.1, -28.0)
+[node name="Pillar_B3" type="CSGBox3D" parent="." unique_id=1979677687]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8, 3.1, -28)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_F1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 3.1, 32.0)
+[node name="Pillar_F1" type="CSGBox3D" parent="." unique_id=499656786]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 3.1, 32)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_F2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 3.1, 32.0)
+[node name="Pillar_F2" type="CSGBox3D" parent="." unique_id=2018483918]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 3.1, 32)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Pillar_F3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8, 3.1, 32.0)
+[node name="Pillar_F3" type="CSGBox3D" parent="." unique_id=1036151712]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8, 3.1, 32)
 use_collision = true
-size = Vector3(0.8, 8.0, 0.8)
+size = Vector3(0.8, 8, 0.8)
 material = SubResource("Material_Pillar")
 
-[node name="Beam_Z1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 6.9, 2.0)
+[node name="Beam_Z1" type="CSGBox3D" parent="." unique_id=606336208]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 6.9, 2)
 use_collision = true
 size = Vector3(0.4, 0.4, 60)
 material = SubResource("Material_Beam")
 
-[node name="Beam_Z2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 6.9, 2.0)
+[node name="Beam_Z2" type="CSGBox3D" parent="." unique_id=709215933]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 6.9, 2)
 use_collision = true
 size = Vector3(0.4, 0.4, 60)
 material = SubResource("Material_Beam")
 
-[node name="Beam_Z3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, 2.0)
+[node name="Beam_Z3" type="CSGBox3D" parent="." unique_id=2027936952]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, 2)
 use_collision = true
 size = Vector3(0.4, 0.4, 60)
 material = SubResource("Material_Beam")
 
-[node name="Beam_Z4" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8, 6.9, 2.0)
+[node name="Beam_Z4" type="CSGBox3D" parent="." unique_id=565578799]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 32.8, 6.9, 2)
 use_collision = true
 size = Vector3(0.4, 0.4, 60)
 material = SubResource("Material_Beam")
 
-[node name="Beam_Z5" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 6.9, 2.0)
+[node name="Beam_Z5" type="CSGBox3D" parent="." unique_id=1075896477]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 6.9, 2)
 use_collision = true
 size = Vector3(0.4, 0.4, 60)
 material = SubResource("Material_Beam")
 
-[node name="Beam_X1" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, -28.0)
+[node name="Beam_X1" type="CSGBox3D" parent="." unique_id=1929911994]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, -28)
 use_collision = true
 size = Vector3(60, 0.4, 0.4)
 material = SubResource("Material_Beam")
 
-[node name="Beam_X2" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, -8.0)
+[node name="Beam_X2" type="CSGBox3D" parent="." unique_id=480663053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, -8)
 use_collision = true
 size = Vector3(60, 0.4, 0.4)
 material = SubResource("Material_Beam")
 
-[node name="Beam_X3" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, 12.0)
+[node name="Beam_X3" type="CSGBox3D" parent="." unique_id=1900455828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, 12)
 use_collision = true
 size = Vector3(60, 0.4, 0.4)
 material = SubResource("Material_Beam")
 
-[node name="Beam_X4" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, 32.0)
+[node name="Beam_X4" type="CSGBox3D" parent="." unique_id=1542865811]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.8, 6.9, 32)
 use_collision = true
 size = Vector3(60, 0.4, 0.4)
 material = SubResource("Material_Beam")
 
-; Back Wall Segment 1
-[node name="Wall_B1_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 0.1, -28.0)
+[node name="Wall_B1_Lower" type="CSGBox3D" parent="." unique_id=287319541]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 0.1, -28)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_B1_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 2.6, -28.0)
+[node name="Wall_B1_Window" type="CSGBox3D" parent="." unique_id=906707162]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 2.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_B1_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 5.6, -28.0)
+[node name="Wall_B1_Upper" type="CSGBox3D" parent="." unique_id=1414381876]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 5.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Back Wall Segment 2
-[node name="Wall_B2_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 0.1, -28.0)
+[node name="Wall_B2_Lower" type="CSGBox3D" parent="." unique_id=104405532]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 0.1, -28)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_B2_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 2.6, -28.0)
+[node name="Wall_B2_Window" type="CSGBox3D" parent="." unique_id=744367489]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 2.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_B2_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 5.6, -28.0)
+[node name="Wall_B2_Upper" type="CSGBox3D" parent="." unique_id=410256158]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 5.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Back Wall Segment 3
-[node name="Wall_B3_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 0.1, -28.0)
+[node name="Wall_B3_Lower" type="CSGBox3D" parent="." unique_id=1343717095]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 0.1, -28)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_B3_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 2.6, -28.0)
+[node name="Wall_B3_Window" type="CSGBox3D" parent="." unique_id=318791974]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 2.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_B3_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 5.6, -28.0)
+[node name="Wall_B3_Upper" type="CSGBox3D" parent="." unique_id=1458033809]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 5.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Back Wall Segment 4
-[node name="Wall_B4_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 0.1, -28.0)
+[node name="Wall_B4_Lower" type="CSGBox3D" parent="." unique_id=734825838]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 0.1, -28)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_B4_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 2.6, -28.0)
+[node name="Wall_B4_Window" type="CSGBox3D" parent="." unique_id=1312621637]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 2.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_B4_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 5.6, -28.0)
+[node name="Wall_B4_Upper" type="CSGBox3D" parent="." unique_id=638574182]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 5.6, -28)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Front Wall Segment 1
-[node name="Wall_F1_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 0.1, 32.0)
+[node name="Wall_F1_Lower" type="CSGBox3D" parent="." unique_id=2133260002]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 0.1, 32)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_F1_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 2.6, 32.0)
+[node name="Wall_F1_Window" type="CSGBox3D" parent="." unique_id=512620102]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 2.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_F1_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 5.6, 32.0)
+[node name="Wall_F1_Upper" type="CSGBox3D" parent="." unique_id=1692285847]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7, 5.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Front Wall Segment 2
-[node name="Wall_F2_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 0.1, 32.0)
+[node name="Wall_F2_Lower" type="CSGBox3D" parent="." unique_id=2090000261]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 0.1, 32)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_F2_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 2.6, 32.0)
+[node name="Wall_F2_Window" type="CSGBox3D" parent="." unique_id=875299717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 2.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_F2_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 5.6, 32.0)
+[node name="Wall_F2_Upper" type="CSGBox3D" parent="." unique_id=558526221]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.3, 5.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Front Wall Segment 3
-[node name="Wall_F3_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 0.1, 32.0)
+[node name="Wall_F3_Lower" type="CSGBox3D" parent="." unique_id=132251160]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 0.1, 32)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_F3_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 2.6, 32.0)
+[node name="Wall_F3_Window" type="CSGBox3D" parent="." unique_id=257586853]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 2.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_F3_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 5.6, 32.0)
+[node name="Wall_F3_Upper" type="CSGBox3D" parent="." unique_id=520023323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.3, 5.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Front Wall Segment 4
-[node name="Wall_F4_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 0.1, 32.0)
+[node name="Wall_F4_Lower" type="CSGBox3D" parent="." unique_id=1664255187]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 0.1, 32)
 use_collision = true
-size = Vector3(14.8, 2.0, 0.2)
+size = Vector3(14.8, 2, 0.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_F4_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 2.6, 32.0)
+[node name="Wall_F4_Window" type="CSGBox3D" parent="." unique_id=1270427319]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 2.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.05)
+size = Vector3(14.8, 3, 0.05)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_F4_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 5.6, 32.0)
+[node name="Wall_F4_Upper" type="CSGBox3D" parent="." unique_id=1497654606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.3, 5.6, 32)
 use_collision = true
-size = Vector3(14.8, 3.0, 0.2)
+size = Vector3(14.8, 3, 0.2)
 material = SubResource("Material_Ceiling")
 
-; Left Wall Segment L1
-[node name="Wall_L1_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 0.1, -18.0)
+[node name="Wall_L1_Lower" type="CSGBox3D" parent="." unique_id=1771633947]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 0.1, -18)
 use_collision = true
-size = Vector3(0.2, 2.0, 19.2)
+size = Vector3(0.2, 2, 19.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_L1_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 2.6, -18.0)
+[node name="Wall_L1_Window" type="CSGBox3D" parent="." unique_id=1768333298]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 2.6, -18)
 use_collision = true
-size = Vector3(0.05, 3.0, 19.2)
+size = Vector3(0.05, 3, 19.2)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_L1_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 5.6, -18.0)
+[node name="Wall_L1_Upper" type="CSGBox3D" parent="." unique_id=1387653261]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 5.6, -18)
 use_collision = true
-size = Vector3(0.2, 3.0, 19.2)
+size = Vector3(0.2, 3, 19.2)
 material = SubResource("Material_Ceiling")
 
-; Left Wall Segment L2 (Doorway Portal - Lintel only)
-[node name="Wall_L2_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 5.6, 2.0)
+[node name="Wall_L2_Upper" type="CSGBox3D" parent="." unique_id=1971722538]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 5.6, 2)
 use_collision = true
-size = Vector3(0.2, 3.0, 19.2)
+size = Vector3(0.2, 3, 19.2)
 material = SubResource("Material_Ceiling")
 
-; Left Wall Segment L3
-[node name="Wall_L3_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 0.1, 22.0)
+[node name="Wall_L3_Lower" type="CSGBox3D" parent="." unique_id=1191793115]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 0.1, 22)
 use_collision = true
-size = Vector3(0.2, 2.0, 19.2)
+size = Vector3(0.2, 2, 19.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_L3_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 2.6, 22.0)
+[node name="Wall_L3_Window" type="CSGBox3D" parent="." unique_id=480233807]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 2.6, 22)
 use_collision = true
-size = Vector3(0.05, 3.0, 19.2)
+size = Vector3(0.05, 3, 19.2)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_L3_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 5.6, 22.0)
+[node name="Wall_L3_Upper" type="CSGBox3D" parent="." unique_id=1196933983]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.2, 5.6, 22)
 use_collision = true
-size = Vector3(0.2, 3.0, 19.2)
+size = Vector3(0.2, 3, 19.2)
 material = SubResource("Material_Ceiling")
 
-; Right Wall Segment R1
-[node name="Wall_R1_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 0.1, -18.0)
+[node name="Wall_R1_Lower" type="CSGBox3D" parent="." unique_id=206651004]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 0.1, -18)
 use_collision = true
-size = Vector3(0.2, 2.0, 19.2)
+size = Vector3(0.2, 2, 19.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_R1_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 2.6, -18.0)
+[node name="Wall_R1_Window" type="CSGBox3D" parent="." unique_id=1979421606]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 2.6, -18)
 use_collision = true
-size = Vector3(0.05, 3.0, 19.2)
+size = Vector3(0.05, 3, 19.2)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_R1_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 5.6, -18.0)
+[node name="Wall_R1_Upper" type="CSGBox3D" parent="." unique_id=1163754050]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 5.6, -18)
 use_collision = true
-size = Vector3(0.2, 3.0, 19.2)
+size = Vector3(0.2, 3, 19.2)
 material = SubResource("Material_Ceiling")
 
-; Right Wall Segment R2 (Doorway Portal - Lintel only)
-[node name="Wall_R2_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 5.6, 2.0)
+[node name="Wall_R2_Upper" type="CSGBox3D" parent="." unique_id=635082084]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 5.6, 2)
 use_collision = true
-size = Vector3(0.2, 3.0, 19.2)
+size = Vector3(0.2, 3, 19.2)
 material = SubResource("Material_Ceiling")
 
-; Right Wall Segment R3
-[node name="Wall_R3_Lower" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 0.1, 22.0)
+[node name="Wall_R3_Lower" type="CSGBox3D" parent="." unique_id=887654119]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 0.1, 22)
 use_collision = true
-size = Vector3(0.2, 2.0, 19.2)
+size = Vector3(0.2, 2, 19.2)
 material = SubResource("Material_ConcreteWall")
 
-[node name="Wall_R3_Window" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 2.6, 22.0)
+[node name="Wall_R3_Window" type="CSGBox3D" parent="." unique_id=1196191091]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 2.6, 22)
 use_collision = true
-size = Vector3(0.05, 3.0, 19.2)
+size = Vector3(0.05, 3, 19.2)
 material = SubResource("Material_WindowGlass")
 
-[node name="Wall_R3_Upper" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 5.6, 22.0)
+[node name="Wall_R3_Upper" type="CSGBox3D" parent="." unique_id=440744042]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.8, 5.6, 22)
 use_collision = true
-size = Vector3(0.2, 3.0, 19.2)
+size = Vector3(0.2, 3, 19.2)
 material = SubResource("Material_Ceiling")
 
-; Light 1 (X=-5, Z=-15)
-[node name="Light_1_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 6.95, -15.0)
+[node name="Light_1_Fix" type="CSGBox3D" parent="." unique_id=788122973]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.95, -15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_1_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 6.9, -15.0)
+[node name="Light_1_Bulb" type="CSGBox3D" parent="." unique_id=271472642]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.9, -15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_1_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5.0, 6.85, -15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_1_Spot" type="SpotLight3D" parent="." unique_id=528476277]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5, 6.85, -15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 2 (X=-5, Z=0)
-[node name="Light_2_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 6.95, 0.0)
+[node name="Light_2_Fix" type="CSGBox3D" parent="." unique_id=626253793]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.95, 0)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_2_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 6.9, 0.0)
+[node name="Light_2_Bulb" type="CSGBox3D" parent="." unique_id=582765739]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.9, 0)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_2_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5.0, 6.85, 0.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_2_Spot" type="SpotLight3D" parent="." unique_id=279363629]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5, 6.85, 0)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 3 (X=-5, Z=15)
-[node name="Light_3_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 6.95, 15.0)
+[node name="Light_3_Fix" type="CSGBox3D" parent="." unique_id=1446694696]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.95, 15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_3_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.0, 6.9, 15.0)
+[node name="Light_3_Bulb" type="CSGBox3D" parent="." unique_id=1676517774]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 6.9, 15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_3_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5.0, 6.85, 15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_3_Spot" type="SpotLight3D" parent="." unique_id=501972235]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -5, 6.85, 15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 4 (X=10, Z=-15)
-[node name="Light_4_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 6.95, -15.0)
+[node name="Light_4_Fix" type="CSGBox3D" parent="." unique_id=482543990]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6.95, -15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_4_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 6.9, -15.0)
+[node name="Light_4_Bulb" type="CSGBox3D" parent="." unique_id=1916397588]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6.9, -15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_4_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10.0, 6.85, -15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_4_Spot" type="SpotLight3D" parent="." unique_id=568202875]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10, 6.85, -15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 5 (X=10, Z=0)
-[node name="Light_5_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 6.95, 0.0)
+[node name="Light_5_Fix" type="CSGBox3D" parent="." unique_id=1260062139]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6.95, 0)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_5_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 6.9, 0.0)
+[node name="Light_5_Bulb" type="CSGBox3D" parent="." unique_id=349696306]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6.9, 0)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_5_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10.0, 6.85, 0.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_5_Spot" type="SpotLight3D" parent="." unique_id=1358211925]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10, 6.85, 0)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 6 (X=10, Z=15)
-[node name="Light_6_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 6.95, 15.0)
+[node name="Light_6_Fix" type="CSGBox3D" parent="." unique_id=724243210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6.95, 15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_6_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.0, 6.9, 15.0)
+[node name="Light_6_Bulb" type="CSGBox3D" parent="." unique_id=1102442534]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 6.9, 15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_6_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10.0, 6.85, 15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_6_Spot" type="SpotLight3D" parent="." unique_id=1799238251]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 10, 6.85, 15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 7 (X=25, Z=-15)
-[node name="Light_7_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0, 6.95, -15.0)
+[node name="Light_7_Fix" type="CSGBox3D" parent="." unique_id=2025676151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.95, -15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_7_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0, 6.9, -15.0)
+[node name="Light_7_Bulb" type="CSGBox3D" parent="." unique_id=2137251499]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.9, -15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_7_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 25.0, 6.85, -15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_7_Spot" type="SpotLight3D" parent="." unique_id=1482736871]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 25, 6.85, -15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 8 (X=25, Z=0)
-[node name="Light_8_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0, 6.95, 0.0)
+[node name="Light_8_Fix" type="CSGBox3D" parent="." unique_id=314506061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.95, 0)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_8_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0, 6.9, 0.0)
+[node name="Light_8_Bulb" type="CSGBox3D" parent="." unique_id=279229113]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.9, 0)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_8_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 25.0, 6.85, 0.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_8_Spot" type="SpotLight3D" parent="." unique_id=903814131]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 25, 6.85, 0)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 9 (X=25, Z=15)
-[node name="Light_9_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0, 6.95, 15.0)
+[node name="Light_9_Fix" type="CSGBox3D" parent="." unique_id=1160812300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.95, 15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_9_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25.0, 6.9, 15.0)
+[node name="Light_9_Bulb" type="CSGBox3D" parent="." unique_id=2138274862]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 6.9, 15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_9_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 25.0, 6.85, 15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_9_Spot" type="SpotLight3D" parent="." unique_id=646338340]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 25, 6.85, 15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 10 (X=40, Z=-15)
-[node name="Light_10_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.0, 6.95, -15.0)
+[node name="Light_10_Fix" type="CSGBox3D" parent="." unique_id=263054609]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 6.95, -15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_10_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.0, 6.9, -15.0)
+[node name="Light_10_Bulb" type="CSGBox3D" parent="." unique_id=1514119192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 6.9, -15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_10_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 40.0, 6.85, -15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_10_Spot" type="SpotLight3D" parent="." unique_id=1111742774]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 40, 6.85, -15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 11 (X=40, Z=0)
-[node name="Light_11_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.0, 6.95, 0.0)
+[node name="Light_11_Fix" type="CSGBox3D" parent="." unique_id=948934873]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 6.95, 0)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_11_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.0, 6.9, 0.0)
+[node name="Light_11_Bulb" type="CSGBox3D" parent="." unique_id=1853412419]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 6.9, 0)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_11_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 40.0, 6.85, 0.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_11_Spot" type="SpotLight3D" parent="." unique_id=1492416254]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 40, 6.85, 0)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0
 spot_angle = 50.0
 
-; Light 12 (X=40, Z=15)
-[node name="Light_12_Fix" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.0, 6.95, 15.0)
+[node name="Light_12_Fix" type="CSGBox3D" parent="." unique_id=650394]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 6.95, 15)
 size = Vector3(0.4, 0.1, 0.4)
 material = SubResource("Material_Pillar")
 
-[node name="Light_12_Bulb" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.0, 6.9, 15.0)
+[node name="Light_12_Bulb" type="CSGBox3D" parent="." unique_id=35089732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 6.9, 15)
 size = Vector3(0.3, 0.02, 0.3)
 material = SubResource("Material_EmissiveLight")
 
-[node name="Light_12_Spot" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 40.0, 6.85, 15.0)
-light_color = Color(1.0, 0.98, 0.9, 1)
+[node name="Light_12_Spot" type="SpotLight3D" parent="." unique_id=728188505]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 40, 6.85, 15)
+light_color = Color(1, 0.98, 0.9, 1)
 light_energy = 8.0
 shadow_enabled = true
 spot_range = 15.0

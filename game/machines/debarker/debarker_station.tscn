@@ -1,7 +1,5 @@
 [gd_scene format=3 uid="uid://qxhkdq0grc63"]
 
-[ext_resource type="Script" path="res://game/transport/conveyors/chain_trough_conveyor.gd" id="2_5ghiq"]
-[ext_resource type="PackedScene" uid="uid://b7rvsxnjb6skt" path="res://game/transport/conveyors/chain_trough_conveyor.tscn" id="8_trough"]
 [ext_resource type="PackedScene" path="res://game/transport/conveyors/waste_conveyor.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://c3mlf0h3g6a7r" path="res://game/machines/debarker/grip_roller.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://bo7hpjp2jfjyf" path="res://game/assets/models/DebarkerRing.glb" id="3"]
@@ -9,18 +7,31 @@
 [ext_resource type="PackedScene" uid="uid://hgio3urytp0y" path="res://game/assets/models/Stop.glb" id="5"]
 [ext_resource type="PackedScene" path="res://game/transport/conveyors/vibratory_conveyor.tscn" id="6"]
 [ext_resource type="Script" uid="uid://b4djkbobf43ea" path="res://game/machines/debarker/log_lock_zone.gd" id="7"]
+[ext_resource type="PackedScene" uid="uid://b7rvsxnjb6skt" path="res://game/transport/conveyors/chain_trough_conveyor.tscn" id="8_trough"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_a"]
-size = Vector3(0.09484863, 0.625, 3.8378906)
+[sub_resource type="BoxShape3D" id="BoxShape3D_wmff7"]
+size = Vector3(0.4, 0.05, 4)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_b"]
-size = Vector3(0.14733887, 0.6220703, 4.107788)
+[sub_resource type="BoxShape3D" id="BoxShape3D_815yh"]
+size = Vector3(0.43031737, 0.05, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bjq0x"]
+size = Vector3(0.43031737, 0.05, 4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lnn3n"]
+size = Vector3(1.13, 0.8, 4.05)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_debarker_lock"]
 size = Vector3(5.5, 1.5, 1.5)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_bottom"]
 size = Vector3(0.81557465, 0.2510376, 4.0005493)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_a"]
+size = Vector3(0.09484863, 0.625, 3.8378906)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_conveyor_side_b"]
+size = Vector3(0.14733887, 0.6220703, 4.107788)
 
 [sub_resource type="StandardMaterial3D" id="Material_MetalDetector"]
 albedo_color = Color(0.85, 0.7, 0.1, 1)
@@ -57,16 +68,20 @@ albedo_color = Color(0.7, 0.8, 0.9, 0.15)
 [node name="DebarkInfeedConveyor" parent="." unique_id=1866187276 instance=ExtResource("8_trough")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 0.8440187, 0.49387634, 2.118352)
 constant_linear_velocity = Vector3(0.8, 0, 0)
-script = ExtResource("2_5ghiq")
 speed = 0.8
 direction = Vector3(1, 0, 0)
-link_spacing = 0.15
-downstream_conveyor = NodePath("../WasteConveyor2")
-conveyor_length = 4.0
 
+[node name="CollisionBottom" parent="DebarkInfeedConveyor" index="0" unique_id=32245668]
+shape = SubResource("BoxShape3D_wmff7")
 
+[node name="CollisionLeft" parent="DebarkInfeedConveyor" index="1" unique_id=426988166]
+shape = SubResource("BoxShape3D_815yh")
 
+[node name="CollisionRight" parent="DebarkInfeedConveyor" index="2" unique_id=558373768]
+shape = SubResource("BoxShape3D_bjq0x")
 
+[node name="CollisionShape3D" parent="DebarkInfeedConveyor/LogArea" parent_id_path=PackedInt32Array(1866187276, 1655586341) index="0" unique_id=2087271807]
+shape = SubResource("BoxShape3D_lnn3n")
 
 [node name="GripRoller1" parent="." unique_id=305399781 instance=ExtResource("2")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 0.29016703, 2.114215)

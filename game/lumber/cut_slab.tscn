@@ -19,7 +19,6 @@ material = SubResource("2")
 size = Vector3(4.877, 0.05, 0.25)
 
 [node name="CutSlab" type="RigidBody3D" unique_id=1264719320]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mass = 10.0
 physics_material_override = SubResource("4")
 script = ExtResource("1")

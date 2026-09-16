@@ -70,7 +70,7 @@ func _create_boards() -> void:
 		board_node.transform.origin = Vector3(0, 0.9 - i * 0.3, 0)
 		boards_root.add_child(board_node)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if bark_controller:
 		bark_controller.update()
 		bark_enabled = bark_controller.is_enabled()

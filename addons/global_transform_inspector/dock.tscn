@@ -1,14 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://global_transform_dock"]
+[gd_scene format=3 uid="uid://che1apes60ayx"]
 
-[ext_resource type="Script" path="res://addons/global_transform_inspector/dock.gd" id="1_dock"]
+[ext_resource type="Script" uid="uid://dflcbuexvh36i" path="res://addons/global_transform_inspector/dock.gd" id="1_dock"]
 
-[node name="Dock" type="Control"]
+[node name="Dock" type="Control" unique_id=1062687563]
 custom_minimum_size = Vector2(200, 0)
+layout_mode = 3
+anchors_preset = 0
 size_flags_vertical = 3
 script = ExtResource("1_dock")
 
-[node name="VBox" type="VBoxContainer" parent="."]
-anchors_preset = 15
+[node name="VBox" type="VBoxContainer" parent="." unique_id=1415580053]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
@@ -16,28 +18,36 @@ offset_top = 4.0
 offset_right = -4.0
 offset_bottom = -4.0
 
-[node name="Header" type="Label" parent="VBox"]
-text = "Global Transform"
+[node name="Header" type="Label" parent="VBox" unique_id=648943458]
+layout_mode = 2
 theme_override_font_sizes/font_size = 14
+text = "Global Transform"
 
-[node name="HSep" type="HSeparator" parent="VBox"]
+[node name="HSep" type="HSeparator" parent="VBox" unique_id=1170814198]
+layout_mode = 2
 
-[node name="NodeName" type="Label" parent="VBox"]
-text = "(no Node3D selected)"
+[node name="NodeName" type="Label" parent="VBox" unique_id=1751240167]
+layout_mode = 2
 theme_override_font_sizes/font_size = 11
+text = "(no Node3D selected)"
 autowrap_mode = 3
 
-[node name="PosLabel" type="Label" parent="VBox"]
+[node name="PosLabel" type="Label" parent="VBox" unique_id=64586933]
+layout_mode = 2
 theme_override_font_sizes/font_size = 11
 
-[node name="RotLabel" type="Label" parent="VBox"]
+[node name="RotLabel" type="Label" parent="VBox" unique_id=501676366]
+layout_mode = 2
 theme_override_font_sizes/font_size = 11
 
-[node name="ScaleLabel" type="Label" parent="VBox"]
+[node name="ScaleLabel" type="Label" parent="VBox" unique_id=1224201189]
+layout_mode = 2
 theme_override_font_sizes/font_size = 11
 
-[node name="HSep2" type="HSeparator" parent="VBox"]
+[node name="HSep2" type="HSeparator" parent="VBox" unique_id=462756708]
+layout_mode = 2
 
-[node name="BasisLabel" type="Label" parent="VBox"]
+[node name="BasisLabel" type="Label" parent="VBox" unique_id=1697226030]
+layout_mode = 2
 theme_override_font_sizes/font_size = 10
 autowrap_mode = 3

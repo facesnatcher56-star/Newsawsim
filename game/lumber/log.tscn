@@ -37,7 +37,6 @@ albedo_color = Color(0.24, 0.13, 0.06, 1)
 roughness = 0.95
 
 [node name="LogPrefab" type="RigidBody3D" unique_id=1446840428 groups=["logs"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mass = 50.0
 script = ExtResource("1")
 board_count = 0
@@ -53,14 +52,14 @@ height = 4.922
 sides = 32
 material = SubResource("Material_inner_wood")
 
-[node name="WoodEndLeft" type="CSGCylinder3D" parent="."]
+[node name="WoodEndLeft" type="CSGCylinder3D" parent="." unique_id=159756630]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -2.47, 0, 0)
 radius = 0.245
 height = 0.018
 sides = 32
 material = SubResource("Material_inner_wood")
 
-[node name="WoodEndRight" type="CSGCylinder3D" parent="."]
+[node name="WoodEndRight" type="CSGCylinder3D" parent="." unique_id=1834561343]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 2.47, 0, 0)
 radius = 0.245
 height = 0.018
@@ -189,7 +188,7 @@ sides = 24
 material = SubResource("Material_bark")
 
 [node name="BarkSection08" type="Node3D" parent="Bark" unique_id=509330904]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5240, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.524, 0, 0)
 
 [node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection08" unique_id=969499610]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -393,7 +392,7 @@ sides = 24
 material = SubResource("Material_bark")
 
 [node name="BarkSection20" type="Node3D" parent="Bark" unique_id=1011433450]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0610, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.061, 0, 0)
 
 [node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection20" unique_id=1337318463]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -410,7 +409,7 @@ sides = 24
 material = SubResource("Material_bark")
 
 [node name="BarkSection21" type="Node3D" parent="Bark" unique_id=250235473]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0610, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.061, 0, 0)
 
 [node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection21" unique_id=2016082055]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -614,7 +613,7 @@ sides = 24
 material = SubResource("Material_bark")
 
 [node name="BarkSection33" type="Node3D" parent="Bark" unique_id=1922192758]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5240, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.524, 0, 0)
 
 [node name="Body" type="CSGCylinder3D" parent="Bark/BarkSection33" unique_id=1156560879]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)

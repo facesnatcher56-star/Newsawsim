@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://ber2u2fmer0dj"]
 
-[ext_resource type="Script" path="res://game/lumber/bark_piece.gd" id="1"]
+[ext_resource type="Script" uid="uid://dd1qcoribbaaw" path="res://game/lumber/bark_piece.gd" id="1"]
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(0.12, 0.04, 0.22)
@@ -13,14 +13,12 @@ roughness = 0.95
 material = SubResource("2")
 size = Vector3(0.12, 0.04, 0.22)
 
-[node name="BarkPiece" type="RigidBody3D"]
-collision_layer = 1
-collision_mask = 1
+[node name="BarkPiece" type="RigidBody3D" unique_id=1415291551]
 mass = 0.3
 script = ExtResource("1")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1611155686]
 shape = SubResource("1")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1174752120]
 mesh = SubResource("3")

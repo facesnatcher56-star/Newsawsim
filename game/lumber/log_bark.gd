@@ -1,6 +1,6 @@
 extends RefCounted
 
-var log = null
+var log_node: RigidBody3D = null
 var bark_enabled: bool = true
 var debarker_node_path: NodePath
 var debarker_peel_radius: float = 0.04
@@ -18,7 +18,7 @@ func setup(
 	initial_debarker_alignment_radius: float,
 	initial_fallback_debarker_pos: Vector3
 ) -> void:
-	log = owner_log
+	log_node = owner_log
 	bark_enabled = initial_bark_enabled
 	debarker_node_path = initial_debarker_node_path
 	debarker_peel_radius = initial_debarker_peel_radius
@@ -35,7 +35,7 @@ func update() -> void:
 		_update_bark_peeling()
 
 func remove_bark() -> void:
-	var bark := log.get_node_or_null("Bark") as Node3D
+	var bark := log_node.get_node_or_null("Bark") as Node3D
 	if bark_enabled and bark:
 		bark.visible = false
 		bark_enabled = false
@@ -47,7 +47,7 @@ func is_enabled() -> bool:
 func _create_bark() -> void:
 	if not bark_enabled:
 		return
-	if log.has_node("Bark"):
+	if log_node.has_node("Bark"):
 		return
 	var bark_node = MeshInstance3D.new()
 	bark_node.name = "Bark"
@@ -57,14 +57,14 @@ func _create_bark() -> void:
 	var mat = StandardMaterial3D.new()
 	mat.albedo_color = Color(0.4, 0.25, 0.1)
 	bark_node.material_override = mat
-	log.add_child(bark_node)
+	log_node.add_child(bark_node)
 
 # A continuous, visual-only shell hides the seams between functional bark
 # sections. The sections still control peeling and spawn the physical scraps.
 func _create_bark_coat() -> void:
 	if not bark_enabled:
 		return
-	var bark_root := log.get_node_or_null("Bark") as Node3D
+	var bark_root := log_node.get_node_or_null("Bark") as Node3D
 	if bark_root == null:
 		return
 	bark_coat = bark_root.get_node_or_null("BarkCoat") as CSGCylinder3D
@@ -74,7 +74,7 @@ func _create_bark_coat() -> void:
 	bark_coat = CSGCylinder3D.new()
 	bark_coat.name = "BarkCoat"
 	bark_coat.radius = 0.291
-	bark_coat.height = log.get_log_core_length()
+	bark_coat.height = log_node.get_log_core_length()
 	bark_coat.sides = 48
 	bark_coat.smooth_faces = true
 	bark_coat.rotation.z = PI * 0.5
@@ -111,7 +111,7 @@ void fragment() {
 
 func _collect_bark_sections() -> void:
 	bark_sections.clear()
-	var bark = log.get_node_or_null("Bark")
+	var bark = log_node.get_node_or_null("Bark")
 	if not bark:
 		return
 	for child in bark.get_children():
@@ -179,11 +179,11 @@ func _spawn_bark_piece(pos: Vector3) -> void:
 	var bark_scene = load("res://game/lumber/bark_piece.tscn")
 	if bark_scene:
 		var bark = bark_scene.instantiate()
-		for l_node in log.get_tree().get_nodes_in_group("logs"):
+		for l_node in log_node.get_tree().get_nodes_in_group("logs"):
 			if l_node is RigidBody3D:
 				bark.add_collision_exception_with(l_node)
 
-		log.get_parent().add_child(bark)
+		log_node.get_parent().add_child(bark)
 		bark.global_position = pos
 
 		var angle = randf_range(0.0, 2.0 * PI)
@@ -207,7 +207,7 @@ func _section_is_inside_debarker(section: Node3D, debarker_pos: Vector3) -> bool
 	return abs(section_pos.x - debarker_pos.x) <= debarker_peel_radius
 
 func _get_debarker_position() -> Vector3:
-	var debarker = log.get_node_or_null(debarker_node_path)
+	var debarker = log_node.get_node_or_null(debarker_node_path)
 	if debarker is Node3D:
 		return debarker.global_position
 	return fallback_debarker_pos

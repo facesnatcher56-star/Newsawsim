@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bwgu11eymlmjr"]
 
 [ext_resource type="Script" uid="uid://dkk4kcyh1w5q6" path="res://game/transport/decks/level_chain_deck.gd" id="1_lvldeck"]
+[ext_resource type="Script" uid="uid://bt8l8sbro25b5" path="res://game/transport/decks/level_deck_visuals.gd" id="2_ete67"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_load"]
 size = Vector3(5.4, 0.7, 0.35378417)
@@ -16,8 +17,6 @@ script = ExtResource("1_lvldeck")
 ramp_length = 0.6
 ramp_angle_down_deg = 0.0
 ramp_angle_up_deg = 30.0
-deck_width = 5.4
-track_x_positions = Array[float]([-2.4, -1.8, -1.2, -0.6, 0.0, 0.6, 1.2, 1.8, 2.4])
 load_zone = NodePath("DeckRoot/LoadZone")
 top_zone = NodePath("DeckRoot/TopZone")
 deck_area = NodePath("DeckRoot/DeckArea")
@@ -41,3 +40,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="DeckRoot/DeckArea" unique_id=630669493]
 shape = SubResource("BoxShape3D_deck")
+
+[node name="Visuals" type="Node3D" parent="DeckRoot" unique_id=1470389618]
+script = ExtResource("2_ete67")

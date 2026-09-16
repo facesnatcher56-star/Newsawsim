@@ -1,6 +1,6 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://clivwn06kk54i"]
 
-[ext_resource type="Script" path="res://game/machines/headrig/headrig_carriage.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://d28er4ej72lol" path="res://game/machines/headrig/headrig_carriage.gd" id="1_script"]
 
 [sub_resource type="BoxShape3D" id="Shape_Rail"]
 size = Vector3(0.1, 0.15, 14)

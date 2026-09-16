@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://c8tlcejknxxrd" path="res://game/machines/sorter/bin_sorter.gd" id="1_bin_sorter"]
 [ext_resource type="Script" uid="uid://dde7646ja73cw" path="res://game/environment/free_fly_camera.gd" id="2_free_cam"]
+[ext_resource type="PackedScene" path="res://game/assets/models/bin_sorter/bin_sorter_frame.glb" id="3_frame"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_c8t47"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_n3hl7"]
 friction = 0.0
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
@@ -19,16 +20,18 @@ sky = SubResource("Sky_env")
 ambient_light_color = Color(0.6, 0.6, 0.6, 1)
 
 [node name="BinSorter" type="StaticBody3D" unique_id=754893477]
-physics_material_override = SubResource("PhysicsMaterial_c8t47")
-constant_linear_velocity = Vector3(1, 0, 0)
+physics_material_override = SubResource("PhysicsMaterial_n3hl7")
 script = ExtResource("1_bin_sorter")
-num_bins = 20
-continuous_infeed_spawner = true
-conveyor_speed = 1.0
-gate_speed = 4.0
+num_bins = 50
+conveyor_speed = 2.5
+haulout_speed = 1.2
+gate_speed = 12.0
+indexing_speed = 0.5
+
+[node name="BlenderFrame" parent="." instance=ExtResource("3_frame")]
 
 [node name="TestCamera" type="Camera3D" parent="." unique_id=2064592850]
-transform = Transform3D(0.93969274, -0.14674623, 0.3089387, 0, 0.9032773, 0.42905748, -0.34201992, -0.40318227, 0.8488029, 4, 6.5, 4.58079)
+transform = Transform3D(0.93969274, -0.14674623, 0.3089387, 0, 0.9032773, 0.42905748, -0.34201992, -0.40318227, 0.8488029, 12, 8.5, 9.0)
 script = ExtResource("2_free_cam")
 
 [node name="TestLight" type="DirectionalLight3D" parent="." unique_id=577330439]

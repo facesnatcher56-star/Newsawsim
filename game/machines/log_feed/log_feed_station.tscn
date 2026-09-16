@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cv2doupq74rvb"]
 
 [ext_resource type="PackedScene" path="res://game/transport/decks/chain_log_deck.tscn" id="1"]
-[ext_resource type="PackedScene" path="res://game/machines/log_feed/knuckle_boom_loader.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://c6lerd07omkj7" path="res://game/machines/log_feed/knuckle_boom_loader.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://d1qddmxhkrbxi" path="res://game/transport/conveyors/waste_conveyor_kicker.tscn" id="5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape_kicker"]
@@ -106,16 +106,16 @@ material = SubResource("Material_Ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, -2)
 enabled = false
 
-[node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" index="0"]
+[node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" parent_id_path=PackedInt32Array(100000048, 355837707) index="0" unique_id=926347748]
 emitting = false
 
-[node name="CollisionShape3D" parent="KnuckleBoomLoader/ConveyorIntakeZone" index="0"]
+[node name="CollisionShape3D" parent="KnuckleBoomLoader/ConveyorIntakeZone" parent_id_path=PackedInt32Array(100000048, 199236215) index="0" unique_id=966195758]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05609107, 0, 0)
 
 [node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, 6)
 
-[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" index="0"]
+[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" parent_id_path=PackedInt32Array(1006123450, 355837707) index="0" unique_id=926347748]
 emitting = false
 
 [node name="DebarkerDeckLight" type="SpotLight3D" parent="." unique_id=100000035]

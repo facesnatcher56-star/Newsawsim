@@ -1,9 +1,16 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://sxok6stq1gor"]
+
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_point.tscn" id="1"]
+
 [sub_resource type="StandardMaterial3D" id="2"]
 shading_mode = 0
 albedo_color = Color(0, 1, 0, 1)
-[node name="MarkerGreen" instance=ExtResource("1")]
+
+[node name="MarkerGreen" unique_id=156870966 instance=ExtResource("1")]
 note_content = "Waste Exit"
+
+[node name="Label3D" parent="." index="0"]
+text = "Waste Exit"
+
 [node name="EditorVisual" parent="." index="1"]
 material_override = SubResource("2")

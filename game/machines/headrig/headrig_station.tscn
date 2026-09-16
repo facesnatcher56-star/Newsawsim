@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://headrig_station"]
+[gd_scene format=3 uid="uid://cg4jswye55rr5"]
 
-[ext_resource type="PackedScene" path="res://game/machines/headrig/headrig_rail_system.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://clivwn06kk54i" path="res://game/machines/headrig/headrig_rail_system.tscn" id="1"]
 [ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://game/transport/conveyors/conveyor.gd" id="2"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_red.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_blue.tscn" id="4"]
@@ -40,7 +40,7 @@ height = 16
 fill_from = Vector2(0, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[node name="HeadrigStation" type="Node3D"]
+[node name="HeadrigStation" type="Node3D" unique_id=19768080]
 
 [node name="HeadrigRailSystemInstance" parent="." unique_id=100000003 instance=ExtResource("1")]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 14.1, 0.70538116, 6.551477)
