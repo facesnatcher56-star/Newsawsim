@@ -17,7 +17,8 @@ func run_test():
 	print("Edger: ", edger != null, " Deck: ", deck != null, " Sorter: ", sorter != null)
 
 	var boards = mill.find_children("*", "RigidBody3D", true, false).filter(func(n): return n.is_in_group("cut_boards") or "CutBoard" in n.name)
-	var board: RigidBody3D = boards[0]
+	var edger_boards = boards.filter(func(b): return absf(b.global_position.z - 18.29) < 0.5)
+	var board: RigidBody3D = edger_boards[0] if not edger_boards.is_empty() else boards[0]
 
 	var success := false
 	for frame in range(1200):

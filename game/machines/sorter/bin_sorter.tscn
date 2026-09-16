@@ -22,7 +22,6 @@ ambient_light_color = Color(0.6, 0.6, 0.6, 1)
 [node name="BinSorter" type="StaticBody3D" unique_id=754893477]
 physics_material_override = SubResource("PhysicsMaterial_n3hl7")
 script = ExtResource("1_bin_sorter")
-num_bins = 50
 conveyor_speed = 2.5
 haulout_speed = 1.2
 gate_speed = 12.0

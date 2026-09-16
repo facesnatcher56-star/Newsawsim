@@ -5,19 +5,28 @@ extends StaticBody3D
 ## 50-Bay Industrial Lumber Bin Sorter with Blender Frame & Dynamic Carriage Lowering.
 
 const CutBoardScene := preload("res://game/lumber/cut_board.tscn")
+const SorterChainSystemScript := preload("res://game/machines/sorter/sorter_chain_system.gd")
 
-@export_range(2, 50, 1) var num_bins: int = 50
-@export_range(1, 50, 1) var max_boards_per_bay: int = 10
-@export var continuous_infeed_spawner: bool = false
-@export var random_bay_sorting: bool = false
-@export_range(0.1, 2.0, 0.05) var indexing_speed: float = 0.50
-@export_range(0.6, 3.5, 0.1) var bin_width: float = 1.0
-@export_range(2.5, 7.5, 0.1) var bin_depth: float = 5.5
-@export_range(2.5, 6.0, 0.1) var sorter_height: float = 4.30
+# Fixed physical dimensions defined by the 50-bay Blender structural frame model
+const num_bins: int = 50
+const bin_width: float = 1.0
+const bin_depth: float = 5.5
+const sorter_height: float = 4.30
+
+@export_group("Conveyor & Drive Speeds")
 @export_range(0.5, 6.0, 0.1) var conveyor_speed: float = 2.5
 @export_range(0.5, 6.0, 0.1) var haulout_speed: float = 1.2
+@export_range(0.1, 2.0, 0.05) var indexing_speed: float = 0.50
 @export_range(1.0, 25.0, 0.5) var gate_speed: float = 14.0
+
+@export_group("Sorting Rules")
+@export_range(1, 50, 1) var max_boards_per_bay: int = 10
+@export var random_bay_sorting: bool = false
+
+@export_group("Testing & Simulation")
 @export var auto_spawn_test_board: bool = false
+@export var continuous_infeed_spawner: bool = false
+
 
 # State arrays for all bays
 var _bay_board_counts: Array[int] = []
@@ -39,17 +48,19 @@ var _top_tail_shaft: Node3D = null
 var _haulout_drive_shaft: Node3D = null
 var _haulout_tail_shaft: Node3D = null
 var _floor_bed: StaticBody3D = null
+var _chain_system: Node3D = null
 
 # Board tracking state
 var _tracked_boards: Array[SorterBoardTracker.BoardTrackingData] = []
 
-const TOP_CATCH_Y: float = 3.80
+const TOP_CATCH_Y: float = 3.40
 const FLOOR_DISCHARGE_Y: float = 0.05
 
 func _ready() -> void:
 	_init_state_arrays()
 	_bind_blender_frame_nodes()
 	_setup_physics_collision()
+	_setup_chain_system()
 	_setup_standalone_camera()
 
 func _init_state_arrays() -> void:
@@ -103,6 +114,11 @@ func _setup_physics_collision() -> void:
 	if infeed and not infeed.body_entered.is_connected(_on_infeed_body_entered):
 		infeed.body_entered.connect(_on_infeed_body_entered)
 
+func _setup_chain_system() -> void:
+	_chain_system = SorterChainSystemScript.new()
+	_chain_system.name = "SorterChainSystem"
+	add_child(_chain_system)
+
 func _setup_standalone_camera() -> void:
 	if Engine.is_editor_hint():
 		return
@@ -153,19 +169,28 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 	(body as RigidBody3D).freeze = true
 	_tracked_boards.append(tracking)
 
+const TOP_SPROCKET_R: float = 0.3236068
+const HAULOUT_SPROCKET_R: float = 0.100
+
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
-	# 1. Rotate conveyor and haul-out shafts
+	# 1. Rotate conveyor and haul-out shafts in precise sync with chain pitch radius (omega = v / R)
+	var omega_top: float = conveyor_speed / TOP_SPROCKET_R
+	var omega_haul: float = haulout_speed / HAULOUT_SPROCKET_R
 	if is_instance_valid(_top_drive_shaft):
-		_top_drive_shaft.rotate_z(conveyor_speed * delta / 0.18)
+		_top_drive_shaft.rotate_z(omega_top * delta)
 	if is_instance_valid(_top_tail_shaft):
-		_top_tail_shaft.rotate_z(conveyor_speed * delta / 0.18)
+		_top_tail_shaft.rotate_z(omega_top * delta)
 	if is_instance_valid(_haulout_drive_shaft):
-		_haulout_drive_shaft.rotate_z(haulout_speed * delta / 0.16)
+		_haulout_drive_shaft.rotate_z(omega_haul * delta)
 	if is_instance_valid(_haulout_tail_shaft):
-		_haulout_tail_shaft.rotate_z(haulout_speed * delta / 0.16)
+		_haulout_tail_shaft.rotate_z(omega_haul * delta)
+
+	# 1b. Advance continuous closed-loop chains in exact pitch-circle sync
+	if is_instance_valid(_chain_system):
+		_chain_system.update_chains(conveyor_speed * delta, haulout_speed * delta)
 
 	# 2. Update haul-out constant linear velocity
 	if is_instance_valid(_floor_bed):
@@ -190,14 +215,14 @@ func _physics_process(delta: float) -> void:
 				tracking.board.global_position = tracking.board.global_position.move_toward(to_global(target_pos), conveyor_speed * delta)
 				local_pos = to_local(tracking.board.global_position)
 
-			# Trigger drop gate as board approaches bay (negative rotation opens downward)
-			if not tracking.gate_triggered and local_pos.x >= bay_x + bin_width * 0.10:
+			# Trigger drop gate as board approaches bay (positive rotation opens downstream pivot downward)
+			if not tracking.gate_triggered and local_pos.x >= bay_x - bin_width * 0.10:
 				tracking.gate_triggered = true
-				_target_gate_angles[tracking.target_bin] = -1.1
+				_target_gate_angles[tracking.target_bin] = 0.85
 				_gate_hold_timers[tracking.target_bin] = 1.5
 
 			# Release board into bay
-			if local_pos.x >= bay_x + bin_width * 0.35 and not tracking.released:
+			if local_pos.x >= bay_x + bin_width * 0.30 and not tracking.released:
 				tracking.released = true
 				tracking.board.freeze_mode = tracking.previous_freeze_mode
 				tracking.board.freeze = false

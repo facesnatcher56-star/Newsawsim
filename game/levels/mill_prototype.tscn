@@ -39,23 +39,20 @@ size = Vector3(80, 0.2, 60)
 albedo_color = Color(0.35, 0.35, 0.38, 1)
 roughness = 0.95
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_miayt"]
-friction = 0.0
-
 [sub_resource type="BoxMesh" id="BoxMesh_Ground"]
 material = SubResource("Material_Ground")
 size = Vector3(80, 0.2, 60)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_nmjje"]
-size = Vector3(0.4, 0.05, 8)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_rn30d"]
-size = Vector3(0.43031737, 0.05, 8)
+size = Vector3(0.4, 0.05, 8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_nximv"]
 size = Vector3(0.43031737, 0.05, 8)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_e1uyi"]
+size = Vector3(0.43031737, 0.05, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_fe1yo"]
 size = Vector3(1.13, 0.8, 8.05)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_metal"]
@@ -278,23 +275,26 @@ size = Vector3(0.2, 0.07, 0.045)
 [sub_resource type="BoxShape3D" id="Shape_Detector"]
 size = Vector3(0.75, 0.8, 2.8)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_fe1yo"]
-size = Vector3(2.4, 0.7, 0.35)
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_hv6o7"]
-size = Vector3(3.9, 0.01, 0.3)
+size = Vector3(2.4, 0.7, 0.35)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_oa7cm"]
-size = Vector3(4.3, 1.2, 5.7)
+size = Vector3(3.9, 0.01, 0.3)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rbpgn"]
-size = Vector3(2.4, 0.7, 0.35)
+size = Vector3(4.3, 1.2, 5.7)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hhae2"]
-size = Vector3(2.4, 0.8, 0.5)
+size = Vector3(2.4, 0.7, 0.35)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kmj6o"]
+size = Vector3(2.4, 0.8, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_e17c0"]
 size = Vector3(2.198, 0.942, 2.7)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_miayt"]
+friction = 0.0
 
 [node name="MillPrototype" type="Node3D" unique_id=2093779747]
 
@@ -394,18 +394,18 @@ conveyor_length = 8.0
 conveyor_width = 0.8
 
 [node name="CollisionBottom" parent="DebarkerStation/DebarkInfeedConveyor" index="0" unique_id=32245668]
-shape = SubResource("BoxShape3D_nmjje")
+shape = SubResource("BoxShape3D_rn30d")
 
 [node name="CollisionLeft" parent="DebarkerStation/DebarkInfeedConveyor" index="1" unique_id=426988166]
 transform = Transform3D(0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 0, 0, 1, -0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_rn30d")
+shape = SubResource("BoxShape3D_nximv")
 
 [node name="CollisionRight" parent="DebarkerStation/DebarkInfeedConveyor" index="2" unique_id=558373768]
 transform = Transform3D(0.9063077, -0.42261824, 0, 0.42261824, 0.9063077, 0, 0, 0, 1, 0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_nximv")
+shape = SubResource("BoxShape3D_e1uyi")
 
 [node name="CollisionShape3D" parent="DebarkerStation/DebarkInfeedConveyor/LogArea" parent_id_path=PackedInt32Array(771215760, 1866187276, 1655586341) index="0" unique_id=2087271807]
-shape = SubResource("BoxShape3D_e1uyi")
+shape = SubResource("BoxShape3D_fe1yo")
 
 [node name="LeftWall" parent="DebarkerStation/DebarkInfeedConveyor" index="4" unique_id=1514265469]
 material = SubResource("StandardMaterial3D_metal")
@@ -1110,16 +1110,16 @@ deck_area_size = Vector3(4.3, 1.2, 5.7)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -2.380826)
 
 [node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/LoadZone" index="0" unique_id=1144213617]
-shape = SubResource("BoxShape3D_fe1yo")
+shape = SubResource("BoxShape3D_hv6o7")
 
 [node name="TopZone" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="1" unique_id=1473847192]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 2.729)
 
 [node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/TopZone" index="0" unique_id=580698439]
-shape = SubResource("BoxShape3D_hv6o7")
+shape = SubResource("BoxShape3D_oa7cm")
 
 [node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/DeckArea" parent_id_path=PackedInt32Array(1183748203, 1538561045) index="0" unique_id=1572588527]
-shape = SubResource("BoxShape3D_oa7cm")
+shape = SubResource("BoxShape3D_rbpgn")
 
 [node name="MarkerRed" parent="HeadrigStation" index="5" unique_id=1863297703]
 transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 37.215958, 0.3410695, 18.279066)
@@ -1187,19 +1187,19 @@ deck_area_size = Vector3(2.198, 0.942, 2.7)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.6)
 
 [node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/LoadZone" index="0" unique_id=1144213617]
-shape = SubResource("BoxShape3D_rbpgn")
+shape = SubResource("BoxShape3D_hhae2")
 
 [node name="TopZone" parent="EdgerTakeAway/DeckRoot" parent_id_path=PackedInt32Array(1764099896, 1267379701) index="1" unique_id=1473847192]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 1.3)
 
 [node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/TopZone" index="0" unique_id=580698439]
-shape = SubResource("BoxShape3D_hhae2")
+shape = SubResource("BoxShape3D_kmj6o")
 
 [node name="DeckArea" parent="EdgerTakeAway/DeckRoot" parent_id_path=PackedInt32Array(1764099896, 1267379701) index="2" unique_id=1538561045]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.0589113)
 
 [node name="CollisionShape3D" parent="EdgerTakeAway/DeckRoot/DeckArea" index="0" unique_id=1572588527]
-shape = SubResource("BoxShape3D_kmj6o")
+shape = SubResource("BoxShape3D_e17c0")
 
 [node name="SlidingPlate" parent="." unique_id=419412460 instance=ExtResource("13_plate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.76953, -0.26604617, 19.87921)
@@ -1229,12 +1229,13 @@ retraction_delay = 1.5
 cushion_pin_speed = 0.61
 
 [node name="landing_deck_frame" parent="." unique_id=2114419410 instance=ExtResource("5_nmjje")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.803027, 0.2271245, 18.297045)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 18.297045)
 
 [node name="BinSorter" parent="." unique_id=754893477 instance=ExtResource("15_0cce1")]
 transform = Transform3D(-4.3711385e-08, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -4.3711385e-08, 53.346573, -1.2882519, 4.732377)
 physics_material_override = SubResource("PhysicsMaterial_miayt")
-enable_status_leds = false
+conveyor_speed = 0.5
+haulout_speed = 0.5
 
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]

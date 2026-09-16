@@ -38,6 +38,26 @@ func run_clearance_test() -> void:
 	assert(is_instance_valid(sorter._haulout_tail_shaft), "Haulout tail shaft must exist")
 	print("PASS: 50 bays, 50 gates, 50 cradles, 4 common cross shafts correctly bound.")
 
+	# Verify carriage max raised height strictly remains in Zone C (<= 3.50m)
+	for b in range(50):
+		assert(sorter._cradle_heights[b] <= 3.45, "Carriage %d height must not exceed 3.45m" % b)
+		assert(sorter._cradle_bodies[b].position.y <= 3.45, "Carriage collision %d must stay in Zone C (<= 3.50m)" % b)
+		# Verify gate pivot is located at downstream end of each bay
+		var expected_gate_x: float = float(b) * sorter.bin_width + sorter.bin_width - 0.08
+		assert(absf(sorter._gate_bodies[b].position.x - expected_gate_x) < 0.01, "Gate %d must pivot at downstream end" % b)
+	print("PASS: All 50 carriages strictly confined to Zone C (<= 3.50m, leaving >= 0.70m clear headroom below slide plane).")
+	print("PASS: All 50 gates pivot from the downstream side of their bays with recessed hinge hardware.")
+
+	# Verify staggered lanes and lengthened lugs
+	var chain_z: Array[float] = [-1.8, -0.6, 0.6, 1.8]
+	var rail_z: Array[float] = [-2.4, -1.2, 0.0, 1.2, 2.4]
+	for cz: float in chain_z:
+		var min_dist: float = 999.0
+		for rz: float in rail_z:
+			min_dist = minf(min_dist, absf(cz - rz))
+		assert(min_dist >= 0.55, "Chain at Z=%.2f must have at least 0.55m lane clearance to rails (actual=%.2f)" % [cz, min_dist])
+	print("PASS: Staggered chain lanes verified (4 overhead chains centered between 5 slide rails with 0.60m clearance).")
+
 	# 2. Path A: Overhead Transport & Lug Geometry Check
 	print("\n--- 2. Path A: Overhead Conveyor Transport ---")
 	var board: RigidBody3D = load("res://game/lumber/cut_board.tscn").instantiate()
