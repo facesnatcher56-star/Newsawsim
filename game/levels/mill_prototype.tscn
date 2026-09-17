@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://do7m0w82c4cxo" path="res://game/props/sliding_plate.tscn" id="13_plate"]
 [ext_resource type="PackedScene" uid="uid://c63j5eq6tw5ta" path="res://game/machines/sorter/bin_sorter.tscn" id="15_0cce1"]
 [ext_resource type="Script" uid="uid://bu6le1hn76hsq" path="res://game/environment/mill_building.gd" id="16_building"]
+[ext_resource type="PackedScene" path="res://game/transport/decks/board_lug_incline.tscn" id="17_incline"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
@@ -1237,6 +1238,11 @@ cushion_pin_speed = 0.61
 [node name="landing_deck_frame" parent="." unique_id=2114419410 instance=ExtResource("5_nmjje")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 18.297045)
 
+[node name="BoardLugIncline" parent="." instance=ExtResource("17_incline")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 21.647045)
+sorter_path = NodePath("../BinSorter")
+upstream_deck_path = NodePath("../landing_deck_frame")
+
 [node name="BinSorter" parent="." unique_id=754893477 instance=ExtResource("15_0cce1")]
 transform = Transform3D(-0.0012300834, 0, -0.99999917, 0, 1, 0, 0.99999917, 0, -0.0012300834, 50.895523, -1.2882519, 30.090652)
 physics_material_override = SubResource("PhysicsMaterial_miayt")
@@ -1266,4 +1272,5 @@ haulout_speed = 0.5
 [editable path="SlidingPlate2"]
 [editable path="SlidingPlate3"]
 [editable path="SawmillEdger"]
+[editable path="BoardLugIncline"]
 [editable path="BinSorter"]

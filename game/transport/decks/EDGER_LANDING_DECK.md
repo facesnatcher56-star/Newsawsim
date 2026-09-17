@@ -27,9 +27,11 @@ The long takeaway side extends to Z = +3.35 m and the near end to Z = -0.65 m. R
 
 ## Mill placement and integration status
 
-Suggested root position for the current unrotated edger: `(50.803027, 0.2271245, 18.297045)`. Chain tops are 20 mm below the edger output support height. This is provided as `edger_landing_deck_mill_placement.tscn`; instance it under the mill root. The existing mill scene has not been modified.
+Root position for the current unrotated edger: `(50.803027, 0.2271245, 18.297045)`. Chain tops are 20 mm below the edger output support height. This is provided as `edger_landing_deck_mill_placement.tscn`; `mill_prototype.tscn` instances the deck at that placement as `landing_deck_frame`.
 
-Standalone physical transport, stop, reversal, board identity, rotated transport direction and driven ramp traversal are verified. Full edger-to-deck operation is **not yet verified**: an injected board stalled inside the existing edger during the handoff test. A simplified powered outfeed also showed that continuously moving transverse chains can draw a partially received board sideways before its tail clears the outfeed. Integrating the production line therefore needs coordination with the edger feed/hold-down cycle (or an entry interlock) and a real throughput test. Do not treat the isolated deck tests as proof of a completed production-line handoff.
+The deck is no longer the end of the line. `game/transport/decks/board_lug_incline.tscn` sits at the deck's discharge (`50.803027, 0.2271245, 21.647045`), starts level with these chain tops at the exact Z they end, and lifts boards to the bin sorter's infeed. The incline holds this deck's `external_stop` whenever it is holding boards for the sorter, so a blocked sorter backs up to the deck instead of piling boards into the infeed. See `BOARD_LUG_INCLINE.md`.
+
+Standalone physical transport, stop, reversal, board identity, rotated transport direction and driven ramp traversal are verified. The edger-to-deck handoff is **still not verified**: `dev/tests/edger_board_flow_test.gd` fails with a board parked at deck local Z = 0.35, speed 0, `_is_board_entering()` true - the chains are held slippery because the board's tail is still over the edger bed at `world x = 47.40` (bed ends at 47.80) and the edger's outfeed has stopped pushing. That failure is unchanged by the downstream incline: it reproduces identically with the incline removed from the mill. Integrating the production line therefore needs coordination with the edger feed/hold-down cycle (or an entry interlock) and a real throughput test. Do not treat the isolated deck tests as proof of a completed production-line handoff.
 
 ## Rebuild and test
 
