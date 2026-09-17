@@ -15,6 +15,9 @@ const LINK_COUNT: int = 104
 const PITCH: float = (2.0 * RUN + TAU * RADIUS) / 104.0
 var actual_speed: float = 0.0
 var _travel: float = 0.0
+var _grip_material: PhysicsMaterial
+var _slip_material: PhysicsMaterial
+var _belts_slippery: bool = false
 var _belts: Array[StaticBody3D] = []
 var _chains: MultiMeshInstance3D
 var _shafts: Array[Node] = []
@@ -41,11 +44,13 @@ func _ready() -> void:
 	var parts := Node3D.new()
 	parts.name = "RuntimeParts"
 	add_child(parts)
-	var grip := PhysicsMaterial.new()
-	grip.friction = 0.35
-	var slip := PhysicsMaterial.new()
-	slip.friction = 0.04
-	slip.rough = false
+	_grip_material = PhysicsMaterial.new()
+	_grip_material.friction = 0.35
+	_slip_material = PhysicsMaterial.new()
+	_slip_material.friction = 0.04
+	_slip_material.rough = false
+	var grip := _grip_material
+	var slip := _slip_material
 	for x in TRACKS:
 		var belt := StaticBody3D.new()
 		belt.name = "ChainSurface_%d" % _belts.size()
@@ -53,6 +58,21 @@ func _ready() -> void:
 		parts.add_child(belt)
 		_box(belt, Vector3(x, -0.035, 1.35), Vector3(0.115, 0.07, RUN))
 		_belts.append(belt)
+	# Dead plate across the arrival corridor. Boards come in broadside, sliding
+	# along +X across the chain tracks, and the tracks are proud plates with gaps
+	# dropping away between them: a nose that pitches down even slightly catches
+	# the leading face of the next track and stops the board dead, which leaves it
+	# straddling the edger. This plate gives the arrival corridor one continuous
+	# surface, flush with the chain tops, so a board slides in on a single plane
+	# instead of catching an edge. It is part of the carrying surface like the
+	# tracks (so a board lying on it is still carried, and it goes slippery along
+	# with the tracks while a board is being received).
+	var entry := StaticBody3D.new()
+	entry.name = "EntryPlate"
+	entry.physics_material_override = grip
+	_box(entry, Vector3(-0.11, -0.0025, 0.05), Vector3(6.10, 0.005, 1.40))
+	parts.add_child(entry)
+	_belts.append(entry)
 	var ramps := StaticBody3D.new()
 	ramps.name = "LandingRampCollisions"
 	ramps.physics_material_override = slip
@@ -110,7 +130,11 @@ func _is_board_entering() -> bool:
 		if absf(local_pos.z) < 0.6 and local_pos.y > -0.3 and local_pos.y < 0.6:
 			var half_len: float = float(body.get("product_length")) * 0.5 if "product_length" in body else 2.44
 			var tail_x: float = local_pos.x - half_len
-			if tail_x < -3.85:
+			# The edger bed ends at local x = -3.00 (world 47.80). Holding the
+			# chains off until the tail is clear of it matters: carrying a board
+			# in Z while it still overlaps the edger drags the tail back across
+			# the edger's outfeed rollers instead of letting it transfer.
+			if tail_x < -2.90:
 				return true
 			if local_pos.x < 1.0 and body.linear_velocity.dot(global_basis.x) > 0.4:
 				return true
@@ -121,7 +145,17 @@ func _physics_process(delta: float) -> void:
 	var target := chain_speed * (-1.0 if reverse_direction else 1.0) if running and not external_stop else 0.0
 	actual_speed = move_toward(actual_speed, target, acceleration * delta)
 	var velocity := global_basis.z.normalized() * actual_speed
-	var drive_belts: bool = not _is_board_entering()
+	# While a board is still being received the chains must neither drive nor
+	# grip: their carry direction is across the board's travel, so grip here acts
+	# as a brake and can stall the board half on the edger. Deliveries are
+	# slippery; carrying starts once the board is clear and on the deck.
+	var receiving: bool = _is_board_entering()
+	if receiving != _belts_slippery:
+		_belts_slippery = receiving
+		for belt in _belts:
+			if is_instance_valid(belt):
+				belt.physics_material_override = _slip_material if receiving else _grip_material
+	var drive_belts: bool = not receiving
 	for belt in _belts:
 		belt.constant_linear_velocity = velocity if drive_belts else Vector3.ZERO
 	_travel = fposmod(_travel + actual_speed * delta, LOOP)

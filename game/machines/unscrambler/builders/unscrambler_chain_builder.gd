@@ -130,96 +130,42 @@ func build_chains_and_flights() -> void:
 	pin_m.height = outer_z * 2.0 + plate_w * 1.5
 	pin_m.radial_segments = 6
 
-	# Chain rails (11 chains total, evenly spaced)
-	var chain_zs: Array[float] = []
+	# ── Chain rails (11 chains, drawn from one MultiMesh) ────────────────────
+	# Every link is identical, so the eight fabricated parts are baked into a
+	# single mesh. Eleven rails of links then cost one node and one draw call,
+	# instead of ~400 links each owning a node with eight MeshInstance3D
+	# children — which was over three thousand draw calls for one machine.
+	var link_zs: PackedFloat32Array = PackedFloat32Array()
 	for i in range(11):
-		chain_zs.append(start_z + i * s_dist)
-	unscrambler._anim_link_recede = plate_h * 0.5
-	for z in chain_zs:
-		for j in range(num_links):
-			var d_start: float = j * actual_step
-			var d_end: float = (j + 1) * actual_step
+		link_zs.append(start_z + i * s_dist)
 
-			var start_pt: Vector2 = unscrambler._get_path_point_at_dist(d_start, pts, pts_al)
-			var end_pt: Vector2 = unscrambler._get_path_point_at_dist(d_end, pts, pts_al)
+	var link_mesh: ArrayMesh = _build_link_mesh(
+		straight_plate_mesh, jog_plate_mesh, cyl_m, pin_m,
+		straight_center_x, inner_z, outer_z, jog_ang, effective_link_len)
 
-			var p: Vector2 = (start_pt + end_pt) * 0.5
-			var d: Vector2 = (end_pt - start_pt).normalized()
-			var ang: float = atan2(d.y, d.x)
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.use_custom_data = false
+	mm.use_colors = false
+	mm.mesh = link_mesh
+	mm.instance_count = num_links * link_zs.size()
 
-			var link := Node3D.new()
-			link.name = "Link"
+	var link_visuals := MultiMeshInstance3D.new()
+	link_visuals.name = "ChainLinks"
+	link_visuals.multimesh = mm
+	link_visuals.material_override = mat
+	unscrambler.add_child(link_visuals)
 
-			# Recede the chain inside the plates
-			var recede_dist: float = plate_h * 0.5
-			var n_dir := Vector2(-d.y, d.x)
-			var p_receded: Vector2 = p - n_dir * recede_dist
+	# Where each link of a rail sits along the loop, and where each rail sits
+	# across the machine. The deck re-places the instances from these each frame.
+	var slot_dists: PackedFloat32Array = PackedFloat32Array()
+	for j in range(num_links):
+		slot_dists.append(float(j) * actual_step + actual_step * 0.5)
 
-			link.position = Vector3(p_receded.x, p_receded.y, z)
-			link.rotation.z = ang
-			link.add_to_group(unscrambler._CHAIN_GROUP)
-			unscrambler.add_child(link)
-
-			# Store for chain animation
-			unscrambler._anim_links.append(link)
-			unscrambler._anim_link_dists.append(d_start + actual_step * 0.5)
-			unscrambler._anim_link_zs.append(z)
-
-			# Left Plate (offset sidebar, positive Z)
-			var lp_in := MeshInstance3D.new()
-			lp_in.mesh = straight_plate_mesh
-			lp_in.material_override = mat
-			lp_in.position = Vector3(-straight_center_x, 0.0, inner_z)
-			link.add_child(lp_in)
-
-			var lp_jog := MeshInstance3D.new()
-			lp_jog.mesh = jog_plate_mesh
-			lp_jog.material_override = mat
-			lp_jog.position = Vector3(0.0, 0.0, (inner_z + outer_z) * 0.5)
-			lp_jog.rotation.y = jog_ang
-			link.add_child(lp_jog)
-
-			var lp_out := MeshInstance3D.new()
-			lp_out.mesh = straight_plate_mesh
-			lp_out.material_override = mat
-			lp_out.position = Vector3(straight_center_x, 0.0, outer_z)
-			link.add_child(lp_out)
-
-			# Right Plate (offset sidebar, negative Z)
-			var rp_in := MeshInstance3D.new()
-			rp_in.mesh = straight_plate_mesh
-			rp_in.material_override = mat
-			rp_in.position = Vector3(-straight_center_x, 0.0, -inner_z)
-			link.add_child(rp_in)
-
-			var rp_jog := MeshInstance3D.new()
-			rp_jog.mesh = jog_plate_mesh
-			rp_jog.material_override = mat
-			rp_jog.position = Vector3(0.0, 0.0, -(inner_z + outer_z) * 0.5)
-			rp_jog.rotation.y = -jog_ang
-			link.add_child(rp_jog)
-
-			var rp_out := MeshInstance3D.new()
-			rp_out.mesh = straight_plate_mesh
-			rp_out.material_override = mat
-			rp_out.position = Vector3(straight_center_x, 0.0, -outer_z)
-			link.add_child(rp_out)
-
-			# Joint Roller (narrow end at local_x = -effective_link_len * 0.5)
-			var ro := MeshInstance3D.new()
-			ro.mesh = cyl_m
-			ro.material_override = mat
-			ro.position = Vector3(-effective_link_len * 0.5, 0.0, 0.0)
-			ro.rotation.x = PI / 2.0
-			link.add_child(ro)
-
-			# Joint Pin
-			var pin := MeshInstance3D.new()
-			pin.mesh = pin_m
-			pin.material_override = mat
-			pin.position = Vector3(-effective_link_len * 0.5, 0.0, 0.0)
-			pin.rotation.x = PI / 2.0
-			link.add_child(pin)
+	unscrambler._anim_link_visuals = link_visuals
+	unscrambler._anim_link_slots = slot_dists
+	unscrambler._anim_link_zs = link_zs
+	unscrambler._anim_link_perp = plate_h * 0.5
 
 	# Shared mesh for flights (square tubes)
 	var flight_diameter: float = unscrambler.flight_diameter
@@ -290,3 +236,32 @@ func build_chains_and_flights() -> void:
 
 		fi += 1
 		fd += flight_spacing
+
+
+## Bake one chain link's eight fabricated parts into a single mesh, so a whole
+## rail of links can be drawn by a MultiMesh.
+func _build_link_mesh(
+	straight_plate: Mesh,
+	jog_plate: Mesh,
+	roller: Mesh,
+	pin: Mesh,
+	straight_center_x: float,
+	inner_z: float,
+	outer_z: float,
+	jog_ang: float,
+	link_len: float
+) -> ArrayMesh:
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# Offset sidebar plates — inner, jog, outer — mirrored either side of centre.
+	st.append_from(straight_plate, 0, Transform3D(Basis(), Vector3(-straight_center_x, 0.0, inner_z)))
+	st.append_from(jog_plate, 0, Transform3D(Basis(Vector3.UP, jog_ang), Vector3(0.0, 0.0, (inner_z + outer_z) * 0.5)))
+	st.append_from(straight_plate, 0, Transform3D(Basis(), Vector3(straight_center_x, 0.0, outer_z)))
+	st.append_from(straight_plate, 0, Transform3D(Basis(), Vector3(-straight_center_x, 0.0, -inner_z)))
+	st.append_from(jog_plate, 0, Transform3D(Basis(Vector3.UP, -jog_ang), Vector3(0.0, 0.0, -(inner_z + outer_z) * 0.5)))
+	st.append_from(straight_plate, 0, Transform3D(Basis(), Vector3(straight_center_x, 0.0, -outer_z)))
+	# Joint roller and pin lie across the narrow end of the link.
+	var across := Transform3D(Basis(Vector3.RIGHT, PI * 0.5), Vector3(-link_len * 0.5, 0.0, 0.0))
+	st.append_from(roller, 0, across)
+	st.append_from(pin, 0, across)
+	return st.commit()

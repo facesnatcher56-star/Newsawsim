@@ -10,7 +10,11 @@ func frames(count: int):
 func check():
 	var deck = load("res://game/transport/decks/edger_landing_deck.tscn").instantiate()
 	root.add_child(deck)
-	expect(deck._belts.size() == 5, "Five physical chain tracks required")
+	var chain_tracks := 0
+	for belt in deck._belts:
+		if String((belt as Node).name).begins_with("ChainSurface_"):
+			chain_tracks += 1
+	expect(chain_tracks == 5, "Five physical chain tracks required")
 	expect(deck._chains.multimesh.instance_count == 520, "All chain links must be present")
 	expect(deck._shafts.size() == 2, "Both common sprocket shafts must be animatable")
 	var ramps = deck.get_node("RuntimeParts/LandingRampCollisions")
@@ -41,8 +45,27 @@ func check():
 	deck.running = false
 	await frames(60)
 	expect(is_zero_approx(deck.actual_speed), "Run toggle failed")
-	# A short board-nose probe starts on the ramp below the next chain top.
-	# Constant input force represents the edger continuing to push the board.
+	# A board arrives broadside from the edger, sliding along +X across the chain
+	# tracks, so the arrival corridor must present one continuous surface: any face
+	# standing proud of it catches the board's leading edge and stops the board
+	# dead, half on the edger. Rest a nose probe on that surface in a gap between
+	# tracks and push it across, which is the failing case this guards.
+	var plate: Node = deck.get_node_or_null("RuntimeParts/EntryPlate")
+	expect(plate != null, "Arrival corridor needs a dead plate across the chain tracks")
+	if plate != null:
+		var plate_shape: CollisionShape3D = null
+		for child in plate.get_children():
+			if child is CollisionShape3D:
+				plate_shape = child
+				break
+		expect(plate_shape != null, "Entry plate has no collision shape")
+		var plate_box := plate_shape.shape as BoxShape3D
+		var plate_top: float = plate_shape.position.y + plate_box.size.y * 0.5
+		expect(absf(plate_top) < 0.0005, "Entry plate top must be flush with the chain tops, got %.4f" % plate_top)
+		var track_span: float = absf(deck.TRACKS[deck.TRACKS.size() - 1] - deck.TRACKS[0]) + 0.115
+		expect(plate_box.size.x >= track_span,
+			"Entry plate must span the chain tracks (%.2f < %.2f)" % [plate_box.size.x, track_span])
+
 	var nose = RigidBody3D.new()
 	nose.mass = 5.0
 	nose.continuous_cd = true
@@ -51,13 +74,15 @@ func check():
 	var col = CollisionShape3D.new()
 	col.shape = shape
 	nose.add_child(col)
-	nose.position = Vector3(-0.75, -0.03, 0)
+	# Between tracks, resting on the arrival surface (bottom of the probe at 0).
+	nose.position = Vector3(-0.75, 0.019, 0)
 	root.add_child(nose)
 	for i in 90:
 		nose.apply_central_force(Vector3(100, 0, 0))
 		await physics_frame
 		if nose.position.x > 0.12: break
-	expect(nose.position.x > 0.12 and nose.position.y > 0.005, "Board nose failed to climb ramp onto chain")
+	expect(nose.position.x > 0.12, "Board nose stalled crossing the arrival surface")
+	expect(nose.position.y > 0.010, "Board nose dropped into a gap between chain tracks (y=%.3f)" % nose.position.y)
 	nose.free()
 	# Deck rotation must rotate transport into world space.
 	deck.rotation.y = PI / 2

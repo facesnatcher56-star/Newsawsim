@@ -11,6 +11,7 @@ const ISOLATION_SETTLE_SECONDS := 1.5
 const ISOLATION_MEASURE_SECONDS := 5.0
 
 const ISOLATION_CANDIDATES: PackedStringArray = [
+	"MillBuilding",
 	"SkyClouds",
 	"Ground",
 	"DebarkerStation",

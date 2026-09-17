@@ -65,6 +65,52 @@ func build_waste_handling() -> void:
 	factory._pop_editor_group()
 
 
+## Driven plate over the last stretch of the outfeed.
+##
+## The feed rollers stop short of the end of the bed so their assembly clears the
+## end frame, which leaves the last third of a metre of the delivery with nothing
+## driving it. A board is longer than that gap, so its tail sat in it with no
+## drive under it and the board could not push itself off the edger — it came to
+## rest with its tail still over the outfeed. This plate carries the board over
+## that stretch: driven at the same surface speed as the feed rollers and flush
+## with their tops, so nothing changes except that the delivery now reaches the
+## end of the bed.
+func build_delivery_belt() -> void:
+	factory._push_editor_group("OutfeedDeliveryBelt")
+	var x0 := edger.bed_length * 0.5 - 0.265   # clear of the last feed roller
+	var x1 := edger.bed_length * 0.5 + 0.02
+	var top := edger.working_height + 0.04 + SawmillEdger.FEED_ROLLER_RADIUS
+	var size := Vector3(x1 - x0, 0.06, SawmillEdger.FEED_ROLLER_LENGTH)
+	var center := Vector3((x0 + x1) * 0.5, top - size.y * 0.5, 0.0)
+
+	var belt := StaticBody3D.new()
+	belt.name = "OutfeedDeliveryBelt"
+	belt.position = center
+	factory._current_part_parent().add_child(belt)
+	factory._adopt_new_node(belt)
+
+	var belt_shape := CollisionShape3D.new()
+	belt_shape.name = "CollisionShape3D"
+	var belt_box := BoxShape3D.new()
+	belt_box.size = size
+	belt_shape.shape = belt_box
+	belt.add_child(belt_shape)
+	factory._adopt_new_node(belt_shape)
+
+	var plate := MeshInstance3D.new()
+	plate.name = "Plate"
+	var plate_mesh := BoxMesh.new()
+	plate_mesh.size = size
+	plate.mesh = plate_mesh
+	plate.material_override = edger._mat_frame
+	belt.add_child(plate)
+	factory._adopt_new_node(plate)
+
+	if is_instance_valid(edger.infeed_system):
+		edger.infeed_system.delivery_belt = belt
+	factory._pop_editor_group()
+
+
 func build_lower_feed_rollers() -> void:
 	factory._push_editor_group("LowerFeedRollerAssembly")
 	var roller_y := edger.working_height + 0.04

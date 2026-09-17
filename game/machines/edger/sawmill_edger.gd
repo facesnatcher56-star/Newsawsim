@@ -199,7 +199,7 @@ func _apply_real_board_contacts(delta: float) -> void:
 
 	_set_infeed_deck_pause(is_instance_valid(_centering_board))
 
-	infeed_system.spin(delta)
+	infeed_system.spin(delta, boards)
 	for body in boards:
 		var local_center := to_local(body.global_position)
 		if absf(local_center.z) > 4.5 or absf(local_center.y - working_height) > 0.6:

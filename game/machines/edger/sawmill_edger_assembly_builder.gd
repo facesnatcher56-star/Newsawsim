@@ -34,6 +34,7 @@ func build_feed_deck() -> void:
 	frame_builder.build_side_fences()
 	infeed_builder.build_infeed_chains()
 	outfeed_builder.build_lower_feed_rollers()
+	outfeed_builder.build_delivery_belt()
 
 
 func build_infeed_chains() -> void:

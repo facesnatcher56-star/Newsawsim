@@ -61,11 +61,13 @@ var _anim_flight_dists: Array[float] = []
 var _anim_flight_zs: Array[float] = []
 var _anim_flight_perp: float = 0.0  # perpendicular offset from path (scaled_flight_h)
 
-# Chain link animation state (populated by _build_chains_and_flights)
-var _anim_links: Array[Node3D] = []
-var _anim_link_dists: Array[float] = []
-var _anim_link_zs: Array[float] = []
-var _anim_link_recede: float = 0.0  # perpendicular recede for chain links
+# Chain link animation state (populated by _build_chains_and_flights).
+# The links of all eleven rails live in one MultiMesh, so the deck only has to
+# place its instances — there is no node per link.
+var _anim_link_visuals: MultiMeshInstance3D
+var _anim_link_slots: PackedFloat32Array = PackedFloat32Array()
+var _anim_link_zs: PackedFloat32Array = PackedFloat32Array()
+var _anim_link_perp: float = 0.0  # perpendicular recede for chain links
 var _rebuild_pending: bool = false
 
 # ── Profile definition ───────────────────────────────────────────────────────
@@ -157,15 +159,15 @@ func _clear_animation_data() -> void:
 	_anim_flights.clear()
 	_anim_flight_dists.clear()
 	_anim_flight_zs.clear()
-	_anim_links.clear()
-	_anim_link_dists.clear()
-	_anim_link_zs.clear()
+	_anim_link_visuals = null
+	_anim_link_slots = PackedFloat32Array()
+	_anim_link_zs = PackedFloat32Array()
 	_anim_path_pts.clear()
 	_anim_path_al.clear()
 	_anim_path_total = 0.0
 	_anim_offset = 0.0
 	_anim_flight_perp = 0.0
-	_anim_link_recede = 0.0
+	_anim_link_perp = 0.0
 
 
 
@@ -194,7 +196,7 @@ func _tween_node_along_path(node: Node3D, dist: float, z: float, perp: float) ->
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
-	if (_anim_flights.is_empty() and _anim_links.is_empty()) or _anim_path_total < 0.001:
+	if (_anim_flights.is_empty() and not is_instance_valid(_anim_link_visuals)) or _anim_path_total < 0.001:
 		return
 	_anim_offset = fmod(_anim_offset + speed * delta, _anim_path_total)
 	
@@ -204,8 +206,41 @@ func _physics_process(delta: float) -> void:
 		var fd := fmod(_anim_flight_dists[i] + _anim_offset, _anim_path_total)
 		_tween_node_along_path(_anim_flights[i], fd, _anim_flight_zs[i], p)
 	
-	# Animate chain links (Node3D — visual only, follows path with recede offset)
-	var rc := _anim_link_recede
-	for i in _anim_links.size():
-		var fd := fmod(_anim_link_dists[i] + _anim_offset, _anim_path_total)
-		_tween_node_along_path(_anim_links[i], fd, _anim_link_zs[i], -rc)
+	# Animate the chain links by writing MultiMesh instances directly rather
+	# than pushing a Node3D per link through the scene tree every frame.
+	_update_chain_links()
+
+
+## Re-place every chain-link instance along the loop at the current travel.
+## All eleven rails follow the same path, so the path is walked once per link
+## slot and the result is replicated across the rails.
+func _update_chain_links() -> void:
+	if not is_instance_valid(_anim_link_visuals):
+		return
+	var mm: MultiMesh = _anim_link_visuals.multimesh
+	if mm == null:
+		return
+	var index: int = 0
+	for slot_index in range(_anim_link_slots.size()):
+		var link := _link_transform(slot_index)
+		for z in _anim_link_zs:
+			mm.set_instance_transform(
+				index, Transform3D(link.basis, Vector3(link.origin.x, link.origin.y, float(z))))
+			index += 1
+
+
+## Transform of one link of a rail at the current travel, in machine space and
+## before the rail's Z offset is applied. Kept separate from the MultiMesh write
+## so the placement itself can be checked without a rendering device.
+func _link_transform(slot_index: int) -> Transform3D:
+	var dist: float = fposmod(_anim_link_slots[slot_index] + _anim_offset, _anim_path_total)
+	var here: Vector2 = _get_path_point_at_dist(dist, _anim_path_pts, _anim_path_al)
+	var ahead: Vector2 = _get_path_point_at_dist(dist + 0.001, _anim_path_pts, _anim_path_al)
+	var dir: Vector2 = (ahead - here).normalized()
+	if dir.length_squared() < 0.0001:
+		return Transform3D(Basis(), Vector3(here.x, here.y, 0.0))
+	var normal := Vector2(-dir.y, dir.x)
+	var recede: float = -_anim_link_perp
+	return Transform3D(
+		Basis(Vector3.BACK, atan2(dir.y, dir.x)),
+		Vector3(here.x + normal.x * recede, here.y + normal.y * recede, 0.0))
