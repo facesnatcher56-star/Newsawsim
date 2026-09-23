@@ -6,6 +6,7 @@ extends StaticBody3D
 
 const CutBoardScene := preload("res://game/lumber/cut_board.tscn")
 const SorterChainSystemScript := preload("res://game/machines/sorter/sorter_chain_system.gd")
+const SorterCradleVisualBuilderScript := preload("res://game/machines/sorter/sorter_cradle_visual_builder.gd")
 
 # Fixed physical dimensions defined by the 50-bay Blender structural frame model
 const num_bins: int = 50
@@ -43,12 +44,19 @@ var _gate_nodes: Array[Node3D] = []
 var _cradle_nodes: Array[Node3D] = []
 var _cradle_bodies: Array[AnimatableBody3D] = []
 var _gate_bodies: Array[AnimatableBody3D] = []
+var _cradle_plates_mm: MultiMeshInstance3D = null
+var _cradle_spines_mm: MultiMeshInstance3D = null
+var _cradle_shafts_mm: MultiMeshInstance3D = null
+var _cradle_collars_mm: MultiMeshInstance3D = null
 var _top_drive_shaft: Node3D = null
 var _top_tail_shaft: Node3D = null
 var _haulout_drive_shaft: Node3D = null
 var _haulout_tail_shaft: Node3D = null
 var _floor_bed: StaticBody3D = null
 var _chain_system: Node3D = null
+var _chain_visual_elapsed: float = 0.0
+var _chain_top_pending: float = 0.0
+var _chain_haul_pending: float = 0.0
 
 # Board tracking state
 var _tracked_boards: Array[SorterBoardTracker.BoardTrackingData] = []
@@ -59,6 +67,7 @@ const FLOOR_DISCHARGE_Y: float = 0.05
 func _ready() -> void:
 	_init_state_arrays()
 	_bind_blender_frame_nodes()
+	_setup_reference_cradle_visuals()
 	_setup_physics_collision()
 	_setup_chain_system()
 	_setup_standalone_camera()
@@ -103,6 +112,16 @@ func _bind_blender_frame_nodes() -> void:
 	_top_tail_shaft = frame.find_child("TopTailShaft", true, false) as Node3D
 	_haulout_drive_shaft = frame.find_child("HaulOutDriveShaft", true, false) as Node3D
 	_haulout_tail_shaft = frame.find_child("HaulOutTailShaft", true, false) as Node3D
+
+func _setup_reference_cradle_visuals() -> void:
+	_cradle_nodes = SorterCradleVisualBuilderScript.build(
+		self, _cradle_nodes, num_bins, bin_width, TOP_CATCH_Y
+	)
+	var root: Node3D = get_node("CradleVisuals") as Node3D
+	_cradle_plates_mm = root.get_node("TaperedForkPlates") as MultiMeshInstance3D
+	_cradle_spines_mm = root.get_node("RearSpines") as MultiMeshInstance3D
+	_cradle_shafts_mm = root.get_node("PivotShafts") as MultiMeshInstance3D
+	_cradle_collars_mm = root.get_node("PivotCollars") as MultiMeshInstance3D
 
 func _setup_physics_collision() -> void:
 	var res := SorterCollisionBuilder.build(self, _gate_nodes)
@@ -188,9 +207,18 @@ func _physics_process(delta: float) -> void:
 	if is_instance_valid(_haulout_tail_shaft):
 		_haulout_tail_shaft.rotate_z(omega_haul * delta)
 
-	# 1b. Advance continuous closed-loop chains in exact pitch-circle sync
+	# 1b. Advance continuous closed-loop chains in exact pitch-circle sync. Their
+	# 7,700 MultiMesh transforms are refreshed at 30 Hz rather than every physics
+	# tick; accumulated travel keeps the visual chain at the exact driven distance.
 	if is_instance_valid(_chain_system):
-		_chain_system.update_chains(conveyor_speed * delta, haulout_speed * delta)
+		_chain_visual_elapsed += delta
+		_chain_top_pending += conveyor_speed * delta
+		_chain_haul_pending += haulout_speed * delta
+		if _chain_visual_elapsed >= (1.0 / 30.0):
+			_chain_system.update_chains(_chain_top_pending, _chain_haul_pending)
+			_chain_visual_elapsed = fmod(_chain_visual_elapsed, 1.0 / 30.0)
+			_chain_top_pending = 0.0
+			_chain_haul_pending = 0.0
 
 	# 2. Update haul-out constant linear velocity
 	if is_instance_valid(_floor_bed):
@@ -274,9 +302,13 @@ func _physics_process(delta: float) -> void:
 		# Smoothly interpolate cradle elevation
 		_cradle_heights[b] = move_toward(_cradle_heights[b], _cradle_target_heights[b], indexing_speed * delta)
 
-		# Apply translation to visual Blender carriage model (origin is at 3.30m)
+		# The replacement cradle marker lives in sorter-local space at its true
+		# height; its four batched MultiMeshes follow the marker transform.
 		if b < _cradle_nodes.size() and is_instance_valid(_cradle_nodes[b]):
-			_cradle_nodes[b].position.y = _cradle_heights[b] - TOP_CATCH_Y
+			_cradle_nodes[b].position.y = _cradle_heights[b]
+			SorterCradleVisualBuilderScript.update_bay(
+				_cradle_plates_mm, _cradle_spines_mm, _cradle_shafts_mm,
+				_cradle_collars_mm, b, _cradle_nodes[b].transform)
 
 		# Update physical cradle collision support body
 		if b < _cradle_bodies.size() and is_instance_valid(_cradle_bodies[b]):

@@ -136,7 +136,9 @@ func check_machine() -> void:
 		"carrying plane climbs the exported rise (%.3f m)" % rise)
 	expect(near(incline._p2.x, run + incline.level_length, 1e-6),
 		"crest ends at ramp run plus crest length")
-	expect(incline.track_x_positions.size() == 5, "five lug chains across the bed")
+	expect(incline.track_x_positions.size() == 4, "four incline chains interleave between the five landing-deck chains")
+	expect(incline._pickup_point.x < -0.7 and incline._pickup_point.y < -0.3,
+		"incline lower tangent starts beneath the landing deck")
 
 	# ── Lugs: one station per pocket, a pusher on every lane, and the stations
 	# travelling the return run held out of the way with no collision.
@@ -146,7 +148,7 @@ func check_machine() -> void:
 	var returning := 0
 	var shapes_ok := true
 	for i in stations:
-		if incline._station_shapes[i].size() != 5:
+		if incline._station_shapes[i].size() != incline.track_x_positions.size():
 			shapes_ok = false
 		for shape in incline._station_shapes[i]:
 			if (shape as CollisionShape3D).disabled == incline._slot_visible[i]:
@@ -155,11 +157,60 @@ func check_machine() -> void:
 			carrying += 1
 		else:
 			returning += 1
-	expect(shapes_ok, "every station carries a pusher on all five lanes and only pushes while on the run")
+	expect(shapes_ok, "every station carries a pusher on all incline lanes and only pushes while on the run")
 	expect(returning > 0, "returning stations are held below the bed (%d)" % returning)
 	expect(carrying >= 5, "the carrying run holds several pockets at once (%d)" % carrying)
 	var pitch: float = incline._loop_len / float(stations)
 	expect(pitch > 0.5, "pocket pitch keeps boards apart (%.2f m)" % pitch)
+
+	# ── Roller chain: every lane is one closed loop and the unloaded return hangs
+	# below its end-to-end chord instead of being stretched tight under the bed.
+	expect(incline._num_links >= 50, "full loop has enough roller links (%d per lane)" % incline._num_links)
+	expect(near(incline._link_spacing * float(incline._num_links), incline._loop_len, 0.001),
+		"roller links close the complete loop without a seam or overlap")
+	expect(incline._plates_mm.multimesh.instance_count == incline._num_links * incline.track_x_positions.size() * 2,
+		"both side plates cover every link on all incline loops")
+	expect(incline._rollers_mm.multimesh.instance_count == incline._num_links * incline.track_x_positions.size(),
+		"every link joint has a roller on all incline loops")
+	var plate_mesh: BoxMesh = incline._plates_mm.multimesh.mesh as BoxMesh
+	var links_connected := plate_mesh != null
+	for j in incline._num_links:
+		var slot: float = float(j) * incline._link_spacing + incline._travel
+		var pin_a: Vector2 = incline._sample(slot)[0]
+		var pin_b: Vector2 = incline._sample(slot + incline._link_spacing)[0]
+		var chord: Vector2 = pin_b - pin_a
+		var plate_xf: Transform3D = incline._chain_plate_transform(slot, incline.track_x_positions[0], j, -1.0)
+		var plate_mid := Vector2(plate_xf.origin.z, plate_xf.origin.y)
+		var plate_axis := Vector3(0.0, chord.y, chord.x).normalized()
+		if plate_mid.distance_to((pin_a + pin_b) * 0.5) > 0.002:
+			links_connected = false
+		if absf(plate_xf.basis.z.normalized().dot(plate_axis)) < 0.999:
+			links_connected = false
+		if plate_mesh != null and plate_mesh.size.z + 0.001 < chord.length():
+			links_connected = false
+	expect(links_connected, "every side plate bridges one roller pin to the next with overlap")
+	var return_mid: Vector2 = incline._sample(incline._return_start_s + incline._return_len * 0.5)[0]
+	var chord_mid: Vector2 = incline._ret_top.lerp(incline._ret_foot, 0.5)
+	expect(return_mid.y < chord_mid.y - incline.return_sag * 0.70,
+		"unloaded return has natural sag (%.2f m below chord)" % (chord_mid.y - return_mid.y))
+	var return_lugs_follow_chain := true
+	for i in stations:
+		if incline._slot[i] >= incline._run_len:
+			var chain_point: Vector2 = incline._sample(incline._slot[i])[0]
+			var lug_point := Vector2(incline._stations[i].position.z, incline._stations[i].position.y)
+			if lug_point.distance_to(chain_point) > 0.002:
+				return_lugs_follow_chain = false
+	expect(return_lugs_follow_chain, "returning lugs remain attached to the sagging roller chain")
+
+	# ── Signed drive: direction reverses cleanly and speed remains adjustable.
+	await frames(30)
+	expect(incline.actual_speed > 0.1, "positive drive speed runs uphill")
+	incline.reverse_direction = true
+	await frames(60)
+	expect(incline.actual_speed < -0.1, "reverse control runs the full loop downhill")
+	incline.running = false
+	await frames(30)
+	expect(absf(incline.actual_speed) < 0.02, "drive decelerates to a stop from either direction")
 
 	# ── Carrying surface: strip tops must sit exactly on the carrying plane, or
 	# a board crossing the machine would meet a lip where the ramp kinks.
@@ -170,7 +221,8 @@ func check_machine() -> void:
 	var flush := true
 	for z: float in [0.4, 2.0, 4.8, 6.2, 7.4]:
 		var plane: float = incline._plane_y(z)
-		for lx: float in [-0.66, 0.66]:
+		# Probe solid strips, not the open channels around the interleaved lanes.
+		for lx: float in [-0.30, 0.30]:
 			var from := incline.to_global(Vector3(lx, plane + 0.35, z))
 			var to := incline.to_global(Vector3(lx, plane - 0.12, z))
 			var query := PhysicsRayQueryParameters3D.create(from, to)
@@ -239,13 +291,34 @@ func check_line_handoff() -> void:
 		return
 	expect(incline._upstream == deck, "incline found the landing deck for its upstream interlock")
 
-	# Foot flush with the deck's chain tops and starting where they end: a board
+	# The incline chains occupy the gaps between deck chains. This leaves enough
+	# lateral clearance for both roller-chain loops and their lugs at the overlap.
+	var lanes_interleaved: bool = true
+	for incline_x: float in incline.track_x_positions:
+		var nearest_deck_chain: float = INF
+		for deck_x: float in deck.TRACKS:
+			nearest_deck_chain = minf(nearest_deck_chain, absf(incline_x - deck_x))
+		if nearest_deck_chain < 0.60 or not deck.INCLINE_PICKUP_TRACKS.has(incline_x):
+			lanes_interleaved = false
+	expect(lanes_interleaved, "incline chains straddle the deck chains without sharing a lane")
+	expect(deck.PICKUP_SLOT_WIDTH > incline.LUG_POST_W + 0.08,
+		"deck pickup slots clear the incline lug posts")
+	expect(deck.PICKUP_SLOT_LENGTH >= incline.pickup_overlap,
+		"deck pickup corridors cover the full recessed incline overlap")
+
+	# Deck-end crossing remains flush while the incline's true foot now starts
+	# below the last 0.8 m of deck so its lugs emerge through those slots.
+	# A board
 	# must not meet a step, and must not cross a dead gap where the drive stops.
 	var deck_chain_end := deck.to_global(Vector3(0.0, 0.0, 3.35))
 	expect(near(incline.global_position.y, deck_chain_end.y, 0.002),
-		"carrying plane is level with the deck chain tops (%.4f vs %.4f)" % [incline.global_position.y, deck_chain_end.y])
+		"deck-end crossing is level with the deck chain tops (%.4f vs %.4f)" % [incline.global_position.y, deck_chain_end.y])
 	expect(near(incline.global_position.z, deck_chain_end.z, 0.002),
-		"incline foot starts where the deck's chain run ends")
+		"incline ramp crosses the carrying plane where the deck chain run ends")
+	var pickup_world: Vector3 = incline.to_global(Vector3(
+		0.0, incline._pickup_point.y, incline._pickup_point.x))
+	expect(pickup_world.z < deck_chain_end.z - 0.7 and pickup_world.y < deck_chain_end.y - 0.3,
+		"incline foot is recessed beneath the deck before the discharge end")
 
 	# Crest flush with the sorter's infeed rails and reaching them, so the board
 	# is handed over at the height the scanner zone expects with no gap.
@@ -258,13 +331,15 @@ func check_line_handoff() -> void:
 	expect(crest_end.z <= SORTER_RAIL_Z + 0.08,
 		"crest stops at the sorter's rail fixings instead of running into them (z=%.3f)" % crest_end.z)
 
-	# ── A real board at the foot of the incline is carried up and handed over.
+	# ── A real board waits on the last section of the landing deck. An incline
+	# lug must rise from below through a pickup slot, collect it there, and carry
+	# the same physical board all the way to the sorter.
 	var board: RigidBody3D = load(BOARD).instantiate()
 	board.nominal_size = "2x12"
 	board.length_feet = 16
 	mill.add_child(board)
-	var start_z: float = 0.35
-	board.global_position = incline.to_global(Vector3(0.0, incline._plane_y(start_z) + 0.12, start_z))
+	var start_z: float = -0.30
+	board.global_position = incline.to_global(Vector3(0.0, 0.12, start_z))
 	var identity := board.get_instance_id()
 
 	var taken_over := false

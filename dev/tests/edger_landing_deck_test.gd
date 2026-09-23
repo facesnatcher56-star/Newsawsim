@@ -17,6 +17,29 @@ func check():
 	expect(chain_tracks == 5, "Five physical chain tracks required")
 	expect(deck._chains.multimesh.instance_count == 520, "All chain links must be present")
 	expect(deck._shafts.size() == 2, "Both common sprocket shafts must be animatable")
+	var pickup_lanes_clear: bool = deck.INCLINE_PICKUP_TRACKS.size() == 4
+	for pickup_x: float in deck.INCLINE_PICKUP_TRACKS:
+		var nearest: float = INF
+		for deck_x: float in deck.TRACKS:
+			nearest = minf(nearest, absf(pickup_x - deck_x))
+		if nearest < 0.60:
+			pickup_lanes_clear = false
+	expect(pickup_lanes_clear, "Incline pickup lanes must straddle rather than overlap deck chains")
+	var discharge_frame: StaticBody3D = deck.get_node("RuntimeParts/FrameCollisions") as StaticBody3D
+	var slots_open: bool = true
+	for child: Node in discharge_frame.get_children():
+		if not (child is CollisionShape3D) or absf((child as CollisionShape3D).position.z - 3.35) > 0.01:
+			continue
+		var collision: CollisionShape3D = child as CollisionShape3D
+		if not (collision.shape is BoxShape3D) or absf(collision.position.y + 0.4) > 0.01:
+			continue
+		var box: BoxShape3D = collision.shape as BoxShape3D
+		var left: float = collision.position.x - box.size.x * 0.5
+		var right: float = collision.position.x + box.size.x * 0.5
+		for pickup_x: float in deck.INCLINE_PICKUP_TRACKS:
+			if pickup_x > left and pickup_x < right:
+				slots_open = false
+	expect(slots_open, "Discharge cross member must be cut around all four incline lug slots")
 	var ramps = deck.get_node("RuntimeParts/LandingRampCollisions")
 	expect(ramps.get_child_count() == 5, "Entry ramp plus four inter-chain ramps required")
 	for col in ramps.get_children():

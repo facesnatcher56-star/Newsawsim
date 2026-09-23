@@ -1,4 +1,5 @@
 @tool
+class_name EdgerLandingDeck
 extends Node3D
 ## Blender-built edger receiver. Local +X entry; signed local Z carry.
 ## Origin is chain top at the landing lane center. Keep scale at (1,1,1).
@@ -6,8 +7,18 @@ extends Node3D
 @export var running: bool = true
 @export var reverse_direction: bool = false
 @export var external_stop: bool = false
+## Set by a downstream machine that has taken the board off this deck's end. The
+## chains stop driving and go slippery rather than merely slowing: a board that is
+## still being dragged by this deck while a lug pushes it up an incline at a
+## different speed is sheared between the two, which swings it across the bed.
+var downstream_takeover: bool = false
 @export_range(0.1, 8.0, 0.1) var acceleration: float = 1.2
-const TRACKS = [-2.75, -1.375, 0.0, 1.375, 2.75]
+const TRACKS: Array[float] = [-2.75, -1.375, 0.0, 1.375, 2.75]
+## Incline lanes are centered between landing-deck lanes. These are also the
+## centres of the pickup slots through the deck's discharge cross member.
+const INCLINE_PICKUP_TRACKS: Array[float] = [-2.0625, -0.6875, 0.6875, 2.0625]
+const PICKUP_SLOT_WIDTH := 0.24
+const PICKUP_SLOT_LENGTH := 0.90
 const RUN := 4.0
 const RADIUS := 0.145
 const LOOP: float = 2.0 * RUN + TAU * RADIUS
@@ -86,10 +97,16 @@ func _ready() -> void:
 	var frame := StaticBody3D.new()
 	frame.name = "FrameCollisions"
 	parts.add_child(frame)
-	for z in [-0.65, 1.35, 3.35]:
+	for z: float in [-0.65, 1.35]:
 		_box(frame, Vector3(0, -0.4, z), Vector3(5.95, 0.18, 0.12))
-		for x in [-2.7, 2.7]:
+		for x: float in [-2.7, 2.7]:
 			_box(frame, Vector3(x, -1.04, z), Vector3(0.12, 1.36, 0.12))
+	# The discharge cross member is split around the four incline lanes. The
+	# incline begins below this deck, so its lugs need real openings to rise
+	# through rather than striking one full-width collision beam at the seam.
+	_add_slotted_discharge_member(frame, 3.35)
+	for x: float in [-2.7, 2.7]:
+		_box(frame, Vector3(x, -1.04, 3.35), Vector3(0.12, 1.36, 0.12))
 	for x in TRACKS:
 		_box(frame, Vector3(x, -0.10, 1.35), Vector3(0.12, 0.05, RUN))
 	var link_scene := load("res://game/assets/models/edger_landing_deck/roller_chain_link.glb") as PackedScene
@@ -119,22 +136,87 @@ func _box(body: StaticBody3D, pos: Vector3, size: Vector3) -> CollisionShape3D:
 	body.add_child(col)
 	return col
 
-func _is_board_entering() -> bool:
-	if not is_inside_tree():
-		return false
+
+func _add_slotted_discharge_member(frame: StaticBody3D, z: float) -> void:
+	const HALF_WIDTH := 5.95 * 0.5
+	var cursor: float = -HALF_WIDTH
+	for slot_x: float in INCLINE_PICKUP_TRACKS:
+		var slot_left: float = slot_x - PICKUP_SLOT_WIDTH * 0.5
+		var segment_width: float = slot_left - cursor
+		if segment_width > 0.001:
+			_box(frame, Vector3(cursor + segment_width * 0.5, -0.4, z),
+				Vector3(segment_width, 0.18, 0.12))
+		cursor = slot_x + PICKUP_SLOT_WIDTH * 0.5
+	var final_width: float = HALF_WIDTH - cursor
+	if final_width > 0.001:
+		_box(frame, Vector3(cursor + final_width * 0.5, -0.4, z),
+			Vector3(final_width, 0.18, 0.12))
+
+
+## Local X a board's tail has to pass before the deck considers it fully on.
+const ARRIVAL_X: float = -2.90
+## Below this speed along the arrival axis the edger is no longer delivering.
+const DELIVERED_SPEED: float = 0.05
+## How long a board must sit still before the chains take it over.
+const STRANDED_DWELL: float = 0.25
+
+## Board instance ids and how long each has been waiting, still overlapping the
+## edger bed, for a push that is not coming.
+var _resting_seconds: Dictionary = {}
+
+## Returns the board the chains must take over because the edger has finished
+## with it, or null.
+##
+## Waiting for the tail to clear the edger bed is right while a delivery is in
+## progress, but it is a deadlock once the delivery has stopped: the edger will
+## not push a board it has released, and until the tail is clear this deck refuses
+## to drive, so the board sits on the chains forever. A short dwell tells the two
+## states apart - still being pushed, or finished and stranded - without letting a
+## momentary pause mid-delivery hand the board to the wrong machine.
+func _stranded_board_on_deck(delta: float) -> RigidBody3D:
+	var stranded: RigidBody3D = null
+	var seen: Dictionary = {}
 	for node in get_tree().get_nodes_in_group("cut_boards"):
 		var body := node as RigidBody3D
 		if not is_instance_valid(body) or body.freeze:
 			continue
 		var local_pos := to_local(body.global_position)
+		var half_len: float = _board_half_length(body)
+		var in_corridor: bool = absf(local_pos.z) < 0.6 and local_pos.y > -0.3 and local_pos.y < 0.6
+		var tail_on_edger: bool = local_pos.x - half_len < ARRIVAL_X
+		var pushed: bool = absf(body.linear_velocity.dot(global_basis.x)) >= DELIVERED_SPEED
+		if not in_corridor or not tail_on_edger or pushed:
+			continue
+		var key: int = body.get_instance_id()
+		seen[key] = true
+		var resting: float = float(_resting_seconds.get(key, 0.0)) + delta
+		_resting_seconds[key] = resting
+		if resting >= STRANDED_DWELL and stranded == null:
+			stranded = body
+	for key in _resting_seconds.keys():
+		if not seen.has(key):
+			_resting_seconds.erase(key)
+	return stranded
+
+func _board_half_length(body: Node) -> float:
+	return float(body.get("product_length")) * 0.5 if "product_length" in body else 2.44
+
+func _is_board_entering(ignore: RigidBody3D = null) -> bool:
+	if not is_inside_tree():
+		return false
+	for node in get_tree().get_nodes_in_group("cut_boards"):
+		var body := node as RigidBody3D
+		if not is_instance_valid(body) or body == ignore or body.freeze:
+			continue
+		var local_pos := to_local(body.global_position)
 		if absf(local_pos.z) < 0.6 and local_pos.y > -0.3 and local_pos.y < 0.6:
-			var half_len: float = float(body.get("product_length")) * 0.5 if "product_length" in body else 2.44
+			var half_len: float = _board_half_length(body)
 			var tail_x: float = local_pos.x - half_len
 			# The edger bed ends at local x = -3.00 (world 47.80). Holding the
 			# chains off until the tail is clear of it matters: carrying a board
 			# in Z while it still overlaps the edger drags the tail back across
 			# the edger's outfeed rollers instead of letting it transfer.
-			if tail_x < -2.90:
+			if tail_x < ARRIVAL_X:
 				return true
 			if local_pos.x < 1.0 and body.linear_velocity.dot(global_basis.x) > 0.4:
 				return true
@@ -149,7 +231,7 @@ func _physics_process(delta: float) -> void:
 	# grip: their carry direction is across the board's travel, so grip here acts
 	# as a brake and can stall the board half on the edger. Deliveries are
 	# slippery; carrying starts once the board is clear and on the deck.
-	var receiving: bool = _is_board_entering()
+	var receiving: bool = downstream_takeover or _is_board_entering(_stranded_board_on_deck(delta))
 	if receiving != _belts_slippery:
 		_belts_slippery = receiving
 		for belt in _belts:

@@ -8,8 +8,9 @@ extends Node3D
 ##
 ## Boards leave the edger landing deck broadside - long axis across local X,
 ## travelling along local +Z - and that is the attitude the sorter's infeed
-## expects, so the incline only has to raise them. Five lug chains run up a
-## straight ramp and over a level crest. The lugs divide each chain into pockets,
+## expects, so the incline only has to raise them. Four lug chains, laterally
+## interleaved between the landing deck's five chains, rise from beneath that
+## deck through pickup slots before continuing up a straight ramp and level crest. The lugs divide each chain into pockets,
 ## which is what keeps the boards apart: a board is pushed uphill by the lug
 ## behind it and, on the 26 degree ramp, slides back onto that lug whenever the
 ## chain stops, so it can never run down into the board below.
@@ -19,9 +20,10 @@ extends Node3D
 ## expects. The sorter freezes and takes the board as soon as the board centre
 ## enters that zone, which the lugs push well clear of the ramp.
 ##
-## Local origin is the board carrying plane at the bottom tangent, which is the
-## point the landing deck's chain tops end at (world 50.803027, 0.2271245,
-## 21.647045 in the mill prototype). +Z is uphill, +X is across the boards.
+## Local origin is the deck-end crossing on the board carrying plane at world
+## (50.803027, 0.2271245, 21.647045) in the mill prototype. The actual lower
+## tangent is pickup_overlap metres back and below this point, under the landing
+## deck. +Z is uphill, +X is across the boards.
 ## Keep the node scale at (1, 1, 1); the whole machine is built from the exports
 ## at runtime, so a level placement is all the scene has to provide.
 
@@ -35,8 +37,14 @@ extends Node3D
 @export_range(0.2, 6.0, 0.005) var level_length: float = 2.153
 ## Overall bed width.
 @export_range(1.0, 8.0, 0.01) var bed_width: float = 5.56
-## Chain lane centres (local X). Five lanes carry a 16 ft board safely.
-@export var track_x_positions: Array[float] = [-2.64, -1.32, 0.0, 1.32, 2.64]
+## Chain lane centres (local X). These four lanes sit midway between the landing
+## deck's five chains, so the two independent loops physically interleave rather
+## than trying to occupy the same lane at the pickup.
+@export var track_x_positions: Array[float] = [-2.0625, -0.6875, 0.6875, 2.0625]
+## Distance the inclined carrying run extends backward beneath the landing deck.
+## Lugs rise through matching slots over this distance and collect a board while
+## it is still supported by the landing deck chains.
+@export_range(0.35, 1.5, 0.05) var pickup_overlap: float = 0.80
 ## Local Y of the mill floor. Legs of the subframe stop here.
 @export_range(-4.0, 1.0, 0.01) var floor_y: float = -1.54
 
@@ -44,13 +52,19 @@ extends Node3D
 @export_group("Drive")
 ## Chain speed in metres per second. Keep it a little under the sorter's
 ## infeed speed so a board released at the crest pulls clear of its lug.
-@export_range(0.05, 3.0, 0.05) var chain_speed: float = 0.45
+@export_range(0.0, 3.0, 0.05) var chain_speed: float = 0.45
+## Reverse the entire chain loop. Speed remains a positive, directly adjustable
+## magnitude so operator controls do not need to rewrite it to change direction.
+@export var reverse_direction: bool = false
 @export_range(0.1, 8.0, 0.1) var acceleration: float = 1.5
 @export var running: bool = true
 ## Stop input for a downstream interlock.
 @export var external_stop: bool = false
 ## Distance between lug pockets along the chain loop.
 @export_range(0.2, 2.0, 0.01) var lug_pitch: float = 0.74
+## Vertical slack at the centre of the unloaded lower return. This creates the
+## natural hanging catenary visible between the head and foot sprockets.
+@export_range(0.05, 1.25, 0.01) var return_sag: float = 0.42
 
 # ── Line interlock ───────────────────────────────────────────────────────────
 @export_group("Line interlock")
@@ -69,7 +83,7 @@ const LINK_PITCH := 0.24    # chain link spacing along the loop
 const LINK_SPAN := 0.10     # gap between the inner faces of a link's side plates
 const PLATE_W := 0.014
 const PLATE_H := 0.042
-const PLATE_D := 0.195
+const PLATE_D := 0.255  # spans pin-to-pin with overlap at both roller joints
 const ROLLER_R := 0.024
 ## Chain centre line sits this far below the carrying plane, so a link's roller
 ## tops out exactly flush with the boards and its plates sit just below them.
@@ -85,10 +99,25 @@ const LUG_POST_D := 0.11
 const LUG_POST_H := 0.24
 const LUG_SHOE_H := 0.05
 const LUG_SHOE_D := 0.245
-const HIDDEN_DROP := 0.72   # how far below the bed lugs ride on the return
 const RAIL_FOOT_CLEAR := 0.09
 const LEG_FOOT_CLEAR := 0.14
 const LEG_SPACING := 1.55
+## Boards narrower than this are assumed to be half this wide along the chain.
+const MIN_BOARD_WIDTH: float = 0.12
+## Extra clearance beyond a board's thickness before a lug may meet it.
+const PICKUP_PUSH_MARGIN: float = 0.02
+## Slack allowed below the emergence point before a lug counts as standing out of
+## its slot, so a stopping chain cannot coast a lug up into a board's path.
+const LUG_PICKUP_CLEARANCE: float = 0.15
+## Top of the pickup corridor: past this a lug is climbing the exposed ramp.
+const PICKUP_CORRIDOR_TOP: float = 0.20
+## How far short of the corridor a delivered board is stopped while the corridor
+## is cleared of lugs. Long enough that a board braking at deck acceleration comes
+## to rest outside the corridor.
+const PICKUP_APPROACH: float = 0.45
+## Slack added to the corridor when spacing the lugs, so the gap between two lugs
+## is comfortably longer than the corridor a board has to cross.
+const PICKUP_GAP_MARGIN: float = 0.15
 
 # ── Runtime state ────────────────────────────────────────────────────────────
 var actual_speed: float = 0.0
@@ -98,12 +127,17 @@ var _run_len: float = 0.0          # slope + crest, the driven carrying run
 var _a: float = 0.0
 var _run: float = 0.0
 var _slope_len: float = 0.0
-var _p0 := Vector2.ZERO            # carrying plane: bottom tangent
+var _p0 := Vector2.ZERO            # deck-end crossing at the landing chain-top plane
+var _pickup_point := Vector2.ZERO  # lower tangent beneath the landing deck
 var _p1 := Vector2.ZERO            # carrying plane: ramp / crest kink
 var _p2 := Vector2.ZERO            # carrying plane: crest end
 var _top_centre := Vector2.ZERO
 var _bot_centre := Vector2.ZERO
 var _segments: Array[Dictionary] = []
+var _ret_top := Vector2.ZERO
+var _ret_foot := Vector2.ZERO
+var _return_start_s: float = 0.0
+var _return_len: float = 0.0
 
 var _parts: Node3D
 var _stations: Array[AnimatableBody3D] = []
@@ -114,14 +148,23 @@ var _sprockets: Array[Node3D] = []
 var _shafts: Array[Node3D] = []
 var _plates_mm: MultiMeshInstance3D
 var _rollers_mm: MultiMeshInstance3D
+var _lug_shoes_mm: MultiMeshInstance3D
+var _lug_posts_mm: MultiMeshInstance3D
+var _lug_braces_mm: MultiMeshInstance3D
 var _num_links: int = 0
+var _link_spacing: float = LINK_PITCH
 
 var _incline_area: Area3D
 var _discharge_area: Area3D
 var _sorter: Node
 var _upstream: Node3D
 var _link_retries: int = 120
+var _visual_update_elapsed: float = 0.0
 var _holding: bool = false
+var _pickup_held: bool = false
+var _pickup_handed_over: bool = false
+var _deck_held: bool = false
+var _pickup_committed: bool = false
 var _geometry_stamp: String = ""
 
 
@@ -153,15 +196,16 @@ func _process(_delta: float) -> void:
 #  PATH
 # ─────────────────────────────────────────────────────────────────────────────
 
-## The chain loop is a closed polyline of two straight runs on the ramp, two on
-## the crest, the two sprocket wraps and the return runs below the bed. Every
-## position is (z, y) in machine-local space and the second value returned is the
-## rotation about X that puts a link's local +Z along the direction of travel.
+## The chain loop is closed: carrying ramp and crest, head-sprocket wrap, a
+## slack catenary return, and the foot-sprocket wrap. Every position is (z, y)
+## in machine-local space and the second value returned is the rotation about X
+## that puts a link's local +Z along the direction of travel.
 func _build_path() -> void:
 	_a = deg_to_rad(slope_angle_deg)
 	_run = rise / tan(_a)
 	_slope_len = rise / sin(_a)
 	_p0 = Vector2(0.0, 0.0)
+	_pickup_point = Vector2(-pickup_overlap, -pickup_overlap * tan(_a))
 	_p1 = Vector2(_run, rise)
 	_p2 = Vector2(_run + level_length, rise)
 
@@ -169,34 +213,55 @@ func _build_path() -> void:
 	var d0 := Vector2(cos(_a), sin(_a))                  # ramp uphill direction
 	var level := Vector2(1.0, 0.0)                       # crest direction
 
-	# Chain centre line: the carrying plane dropped by CARRIER_DROP.
-	var a0 := _p0 - n0 * CARRIER_DROP
+	# The carrying run begins below and behind the deck-end crossing. Its lugs
+	# climb through the deck's pickup slots before the chain reaches local z=0.
+	# From there the same straight tangent continues up the exposed incline.
+	var pickup_chain := _pickup_point - n0 * CARRIER_DROP
 	var a2 := Vector2(_p2.x, rise - CARRIER_DROP)
 	var a1 := Vector2(
-		a0.x + (a2.y - a0.y) / sin(_a) * cos(_a),
+		pickup_chain.x + (a2.y - pickup_chain.y) / sin(_a) * cos(_a),
 		a2.y)
 
 	_top_centre = a2 + Vector2(0.0, -SPR)
-	_bot_centre = _p0 - n0 * (CARRIER_DROP + SPR)
+	_bot_centre = _pickup_point - n0 * (CARRIER_DROP + SPR)
 
-	var ret_top := a2 + Vector2(0.0, -2.0 * SPR)          # return run, under the crest
-	var ret_foot := _p0 - n0 * (CARRIER_DROP + 2.0 * SPR) # return run tangent at the foot
-	var ret_kink := ret_foot + d0 * ((ret_top.y - ret_foot.y) / sin(_a))
+	_ret_top = a2 + Vector2(0.0, -2.0 * SPR)
+	_ret_foot = _pickup_point - n0 * (CARRIER_DROP + 2.0 * SPR)
 
 	_segments = [
-		{"kind": "line", "start": a0, "dir": d0, "len": a1.distance_to(a0)},
+		{"kind": "line", "start": pickup_chain, "dir": d0, "len": a1.distance_to(pickup_chain)},
 		{"kind": "line", "start": a1, "dir": level, "len": a2.x - a1.x},
 		{"kind": "arc", "centre": _top_centre, "radius": SPR, "angle": PI * 0.5, "sweep": -PI, "len": PI * SPR},
-		{"kind": "line", "start": ret_top, "dir": -level, "len": ret_top.x - ret_kink.x},
-		{"kind": "line", "start": ret_kink, "dir": -d0, "len": ret_kink.distance_to(ret_foot)},
-		{"kind": "arc", "centre": _bot_centre, "radius": SPR,
-			"angle": atan2(ret_foot.y - _bot_centre.y, ret_foot.x - _bot_centre.x), "sweep": -PI, "len": PI * SPR},
 	]
+	_run_len = float(_segments[0]["len"]) + float(_segments[1]["len"])
+	_return_start_s = _run_len + float(_segments[2]["len"])
+
+	# The unloaded lower strand is deliberately not stretched parallel to the
+	# bed. A sampled catenary gives it real visual weight while preserving an
+	# arc-length path for rigid, evenly spaced roller links in either direction.
+	_return_len = 0.0
+	var previous: Vector2 = _ret_top
+	const RETURN_STEPS := 32
+	for step: int in range(1, RETURN_STEPS + 1):
+		var t: float = float(step) / float(RETURN_STEPS)
+		var point: Vector2 = _return_curve_point(t)
+		var distance: float = previous.distance_to(point)
+		_segments.append({"kind": "line", "start": previous, "dir": (point - previous) / distance, "len": distance})
+		_return_len += distance
+		previous = point
+
+	_segments.append({"kind": "arc", "centre": _bot_centre, "radius": SPR,
+		"angle": atan2(_ret_foot.y - _bot_centre.y, _ret_foot.x - _bot_centre.x), "sweep": -PI, "len": PI * SPR})
 
 	_loop_len = 0.0
-	for segment in _segments:
+	for segment: Dictionary in _segments:
 		_loop_len += float(segment["len"])
-	_run_len = float(_segments[0]["len"]) + float(_segments[1]["len"])
+
+
+func _return_curve_point(t: float) -> Vector2:
+	var catenary_k: float = 1.35
+	var shape: float = (cosh(catenary_k) - cosh(catenary_k * (2.0 * t - 1.0))) / (cosh(catenary_k) - 1.0)
+	return _ret_top.lerp(_ret_foot, t) + Vector2(0.0, -return_sag * shape)
 
 
 ## Sample the loop at arc length s. Returns [Vector2(z, y), rotation about X].
@@ -252,9 +317,9 @@ func _rebuild() -> void:
 
 
 func _stamp() -> String:
-	return "%s|%s|%s|%s|%s|%s" % [
+	return "%s|%s|%s|%s|%s|%s|%s|%s" % [
 		str(slope_angle_deg), str(rise), str(level_length), str(bed_width),
-		str(track_x_positions), str(floor_y)]
+		str(track_x_positions), str(pickup_overlap), str(floor_y), str(return_sag)]
 
 
 func _material(colour: Color, metallic: float, roughness: float) -> StandardMaterial3D:
@@ -415,7 +480,10 @@ func _col_box(parent: Node3D, size: Vector3, pos: Vector3, rot_x: float) -> Coll
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _build_chain_runs() -> void:
-	_num_links = int(ceil(_loop_len / LINK_PITCH)) + 2
+	# Use an integer count and derive the exact spacing from the final loop. This
+	# closes the roller chain cleanly with no doubled links or oversized seam.
+	_num_links = maxi(8, int(round(_loop_len / LINK_PITCH)))
+	_link_spacing = _loop_len / float(_num_links)
 	var mat := _material(Color(0.21, 0.21, 0.24), 0.93, 0.30)
 	var tracks := track_x_positions.size()
 
@@ -450,21 +518,42 @@ func _build_chain_runs() -> void:
 func _place_chain_links() -> void:
 	if not is_instance_valid(_plates_mm) or not is_instance_valid(_rollers_mm):
 		return
-	var inner_x := LINK_SPAN * 0.5 + PLATE_W * 0.5
 	var plate_index := 0
 	var roller_index := 0
 	for track_x: float in track_x_positions:
 		for j in _num_links:
-			var sample := _sample(float(j) * LINK_PITCH + _travel)
+			var slot: float = float(j) * _link_spacing + _travel
+			var sample: Array = _sample(slot)
 			var point: Vector2 = sample[0]
-			var link := Transform3D(Basis(Vector3.RIGHT, float(sample[1])), Vector3(track_x, point.y, point.x))
+
+			# A roller sits at every pin. Each pair of side plates bridges this pin
+			# to the next one; centering plates on a pin left visible disconnected
+			# gaps. Alternating inner/outer offsets overlap at the articulated joint.
 			for side: float in [-1.0, 1.0]:
 				_plates_mm.multimesh.set_instance_transform(
-					plate_index, link * Transform3D(Basis(), Vector3(side * inner_x, 0.0, 0.0)))
+					plate_index, _chain_plate_transform(slot, track_x, j, side))
 				plate_index += 1
+
+			var roller_link := Transform3D(
+				Basis(Vector3.RIGHT, float(sample[1])),
+				Vector3(track_x, point.y, point.x))
 			_rollers_mm.multimesh.set_instance_transform(
-				roller_index, link * Transform3D(Basis(Vector3.FORWARD, PI * 0.5), Vector3.ZERO))
+				roller_index,
+				roller_link * Transform3D(Basis(Vector3.FORWARD, PI * 0.5), Vector3.ZERO))
 			roller_index += 1
+
+
+func _chain_plate_transform(slot: float, track_x: float, link_index: int, side: float) -> Transform3D:
+	var point: Vector2 = _sample(slot)[0]
+	var next_point: Vector2 = _sample(slot + _link_spacing)[0]
+	var chord: Vector2 = next_point - point
+	var midpoint: Vector2 = (point + next_point) * 0.5
+	var plate_rotation: float = atan2(-chord.y, chord.x)
+	var inner_x: float = LINK_SPAN * 0.5 + PLATE_W * 0.5
+	var lateral_offset: float = inner_x + (PLATE_W * 1.15 if link_index % 2 == 1 else 0.0)
+	return Transform3D(
+		Basis(Vector3.RIGHT, plate_rotation),
+		Vector3(track_x + side * lateral_offset, midpoint.y, midpoint.x))
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -517,11 +606,11 @@ func _build_drive() -> void:
 			root.add_child(hub)
 			_sprockets.append(root)
 
-	# Bottom drive enclosure. It covers the foot sprockets and, with them, the
-	# landing deck's own end sprockets, which sit at the same station.
+	# Bottom drive enclosure sits beneath the landing deck at the recessed foot.
+	# The chain and lugs leave it uphill through the open pickup slots.
 	var housing := _material(Color(0.24, 0.25, 0.27), 0.72, 0.55)
 	_mesh_box(_parts, Vector3(bed_width - 0.12, 0.66, 0.78),
-		Vector3(0.0, -0.42, 0.07), 0.0, housing, "DriveEnclosure")
+		Vector3(0.0, _bot_centre.y - 0.24, _bot_centre.x), 0.0, housing, "DriveEnclosure")
 	_mesh_box(_parts, Vector3(bed_width - 0.12, 0.30, 0.55),
 		Vector3(0.0, rise - STRIP_T - 0.15, _p2.x - 0.16), 0.0, housing, "HeadBearingBlock")
 	# Primary drive, hung on the near side at the foot where the line is open.
@@ -536,14 +625,34 @@ func _build_drive() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 ## One AnimatableBody3D per lug station carrying a pusher on every chain lane.
-## The stations ride the carrying run and are dropped out of sight - collisions
-## disabled - while they travel the return run back to the foot.
+## Stations follow the same closed loop as the roller links. Their fabricated
+## lugs remain visible on the return, but collision is enabled only on the run.
 func _build_stations() -> void:
 	var count: int = maxi(2, int(round(_loop_len / maxf(lug_pitch, 0.05))))
-	var pitch := _loop_len / float(count)
-	var steel := _material(Color(0.11, 0.10, 0.09), 0.82, 0.58)
+	# The pickup is only ever handed to a board at an instant when no lug is out of
+	# its slot in the corridor, which cannot happen unless the lugs are spaced
+	# wider than the corridor itself. Wide enough, and there is always a gap in the
+	# chain long enough to carry a board across bare deck.
+	var corridor_span: float = PICKUP_CORRIDOR_TOP - _lug_emergence_z() + LUG_PICKUP_CLEARANCE
+	count = maxi(2, mini(count, int(_loop_len / (corridor_span + PICKUP_GAP_MARGIN))))
+	var pitch: float = _loop_len / float(count)
+	var steel: StandardMaterial3D = _material(Color(0.11, 0.10, 0.09), 0.82, 0.58)
+	var instance_count: int = count * track_x_positions.size()
 
-	for i in count:
+	# All fabricated lug pieces share three MultiMeshes. The old implementation
+	# created four MeshInstance3D children per lane per station (about 480 moving
+	# render objects), which multiplied again in every directional-shadow cascade.
+	_lug_shoes_mm = _make_lug_multimesh(
+		"LugShoes", Vector3(LUG_POST_W * 1.35, LUG_SHOE_H, LUG_SHOE_D),
+		instance_count, steel)
+	_lug_posts_mm = _make_lug_multimesh(
+		"LugPosts", Vector3(LUG_POST_W, LUG_POST_H, LUG_POST_D),
+		instance_count, steel)
+	_lug_braces_mm = _make_lug_multimesh(
+		"LugBraces", Vector3(0.022, 0.20, 0.05),
+		instance_count * 2, steel)
+
+	for i: int in count:
 		var station := AnimatableBody3D.new()
 		station.name = "LugStation_%02d" % i
 		station.sync_to_physics = true
@@ -559,18 +668,6 @@ func _build_stations() -> void:
 			station.add_child(post)
 			shapes.append(post)
 
-			# Fabricated pusher: shoe riding the chain, post standing on the bed.
-			# The shoe tops out flush with the carrying plane so nothing but the
-			# post stands proud of the boards.
-			_add_mesh(station, Vector3(LUG_POST_W * 1.35, LUG_SHOE_H, LUG_SHOE_D),
-				Vector3(track_x, CARRIER_DROP - LUG_SHOE_H * 0.5, 0.04), steel)
-			_add_mesh(station, Vector3(LUG_POST_W, LUG_POST_H, LUG_POST_D),
-				Vector3(track_x, CARRIER_DROP + LUG_POST_H * 0.5, LUG_POST_D * 0.5), steel)
-			for brace_x: float in [-0.032, 0.032]:
-				_add_mesh(station, Vector3(0.022, 0.20, 0.05),
-					Vector3(track_x + brace_x, CARRIER_DROP + 0.115, -0.055), steel,
-					Vector3(deg_to_rad(30.0), 0.0, 0.0))
-
 		_stations.append(station)
 		_station_shapes.append(shapes)
 		_slot.append(float(i) * pitch)
@@ -580,37 +677,63 @@ func _build_stations() -> void:
 		_place_station(i)
 
 
-func _add_mesh(parent: Node3D, size: Vector3, pos: Vector3, mat: Material, rot: Vector3 = Vector3.ZERO) -> MeshInstance3D:
-	var mi := MeshInstance3D.new()
+func _make_lug_multimesh(
+		instance_name: String,
+		size: Vector3,
+		instance_count: int,
+		material: Material
+) -> MultiMeshInstance3D:
+	var visual := MultiMeshInstance3D.new()
+	visual.name = instance_name
+	var multimesh := MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	var mesh := BoxMesh.new()
 	mesh.size = size
-	mi.mesh = mesh
-	mi.material_override = mat
-	mi.position = pos
-	mi.rotation = rot
-	parent.add_child(mi)
-	return mi
+	multimesh.mesh = mesh
+	multimesh.instance_count = instance_count
+	visual.multimesh = multimesh
+	visual.material_override = material
+	_parts.add_child(visual)
+	return visual
 
 
-func _place_station(index: int) -> void:
-	var station := _stations[index]
-	var s := _slot[index]
-	if s < _run_len:
-		var sample := _sample(s)
-		var point: Vector2 = sample[0]
-		station.transform = Transform3D(Basis(Vector3.RIGHT, float(sample[1])), Vector3(0.0, point.y, point.x))
-		if not _slot_visible[index]:
-			_slot_visible[index] = true
-			_set_station_shapes(index, true)
-	else:
-		var t := (s - _run_len) / maxf(_loop_len - _run_len, 0.001)
-		var below_head := Vector2(_p2.x, rise - HIDDEN_DROP)
-		var below_foot := Vector2(sin(_a) * HIDDEN_DROP, -cos(_a) * HIDDEN_DROP)
-		var point := below_head.lerp(below_foot, t)
-		station.transform = Transform3D(Basis(Vector3.RIGHT, -_a), Vector3(0.0, point.y, point.x))
-		if _slot_visible[index]:
-			_slot_visible[index] = false
-			_set_station_shapes(index, false)
+func _place_station(index: int, update_visuals: bool = true) -> void:
+	var station: AnimatableBody3D = _stations[index]
+	var s: float = _slot[index]
+	var sample: Array = _sample(s)
+	var point: Vector2 = sample[0]
+	station.transform = Transform3D(Basis(Vector3.RIGHT, float(sample[1])), Vector3(0.0, point.y, point.x))
+	if update_visuals:
+		_place_station_visuals(index, station.transform)
+
+	# Lugs stay visibly bolted to the roller chain around both sprockets and along
+	# the sagging return. Only their collision is disabled off the carrying run.
+	var on_carrying_run: bool = s < _run_len
+	if _slot_visible[index] != on_carrying_run:
+		_slot_visible[index] = on_carrying_run
+		_set_station_shapes(index, on_carrying_run)
+
+
+func _place_station_visuals(index: int, station_transform: Transform3D) -> void:
+	if not is_instance_valid(_lug_shoes_mm):
+		return
+	var tracks: int = track_x_positions.size()
+	for track_index: int in tracks:
+		var track_x: float = track_x_positions[track_index]
+		var instance_index: int = index * tracks + track_index
+		var shoe_local := Transform3D(Basis(), Vector3(
+			track_x, CARRIER_DROP - LUG_SHOE_H * 0.5, 0.04))
+		var post_local := Transform3D(Basis(), Vector3(
+			track_x, CARRIER_DROP + LUG_POST_H * 0.5, LUG_POST_D * 0.5))
+		_lug_shoes_mm.multimesh.set_instance_transform(instance_index, station_transform * shoe_local)
+		_lug_posts_mm.multimesh.set_instance_transform(instance_index, station_transform * post_local)
+		for brace_index: int in 2:
+			var brace_x: float = -0.032 if brace_index == 0 else 0.032
+			var brace_local := Transform3D(
+				Basis.from_euler(Vector3(deg_to_rad(30.0), 0.0, 0.0)),
+				Vector3(track_x + brace_x, CARRIER_DROP + 0.115, -0.055))
+			_lug_braces_mm.multimesh.set_instance_transform(
+				instance_index * 2 + brace_index, station_transform * brace_local)
 
 
 func _set_station_shapes(index: int, enabled: bool) -> void:
@@ -670,10 +793,19 @@ func _physics_process(delta: float) -> void:
 		_resolve_line_links()
 
 	_holding = _hold_required()
-	if is_instance_valid(_upstream):
-		_upstream.set("external_stop", _holding)
+	_scan_pickup()
 
-	var target: float = chain_speed if (running and not external_stop and not _holding) else 0.0
+	# The deck is held while the pickup corridor is cleared of lugs, and released
+	# again so it can deliver a board into a corridor with nothing in the way. A
+	# board that has already been handed over is the opposite case: the deck has to
+	# let go of it, because deck speed and chain speed differ and a board dragged
+	# by one while pushed by the other is sheared across the bed.
+	if is_instance_valid(_upstream):
+		_upstream.set("external_stop", _holding or _deck_held)
+		_upstream.set("downstream_takeover", _pickup_handed_over)
+
+	var commanded_speed: float = -chain_speed if reverse_direction else chain_speed
+	var target: float = commanded_speed if (running and not external_stop and not _holding and not _pickup_held) else 0.0
 	actual_speed = move_toward(actual_speed, target, acceleration * delta)
 
 	var advance := actual_speed * delta
@@ -687,10 +819,123 @@ func _physics_process(delta: float) -> void:
 	for sprocket in _sprockets:
 		if is_instance_valid(sprocket):
 			(sprocket as Node3D).rotate(Vector3.RIGHT, advance / SPR)
-	for i in _stations.size():
+	_visual_update_elapsed += delta
+	var update_visuals: bool = _visual_update_elapsed >= (1.0 / 30.0)
+	if update_visuals:
+		_visual_update_elapsed = fmod(_visual_update_elapsed, 1.0 / 30.0)
+	for i: int in _stations.size():
 		_slot[i] = fposmod(_slot[i] + advance, _loop_len)
-		_place_station(i)
-	_place_chain_links()
+		_place_station(i, update_visuals)
+	if update_visuals:
+		_place_chain_links()
+
+
+## Hold the chain while the landing deck is still carrying a board across the
+## slots this machine's lugs rise through, so that no lug ever climbs out of a
+## slot underneath a board.
+##
+## A lug's post is 0.24 m tall, so it leaves its slot where the recessed run is
+## that far below the deck's carrying plane. A board lying on the deck that
+## straddles that point gets levered up on the lug and tips over - the board ends
+## up on its edge instead of riding the ramp flat. Waiting until the board has
+## either reached the end of the deck chain run or come to rest up-slope of the
+## slot crossing means every lug that appears under the deck is behind its board,
+## where it pushes the trailing face as the deck hands over. A fixed-width hold
+## here is what turns the deck's delivery into a clean hand-over.
+## Incline-local Z where a lug's post has climbed out of its slot and reached the
+## landing deck's carrying plane. Behind this the post is still below the deck.
+func _lug_emergence_z() -> float:
+	return (CARRIER_DROP * (1.0 / cos(_a) - 1.0) - LUG_POST_H) / tan(_a)
+
+
+## Incline-local Z a board's trailing edge has to reach before this chain may run.
+##
+## A lug only pushes a board properly once its post stands a full board thickness
+## proud of the deck, so the contact is a face push over the whole edge. A lug that
+## reaches the trailing edge earlier touches the board's bottom corner with a push
+## angled up the ramp, which levers the tail up and tips the board onto its edge.
+func _pushable_trailing_z(thickness: float) -> float:
+	return _lug_emergence_z() + (thickness + PICKUP_PUSH_MARGIN) / tan(_a)
+
+
+## Chain height at which a lug's post has climbed out of its slot and reached the
+## landing deck's carrying plane.
+func _lug_emergence_y() -> float:
+	return -(LUG_POST_H + CARRIER_DROP)
+
+
+## Incline-local Z of every lug post standing out of its slot in the pickup
+## corridor, where it can meet a board lying on the landing deck.
+##
+## Height matters as much as position: the unloaded return strand runs back under
+## the bed at the same Z values as the carrying run, so a Z test alone counts the
+## whole return as lugs blocking the corridor and the pickup then waits forever.
+func _pickup_lug_positions() -> Array[float]:
+	var out: Array[float] = []
+	var lowest_z: float = _lug_emergence_z() - LUG_PICKUP_CLEARANCE
+	var lowest_y: float = _lug_emergence_y() - LUG_PICKUP_CLEARANCE * tan(_a)
+	for station: AnimatableBody3D in _stations:
+		if not is_instance_valid(station):
+			continue
+		var at: Vector3 = station.position
+		if at.y < lowest_y:
+			continue
+		if at.z < lowest_z or at.z > PICKUP_CORRIDOR_TOP:
+			continue
+		out.append(at.z)
+	return out
+
+
+func _scan_pickup() -> void:
+	_pickup_held = false
+	_pickup_handed_over = false
+	_deck_held = false
+	var awaiting := false
+	var approaching := false
+	for node in get_tree().get_nodes_in_group("cut_boards"):
+		var body := node as RigidBody3D
+		if not is_instance_valid(body) or body.freeze:
+			continue
+		var local: Vector3 = to_local(body.global_position)
+		if local.z < _pickup_point.x - PICKUP_APPROACH or local.z > PICKUP_CORRIDOR_TOP:
+			continue
+		if local.y < _pickup_point.y - 0.25 or local.y > 0.70:
+			continue
+		var width: float = maxf(float(body.get("board_width")), MIN_BOARD_WIDTH)
+		var thickness: float = float(body.get("board_thickness"))
+		if local.z < _pickup_point.x:
+			approaching = true
+		elif local.z - width * 0.5 >= _pushable_trailing_z(thickness):
+			_pickup_handed_over = true
+		else:
+			awaiting = true
+
+	if _pickup_handed_over:
+		# Far enough up-slope for a lug to meet the trailing face squarely: the
+		# chain runs, and the deck lets go so the two cannot shear the board.
+		_pickup_committed = false
+		return
+	if not awaiting and not approaching:
+		# Nothing is crossing the slots, so the chain is free to run and any lug
+		# standing in the corridor climbs out of it.
+		_pickup_committed = false
+		return
+
+	# The corridor is only ever as clear as it is at the instant the board is let
+	# in, so that decision is latched: a chain stopping can coast a lug back into
+	# the zone the check watches, and re-deciding every frame would then start the
+	# chain again under a board that is already crossing.
+	if not _pickup_committed:
+		if not _pickup_lug_positions().is_empty():
+			# Only the chain can clear a lug that is part way out of its slot, and a
+			# lug left standing is a ramp a leading edge rides up or a lever under a
+			# tail. The board waits on the deck, short of the corridor, because a
+			# board stopped inside it would be swept by the very lugs clearing it.
+			_deck_held = true
+			return
+		_pickup_committed = true
+
+	_pickup_held = true
 
 
 ## Hold the chain while a board is waiting on the crest and the sorter cannot
@@ -727,6 +972,12 @@ func boards_on_incline() -> Array[RigidBody3D]:
 
 func is_holding() -> bool:
 	return _holding
+
+
+## True while the chain is waiting for the landing deck to finish carrying a
+## board across this machine's pickup slots.
+func is_pickup_held() -> bool:
+	return _pickup_held
 
 
 func _resolve_sorter() -> Node:

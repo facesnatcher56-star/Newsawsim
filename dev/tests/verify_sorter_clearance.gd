@@ -32,6 +32,22 @@ func run_clearance_test() -> void:
 	assert(sorter._cradle_nodes.size() == 50, "Sorter must have 50 cradle nodes")
 	assert(sorter._cradle_bodies.size() == 50, "Sorter must have 50 cradle collision bodies")
 	assert(sorter._gate_bodies.size() == 50, "Sorter must have 50 gate collision bodies")
+	var cradle_visuals: Node3D = sorter.get_node_or_null("CradleVisuals") as Node3D
+	assert(is_instance_valid(cradle_visuals), "Reference-style orange cradle visual root must exist")
+	assert(cradle_visuals.get_child_count() == 54, "Sorter must have 50 cradle markers and 4 batched visual assemblies")
+	var plates_mm: MultiMeshInstance3D = cradle_visuals.get_node("TaperedForkPlates") as MultiMeshInstance3D
+	var spines_mm: MultiMeshInstance3D = cradle_visuals.get_node("RearSpines") as MultiMeshInstance3D
+	var shafts_mm: MultiMeshInstance3D = cradle_visuals.get_node("PivotShafts") as MultiMeshInstance3D
+	var collars_mm: MultiMeshInstance3D = cradle_visuals.get_node("PivotCollars") as MultiMeshInstance3D
+	assert(plates_mm.multimesh.instance_count == 50, "All 50 tapered fork-plate sets must be batched")
+	assert(spines_mm.multimesh.instance_count == 50, "All 50 reinforcing spines must be batched")
+	assert(shafts_mm.multimesh.instance_count == 50, "All 50 full-depth pivot shafts must be batched")
+	assert(collars_mm.multimesh.instance_count == 200, "All 200 visible pivot collars must be batched")
+	for b in range(50):
+		var cradle: Node3D = cradle_visuals.get_node("OrangeCradle_%02d" % b) as Node3D
+		assert(is_instance_valid(cradle), "Cradle %d must retain an independent motion marker" % b)
+	var imported_cradle: Node3D = sorter.get_node("BlenderFrame").find_child("Carriage_00", true, false) as Node3D
+	assert(is_instance_valid(imported_cradle) and not imported_cradle.visible, "Old skinny carriage visuals must be hidden")
 	assert(is_instance_valid(sorter._top_drive_shaft), "Top drive shaft must exist")
 	assert(is_instance_valid(sorter._top_tail_shaft), "Top tail shaft must exist")
 	assert(is_instance_valid(sorter._haulout_drive_shaft), "Haulout drive shaft must exist")
@@ -42,6 +58,8 @@ func run_clearance_test() -> void:
 	for b in range(50):
 		assert(sorter._cradle_heights[b] <= 3.45, "Carriage %d height must not exceed 3.45m" % b)
 		assert(sorter._cradle_bodies[b].position.y <= 3.45, "Carriage collision %d must stay in Zone C (<= 3.50m)" % b)
+		assert(absf(sorter._cradle_nodes[b].position.y - sorter._cradle_bodies[b].position.y) < 0.01,
+			"Orange cradle visual %d must stay aligned with its collision support" % b)
 		# Verify gate pivot is located at downstream end of each bay
 		var expected_gate_x: float = float(b) * sorter.bin_width + sorter.bin_width - 0.08
 		assert(absf(sorter._gate_bodies[b].position.x - expected_gate_x) < 0.01, "Gate %d must pivot at downstream end" % b)
@@ -117,6 +135,8 @@ func run_clearance_test() -> void:
 		await physics_frame
 	print("Carriage height with 9 boards: ", sorter._cradle_heights[target_bay])
 	assert(sorter._cradle_heights[target_bay] < initial_cradle_h, "Carriage must lower as boards accumulate")
+	assert(absf(sorter._cradle_nodes[target_bay].position.y - sorter._cradle_bodies[target_bay].position.y) < 0.01,
+		"Orange tray visual must lower with its physical support")
 	print("PASS Carriage Indexing: Smooth progressive lowering verified.")
 
 	# 5. Path C: Floor Haul-Out Discharge Transfer
