@@ -458,7 +458,7 @@ func _get_loop_xform(d: float) -> Transform3D:
 	return Transform3D(Basis(Vector3.RIGHT, rot_x), Vector3(0.0, y, z))
 
 
-func _update_chain_links() -> void:
+func _update_chain_links(update_physics_lugs: bool = true) -> void:
 	if not is_instance_valid(_multimesh_plates) or not is_instance_valid(_multimesh_rollers):
 		return
 	var num_tracks := track_x_positions.size()
@@ -490,21 +490,27 @@ func _update_chain_links() -> void:
 			_multimesh_rollers.multimesh.set_instance_transform(roller_idx, ro_xf)
 			roller_idx += 1
 
-	# Now update separate physical lug bodies
-	for i in range(_lugs_nodes.size()):
-		var lug_body := _lugs_nodes[i]
-		if is_instance_valid(lug_body):
-			var tx := _lugs_track_x[i]
-			var j := _lugs_link_index[i]
-			var slot := fposmod(float(j) * CHAIN_PITCH + _chain_travel, _loop_len)
-			var xf   := _get_loop_xform(slot)
-			var local_xform: Transform3D = Transform3D(xf.basis, Vector3(tx, xf.origin.y, xf.origin.z))
-			lug_body.global_transform = _deck_root.global_transform * local_xform
-			
-			# Set constant velocity to push objects like CutBoard
-			var local_velocity := Vector3(0.0, 0.0, _current_chain_speed)
-			var global_velocity := _deck_root.global_transform.basis * local_velocity
-			lug_body.constant_linear_velocity = global_velocity
+	if update_physics_lugs:
+		_update_physical_lugs()
+
+
+## Physical pushers must move at the fixed physics rate. Updating these bodies
+## from _process made them jump at the rendered frame rate; on the mill's slower
+## frames a lug could skip contact and let a board leave the deck unsupported.
+func _update_physical_lugs() -> void:
+	for i: int in range(_lugs_nodes.size()):
+		var lug_body: AnimatableBody3D = _lugs_nodes[i]
+		if not is_instance_valid(lug_body):
+			continue
+		var tx: float = _lugs_track_x[i]
+		var link_index: int = _lugs_link_index[i]
+		var slot: float = fposmod(float(link_index) * CHAIN_PITCH + _chain_travel, _loop_len)
+		var path_transform: Transform3D = _get_loop_xform(slot)
+		var local_transform: Transform3D = Transform3D(
+			path_transform.basis, Vector3(tx, path_transform.origin.y, path_transform.origin.z))
+		lug_body.global_transform = _deck_root.global_transform * local_transform
+		var local_velocity: Vector3 = Vector3(0.0, 0.0, _current_chain_speed)
+		lug_body.constant_linear_velocity = _deck_root.global_transform.basis * local_velocity
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -547,10 +553,12 @@ func _process(delta: float) -> void:
 		return
 
 	if blocked_now:
-		_update_chain_links()
+		_update_chain_links(false)
 		return
 
-	_update_chain_links()
+	# MultiMesh animation may follow the rendered frame rate; physical lugs are
+	# updated separately in _physics_process.
+	_update_chain_links(false)
 
 
 func _physics_process(delta: float) -> void:
@@ -567,10 +575,12 @@ func _physics_process(delta: float) -> void:
 		_frame_body.constant_linear_velocity = Vector3.ZERO if lugs_enabled else global_transform.basis * vel
 
 	if abs(_current_chain_speed) <= 0.0001:
+		_update_physical_lugs()
 		return
 
 	var advance := _current_chain_speed * delta
 	_chain_travel += advance
+	_update_physical_lugs()
 
 	var ang_vel := advance / SPROCKET_R
 	for sp in _sprocket_nodes:
