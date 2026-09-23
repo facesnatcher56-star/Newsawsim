@@ -1,4 +1,4 @@
-﻿class_name SorterBoardTracker
+class_name SorterBoardTracker
 extends RefCounted
 
 ## Manages board classification, overhead routing, drop gate triggering, and cradle indexing.
@@ -11,7 +11,6 @@ class BoardTrackingData:
 	var gate_triggered: bool = false
 	var dropped_into_bay: bool = false
 	var released: bool = false
-	var previous_freeze_mode: int = 0
 
 static func get_board_sorting_grade(body: Node3D, num_bins: int) -> int:
 	var nominal: String = "2x8"

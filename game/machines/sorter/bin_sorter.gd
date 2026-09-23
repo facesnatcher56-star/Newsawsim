@@ -55,11 +55,11 @@ var _haulout_tail_shaft: Node3D = null
 var _floor_bed: StaticBody3D = null
 var _chain_system: Node3D = null
 var _chain_visual_elapsed: float = 0.0
-var _chain_top_pending: float = 0.0
-var _chain_haul_pending: float = 0.0
 
 # Board tracking state
 var _tracked_boards: Array[SorterBoardTracker.BoardTrackingData] = []
+var _bay_boards: Array[Array] = []
+var _bay_stack_heights: Array[float] = []
 
 const TOP_CATCH_Y: float = 3.40
 const FLOOR_DISCHARGE_Y: float = 0.05
@@ -81,6 +81,8 @@ func _init_state_arrays() -> void:
 	_gate_angles.clear()
 	_target_gate_angles.clear()
 	_gate_hold_timers.clear()
+	_bay_boards.clear()
+	_bay_stack_heights.clear()
 
 	for i in range(num_bins):
 		_bay_board_counts.append(0)
@@ -91,6 +93,8 @@ func _init_state_arrays() -> void:
 		_gate_angles.append(0.0)
 		_target_gate_angles.append(0.0)
 		_gate_hold_timers.append(0.0)
+		_bay_boards.append([])
+		_bay_stack_heights.append(0.0)
 
 func _bind_blender_frame_nodes() -> void:
 	_gate_nodes.clear()
@@ -179,14 +183,43 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 	if target_b < 0:
 		return
 
-	var tracking := SorterBoardTracker.BoardTrackingData.new()
+	var tracking: SorterBoardTracker.BoardTrackingData = SorterBoardTracker.BoardTrackingData.new()
 	tracking.board = body as RigidBody3D
 	tracking.target_bin = target_b
 	tracking.infeed_time = Time.get_ticks_msec() / 1000.0
-	tracking.previous_freeze_mode = (body as RigidBody3D).freeze_mode
-	(body as RigidBody3D).freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
-	(body as RigidBody3D).freeze = true
+	# Keep the lumber fully dynamic. The synchronized overhead lugs provide the
+	# horizontal force; no freezing, transform steering, or scripted velocity.
+	var rigid_board: RigidBody3D = body as RigidBody3D
+	rigid_board.contact_monitor = true
+	rigid_board.max_contacts_reported = maxi(rigid_board.max_contacts_reported, 16)
+	rigid_board.sleeping = false
 	_tracked_boards.append(tracking)
+
+
+func _board_has_stack_support(tracking: SorterBoardTracker.BoardTrackingData) -> bool:
+	var bay: int = tracking.target_bin
+	if bay < 0 or bay >= _cradle_bodies.size():
+		return false
+	for collider: Node3D in tracking.board.get_colliding_bodies():
+		if collider == _cradle_bodies[bay]:
+			return true
+		for settled: Variant in _bay_boards[bay]:
+			if is_instance_valid(settled) and collider == settled:
+				return true
+	return false
+
+
+func _register_landed_board(tracking: SorterBoardTracker.BoardTrackingData) -> void:
+	var bay: int = tracking.target_bin
+	var board: RigidBody3D = tracking.board
+	_bay_boards[bay].append(board)
+	_bay_board_counts[bay] += 1
+	var thickness: float = maxf(float(board.get("board_thickness")), 0.019)
+	_bay_stack_heights[bay] += thickness
+	# Index down by the actual lumber thickness. The already-landed rigid boards
+	# ride the physical AnimatableBody3D arms down and remain stacked by contact.
+	_cradle_target_heights[bay] = maxf(0.50, TOP_CATCH_Y - _bay_stack_heights[bay])
+
 
 const TOP_SPROCKET_R: float = 0.3236068
 const HAULOUT_SPROCKET_R: float = 0.100
@@ -207,65 +240,48 @@ func _physics_process(delta: float) -> void:
 	if is_instance_valid(_haulout_tail_shaft):
 		_haulout_tail_shaft.rotate_z(omega_haul * delta)
 
-	# 1b. Advance continuous closed-loop chains in exact pitch-circle sync. Their
-	# 7,700 MultiMesh transforms are refreshed at 30 Hz rather than every physics
-	# tick; accumulated travel keeps the visual chain at the exact driven distance.
+	# 1b. Advance collision-driving lugs every physics tick. The 7,700 visual
+	# chain transforms remain capped at 30 Hz, but the AnimatableBody3D lugs move
+	# smoothly at physics rate so thin boards cannot tunnel through them.
 	if is_instance_valid(_chain_system):
+		_chain_system.advance_physics(conveyor_speed * delta, haulout_speed * delta)
 		_chain_visual_elapsed += delta
-		_chain_top_pending += conveyor_speed * delta
-		_chain_haul_pending += haulout_speed * delta
 		if _chain_visual_elapsed >= (1.0 / 30.0):
-			_chain_system.update_chains(_chain_top_pending, _chain_haul_pending)
+			_chain_system.refresh_visuals()
 			_chain_visual_elapsed = fmod(_chain_visual_elapsed, 1.0 / 30.0)
-			_chain_top_pending = 0.0
-			_chain_haul_pending = 0.0
 
 	# 2. Update haul-out constant linear velocity
 	if is_instance_valid(_floor_bed):
 		_floor_bed.constant_linear_velocity = global_basis.x * haulout_speed
 
-	# 3. Process tracked boards moving overhead
+	# 3. Track fully dynamic boards while physical overhead lugs push them. This
+	# code only chooses/opens the target gate and records a landing after contact;
+	# it never steers a transform or injects a velocity into a board.
 	var i: int = _tracked_boards.size() - 1
 	while i >= 0:
-		var tracking := _tracked_boards[i]
+		var tracking: SorterBoardTracker.BoardTrackingData = _tracked_boards[i]
 		if not is_instance_valid(tracking.board) or not tracking.active:
 			_tracked_boards.remove_at(i)
 			i -= 1
 			continue
 
-		var local_pos := to_local(tracking.board.global_position)
+		var local_pos: Vector3 = to_local(tracking.board.global_position)
 		var bay_x: float = float(tracking.target_bin) * bin_width
+		if not tracking.gate_triggered and local_pos.x >= bay_x - bin_width * 0.10:
+			tracking.gate_triggered = true
+			_target_gate_angles[tracking.target_bin] = 0.85
+			_gate_hold_timers[tracking.target_bin] = 3.0
 
-		if not tracking.dropped_into_bay:
-			if not tracking.released:
-				# Advance board toward target bay along +X
-				var target_pos: Vector3 = Vector3(bay_x + bin_width * 0.45, sorter_height + 0.08, 0.0)
-				tracking.board.global_position = tracking.board.global_position.move_toward(to_global(target_pos), conveyor_speed * delta)
-				local_pos = to_local(tracking.board.global_position)
-
-			# Trigger drop gate as board approaches bay (positive rotation opens downstream pivot downward)
-			if not tracking.gate_triggered and local_pos.x >= bay_x - bin_width * 0.10:
-				tracking.gate_triggered = true
-				_target_gate_angles[tracking.target_bin] = 0.85
-				_gate_hold_timers[tracking.target_bin] = 1.5
-
-			# Release board into bay
-			if local_pos.x >= bay_x + bin_width * 0.30 and not tracking.released:
-				tracking.released = true
-				tracking.board.freeze_mode = tracking.previous_freeze_mode
-				tracking.board.freeze = false
-				tracking.board.sleeping = false
-				tracking.board.linear_velocity = Vector3(0.0, -3.0, 0.0)
-
-			# Confirm drop into cradle
-			if tracking.released and local_pos.y < sorter_height - 0.25 and local_pos.x >= bay_x - 0.1 and local_pos.x < bay_x + bin_width + 0.1:
-				tracking.dropped_into_bay = true
-				if tracking.target_bin < _bay_board_counts.size():
-					_bay_board_counts[tracking.target_bin] += 1
-					var count: int = _bay_board_counts[tracking.target_bin]
-					_cradle_target_heights[tracking.target_bin] = maxf(0.50, TOP_CATCH_Y - float(count) * 0.25)
-				_target_gate_angles[tracking.target_bin] = 0.0
-				_tracked_boards.remove_at(i)
+		# Falling below the slide plane happens naturally after the physical gate
+		# rotates away. Do not count the board until it actually touches the orange
+		# cradle or a previously settled board in this bay.
+		if tracking.gate_triggered and local_pos.y < sorter_height - 0.10:
+			tracking.released = true
+		if tracking.released and _board_has_stack_support(tracking):
+			tracking.dropped_into_bay = true
+			_register_landed_board(tracking)
+			_target_gate_angles[tracking.target_bin] = 0.0
+			_tracked_boards.remove_at(i)
 
 		i -= 1
 
@@ -296,6 +312,8 @@ func _physics_process(delta: float) -> void:
 				if _discharge_timers[b] <= 0.0:
 					# Discharge complete, reset bay to empty and raise cradle
 					_bay_board_counts[b] = 0
+					_bay_boards[b].clear()
+					_bay_stack_heights[b] = 0.0
 					_bay_discharging[b] = false
 					_cradle_target_heights[b] = TOP_CATCH_Y
 

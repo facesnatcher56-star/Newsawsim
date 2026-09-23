@@ -338,6 +338,8 @@ func check_line_handoff() -> void:
 	board.nominal_size = "2x12"
 	board.length_feet = 16
 	mill.add_child(board)
+	board.contact_monitor = true
+	board.max_contacts_reported = 16
 	var start_z: float = -0.30
 	board.global_position = incline.to_global(Vector3(0.0, 0.12, start_z))
 	var identity := board.get_instance_id()
@@ -345,11 +347,15 @@ func check_line_handoff() -> void:
 	var taken_over := false
 	var peak_rise := 0.0
 	var held_while_waiting := false
+	var touched_incline_lug := false
 	for _frame in 3000:
 		await physics_frame
 		if not is_instance_valid(board):
 			break
 		peak_rise = maxf(peak_rise, incline.to_local(board.global_position).y)
+		for collider: Node3D in board.get_colliding_bodies():
+			if String(collider.name).begins_with("LugStation_"):
+				touched_incline_lug = true
 		if incline.is_holding():
 			held_while_waiting = true
 		for data in sorter._tracked_boards:
@@ -361,9 +367,12 @@ func check_line_handoff() -> void:
 
 	expect(peak_rise > incline.rise - 0.35,
 		"board was carried up the ramp (peak local rise %.2f of %.2f)" % [peak_rise, incline.rise])
+	expect(touched_incline_lug, "moving incline lugs physically contacted and pushed the board")
+	var flatness: float = absf(board.global_basis.y.normalized().dot(Vector3.UP))
+	expect(flatness > 0.90, "hold-down skids keep the board flat through the crest (%.3f)" % flatness)
 	expect(taken_over, "the sorter's scanner zone took the board over at the crest")
 	expect(not held_while_waiting, "incline never held while the sorter had room")
-	expect(board.freeze, "sorter owns the board after the hand-off")
+	expect(not board.freeze, "board remains a dynamic rigid body after sorter hand-off")
 	if is_instance_valid(board):
 		expect(board.get_instance_id() == identity, "board keeps its identity through the hand-off")
 		expect(board.nominal_size == "2x12" and board.length_feet == 16,
@@ -384,7 +393,7 @@ func check_line_handoff() -> void:
 	if is_instance_valid(board):
 		var bay_local := sorter.to_local(board.global_position)
 		expect(bay_local.x >= target_bay * sorter.bin_width and bay_local.x < (target_bay + 1) * sorter.bin_width,
-			"board came to rest inside bay %d" % target_bay)
+			"board came to rest inside bay %d (local=%s count=%d)" % [target_bay, bay_local, sorter._bay_board_counts[target_bay]])
 		expect(not board.freeze, "board is back in physics after release")
 		expect(board.nominal_size == "2x12" and board.length_feet == 16, "product survived the whole line")
 	# Each phase gets its own mill: two of them share one physics space, and the

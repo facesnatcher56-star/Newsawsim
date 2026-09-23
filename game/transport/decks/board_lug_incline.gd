@@ -17,8 +17,8 @@ extends Node3D
 ##
 ## The crest is level and its carrying plane is flush with the sorter's infeed
 ## rails, so the hand-over happens at the height the sorter's scanner zone
-## expects. The sorter freezes and takes the board as soon as the board centre
-## enters that zone, which the lugs push well clear of the ramp.
+## expects. The sorter starts tracking the same dynamic rigid board once its
+## centre enters that zone; physical sorter lugs then take over the push.
 ##
 ## Local origin is the deck-end crossing on the board carrying plane at world
 ## (50.803027, 0.2271245, 21.647045) in the mill prototype. The actual lower
@@ -92,6 +92,10 @@ const SLOT_GAP := 0.16      # open channel each chain runs in
 const STRIP_T := 0.12       # carrying strip thickness
 const RAIL_W := 0.06
 const RAIL_TOP := 0.22      # guide rail height above the carrying plane
+const HOLD_DOWN_CLEARANCE := 0.065
+const HOLD_DOWN_HEIGHT := 0.05
+const HOLD_DOWN_WIDTH := 0.08
+const HOLD_DOWN_X: Array[float] = [-1.375, 0.0, 1.375]
 const STRINGER_W := 0.08
 const STRINGER_H := 0.18
 const LUG_POST_W := 0.11
@@ -378,6 +382,35 @@ func _build_bed() -> void:
 			Vector3(rx, rise + (RAIL_TOP - STRIP_T) * 0.5, _p1.x + level_length * 0.5), 0.0, steel, "Rail")
 		_col_box(frame, Vector3(RAIL_W, RAIL_TOP + STRIP_T, level_length),
 			Vector3(rx, rise + (RAIL_TOP - STRIP_T) * 0.5, _p1.x + level_length * 0.5), 0.0)
+
+	# ── Low hold-down skids keep thin boards flat while the lugs push their rear
+	# edge uphill. They sit between lug lanes, with 27 mm clearance over a 2-inch
+	# board, so they provide containment only when a nose or tail starts to lift.
+	# Without them a real rigid board can rotate onto its 286 mm edge at the crest.
+	var hold_start: Vector2 = Vector2(0.80, _plane_y(0.80))
+	var hold_ramp_length: float = hold_start.distance_to(_p1)
+	var lead_start: Vector2 = Vector2(0.0, 0.35)
+	var lead_end: Vector2 = hold_start + Vector2(0.0, HOLD_DOWN_CLEARANCE)
+	var lead_delta: Vector2 = lead_end - lead_start
+	var lead_angle: float = atan2(lead_delta.y, lead_delta.x)
+	var lead_normal: Vector2 = Vector2(-sin(lead_angle), cos(lead_angle))
+	var lead_mid: Vector2 = (lead_start + lead_end) * 0.5 + lead_normal * HOLD_DOWN_HEIGHT * 0.5
+	for hold_x: float in HOLD_DOWN_X:
+		# A high, shallow entry converges onto the low skid. It accepts a board
+		# arriving unsettled from the pickup, then physically presses it flat.
+		_mesh_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, lead_delta.length()),
+			Vector3(hold_x, lead_mid.y, lead_mid.x), -lead_angle, steel, "HoldDownLeadIn")
+		_col_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, lead_delta.length()),
+			Vector3(hold_x, lead_mid.y, lead_mid.x), -lead_angle)
+		var ramp_hold_mid: Vector2 = (hold_start + _p1) * 0.5 + n0 * (HOLD_DOWN_CLEARANCE + HOLD_DOWN_HEIGHT * 0.5)
+		_mesh_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, hold_ramp_length),
+			Vector3(hold_x, ramp_hold_mid.y, ramp_hold_mid.x), -_a, steel, "HoldDownSkid")
+		_col_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, hold_ramp_length),
+			Vector3(hold_x, ramp_hold_mid.y, ramp_hold_mid.x), -_a)
+		_mesh_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, level_length),
+			Vector3(hold_x, rise + HOLD_DOWN_CLEARANCE + HOLD_DOWN_HEIGHT * 0.5, _p1.x + level_length * 0.5), 0.0, steel, "HoldDownSkid")
+		_col_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, level_length),
+			Vector3(hold_x, rise + HOLD_DOWN_CLEARANCE + HOLD_DOWN_HEIGHT * 0.5, _p1.x + level_length * 0.5), 0.0)
 
 	# ── Subframe: stringers under the strips, cross ties, legs to the floor.
 	var ramp_drop := STRIP_T / cos(_a)

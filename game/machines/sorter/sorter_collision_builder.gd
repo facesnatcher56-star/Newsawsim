@@ -20,11 +20,14 @@ static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
 	haulout_mat.friction = 0.50
 	haulout_mat.bounce = 0.0
 
+	var cradle_mat: PhysicsMaterial = PhysicsMaterial.new()
+	cradle_mat.friction = 0.42
+	cradle_mat.bounce = 0.0
+
 	var num_bays: int = int(sorter.get("num_bins"))
 	var bay_w: float = float(sorter.get("bin_width"))
 	var bay_d: float = float(sorter.get("bin_depth"))
 	var sorter_h: float = float(sorter.get("sorter_height"))
-	var conv_speed: float = float(sorter.get("conveyor_speed"))
 	var total_len: float = num_bays * bay_w
 
 
@@ -32,7 +35,9 @@ static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
 	var infeed_bed := StaticBody3D.new()
 	infeed_bed.name = "InfeedBed"
 	infeed_bed.physics_material_override = smooth_mat
-	infeed_bed.constant_linear_velocity = sorter.global_basis.x * conv_speed
+	# Passive slide rails: the overhead physical lugs, not conveyor friction or
+	# scripted transforms, provide every bit of horizontal board movement.
+	infeed_bed.constant_linear_velocity = Vector3.ZERO
 	parts.add_child(infeed_bed)
 	for z_rail: float in [-2.4, -1.2, 0.0, 1.2, 2.4]:
 		_add_box_col(infeed_bed, Vector3(-0.3, sorter_h - 0.02, z_rail), Vector3(0.60, 0.04, 0.12))
@@ -85,13 +90,14 @@ static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
 		var x_c: float = b * bay_w + bay_w * 0.5
 		cradle_col_body.position = Vector3(x_c, 3.40, 0.0)
 		cradle_col_body.sync_to_physics = true
-		cradle_col_body.physics_material_override = smooth_mat
+		cradle_col_body.physics_material_override = cradle_mat
 		parts.add_child(cradle_col_body)
-		# Spine beam along Z
-		_add_box_col(cradle_col_body, Vector3(-0.35, -0.05, 0.0), Vector3(0.14, 0.10, 4.8))
-		# 4 cantilever support forks matching CARRIAGE_FORKS = [-1.5, -0.5, 0.5, 1.5]
+		# Spine beam along Z.
+		_add_box_col(cradle_col_body, Vector3(-0.35, -0.055, 0.0), Vector3(0.14, 0.11, 4.8))
+		# Four load-bearing arms match the orange tapered plates' 0.11 m depth and
+		# full bay reach, giving thin boards a robust continuous-CCD target.
 		for z_fk: float in [-1.5, -0.5, 0.5, 1.5]:
-			_add_box_col(cradle_col_body, Vector3(0.015, -0.03, z_fk), Vector3(bay_w * 0.73, 0.06, 0.12))
+			_add_box_col(cradle_col_body, Vector3(0.005, -0.055, z_fk), Vector3(0.85, 0.11, 0.14))
 		cradle_bodies.append(cradle_col_body)
 
 	# 7. Infeed Scanner Detection Zone
@@ -100,9 +106,12 @@ static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
 	parts.add_child(infeed_zone)
 	var zone_col := CollisionShape3D.new()
 	var zone_shape := BoxShape3D.new()
-	zone_shape.size = Vector3(1.2, 1.0, bay_d)
+	# Admit only after the board is far enough onto the rails for the first
+	# physical sorter lug (working run starts at X=-0.70) to get behind it. The old
+	# broad zone claimed the board at X~-1.0, then stopped the incline beyond lug reach.
+	zone_shape.size = Vector3(0.50, 1.0, bay_d)
 	zone_col.shape = zone_shape
-	zone_col.position = Vector3(-0.3, sorter_h + 0.3, 0.0)
+	zone_col.position = Vector3(-0.10, sorter_h + 0.3, 0.0)
 	infeed_zone.add_child(zone_col)
 
 	return {
