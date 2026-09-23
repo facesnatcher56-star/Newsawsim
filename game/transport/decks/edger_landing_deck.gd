@@ -25,6 +25,9 @@ const LOOP: float = 2.0 * RUN + TAU * RADIUS
 const LINK_COUNT: int = 104
 const PITCH: float = (2.0 * RUN + TAU * RADIUS) / 104.0
 var actual_speed: float = 0.0
+const IDLE_DELAY: float = 2.0
+var _load_active: bool = false
+var _empty_seconds: float = 0.0
 var _travel: float = 0.0
 var _grip_material: PhysicsMaterial
 var _slip_material: PhysicsMaterial
@@ -224,7 +227,14 @@ func _is_board_entering(ignore: RigidBody3D = null) -> bool:
 
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint(): return
-	var target := chain_speed * (-1.0 if reverse_direction else 1.0) if running and not external_stop else 0.0
+	var loaded: bool = ConveyorLoadSensor.has_load(self,
+		Vector3(-3.35, -0.35, -0.65), Vector3(3.35, 0.65, 3.45), true, false)
+	if loaded:
+		_empty_seconds = 0.0
+	elif _load_active:
+		_empty_seconds += delta
+	_load_active = loaded or (_load_active and _empty_seconds < IDLE_DELAY)
+	var target: float = chain_speed * (-1.0 if reverse_direction else 1.0) if running and not external_stop and _load_active else 0.0
 	actual_speed = move_toward(actual_speed, target, acceleration * delta)
 	var velocity := global_basis.z.normalized() * actual_speed
 	# While a board is still being received the chains must neither drive nor

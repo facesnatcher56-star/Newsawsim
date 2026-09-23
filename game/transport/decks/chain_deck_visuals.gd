@@ -198,6 +198,8 @@ func _process(delta: float) -> void:
 	var speed := chain_speed
 	var dir_z := -1.0
 	if _conveyor and "speed" in _conveyor and "direction" in _conveyor:
+		if not bool(_conveyor.get("_drive_active")) or bool(_conveyor.get("_is_stopped_by_backpressure")):
+			return
 		speed = _conveyor.speed
 		dir_z = _conveyor.direction.z
 	var scroll_speed := speed * dir_z

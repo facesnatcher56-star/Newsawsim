@@ -38,7 +38,7 @@ const UnscramblerChainBuilder := preload("res://game/machines/unscrambler/builde
 	set(v):
 		speed = v
 		if is_inside_tree():
-			constant_linear_velocity = CONVEYOR_DIR * speed
+			constant_linear_velocity = global_basis.x.normalized() * speed if _running else Vector3.ZERO
 
 const CONVEYOR_DIR := Vector3.RIGHT
 
@@ -69,6 +69,10 @@ var _anim_link_slots: PackedFloat32Array = PackedFloat32Array()
 var _anim_link_zs: PackedFloat32Array = PackedFloat32Array()
 var _anim_link_perp: float = 0.0  # perpendicular recede for chain links
 var _rebuild_pending: bool = false
+const IDLE_DELAY := 2.0
+var _running: bool = false
+var _empty_time: float = 0.0
+var _surface_sensor: Area3D
 
 # ── Profile definition ───────────────────────────────────────────────────────
 # Points describe the OUTER (top) edge of one side plate.
@@ -101,7 +105,7 @@ const _INNER_OFFSETS: Array[Vector2] = [
 ]
 
 func _ready() -> void:
-	constant_linear_velocity = CONVEYOR_DIR * speed
+	constant_linear_velocity = Vector3.ZERO
 	if Engine.is_editor_hint():
 		_rebuild()
 	else:
@@ -121,13 +125,17 @@ func _rebuild() -> void:
 	_do_rebuild()
 
 func _do_rebuild() -> void:
-	for child in get_children():
+	for child: Node in get_children():
 		if Engine.is_editor_hint():
 			remove_child(child)
-		child.queue_free()
+			child.queue_free()
+		else:
+			child.free()
 	_clear_animation_data()
-
-	constant_linear_velocity = CONVEYOR_DIR * speed
+	_surface_sensor = null
+	_running = false
+	_empty_time = 0.0
+	constant_linear_velocity = Vector3.ZERO
 
 	_mat_plate = StandardMaterial3D.new()
 	_mat_plate.albedo_color = MAT_STEEL_COLOR
@@ -196,7 +204,21 @@ func _tween_node_along_path(node: Node3D, dist: float, z: float, perp: float) ->
 func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
-	if (_anim_flights.is_empty() and not is_instance_valid(_anim_link_visuals)) or _anim_path_total < 0.001:
+	var board_on_surface := false
+	if is_instance_valid(_surface_sensor):
+		for body in _surface_sensor.get_overlapping_bodies():
+			if body is RigidBody3D and body.is_in_group("cut_boards") and not body.is_in_group("cut_slabs") and not body.freeze:
+				board_on_surface = true
+				break
+	if board_on_surface:
+		_empty_time = 0.0
+		_running = true
+	elif _running:
+		_empty_time += delta
+		if _empty_time >= IDLE_DELAY:
+			_running = false
+	constant_linear_velocity = global_basis.x.normalized() * speed if _running else Vector3.ZERO
+	if not _running or (_anim_flights.is_empty() and not is_instance_valid(_anim_link_visuals)) or _anim_path_total < 0.001:
 		return
 	_anim_offset = fmod(_anim_offset + speed * delta, _anim_path_total)
 	

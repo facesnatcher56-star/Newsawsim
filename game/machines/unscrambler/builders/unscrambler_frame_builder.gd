@@ -11,8 +11,16 @@ func _init(p_unscrambler: Node) -> void:
 	unscrambler = p_unscrambler
 
 
+## The first flight extends past the first rail by its half-length. Keep the
+## chain coordinates fixed and move only the negative-Z frame edge outwards.
+func negative_frame_edge() -> float:
+	var first_rail: float = (unscrambler.machine_width - 10.0 * unscrambler.chain_spacing) * 0.5
+	var outer_link: float = (0.052 + 0.014) * (unscrambler.chain_diameter / 0.048) * unscrambler.profile_scale
+	return minf(0.0, first_rail - outer_link - 0.08)
+
+
 func build_side_plates() -> void:
-	_build_side_plate(0.0)
+	_build_side_plate(negative_frame_edge())
 	_build_side_plate(unscrambler.machine_width)
 
 
@@ -51,7 +59,7 @@ func build_cross_members() -> void:
 	for bp in beam_positions:
 		var pos: Vector2 = bp * s
 		pos.y -= 0.08 * s
-		_add_beam(pos, Vector3(0.06, 0.06, machine_width + plate_thickness))
+		_add_beam(pos, Vector3(0.06, 0.06, machine_width - negative_frame_edge() + plate_thickness))
 
 
 func _add_beam(profile_pos: Vector2, size: Vector3) -> void:
@@ -61,7 +69,7 @@ func _add_beam(profile_pos: Vector2, size: Vector3) -> void:
 	box.position = Vector3(
 		profile_pos.x,
 		profile_pos.y,
-		unscrambler.machine_width * 0.5
+		(negative_frame_edge() + unscrambler.machine_width) * 0.5
 	)
 	box.material = unscrambler._mat_plate
 	box.use_collision = true
@@ -74,6 +82,16 @@ func build_working_surface() -> void:
 	var plate_thickness: float = unscrambler.plate_thickness
 	var chain_diameter: float = unscrambler.chain_diameter
 	var chain_spacing: float = unscrambler.chain_spacing
+	# A non-solid contact band just above each tray segment. Overlap is only
+	# possible when a physical board has descended to the working surface.
+	var sensor: Area3D = null
+	if not Engine.is_editor_hint():
+		sensor = Area3D.new()
+		sensor.name = "WorkingSurfaceSensor"
+		sensor.collision_layer = 0
+		sensor.collision_mask = 1
+		unscrambler.add_child(sensor)
+		unscrambler._surface_sensor = sensor
 	# Thin steel tray panels that follow the profile segments segment-by-segment
 	var segments: Array[Array] = [
 		# [from_outer_index, to_outer_index]  — profile now has 9 points (0-8)
@@ -103,11 +121,15 @@ func build_working_surface() -> void:
 
 		var tray := CSGBox3D.new()
 		tray.name = "Surface"
-		tray.size = Vector3(length, surface_thickness, machine_width - plate_thickness * 2.2)
+		# Only the negative edge grows. The far edge and the groove world-Zs
+		# remain at their original coordinates.
+		var tray_min_z: float = negative_frame_edge() + plate_thickness * 1.1
+		var tray_max_z: float = machine_width - plate_thickness * 1.1
+		tray.size = Vector3(length, surface_thickness, tray_max_z - tray_min_z)
 		tray.position = Vector3(
 			mid.x - n_dir.x * offset_dist,
 			mid.y - n_dir.y * offset_dist,
-			machine_width * 0.5
+			(tray_min_z + tray_max_z) * 0.5
 		)
 		tray.rotation.z = angle
 		tray.material = unscrambler._mat_floor
@@ -117,7 +139,7 @@ func build_working_surface() -> void:
 		var is_groove_needed: bool = (seg[0] >= 1)
 
 		if is_groove_needed:
-			var zc_center: float = machine_width * 0.5
+			var zc_center: float = tray.position.z
 			var scale_factor: float = (chain_diameter / 0.048) * s
 			var outer_z: float = (0.052 + 0.014) * scale_factor
 			var slot_w: float = (outer_z * 2.0 + 0.014 * scale_factor) * 1.15
@@ -156,3 +178,14 @@ func build_working_surface() -> void:
 					tray.add_child(slot)
 
 		unscrambler.add_child(tray)
+		if sensor != null:
+			var band := CollisionShape3D.new()
+			var band_box := BoxShape3D.new()
+			band_box.size = Vector3(length, 0.10 * s, tray.size.z)
+			band.shape = band_box
+			# Tray top is 0.005 m below the profile; span the actual
+			# contact zone without sensing boards still airborne above it.
+			band.position = Vector3(mid.x + n_dir.x * 0.035 * s,
+				mid.y + n_dir.y * 0.035 * s, tray.position.z)
+			band.rotation.z = angle
+			sensor.add_child(band)

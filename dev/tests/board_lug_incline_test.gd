@@ -202,9 +202,10 @@ func check_machine() -> void:
 				return_lugs_follow_chain = false
 	expect(return_lugs_follow_chain, "returning lugs remain attached to the sagging roller chain")
 
-	# ── Signed drive: direction reverses cleanly and speed remains adjustable.
+	# ── Empty chain is parked at its pickup mark. Manual reverse still works.
 	await frames(30)
-	expect(incline.actual_speed > 0.1, "positive drive speed runs uphill")
+	expect(absf(incline.actual_speed) < 0.02 and incline._pickup_lug_positions().is_empty(),
+		"empty incline parks with pickup corridor clear")
 	incline.reverse_direction = true
 	await frames(60)
 	expect(incline.actual_speed < -0.1, "reverse control runs the full loop downhill")

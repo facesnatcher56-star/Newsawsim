@@ -89,6 +89,9 @@ var _hold_timer: float = 0.0
 var _shaft_angle: float = shaft_rotation_retracted
 
 var _is_stopped_by_backpressure: bool = false
+const IDLE_DELAY: float = 2.0
+var _drive_active: bool = false
+var _empty_seconds: float = 0.0
 var _log_area: Area3D = null
 var _last_left_wall_x: float = 0.0
 var _last_right_wall_x: float = 0.0
@@ -146,6 +149,20 @@ func _physics_process(delta: float) -> void:
 	if blocked != _is_stopped_by_backpressure:
 		_is_stopped_by_backpressure = blocked
 		_update_velocity()
+	var loaded: bool = false
+	if is_instance_valid(_log_area):
+		for body: Node3D in _log_area.get_overlapping_bodies():
+			if body is RigidBody3D and (body.is_in_group("logs") or body.is_in_group("cut_boards")):
+				loaded = true
+				break
+	if loaded:
+		_empty_seconds = 0.0
+	elif _drive_active:
+		_empty_seconds += delta
+	var should_drive: bool = loaded or (_drive_active and _empty_seconds < IDLE_DELAY)
+	if should_drive != _drive_active:
+		_drive_active = should_drive
+		_update_velocity()
 
 	# Lock log rotations and lateral drift to keep them centered on the chains
 	if _log_area != null:
@@ -173,8 +190,9 @@ func _process(delta: float) -> void:
 			_rebuild_everything()
 		return
 
-	# Animate chain links and sprockets — always run at the editor-set speed,
-	# regardless of backpressure (backpressure only stops log physics, not animation).
+	# Visual chain and physical drive stop together when empty or blocked.
+	if not _drive_active or _is_stopped_by_backpressure:
+		return
 	# Chains are laid out along the local Z axis, so scroll speed is derived
 	# from the Z component of direction. If direction has no Z component
 	# (e.g. direction = Vector3(1,0,0) for X-aligned conveyors), fall back
@@ -203,7 +221,7 @@ func is_full() -> bool:
 
 
 func _update_velocity() -> void:
-	var current_speed = 0.0 if _is_stopped_by_backpressure else speed
+	var current_speed: float = speed if _drive_active and not _is_stopped_by_backpressure else 0.0
 	constant_linear_velocity = direction.normalized() * current_speed
 
 

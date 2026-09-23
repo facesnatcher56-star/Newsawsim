@@ -169,6 +169,8 @@ var _pickup_held: bool = false
 var _pickup_handed_over: bool = false
 var _deck_held: bool = false
 var _pickup_committed: bool = false
+var _park_phase: float = 0.0
+var _parking_braking: bool = false
 var _geometry_stamp: String = ""
 
 
@@ -669,6 +671,12 @@ func _build_stations() -> void:
 	var corridor_span: float = PICKUP_CORRIDOR_TOP - _lug_emergence_z() + LUG_PICKUP_CLEARANCE
 	count = maxi(2, mini(count, int(_loop_len / (corridor_span + PICKUP_GAP_MARGIN))))
 	var pitch: float = _loop_len / float(count)
+	# Phase the empty machine at build time: the next lug waits just below its
+	# slot, while the following lug is beyond the board's pickup corridor. The
+	# landing deck can feed a board straight in without waiting for a moving lug.
+	var park_z: float = _lug_emergence_z() - LUG_PICKUP_CLEARANCE - 0.04
+	_park_phase = (park_z - _pickup_point.x) / cos(_a)
+	_travel = _park_phase
 	var steel: StandardMaterial3D = _material(Color(0.11, 0.10, 0.09), 0.82, 0.58)
 	var instance_count: int = count * track_x_positions.size()
 
@@ -703,7 +711,7 @@ func _build_stations() -> void:
 
 		_stations.append(station)
 		_station_shapes.append(shapes)
-		_slot.append(float(i) * pitch)
+		_slot.append(float(i) * pitch + _travel)
 		_slot_visible.append(false)
 		# Start hidden: only stations on the carrying run may push.
 		_set_station_shapes(i, false)
@@ -828,17 +836,34 @@ func _physics_process(delta: float) -> void:
 	_holding = _hold_required()
 	_scan_pickup()
 
-	# The deck is held while the pickup corridor is cleared of lugs, and released
-	# again so it can deliver a board into a corridor with nothing in the way. A
-	# board that has already been handed over is the opposite case: the deck has to
-	# let go of it, because deck speed and chain speed differ and a board dragged
-	# by one while pushed by the other is sheared across the bed.
+	# The normal pickup is already parked before the board arrives. The deck
+	# continues feeding it until its trailing edge is ready for a full-face push;
+	# only sorter backpressure (or an unexpected unparked pickup) stops the deck.
 	if is_instance_valid(_upstream):
 		_upstream.set("external_stop", _holding or _deck_held)
 		_upstream.set("downstream_takeover", _pickup_handed_over)
 
 	var commanded_speed: float = -chain_speed if reverse_direction else chain_speed
 	var target: float = commanded_speed if (running and not external_stop and not _holding and not _pickup_held) else 0.0
+	# After the last board leaves the carrying run, index the empty chain to
+	# the same clear pickup gap it starts with. Begin braking before the index
+	# mark: unlike waiting for the next board, this happens while the deck is
+	# empty, so a delivery normally never has to wait for lugs to clear.
+	if _board_on_run() or reverse_direction:
+		_parking_braking = false
+	elif target > 0.0:
+		var pitch: float = _loop_len / float(_stations.size())
+		var phase: float = fposmod(_slot[0] - _park_phase, pitch)
+		var to_mark: float = fposmod(pitch - phase, pitch)
+		var mark_error: float = minf(to_mark, pitch - to_mark)
+		var stopping_distance: float = actual_speed * actual_speed / (2.0 * maxf(acceleration, 0.01))
+		if not _parking_braking and to_mark <= stopping_distance + maxf(actual_speed, 0.0) * delta + 0.01:
+			_parking_braking = true
+		if _parking_braking:
+			if absf(actual_speed) < 0.01 and (mark_error > 0.09 or not _pickup_lug_positions().is_empty()):
+				_parking_braking = false # missed the window; index to the next one
+			else:
+				target = 0.0
 	actual_speed = move_toward(actual_speed, target, acceleration * delta)
 
 	var advance := actual_speed * delta
@@ -919,6 +944,22 @@ func _pickup_lug_positions() -> Array[float]:
 	return out
 
 
+## A board past the pickup still needs its lugs all the way up the hill. Do not
+## index the empty-chain parking mark until the last board has left the crest.
+func _board_on_run() -> bool:
+	if _pickup_handed_over:
+		return true
+	for node: Node in get_tree().get_nodes_in_group("cut_boards"):
+		var body: RigidBody3D = node as RigidBody3D
+		if not is_instance_valid(body) or body.freeze:
+			continue
+		var at: Vector3 = to_local(body.global_position)
+		if absf(at.x) < bed_width * 0.5 + 0.5 and at.z >= 0.0 and at.z <= _p2.x + 0.15:
+			if absf(at.y - _plane_y(clampf(at.z, 0.0, _p2.x))) < 0.8:
+				return true
+	return false
+
+
 func _scan_pickup() -> void:
 	_pickup_held = false
 	_pickup_handed_over = false
@@ -980,6 +1021,11 @@ func _hold_required() -> bool:
 		return false
 	for body in _discharge_area.get_overlapping_bodies():
 		if not _is_board(body):
+			continue
+		# The sorter refuses duplicate acceptance for a board it already owns.
+		# That is not backpressure: keeping the incline parked in that case
+		# strands the board at the crest while the sorter's idle lugs spin up.
+		if _sorter.has_method("is_tracking_board") and bool(_sorter.call("is_tracking_board", body)):
 			continue
 		if not bool(_sorter.call("can_accept_board", body)):
 			return true

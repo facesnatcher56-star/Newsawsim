@@ -10,10 +10,13 @@ extends StaticBody3D
 
 var chain_links: Array[Node3D] = []
 var offset: float = 0.0
+const IDLE_DELAY: float = 2.0
+var _drive_active: bool = false
+var _empty_seconds: float = 0.0
 
 func _ready() -> void:
-	# constant_linear_velocity is in global coordinates in Godot 4
-	constant_linear_velocity = direction.normalized() * speed
+	# The empty chain is stationary; only a physical load on the bed starts it.
+	constant_linear_velocity = Vector3.ZERO
 	
 	if not visuals:
 		return
@@ -76,7 +79,21 @@ func _ready() -> void:
 		visuals.add_child(link)
 		chain_links.append(link)
 
+func _physics_process(delta: float) -> void:
+	var loaded: bool = ConveyorLoadSensor.has_load(self,
+		Vector3(-0.65, -0.30, -conveyor_length * 0.5 - 0.15),
+		Vector3(0.65, 0.80, conveyor_length * 0.5 + 0.15))
+	if loaded:
+		_empty_seconds = 0.0
+	elif _drive_active:
+		_empty_seconds += delta
+	_drive_active = loaded or (_drive_active and _empty_seconds < IDLE_DELAY)
+	constant_linear_velocity = direction.normalized() * speed if _drive_active else Vector3.ZERO
+
+
 func _process(delta: float) -> void:
+	if not _drive_active:
+		return
 	# Move the offset to represent flow along the conveyor length
 	offset += speed * delta
 	if offset > link_spacing:

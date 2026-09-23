@@ -4,7 +4,7 @@ extends StaticBody3D
 	set(v):
 		if speed != v:
 			speed = v
-			constant_linear_velocity = direction.normalized() * speed
+			_update_velocity()
 
 @export var direction: Vector3 = Vector3.FORWARD:
 	set(v):
@@ -42,15 +42,29 @@ var _kicker_lowers: Array[Node3D] = []
 var _kicker_pivots_rollers: Array[Node3D] = []
 
 var _is_stopped_by_backpressure: bool = false
-var _actual_speed: float = 5.0
+var _actual_speed: float = 0.0
+const IDLE_DELAY: float = 2.0
+var _drive_active: bool = false
+var _empty_seconds: float = 0.0
+var _load_low: Vector3 = Vector3.ZERO
+var _load_high: Vector3 = Vector3.ZERO
 var _log_area: Area3D = null
 var _downstream_cached: Node = null
 var _belt_material: StandardMaterial3D = null
 
 func _ready() -> void:
-	_actual_speed = speed
+	_actual_speed = 0.0
 	_update_velocity()
 	_log_area = get_node_or_null("LogArea")
+	# When there is no authored LogArea, use the first physical bed shape as
+	# the load envelope. This also covers the chain-log decks and roller drives.
+	for child: Node in get_children():
+		var col: CollisionShape3D = child as CollisionShape3D
+		if col != null and col.shape is BoxShape3D:
+			var half: Vector3 = (col.shape as BoxShape3D).size * 0.5
+			_load_low = col.position - half - Vector3(0.25, 0.15, 0.25)
+			_load_high = col.position + half + Vector3(0.25, 0.90, 0.25)
+			break
 	
 	var belt = get_node_or_null("Visuals/Belt")
 	if belt and (belt is CSGBox3D or belt is MeshInstance3D):
@@ -112,6 +126,22 @@ func _physics_process(delta: float) -> void:
 	if blocked != _is_stopped_by_backpressure:
 		_is_stopped_by_backpressure = blocked
 		_update_velocity()
+	var loaded: bool = false
+	if is_instance_valid(_log_area):
+		for body: Node3D in _log_area.get_overlapping_bodies():
+			if body is RigidBody3D and (body.is_in_group("logs") or body.is_in_group("cut_boards")):
+				loaded = true
+				break
+	elif _load_low != _load_high:
+		loaded = ConveyorLoadSensor.has_load(self, _load_low, _load_high)
+	if loaded:
+		_empty_seconds = 0.0
+	elif _drive_active:
+		_empty_seconds += delta
+	var should_drive: bool = loaded or (_drive_active and _empty_seconds < IDLE_DELAY)
+	if _drive_active != should_drive:
+		_drive_active = should_drive
+		_update_velocity()
 
 	if lock_logs and _log_area != null:
 		var fwd := direction.normalized()
@@ -143,7 +173,8 @@ func _get_downstream() -> Node:
 	return null
 
 func _update_velocity() -> void:
-	var current_speed = 0.0 if _is_stopped_by_backpressure else speed
+	var current_speed: float = speed if _drive_active and not _is_stopped_by_backpressure else 0.0
+	_actual_speed = current_speed
 	constant_linear_velocity = direction.normalized() * current_speed
 
 # ── Kicker Logic ──────────────────────────────────────────────────────────────

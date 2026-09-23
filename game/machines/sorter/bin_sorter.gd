@@ -55,6 +55,12 @@ var _haulout_tail_shaft: Node3D = null
 var _floor_bed: StaticBody3D = null
 var _chain_system: Node3D = null
 var _chain_visual_elapsed: float = 0.0
+const CHAIN_IDLE_DELAY: float = 2.0
+const TOP_PARK_DELAY: float = 1.0
+var _top_active: bool = false
+var _haulout_active: bool = false
+var _top_empty_seconds: float = 0.0
+var _haulout_empty_seconds: float = 0.0
 
 # Board tracking state
 var _tracked_boards: Array[SorterBoardTracker.BoardTrackingData] = []
@@ -157,6 +163,13 @@ func _setup_standalone_camera() -> void:
 func can_accept_board(body: Node3D) -> bool:
 	return SorterBoardTracker.can_accept_board(body, num_bins, _bay_board_counts, _bay_discharging, max_boards_per_bay, _tracked_boards)
 
+
+func is_tracking_board(body: Node3D) -> bool:
+	for data: SorterBoardTracker.BoardTrackingData in _tracked_boards:
+		if data.board == body:
+			return true
+	return false
+
 func _on_infeed_body_entered(body: Node3D) -> void:
 	if Engine.is_editor_hint():
 		return
@@ -228,9 +241,34 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
-	# 1. Rotate conveyor and haul-out shafts in precise sync with chain pitch radius (omega = v / R)
-	var omega_top: float = conveyor_speed / TOP_SPROCKET_R
-	var omega_haul: float = haulout_speed / HAULOUT_SPROCKET_R
+	# The overhead and floor chains have independent load sensors. Park both
+	# empty chains at startup; a board entering the sorter wakes the overhead
+	# lugs immediately, while the haul-out waits for lumber on its own floor.
+	var top_loaded: bool = not _tracked_boards.is_empty() or ConveyorLoadSensor.has_load(self,
+		Vector3(-0.70, sorter_height - 0.40, -3.0),
+		Vector3(num_bins * bin_width + 0.5, sorter_height + 0.65, 3.0), true, false)
+	var haul_loaded: bool = ConveyorLoadSensor.has_load(self,
+		Vector3(-0.5, -0.20, -2.3),
+		Vector3(num_bins * bin_width + 0.5, 0.95, 2.3), true, false)
+	if top_loaded:
+		_top_empty_seconds = 0.0
+	elif _top_active:
+		_top_empty_seconds += delta
+	# Index the empty overhead lugs to a repeatable inlet gap rather than
+	# stopping at an arbitrary phase with a post standing under the next board.
+	var top_phase: float = fposmod(_chain_system.current_top_dist, SorterChainSystem.TOP_PITCH * 5.0) if is_instance_valid(_chain_system) else 0.0
+	var top_gap_clear: bool = top_phase < 0.045
+	_top_active = top_loaded or (_top_active and (_top_empty_seconds < TOP_PARK_DELAY or not top_gap_clear))
+	if haul_loaded:
+		_haulout_empty_seconds = 0.0
+	elif _haulout_active:
+		_haulout_empty_seconds += delta
+	_haulout_active = haul_loaded or (_haulout_active and _haulout_empty_seconds < CHAIN_IDLE_DELAY)
+	var top_drive: float = conveyor_speed if _top_active else 0.0
+	var haul_drive: float = haulout_speed if _haulout_active else 0.0
+	# 1. Rotate shafts in sync with the actual chain travel (omega = v / R).
+	var omega_top: float = top_drive / TOP_SPROCKET_R
+	var omega_haul: float = haul_drive / HAULOUT_SPROCKET_R
 	if is_instance_valid(_top_drive_shaft):
 		_top_drive_shaft.rotate_z(omega_top * delta)
 	if is_instance_valid(_top_tail_shaft):
@@ -244,15 +282,15 @@ func _physics_process(delta: float) -> void:
 	# chain transforms remain capped at 30 Hz, but the AnimatableBody3D lugs move
 	# smoothly at physics rate so thin boards cannot tunnel through them.
 	if is_instance_valid(_chain_system):
-		_chain_system.advance_physics(conveyor_speed * delta, haulout_speed * delta)
+		_chain_system.advance_physics(top_drive * delta, haul_drive * delta)
 		_chain_visual_elapsed += delta
-		if _chain_visual_elapsed >= (1.0 / 30.0):
+		if (top_drive > 0.0 or haul_drive > 0.0) and _chain_visual_elapsed >= (1.0 / 30.0):
 			_chain_system.refresh_visuals()
 			_chain_visual_elapsed = fmod(_chain_visual_elapsed, 1.0 / 30.0)
 
 	# 2. Update haul-out constant linear velocity
 	if is_instance_valid(_floor_bed):
-		_floor_bed.constant_linear_velocity = global_basis.x * haulout_speed
+		_floor_bed.constant_linear_velocity = global_basis.x * haul_drive
 
 	# 3. Track fully dynamic boards while physical overhead lugs push them. This
 	# code only chooses/opens the target gate and records a landing after contact;

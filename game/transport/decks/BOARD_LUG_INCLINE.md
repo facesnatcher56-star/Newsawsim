@@ -57,11 +57,11 @@ carrying plane, so nothing pokes up into a board and the chains stay visible.
 ## Lugs and pockets
 
 The lugs are what make this work on a 26 degree ramp. One `AnimatableBody3D`
-carries a pusher on all four incline lanes; stations are spaced `lug_pitch` apart around
-the whole chain loop (about 0.75 m actual pitch, 26 stations here). A board is pushed
-uphill by the lug behind it and, whenever the chain stops, slides back onto that
-lug - so boards cannot run down into each other, and a stopped chain parks its
-load instead of dropping it.
+carries a pusher on all four incline lanes; the station count is capped so the
+actual pocket pitch (about 1.02 m) exceeds the clearance corridor at the pickup.
+A board is pushed uphill by the lug behind it and, whenever the chain stops,
+slides back onto that lug - so boards cannot run down into each other, and a
+stopped chain parks its load instead of dropping it.
 
 Each lane is now a closed articulated roller chain: rollers are the joint pins,
 and alternating inner/outer side-plate pairs bridge from each pin to the next
@@ -91,6 +91,17 @@ ride on friction and are pushed by real moving lugs.
 
 ## Handoff and interlocks
 
+When empty, the incline is **already stopped at its pickup index**: its next
+lug sits below the deck's carrying plane, and the following lug is beyond the
+pickup corridor. The landing deck keeps running and feeds a board to the
+handoff position without waiting for the incline to phase itself. Once the
+board's trailing edge has advanced far enough for a lug to push its full face,
+the incline starts and the deck relinquishes its grip. After the last board
+leaves the crest, the incline indexes to the same clear pickup position and
+parks again. A board arriving unexpectedly during that indexing can still
+trigger the safety hold; sorter backpressure continues to hold both machines.
+Manual reverse bypasses automatic idle parking.
+
 The sorter's `InfeedScannerZone` reaches back to `world z = 29.191`, which the
 lugs push a board's centre past well before the crest ends, so the sorter freezes
 and takes the board while it is still fully supported on the crest. It then
@@ -105,6 +116,7 @@ their lugs instead of piling into the sorter's infeed.
 
 ```
 godot --headless --path . --script res://dev/tests/board_lug_incline_test.gd
+godot --headless --path . --script res://dev/tests/incline_idle_pickup_test.gd
 ```
 
 Success prints `BOARD_LUG_INCLINE_TEST PASS failures=0`. It checks the carrying

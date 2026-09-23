@@ -111,8 +111,12 @@ func check():
 	deck.rotation.y = PI / 2
 	deck.running = true
 	deck.reverse_direction = false
+	var rotated_load: RigidBody3D = load("res://game/lumber/cut_board.tscn").instantiate()
+	root.add_child(rotated_load)
+	rotated_load.global_position = deck.to_global(Vector3(0.0, 0.12, 0.0))
 	await frames(45)
 	expect(deck._belts[0].constant_linear_velocity.x > 0.5, "Transport must follow deck orientation")
+	rotated_load.free()
 	expect(abs(deck._belts[0].constant_linear_velocity.z) < 0.001, "Rotated deck must not drive world Z")
 	deck.free()
 	print("LANDING_DECK_TEST ", "PASS" if failures == 0 else "FAIL", " failures=", failures)
