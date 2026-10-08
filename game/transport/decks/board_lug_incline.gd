@@ -10,6 +10,8 @@ extends Node3D
 ##
 ## Collision lives in these scene nodes:
 ##  - InclineBottom / InclineTop: solid floors the boards are dragged across (grip tuner on each).
+##  - InclineStartTrigger: a thin zone over the end of the landing deck. The chain stays still
+##    until a board touches it (see Wait For Board).
 ##  - InclineLug: the template lug box. It is copied onto every lug on every chain, and each
 ##    copy rides with its visible lug. Edit this one box (size, position) to change them all.
 ## The ramp, rails, legs, chains and lug pictures are drawn by this script from the exports below.
@@ -40,6 +42,10 @@ extends Node3D
 
 # ── Drive ────────────────────────────────────────────────────────────────────
 @export_group("Chain and lugs")
+## When ticked, the incline stays completely still until a board reaches the start zone
+## (the InclineStartTrigger box in this scene, over the end of the landing deck). Once a board
+## touches that zone the chain starts. Untick to have the chain run all the time.
+@export var wait_for_board: bool = true
 ## Turns the chain (and the lugs that push the boards) on or off. When switched off they slow to a stop.
 @export var running: bool = true
 ## How fast the chain and its lugs travel, in metres per second. 0.5 is a slow walking pace.
@@ -126,10 +132,21 @@ var _link_spacing: float = LINK_PITCH
 var _visual_update_elapsed: float = 0.0
 var _park_phase: float = 0.0
 var _geometry_stamp: String = ""
+var _board_has_arrived: bool = false
 
 
 func _ready() -> void:
 	_rebuild()
+	if Engine.is_editor_hint():
+		return
+	var trigger := get_node_or_null("InclineStartTrigger") as Area3D
+	if trigger != null:
+		trigger.body_entered.connect(_on_start_zone_entered)
+
+
+func _on_start_zone_entered(body: Node3D) -> void:
+	if body.is_in_group("cut_boards"):
+		_board_has_arrived = true
 
 
 ## Editor: rebuild while an export is being tuned in the inspector.
@@ -144,7 +161,8 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var commanded_speed: float = -chain_speed if reverse_direction else chain_speed
-	var target: float = commanded_speed if running else 0.0
+	var may_run: bool = running and (_board_has_arrived or not wait_for_board)
+	var target: float = commanded_speed if may_run else 0.0
 	actual_speed = move_toward(actual_speed, target, acceleration * delta)
 
 	var advance := actual_speed * delta
