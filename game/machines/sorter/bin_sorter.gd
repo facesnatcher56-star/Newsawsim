@@ -162,7 +162,7 @@ func _bind_scene_physics() -> void:
 	for b in range(num_bins):
 		var bay = get_node_or_null("Bay_%02d" % b)
 		_bays.append(bay)
-		_cradle_bodies.append(bay.cradle if bay != null else null)
+		_cradle_bodies.append(bay.get_node_or_null("Cradle") as AnimatableBody3D if bay != null else null)
 	_infeed_surface = get_node_or_null("LineSurfaces/InfeedSurface") as StaticBody3D
 	_haulout_surface = get_node_or_null("LineSurfaces/HaulOutSurface") as StaticBody3D
 
@@ -172,7 +172,7 @@ func _setup_physics_collision() -> void:
 	_floor_bed = res.floor_bed
 	_cradle_bodies = res.cradle_bodies
 	_gate_bodies = res.gate_bodies
-	if scene_physics:
+	if scene_physics and not Engine.is_editor_hint():
 		_bind_scene_physics()
 	
 	var infeed: Area3D = res.infeed_zone
