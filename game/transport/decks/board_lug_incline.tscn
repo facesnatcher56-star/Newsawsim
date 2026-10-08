@@ -1,6 +1,34 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://b5j5jvlacvbcg"]
 
-[ext_resource type="Script" path="res://game/transport/decks/board_lug_incline.gd" id="1_incline"]
+[ext_resource type="Script" uid="uid://breolu0dp2gt1" path="res://game/transport/decks/board_lug_incline.gd" id="1_incline"]
+[ext_resource type="Script" path="res://game/transport/decks/incline_floor.gd" id="2_floor"]
 
-[node name="BoardLugIncline" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_15q6v"]
+size = Vector3(6.251709, 0.4630127, 7.8295517)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jjb4j"]
+size = Vector3(5.5078125, 0.2524414, 2.2432861)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_88s4v"]
+size = Vector3(0.112854004, 0.23926544, 0.11732483)
+
+[node name="BoardLugIncline" type="Node3D" unique_id=661546320]
 script = ExtResource("1_incline")
+
+[node name="InclineBottom" type="StaticBody3D" parent="." unique_id=362874486]
+transform = Transform3D(1, 0, 0, 0, 0.8987942, 0.4383712, 0, -0.4383712, 0.8987942, 0.1897304, 0.90463084, 2.3075678)
+script = ExtResource("2_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InclineBottom"]
+shape = SubResource("BoxShape3D_15q6v")
+
+[node name="InclineTop" type="StaticBody3D" parent="." unique_id=1465584866]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.06933594, 2.686368, 6.862499)
+script = ExtResource("2_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InclineTop"]
+shape = SubResource("BoxShape3D_jjb4j")
+
+[node name="InclineLug" type="CollisionShape3D" parent="." unique_id=186927790]
+transform = Transform3D(1, 0, 0, 0, 0.90630776, 0.42261827, 0, -0.42261827, 0.90630776, -2.062761, -0.25739768, -0.8047828)
+shape = SubResource("BoxShape3D_88s4v")

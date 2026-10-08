@@ -3,29 +3,19 @@ class_name BoardLugIncline
 extends Node3D
 
 ## board_lug_incline.gd
-## Lug-chain incline that lifts edger boards from the landing chain deck's
-## discharge up to the bin sorter's infeed table.
+## Lug-chain incline that lifts boards from the edger landing deck up to the bin sorter.
 ##
-## Boards leave the edger landing deck broadside - long axis across local X,
-## travelling along local +Z - and that is the attitude the sorter's infeed
-## expects, so the incline only has to raise them. Four lug chains, laterally
-## interleaved between the landing deck's five chains, rise from beneath that
-## deck through pickup slots before continuing up a straight ramp and level crest. The lugs divide each chain into pockets,
-## which is what keeps the boards apart: a board is pushed uphill by the lug
-## behind it and, on the 26 degree ramp, slides back onto that lug whenever the
-## chain stops, so it can never run down into the board below.
+## Boards leave the landing deck broadside (long edge across local X) and travel along
+## local +Z, up a 26 degree ramp and over a level crest. Four chains with lugs push them up.
 ##
-## The crest is level and its carrying plane is flush with the sorter's infeed
-## rails, so the hand-over happens at the height the sorter's scanner zone
-## expects. The sorter starts tracking the same dynamic rigid board once its
-## centre enters that zone; physical sorter lugs then take over the push.
+## Collision lives in these scene nodes:
+##  - InclineBottom / InclineTop: solid floors the boards are dragged across (grip tuner on each).
+##  - InclineLug: the template lug box. It is copied onto every lug on every chain, and each
+##    copy rides with its visible lug. Edit this one box (size, position) to change them all.
+## The ramp, rails, legs, chains and lug pictures are drawn by this script from the exports below.
 ##
-## Local origin is the deck-end crossing on the board carrying plane at world
-## (50.803027, 0.2271245, 21.647045) in the mill prototype. The actual lower
-## tangent is pickup_overlap metres back and below this point, under the landing
-## deck. +Z is uphill, +X is across the boards.
-## Keep the node scale at (1, 1, 1); the whole machine is built from the exports
-## at runtime, so a level placement is all the scene has to provide.
+## Local origin is the deck-end crossing on the board carrying plane (world 50.803, 0.227,
+## 21.647 in the mill). +Z is uphill, +X is across the boards. Keep the scale at (1, 1, 1).
 
 # ── Exported geometry ────────────────────────────────────────────────────────
 @export_group("Geometry")
@@ -49,18 +39,23 @@ extends Node3D
 @export_range(-4.0, 1.0, 0.01) var floor_y: float = -1.54
 
 # ── Drive ────────────────────────────────────────────────────────────────────
-@export_group("Drive")
-## Chain speed in metres per second (visual only; boards are moved by the level's collision boxes).
-@export_range(0.0, 3.0, 0.05) var chain_speed: float = 0.45
-## Reverse the entire chain loop. Speed remains a positive, directly adjustable
-## magnitude so operator controls do not need to rewrite it to change direction.
-@export var reverse_direction: bool = false
-@export_range(0.1, 8.0, 0.1) var acceleration: float = 1.5
+@export_group("Chain and lugs")
+## Turns the chain (and the lugs that push the boards) on or off. When switched off they slow to a stop.
 @export var running: bool = true
-## Distance between lug pockets along the chain loop.
+## How fast the chain and its lugs travel, in metres per second. 0.5 is a slow walking pace.
+## Bigger numbers = the lugs push boards up the ramp faster.
+@export_range(0.0, 3.0, 0.05) var chain_speed: float = 0.45
+## Makes the chain run backwards (lugs travel down the ramp instead of up). Tick to reverse.
+@export var reverse_direction: bool = false
+## How quickly the chain gets up to speed when it starts or slows down when it stops, in metres per second every second.
+## Small number = gentle start and stop. Big number = nearly instant.
+@export_range(0.1, 8.0, 0.1) var acceleration: float = 1.5
+## How much the lugs grip the board they are pushing. 0 = like ice (the board slides off the lug).
+## Higher = the board is held and pushed firmly.
+@export_range(0.0, 5.0, 0.05) var lug_grip: float = 0.5
+## The gap between one lug and the next along the chain, in metres. Bigger = fewer lugs, more space for a board between them.
 @export_range(0.2, 2.0, 0.01) var lug_pitch: float = 0.74
-## Vertical slack at the centre of the unloaded lower return. This creates the
-## natural hanging catenary visible between the head and foot sprockets.
+## How much the empty lower part of the chain sags between the two end wheels (looks only, no effect on the boards).
 @export_range(0.05, 1.25, 0.01) var return_sag: float = 0.42
 
 # ── Geometry constants ───────────────────────────────────────────────────────
@@ -114,8 +109,10 @@ var _return_start_s: float = 0.0
 var _return_len: float = 0.0
 
 var _parts: Node3D
-var _stations: Array[Node3D] = []
+var _stations: Array[AnimatableBody3D] = []
+var _station_shapes: Array[Array] = []
 var _slot: Array[float] = []
+var _slot_on_run: Array[bool] = []
 var _sprockets: Array[Node3D] = []
 var _shafts: Array[Node3D] = []
 var _plates_mm: MultiMeshInstance3D
@@ -136,11 +133,14 @@ func _ready() -> void:
 
 
 ## Editor: rebuild while an export is being tuned in the inspector.
-## Game: advance the chain and lugs (visual only).
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
+	if Engine.is_editor_hint() and _stamp() != _geometry_stamp:
+		_rebuild()
+
+
+## Game: advance the chain and lugs every physics tick, so the lugs push boards smoothly.
+func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
-		if _stamp() != _geometry_stamp:
-			_rebuild()
 		return
 
 	var commanded_speed: float = -chain_speed if reverse_direction else chain_speed
@@ -279,7 +279,9 @@ func _rebuild() -> void:
 	add_child(_parts)
 
 	_stations.clear()
+	_station_shapes.clear()
 	_slot.clear()
+	_slot_on_run.clear()
 	_sprockets.clear()
 	_shafts.clear()
 
@@ -620,12 +622,45 @@ func _build_stations() -> void:
 		"LugBraces", Vector3(0.022, 0.20, 0.05),
 		instance_count * 2, steel)
 
+	# The lug collision box you placed in the scene ("InclineLug") is the template.
+	# It was placed over the first lug, so its position relative to that lug is copied
+	# onto every lug on every chain lane.
+	var lug_material := PhysicsMaterial.new()
+	lug_material.friction = lug_grip
+	lug_material.bounce = 0.0
+	var template := get_node_or_null("InclineLug") as CollisionShape3D
+	var lug_shape: Shape3D = null
+	var offset := Transform3D(Basis(), Vector3(0.0, CARRIER_DROP + LUG_POST_H * 0.5, LUG_POST_D * 0.5))
+	if template != null and template.shape != null:
+		lug_shape = template.shape
+		var first_lug: Array = _sample(0.0)
+		var first_point: Vector2 = first_lug[0]
+		var first_frame := Transform3D(Basis(Vector3.RIGHT, float(first_lug[1])), Vector3(0.0, first_point.y, first_point.x))
+		offset = first_frame.affine_inverse() * template.transform
+	else:
+		var default_box := BoxShape3D.new()
+		default_box.size = Vector3(LUG_POST_W, LUG_POST_H, LUG_POST_D)
+		lug_shape = default_box
+
 	for i: int in count:
-		var station := Node3D.new()
+		var station := AnimatableBody3D.new()
 		station.name = "LugStation_%02d" % i
+		station.sync_to_physics = true
+		station.physics_material_override = lug_material
 		_parts.add_child(station)
+
+		var shapes: Array[CollisionShape3D] = []
+		for track_x: float in track_x_positions:
+			var post := CollisionShape3D.new()
+			post.shape = lug_shape
+			post.transform = Transform3D(offset.basis, Vector3(track_x, offset.origin.y, offset.origin.z))
+			station.add_child(post)
+			shapes.append(post)
+
 		_stations.append(station)
+		_station_shapes.append(shapes)
 		_slot.append(float(i) * pitch + _travel)
+		_slot_on_run.append(false)
 		_place_station(i)
 
 
@@ -650,12 +685,21 @@ func _make_lug_multimesh(
 
 
 func _place_station(index: int, update_visuals: bool = true) -> void:
-	var station: Node3D = _stations[index]
-	var sample: Array = _sample(_slot[index])
+	var station: AnimatableBody3D = _stations[index]
+	var s: float = _slot[index]
+	var sample: Array = _sample(s)
 	var point: Vector2 = sample[0]
 	station.transform = Transform3D(Basis(Vector3.RIGHT, float(sample[1])), Vector3(0.0, point.y, point.x))
 	if update_visuals:
 		_place_station_visuals(index, station.transform)
+
+	# Lugs stay visible all the way round the chain, but only the ones on the
+	# carrying run (the ramp and crest) can push a board.
+	var on_run: bool = s < _run_len
+	if _slot_on_run[index] != on_run:
+		_slot_on_run[index] = on_run
+		for shape in _station_shapes[index]:
+			(shape as CollisionShape3D).disabled = not on_run
 
 
 func _place_station_visuals(index: int, station_transform: Transform3D) -> void:
