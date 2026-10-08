@@ -146,6 +146,8 @@ func _setup_physics_collision() -> void:
 func _setup_chain_system() -> void:
 	_chain_system = SorterChainSystemScript.new()
 	_chain_system.name = "SorterChainSystem"
+	# Start parked with the lug gap at the inlet, not a post standing there.
+	_chain_system.current_top_dist = SorterChainSystem.TOP_PITCH * 5.0 * 0.5
 	add_child(_chain_system)
 
 func _setup_standalone_camera() -> void:
@@ -257,7 +259,7 @@ func _physics_process(delta: float) -> void:
 	# Index the empty overhead lugs to a repeatable inlet gap rather than
 	# stopping at an arbitrary phase with a post standing under the next board.
 	var top_phase: float = fposmod(_chain_system.current_top_dist, SorterChainSystem.TOP_PITCH * 5.0) if is_instance_valid(_chain_system) else 0.0
-	var top_gap_clear: bool = top_phase < 0.045
+	var top_gap_clear: bool = absf(top_phase - 0.5) < 0.045
 	_top_active = top_loaded or (_top_active and (_top_empty_seconds < TOP_PARK_DELAY or not top_gap_clear))
 	if haul_loaded:
 		_haulout_empty_seconds = 0.0

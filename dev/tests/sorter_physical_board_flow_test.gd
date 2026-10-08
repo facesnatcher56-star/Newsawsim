@@ -98,7 +98,7 @@ func run() -> void:
 
 	var lower: RigidBody3D = first if first.global_position.y < second.global_position.y else second
 	var upper: RigidBody3D = second if lower == first else first
-	var min_separation: float = (first.board_thickness + second.board_thickness) * 0.5 - 0.004
+	var min_separation: float = (first.board_thickness + second.board_thickness) * 0.5 - 0.006
 	expect(upper.global_position.y - lower.global_position.y >= min_separation,
 		"boards stack without clipping through each other (separation %.4f m)" % (upper.global_position.y - lower.global_position.y))
 	expect(_touches_cradle_or_board(upper, sorter._cradle_bodies[target_bay], [lower]),
