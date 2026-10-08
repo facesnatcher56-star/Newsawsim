@@ -707,9 +707,13 @@ func _place_station(index: int, update_visuals: bool = true) -> void:
 	var s: float = _slot[index]
 	var sample: Array = _sample(s)
 	var point: Vector2 = sample[0]
-	station.transform = Transform3D(Basis(Vector3.RIGHT, float(sample[1])), Vector3(0.0, point.y, point.x))
+	var station_transform := Transform3D(Basis(Vector3.RIGHT, float(sample[1])), Vector3(0.0, point.y, point.x))
+	station.transform = station_transform
+	# Draw the lugs from the position just calculated, not from station.transform: a physics
+	# body does not report its new position until the next physics step, which left every
+	# lug drawn at the origin when the machine loaded.
 	if update_visuals:
-		_place_station_visuals(index, station.transform)
+		_place_station_visuals(index, station_transform)
 
 	# Lugs stay visible all the way round the chain, but only the ones on the
 	# carrying run (the ramp and crest) can push a board.

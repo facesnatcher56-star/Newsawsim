@@ -7,7 +7,7 @@ Nothing in `game/` depends on this folder. Run any script with
 | --- | --- | --- |
 | `tests/` | Regression tests. Each prints `PASS`/`FAIL` or `failures: N`. Run these before committing. | Yes |
 | `probes/` | Diagnostics that print measured values (positions, contacts, drive state) to trace a problem. They answer "what is happening?", not "is it correct?". | No (except `full_line_probe`, which reports whether the sorter took the board) |
-| `tools/` | Small utilities (`capture_views.gd` and `capture_sorter_bay.gd` take screenshots from set camera angles; need a window, not `--headless`; images go to `dev/captures/`): dump the scene tree, validate resources, one-off debug scripts. They write `*.log` files in the working directory (git-ignored). | No |
+| `tools/` | Small utilities (`capture_views.gd`, `capture_sorter_bay.gd` and `capture_incline_start.gd` take screenshots from set camera angles; need a window, not `--headless`; images go to `dev/captures/`): dump the scene tree, validate resources, one-off debug scripts. They write `*.log` files in the working directory (git-ignored). | No |
 | `performance/` | Frame-time recorder and A/B performance probes. Logs go to `performance/logs/` (git-ignored). | No |
 | `art/` | Blender/Python scripts that generate the GLB models in `game/assets/models/`. `legacy/` holds superseded generators. | - |
 | `notes/` | Dated status and findings documents. Historical: check the date before trusting them. | - |
