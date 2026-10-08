@@ -111,8 +111,20 @@ func _ready() -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _spawn_lugs() -> void:
-	var lug_shape := BoxShape3D.new()
-	lug_shape.size = Vector3(InclineDeckVisuals.LUG_POST_W, InclineDeckVisuals.LUG_H, InclineDeckVisuals.LUG_POST_D)
+	# The DeckLug box in the scene is a template placed over the first lug (first chain,
+	# at the foot of the deck). Its size and its position relative to that lug are copied
+	# onto every lug. Without it, a default lug-sized box is used.
+	var lug_shape: Shape3D = null
+	var lug_offset := Transform3D(Basis(), Vector3(0.0, InclineDeckVisuals.LUG_BASE_H + InclineDeckVisuals.LUG_H * 0.5, 0.055))
+	var template := _slope_root.get_node_or_null("DeckLug") as CollisionShape3D
+	if template != null and template.shape != null and track_x_positions.size() > 0:
+		lug_shape = template.shape
+		var first_lug := Transform3D(Basis(), Vector3(track_x_positions[0], _visuals.surface_y, -incline_length * 0.5))
+		lug_offset = first_lug.affine_inverse() * template.transform
+	else:
+		var default_shape := BoxShape3D.new()
+		default_shape.size = Vector3(InclineDeckVisuals.LUG_POST_W, InclineDeckVisuals.LUG_H, InclineDeckVisuals.LUG_POST_D)
+		lug_shape = default_shape
 
 	for xi in range(track_x_positions.size()):
 		var tx: float = track_x_positions[xi]
@@ -127,7 +139,7 @@ func _spawn_lugs() -> void:
 
 			var cs    := CollisionShape3D.new()
 			cs.shape  = lug_shape
-			cs.position = Vector3(0.0, InclineDeckVisuals.LUG_BASE_H + InclineDeckVisuals.LUG_H * 0.5, 0.055)
+			cs.transform = lug_offset
 			cs.disabled = slot0 >= incline_length
 			lug.add_child(cs)
 

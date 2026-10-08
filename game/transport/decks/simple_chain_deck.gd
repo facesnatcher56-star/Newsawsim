@@ -82,6 +82,7 @@ var _current_chain_speed: float      = 0.0
 # Lugs (physics)
 var _lugs_nodes:     Array[AnimatableBody3D] = []
 var _lugs_track_x:   Array[float]            = []
+var _lug_on_run: Array[bool] = []
 var _lugs_link_index: Array[int]              = []
 
 # Sprocket nodes (for rotation animation)
@@ -94,6 +95,9 @@ var _editor_build_signature: String = ""
 
 # Frame node reference (to control constant_linear_velocity)
 var _frame_body:     StaticBody3D
+# Shape and placement copied from the DeckLug box in the scene onto every lug (null = none placed).
+var _lug_template_shape:  Shape3D
+var _lug_template_offset: Transform3D = Transform3D.IDENTITY
 var _frame_builder = SimpleChainDeckFrameBuilder.new()
 
 
@@ -157,6 +161,7 @@ func _clear_procedural_nodes() -> void:
 	_lugs_nodes.clear()
 	_lugs_track_x.clear()
 	_lugs_link_index.clear()
+	_lug_on_run.clear()
 	_frame_body = null
 
 	if _deck_root != null:
@@ -252,10 +257,12 @@ func _build_frame() -> void:
 		_spr_cy,
 		track_x_positions
 	)
-	_frame_body = result["frame"] as StaticBody3D
+	var frame_visuals := result["frame"] as Node3D
 	var sprockets: Array = result["sprockets"]
 	_sprocket_nodes.assign(sprockets)
-	_deck_root.add_child(_frame_body)
+	_deck_root.add_child(frame_visuals)
+	# The floor that carries logs is the DeckBottom node saved in the scene.
+	_frame_body = _deck_root.get_node_or_null("DeckBottom") as StaticBody3D
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -281,6 +288,7 @@ func _spawn_chain_links() -> void:
 	_lugs_nodes.clear()
 	_lugs_track_x.clear()
 	_lugs_link_index.clear()
+	_lug_on_run.clear()
 
 	# 1. Plates MultiMesh
 	_multimesh_plates = MultiMeshInstance3D.new()
@@ -347,6 +355,7 @@ func _spawn_chain_links() -> void:
 	lug_shape.radius = lug_radius
 	lug_shape.height = maxf(lug_height, lug_radius * 2.0)
 
+	_read_lug_template()
 	for xi in range(track_x_positions.size()):
 		var tx: float = track_x_positions[xi]
 		for j in range(_num_links):
@@ -360,6 +369,7 @@ func _spawn_chain_links() -> void:
 				_lugs_nodes.append(lug_body)
 				_lugs_track_x.append(tx)
 				_lugs_link_index.append(j)
+				_lug_on_run.append(true)
 
 	_update_chain_links()
 
@@ -379,6 +389,23 @@ func _should_link_have_lug(link_index: int, n_links: int) -> bool:
 		if link_index == target_index:
 			return true
 	return false
+
+
+## The DeckLug box in the scene is a template placed over the first lug (first chain, first
+## lug on the chain). Its size and its position relative to that lug are copied onto every lug.
+func _read_lug_template() -> void:
+	_lug_template_shape = null
+	var template := _deck_root.get_node_or_null("DeckLug") as CollisionShape3D
+	if template == null or template.shape == null:
+		return
+	for j in range(_num_links):
+		if _should_link_have_lug(j, _num_links):
+			var slot: float = fposmod(float(j) * CHAIN_PITCH + _chain_travel, _loop_len)
+			var path: Transform3D = _get_loop_xform(slot)
+			var first_lug := Transform3D(path.basis, Vector3(track_x_positions[0], path.origin.y, path.origin.z))
+			_lug_template_shape = template.shape
+			_lug_template_offset = first_lug.affine_inverse() * template.transform
+			return
 
 
 func _add_lug_to_link(
@@ -406,6 +433,14 @@ func _add_lug_to_link(
 	mi.material_override = lug_mat
 	mi.position = Vector3(0.0, lug_y, 0.0)
 	link.add_child(mi)
+
+	if _lug_template_shape != null:
+		var template_col := CollisionShape3D.new()
+		template_col.name = "LugCollision"
+		template_col.shape = _lug_template_shape
+		template_col.transform = _lug_template_offset
+		link.add_child(template_col)
+		return
 
 	var plate_col := CollisionShape3D.new()
 	plate_col.name = "LugBasePlateCollision"
@@ -505,6 +540,13 @@ func _update_physical_lugs() -> void:
 		var tx: float = _lugs_track_x[i]
 		var link_index: int = _lugs_link_index[i]
 		var slot: float = fposmod(float(link_index) * CHAIN_PITCH + _chain_travel, _loop_len)
+		# Only lugs on the carrying run (the top of the loop) can push; the rest are switched off.
+		var on_run: bool = slot < deck_length
+		if _lug_on_run[i] != on_run:
+			_lug_on_run[i] = on_run
+			for child in lug_body.get_children():
+				if child is CollisionShape3D:
+					(child as CollisionShape3D).disabled = not on_run
 		var path_transform: Transform3D = _get_loop_xform(slot)
 		var local_transform: Transform3D = Transform3D(
 			path_transform.basis, Vector3(tx, path_transform.origin.y, path_transform.origin.z))

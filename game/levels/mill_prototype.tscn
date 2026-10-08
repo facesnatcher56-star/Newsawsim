@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cu6kodccm1rqk" path="res://game/transport/roller_beds/roller_bed.tscn" id="3_n1fx5"]
 [ext_resource type="PackedScene" uid="uid://cv2doupq74rvb" path="res://game/machines/log_feed/log_feed_station.tscn" id="4_logfeed"]
 [ext_resource type="PackedScene" uid="uid://cg4jswye55rr5" path="res://game/machines/headrig/headrig_station.tscn" id="5_headrig"]
-[ext_resource type="PackedScene" path="res://game/transport/decks/edger_landing_deck.tscn" id="5_nmjje"]
+[ext_resource type="PackedScene" uid="uid://shur11w6bum3" path="res://game/transport/decks/edger_landing_deck.tscn" id="5_nmjje"]
 [ext_resource type="PackedScene" uid="uid://c0alpbtit8nxv" path="res://game/transport/stations/incline_outfeed.tscn" id="6_incline"]
 [ext_resource type="PackedScene" uid="uid://dmko1r1aasdqt" path="res://game/transport/decks/simple_chain_deck.tscn" id="8_yfjmh"]
 [ext_resource type="PackedScene" uid="uid://rm6tpbbydav1" path="res://game/lumber/cut_board.tscn" id="9_55ft6"]
@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://do7m0w82c4cxo" path="res://game/props/sliding_plate.tscn" id="13_plate"]
 [ext_resource type="PackedScene" uid="uid://c63j5eq6tw5ta" path="res://game/machines/sorter/bin_sorter.tscn" id="15_0cce1"]
 [ext_resource type="Script" uid="uid://bu6le1hn76hsq" path="res://game/environment/mill_building.gd" id="16_building"]
-[ext_resource type="PackedScene" path="res://game/transport/decks/board_lug_incline.tscn" id="17_incline"]
+[ext_resource type="PackedScene" uid="uid://b5j5jvlacvbcg" path="res://game/transport/decks/board_lug_incline.tscn" id="17_incline"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
@@ -305,7 +305,6 @@ environment = SubResource("Env_1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=522720136]
 transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602545, -0.50000024, -0.74999994, 0.43301257, 11.351148, 5, 0)
-shadow_enabled = false
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 65.0
 
@@ -394,7 +393,7 @@ script = ExtResource("16_building")
 
 [node name="DebarkInfeedConveyor" parent="DebarkerStation" index="0" unique_id=1866187276]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.4334319, 0.49387634, 2.118352)
-constant_linear_velocity = Vector3(0.2, 0, 0)
+constant_linear_velocity = Vector3(0, 0, 0)
 speed = 0.2
 conveyor_length = 8.0
 conveyor_width = 0.8
@@ -1130,6 +1129,9 @@ shape = SubResource("BoxShape3D_kmj6o")
 [node name="MarkerRed" parent="HeadrigStation" index="5" unique_id=1863297703]
 transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 37.215958, 0.3410695, 18.279066)
 
+[node name="MarkerYellow" parent="HeadrigStation" index="8" unique_id=1125315634]
+transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 47.23282, 0.24592447, 21.185163)
+
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
 
 [node name="InclineLogDeck" parent="InclineOutfeed" index="0" unique_id=428629830]
@@ -1169,7 +1171,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.584663, 0.3187671, 15.0616
 
 [node name="BoardUnscrambler" parent="InclineOutfeed" unique_id=1077583790 instance=ExtResource("11_enqqo")]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 42.541286, -0.8000488, 11.884068)
-constant_linear_velocity = Vector3(0.6, 0, 0)
+constant_linear_velocity = Vector3(0, 0, 0)
 machine_width = 4.2
 speed = 0.6
 
@@ -1238,10 +1240,23 @@ retraction_delay = 1.5
 cushion_pin_speed = 0.61
 
 [node name="landing_deck_frame" parent="." unique_id=2114419410 instance=ExtResource("5_nmjje")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 18.297045)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.1014605, 18.297045)
+
+[node name="LandingDeckBottom" parent="landing_deck_frame" index="1" unique_id=497435538]
+grip = 0.2
+
+[node name="CollisionShape3D" parent="landing_deck_frame/LandingDeckBoardStop" parent_id_path=PackedInt32Array(2114419410, 429799534) index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24495697, 0, -0.014503479)
 
 [node name="BoardLugIncline" parent="." unique_id=1898085262 instance=ExtResource("17_incline")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 21.647045)
+chain_speed = 0.2
+
+[node name="InclineLug" parent="BoardLugIncline" index="2" unique_id=186927790]
+transform = Transform3D(1, 0, 0, 0, 0.94805485, 0.31810778, 0, -0.31810778, 0.94805485, -2.0627594, -0.25739768, -0.79458046)
+
+[node name="CollisionShape3D" parent="BoardLugIncline/InclineStartTrigger" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.10444987, 0)
 
 [node name="BinSorter" parent="." unique_id=754893477 instance=ExtResource("15_0cce1")]
 transform = Transform3D(-0.0012300834, 0, -0.99999917, 0, 1, 0, 0.99999917, 0, -0.0012300834, 50.895523, -1.2882519, 30.090652)
@@ -1272,5 +1287,7 @@ haulout_speed = 0.5
 [editable path="SlidingPlate2"]
 [editable path="SlidingPlate3"]
 [editable path="SawmillEdger"]
+[editable path="landing_deck_frame"]
+[editable path="landing_deck_frame/BlenderFrame"]
 [editable path="BoardLugIncline"]
 [editable path="BinSorter"]

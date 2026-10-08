@@ -1,7 +1,7 @@
 @tool
 extends RefCounted
 
-## simple_chain_deck.gd builder: frame, support tubes, chain races and cross beams.
+## simple_chain_deck.gd builder: frame, support tubes, chain races and cross beams (visuals only, no collision).
 
 const DECK_SURFACE_Y := 0.06
 const SPROCKET_R := 0.15
@@ -36,12 +36,8 @@ func build_frame(
 	_track_x_positions.assign(track_x_positions)
 	_sprocket_nodes.clear()
 
-	var frame := StaticBody3D.new()
+	var frame := Node3D.new()
 	frame.name = "Frame"
-	var pm := PhysicsMaterial.new()
-	pm.friction = 1.0
-	pm.rough = false
-	frame.physics_material_override = pm
 
 	_build_support_tubes(frame)
 	_build_chain_races(frame)
@@ -55,7 +51,7 @@ func build_frame(
 	}
 
 
-func _build_support_tubes(frame: StaticBody3D) -> void:
+func _build_support_tubes(frame: Node3D) -> void:
 	var size := Vector3(TUBE_W, TUBE_H, _deck_length)
 
 	var mat := StandardMaterial3D.new()
@@ -73,19 +69,8 @@ func _build_support_tubes(frame: StaticBody3D) -> void:
 		mi.position = Vector3(tx, -0.052, 0.0)
 		frame.add_child(mi)
 
-		var col := CollisionShape3D.new()
-		var bs := BoxShape3D.new()
-		var col_top: float = DECK_SURFACE_Y + CHAIN_PLATE_H * 0.5 + 0.015
-		var col_bottom: float = -0.052 - TUBE_H * 0.5
-		var col_h: float = col_top - col_bottom
-		var col_y: float = col_bottom + col_h * 0.5
-		bs.size = Vector3(TUBE_W, col_h, _deck_length)
-		col.shape = bs
-		col.position = Vector3(tx, col_y, 0.0)
-		frame.add_child(col)
 
-
-func _build_chain_races(frame: StaticBody3D) -> void:
+func _build_chain_races(frame: Node3D) -> void:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.30, 0.28, 0.26)
 	mat.metallic = 0.85
@@ -106,7 +91,7 @@ func _build_chain_races(frame: StaticBody3D) -> void:
 			frame.add_child(mi)
 
 
-func _build_cross_beams(frame: StaticBody3D) -> void:
+func _build_cross_beams(frame: Node3D) -> void:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.20, 0.22, 0.23)
 	mat.metallic = 0.80
@@ -130,7 +115,7 @@ func _build_cross_beams(frame: StaticBody3D) -> void:
 		frame.add_child(mi)
 
 
-func _build_split_legs(frame: StaticBody3D) -> void:
+func _build_split_legs(frame: Node3D) -> void:
 	var mat_leg := StandardMaterial3D.new()
 	mat_leg.albedo_color = Color(0.20, 0.20, 0.22)
 	mat_leg.metallic = 0.78
@@ -177,7 +162,7 @@ func _build_split_legs(frame: StaticBody3D) -> void:
 			frame.add_child(mi_foot)
 
 
-func _build_sprockets(frame: StaticBody3D) -> void:
+func _build_sprockets(frame: Node3D) -> void:
 	var mat_sp := StandardMaterial3D.new()
 	mat_sp.albedo_color = Color(0.30, 0.30, 0.32)
 	mat_sp.metallic = 0.90

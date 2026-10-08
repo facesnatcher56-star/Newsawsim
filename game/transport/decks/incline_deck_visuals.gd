@@ -96,12 +96,8 @@ func advance_chain(dist: float) -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _build_frame() -> void:
-	var frame := StaticBody3D.new()
+	var frame := Node3D.new()
 	frame.name = "Frame"
-	var pm := PhysicsMaterial.new()
-	pm.friction = 1.8
-	pm.rough    = true
-	frame.physics_material_override = pm
 
 	_build_bed(frame)
 	_build_side_rails(frame)
@@ -112,7 +108,7 @@ func _build_frame() -> void:
 	add_child(frame)
 
 
-func _build_bed(frame: StaticBody3D) -> void:
+func _build_bed(frame: Node3D) -> void:
 	var size := Vector3(incline_width, PLATE_T, incline_length)
 	var mat  := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.18, 0.40, 0.22)
@@ -127,14 +123,9 @@ func _build_bed(frame: StaticBody3D) -> void:
 	mi.material_override = mat
 	frame.add_child(mi)
 
-	var col := CollisionShape3D.new()
-	var bs  := BoxShape3D.new()
-	bs.size = size
-	col.shape = bs
-	frame.add_child(col)
 
 
-func _build_side_rails(frame: StaticBody3D) -> void:
+func _build_side_rails(frame: Node3D) -> void:
 	var mat       := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.22, 0.22, 0.25)
 	mat.metallic     = 0.82
@@ -153,15 +144,9 @@ func _build_side_rails(frame: StaticBody3D) -> void:
 		mi.position = Vector3(rx, rail_y, 0.0)
 		frame.add_child(mi)
 
-		var col  := CollisionShape3D.new()
-		var bs   := BoxShape3D.new()
-		bs.size  = rail_size
-		col.shape    = bs
-		col.position = Vector3(rx, rail_y, 0.0)
-		frame.add_child(col)
 
 
-func _build_chain_races(frame: StaticBody3D) -> void:
+func _build_chain_races(frame: Node3D) -> void:
 	# Per-track U-channel guides that constrain the chain laterally.
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.30, 0.28, 0.26)
@@ -184,7 +169,7 @@ func _build_chain_races(frame: StaticBody3D) -> void:
 			frame.add_child(mi)
 
 
-func _build_subframe(frame: StaticBody3D) -> void:
+func _build_subframe(frame: Node3D) -> void:
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(0.20, 0.20, 0.22)
 	mat.metallic     = 0.78
@@ -217,7 +202,7 @@ func _build_subframe(frame: StaticBody3D) -> void:
 		frame.add_child(mi)
 
 
-func _build_sprockets(frame: StaticBody3D) -> void:
+func _build_sprockets(frame: Node3D) -> void:
 	var mat_sp := StandardMaterial3D.new()
 	mat_sp.albedo_color = Color(0.28, 0.26, 0.24)
 	mat_sp.metallic     = 0.90

@@ -1,6 +1,16 @@
 [gd_scene format=3 uid="uid://bb2nr6s7mraa0"]
 
 [ext_resource type="Script" uid="uid://c25elgeinf34r" path="res://game/transport/decks/incline_log_deck.gd" id="1_incldeck"]
+[ext_resource type="Script" path="res://game/transport/components/solid_floor.gd" id="2_floor"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(5.2, 0.12, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rail"]
+size = Vector3(0.06, 0.22, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lug"]
+size = Vector3(0.11, 0.27, 0.11)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_load"]
 size = Vector3(5.2, 0.7, 1.4)
@@ -19,6 +29,33 @@ deck_area = NodePath("SlopeRoot/DeckArea")
 
 [node name="SlopeRoot" type="Node3D" parent="." unique_id=2113999076]
 transform = Transform3D(1, 0, 0, 0, 0.9271841, 0.37460667, 0, -0.37460667, 0.9271841, 0, 0, 0)
+
+[node name="DeckBottom" type="StaticBody3D" parent="SlopeRoot"]
+script = ExtResource("2_floor")
+grip = 1.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SlopeRoot/DeckBottom"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="DeckRailLeft" type="StaticBody3D" parent="SlopeRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.63, 0.17, 0)
+script = ExtResource("2_floor")
+grip = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SlopeRoot/DeckRailLeft"]
+shape = SubResource("BoxShape3D_rail")
+
+[node name="DeckRailRight" type="StaticBody3D" parent="SlopeRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.63, 0.17, 0)
+script = ExtResource("2_floor")
+grip = 0.5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SlopeRoot/DeckRailRight"]
+shape = SubResource("BoxShape3D_rail")
+
+[node name="DeckLug" type="CollisionShape3D" parent="SlopeRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4, 0.25, -1.445)
+shape = SubResource("BoxShape3D_lug")
 
 [node name="LoadZone" type="Area3D" parent="SlopeRoot" unique_id=1737171531]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.8)

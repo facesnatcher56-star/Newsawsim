@@ -1,6 +1,6 @@
 extends StaticBody3D
 
-## A plain solid floor for boards to be dragged across (used by InclineBottom and InclineTop).
+## A plain solid floor for boards or logs to be dragged across (incline floors, chain deck floors).
 ## It does not move or carry anything by itself: the lugs do the pushing.
 
 ## How rough the floor is. 0 = like ice, the board slides very easily.

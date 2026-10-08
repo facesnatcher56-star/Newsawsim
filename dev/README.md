@@ -30,6 +30,7 @@ The landing deck, board incline and bin sorter no longer have any collision of t
 | Script | Traces |
 | --- | --- |
 | `edger_infeed_handoff_probe.gd` | Initial board from take-away onto the edger infeed |
+| `takeaway_probe.gd` | Board carried along the edger take-away deck by its lug template boxes |
 | `mill_inventory_probe.gd` | Counts moving bodies, shapes, meshes, CSG and chain-link instances per machine, to spot heavy ones |
 | `landing_deck_probe.gd`, `incline_probe.gd`, `incline_start_probe.gd` | Board along the landing deck and incline; incline start trigger |
 

@@ -1,6 +1,13 @@
 [gd_scene format=3 uid="uid://dmko1r1aasdqt"]
 
 [ext_resource type="Script" uid="uid://jc7odj6p87ob" path="res://game/transport/decks/simple_chain_deck.gd" id="1_simple"]
+[ext_resource type="Script" path="res://game/transport/components/solid_floor.gd" id="2_floor"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(5.4, 0.1, 5.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lug"]
+size = Vector3(0.22, 0.145, 0.22)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rxmhq"]
 size = Vector3(3.9, 0.7, 0.35)
@@ -18,6 +25,18 @@ top_zone = NodePath("DeckRoot/TopZone")
 deck_area = NodePath("DeckRoot/DeckArea")
 
 [node name="DeckRoot" type="Node3D" parent="." unique_id=1267379701]
+
+[node name="DeckBottom" type="StaticBody3D" parent="DeckRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.046, 0)
+script = ExtResource("2_floor")
+grip = 1.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DeckRoot/DeckBottom"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="DeckLug" type="CollisionShape3D" parent="DeckRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0.1325, -1.5)
+shape = SubResource("BoxShape3D_lug")
 
 [node name="LoadZone" type="Area3D" parent="DeckRoot" unique_id=363196828]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -1.8)

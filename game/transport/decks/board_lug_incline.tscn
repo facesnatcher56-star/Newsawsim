@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b5j5jvlacvbcg"]
 
 [ext_resource type="Script" uid="uid://breolu0dp2gt1" path="res://game/transport/decks/board_lug_incline.gd" id="1_incline"]
-[ext_resource type="Script" path="res://game/transport/decks/incline_floor.gd" id="2_floor"]
+[ext_resource type="Script" path="res://game/transport/components/solid_floor.gd" id="2_floor"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_15q6v"]
 size = Vector3(6.251709, 0.4630127, 7.8295517)
