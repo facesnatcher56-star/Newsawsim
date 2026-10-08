@@ -5,8 +5,9 @@ extends Node3D
 ## Edger landing deck: visuals only. Local +X entry; signed local Z carry.
 ## Origin is chain top at the landing lane center. Keep scale at (1,1,1).
 ##
-## The deck has no collision of its own. Boards are carried by collision boxes you
-## place in the level; this script just animates the chains and sprocket shafts.
+## Collision lives in the LandingDeckBottom (carries boards) and LandingDeckBoardStop
+## nodes in the scene. This script just animates the chains and sprocket shafts; when
+## LandingDeckBottom exists the chains follow its speed.
 
 @export_range(0.0, 3.0, 0.05) var chain_speed: float = 0.55
 @export var running: bool = true
@@ -70,8 +71,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
-	var target: float = chain_speed * (-1.0 if reverse_direction else 1.0) if running else 0.0
-	actual_speed = move_toward(actual_speed, target, acceleration * delta)
+	var bottom: Node = get_node_or_null("LandingDeckBottom")
+	if bottom != null:
+		# The chains on screen follow the belt that actually carries the boards.
+		var belt_direction: Vector3 = bottom.get("direction")
+		actual_speed = float(bottom.get("current_speed")) * (-1.0 if belt_direction.z < 0.0 else 1.0)
+	else:
+		var target: float = chain_speed * (-1.0 if reverse_direction else 1.0) if running else 0.0
+		actual_speed = move_toward(actual_speed, target, acceleration * delta)
 	if is_zero_approx(actual_speed):
 		return
 	_travel = fposmod(_travel + actual_speed * delta, LOOP)

@@ -1,9 +1,187 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://shur11w6bum3"]
 
-[ext_resource type="Script" path="res://game/transport/decks/edger_landing_deck.gd" id="1"]
-[ext_resource type="PackedScene" path="res://game/assets/models/edger_landing_deck/landing_deck_frame.glb" id="2"]
+[ext_resource type="Script" uid="uid://baamlwdk6iqqw" path="res://game/transport/decks/edger_landing_deck.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://co6434rj3ubeg" path="res://game/assets/models/edger_landing_deck/landing_deck_frame.glb" id="2"]
+[ext_resource type="Script" path="res://game/transport/decks/landing_deck_bottom.gd" id="3_bottom"]
 
-[node name="EdgerLandingDeck" type="Node3D"]
+[sub_resource type="BoxShape3D" id="BoxShape3D_15q6v"]
+size = Vector3(5.8791504, 0.19039917, 4.1289673)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_stop"]
+friction = 0.0
+rough = false
+bounce = 0.0
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_jjb4j"]
+size = Vector3(0.08898926, 1, 0.89245605)
+
+[node name="EdgerLandingDeck" type="Node3D" unique_id=2033504988]
 script = ExtResource("1")
 
-[node name="BlenderFrame" parent="." instance=ExtResource("2")]
+[node name="BlenderFrame" parent="." unique_id=56122373 instance=ExtResource("2")]
+
+[node name="Chain_0_Link_046" parent="BlenderFrame" index="53" unique_id=808355221]
+transform = Transform3D(1, 0, 0, 0, 0.9995635, -0.029542968, 0, 0.029542968, 0.9995635, -2.75, -0.018, 3.2914312)
+
+[node name="Chain_0_Link_048" parent="BlenderFrame" index="55" unique_id=1350568488]
+transform = Transform3D(1, 0, 0, 0, 0.47715908, -0.87881696, 0, 0.87881696, 0.47715908, -2.75, -0.05970522, 3.4517605)
+
+[node name="Chain_0_Link_049" parent="BlenderFrame" index="56" unique_id=1786222444]
+transform = Transform3D(1, 0, 0, 0, -0.09336045, -0.99563235, 0, 0.99563235, -0.09336045, -2.75, -0.13391428, 3.4920528)
+
+[node name="Chain_0_Link_050" parent="BlenderFrame" index="57" unique_id=1323794782]
+transform = Transform3D(1, 0, 0, 0, -0.6322225, -0.7747869, 0, 0.7747869, -0.6322225, -2.75, -0.21798754, 3.4841692)
+
+[node name="Chain_0_Link_051" parent="BlenderFrame" index="58" unique_id=817420733]
+transform = Transform3D(1, 0, 0, 0, -0.9566685, -0.2911794, 0, 0.2911794, -0.9566685, -2.75, -0.2834122, 3.430783)
+
+[node name="Chain_0_Link_098" parent="BlenderFrame" index="105" unique_id=641122666]
+transform = Transform3D(1, 0, 0, 0, -0.9995635, 0.029542828, 0, -0.029542828, -0.9995635, -2.75, -0.308, -0.5914312)
+
+[node name="Chain_0_Link_099" parent="BlenderFrame" index="106" unique_id=115586720]
+transform = Transform3D(1, 0, 0, 0, -0.88585794, 0.46395656, 0, -0.46395656, -0.88585794, -2.75, -0.30547222, -0.6769568)
+
+[node name="Chain_0_Link_100" parent="BlenderFrame" index="107" unique_id=1514956201]
+transform = Transform3D(1, 0, 0, 0, -0.4771608, 0.878816, 0, -0.878816, -0.4771608, -2.75, -0.26629478, -0.7517604)
+
+[node name="Chain_0_Link_101" parent="BlenderFrame" index="108" unique_id=1812087157]
+transform = Transform3D(1, 0, 0, 0, 0.09336178, 0.99563223, 0, -0.99563223, 0.09336178, -2.75, -0.19208573, -0.79205287)
+
+[node name="Chain_0_Link_103" parent="BlenderFrame" index="110" unique_id=11927608]
+transform = Transform3D(1, 0, 0, 0, 0.95666844, 0.2911796, 0, -0.2911796, 0.95666844, -2.75, -0.04258781, -0.73078305)
+
+[node name="Chain_1_Link_046" parent="BlenderFrame" index="157" unique_id=1097862880]
+transform = Transform3D(1, 0, 0, 0, 0.9995635, -0.029542968, 0, 0.029542968, 0.9995635, -1.375, -0.018, 3.2914312)
+
+[node name="Chain_1_Link_048" parent="BlenderFrame" index="159" unique_id=453526377]
+transform = Transform3D(1, 0, 0, 0, 0.47715908, -0.87881696, 0, 0.87881696, 0.47715908, -1.375, -0.05970522, 3.4517605)
+
+[node name="Chain_1_Link_049" parent="BlenderFrame" index="160" unique_id=1718835073]
+transform = Transform3D(1, 0, 0, 0, -0.09336045, -0.99563235, 0, 0.99563235, -0.09336045, -1.375, -0.13391428, 3.4920528)
+
+[node name="Chain_1_Link_050" parent="BlenderFrame" index="161" unique_id=1536276982]
+transform = Transform3D(1, 0, 0, 0, -0.6322225, -0.7747869, 0, 0.7747869, -0.6322225, -1.375, -0.21798754, 3.4841692)
+
+[node name="Chain_1_Link_051" parent="BlenderFrame" index="162" unique_id=1524843217]
+transform = Transform3D(1, 0, 0, 0, -0.9566685, -0.2911794, 0, 0.2911794, -0.9566685, -1.375, -0.2834122, 3.430783)
+
+[node name="Chain_1_Link_098" parent="BlenderFrame" index="209" unique_id=607288534]
+transform = Transform3D(1, 0, 0, 0, -0.9995635, 0.029542828, 0, -0.029542828, -0.9995635, -1.375, -0.308, -0.5914312)
+
+[node name="Chain_1_Link_099" parent="BlenderFrame" index="210" unique_id=708775058]
+transform = Transform3D(1, 0, 0, 0, -0.88585794, 0.46395656, 0, -0.46395656, -0.88585794, -1.375, -0.30547222, -0.6769568)
+
+[node name="Chain_1_Link_100" parent="BlenderFrame" index="211" unique_id=1313736069]
+transform = Transform3D(1, 0, 0, 0, -0.4771608, 0.878816, 0, -0.878816, -0.4771608, -1.375, -0.26629478, -0.7517604)
+
+[node name="Chain_1_Link_101" parent="BlenderFrame" index="212" unique_id=481504656]
+transform = Transform3D(1, 0, 0, 0, 0.09336178, 0.99563223, 0, -0.99563223, 0.09336178, -1.375, -0.19208573, -0.79205287)
+
+[node name="Chain_1_Link_103" parent="BlenderFrame" index="214" unique_id=2086053701]
+transform = Transform3D(1, 0, 0, 0, 0.95666844, 0.2911796, 0, -0.2911796, 0.95666844, -1.375, -0.04258781, -0.73078305)
+
+[node name="Chain_2_Link_046" parent="BlenderFrame" index="261" unique_id=339119133]
+transform = Transform3D(1, 0, 0, 0, 0.9995635, -0.029542968, 0, 0.029542968, 0.9995635, 0, -0.018, 3.2914312)
+
+[node name="Chain_2_Link_048" parent="BlenderFrame" index="263" unique_id=643473251]
+transform = Transform3D(1, 0, 0, 0, 0.47715908, -0.87881696, 0, 0.87881696, 0.47715908, 0, -0.05970522, 3.4517605)
+
+[node name="Chain_2_Link_049" parent="BlenderFrame" index="264" unique_id=88392891]
+transform = Transform3D(1, 0, 0, 0, -0.09336045, -0.99563235, 0, 0.99563235, -0.09336045, 0, -0.13391428, 3.4920528)
+
+[node name="Chain_2_Link_050" parent="BlenderFrame" index="265" unique_id=192099315]
+transform = Transform3D(1, 0, 0, 0, -0.6322225, -0.7747869, 0, 0.7747869, -0.6322225, 0, -0.21798754, 3.4841692)
+
+[node name="Chain_2_Link_051" parent="BlenderFrame" index="266" unique_id=901080103]
+transform = Transform3D(1, 0, 0, 0, -0.9566685, -0.2911794, 0, 0.2911794, -0.9566685, 0, -0.2834122, 3.430783)
+
+[node name="Chain_2_Link_098" parent="BlenderFrame" index="313" unique_id=1033427492]
+transform = Transform3D(1, 0, 0, 0, -0.9995635, 0.029542828, 0, -0.029542828, -0.9995635, 0, -0.308, -0.5914312)
+
+[node name="Chain_2_Link_099" parent="BlenderFrame" index="314" unique_id=1146895700]
+transform = Transform3D(1, 0, 0, 0, -0.88585794, 0.46395656, 0, -0.46395656, -0.88585794, 0, -0.30547222, -0.6769568)
+
+[node name="Chain_2_Link_100" parent="BlenderFrame" index="315" unique_id=1314268743]
+transform = Transform3D(1, 0, 0, 0, -0.4771608, 0.878816, 0, -0.878816, -0.4771608, 0, -0.26629478, -0.7517604)
+
+[node name="Chain_2_Link_101" parent="BlenderFrame" index="316" unique_id=57717391]
+transform = Transform3D(1, 0, 0, 0, 0.09336178, 0.99563223, 0, -0.99563223, 0.09336178, 0, -0.19208573, -0.79205287)
+
+[node name="Chain_2_Link_103" parent="BlenderFrame" index="318" unique_id=295762124]
+transform = Transform3D(1, 0, 0, 0, 0.95666844, 0.2911796, 0, -0.2911796, 0.95666844, 0, -0.04258781, -0.73078305)
+
+[node name="Chain_3_Link_046" parent="BlenderFrame" index="365" unique_id=910021221]
+transform = Transform3D(1, 0, 0, 0, 0.9995635, -0.029542968, 0, 0.029542968, 0.9995635, 1.375, -0.018, 3.2914312)
+
+[node name="Chain_3_Link_048" parent="BlenderFrame" index="367" unique_id=457231483]
+transform = Transform3D(1, 0, 0, 0, 0.47715908, -0.87881696, 0, 0.87881696, 0.47715908, 1.375, -0.05970522, 3.4517605)
+
+[node name="Chain_3_Link_049" parent="BlenderFrame" index="368" unique_id=215897713]
+transform = Transform3D(1, 0, 0, 0, -0.09336045, -0.99563235, 0, 0.99563235, -0.09336045, 1.375, -0.13391428, 3.4920528)
+
+[node name="Chain_3_Link_050" parent="BlenderFrame" index="369" unique_id=1748292637]
+transform = Transform3D(1, 0, 0, 0, -0.6322225, -0.7747869, 0, 0.7747869, -0.6322225, 1.375, -0.21798754, 3.4841692)
+
+[node name="Chain_3_Link_051" parent="BlenderFrame" index="370" unique_id=246908859]
+transform = Transform3D(1, 0, 0, 0, -0.9566685, -0.2911794, 0, 0.2911794, -0.9566685, 1.375, -0.2834122, 3.430783)
+
+[node name="Chain_3_Link_098" parent="BlenderFrame" index="417" unique_id=1863533728]
+transform = Transform3D(1, 0, 0, 0, -0.9995635, 0.029542828, 0, -0.029542828, -0.9995635, 1.375, -0.308, -0.5914312)
+
+[node name="Chain_3_Link_099" parent="BlenderFrame" index="418" unique_id=735240707]
+transform = Transform3D(1, 0, 0, 0, -0.88585794, 0.46395656, 0, -0.46395656, -0.88585794, 1.375, -0.30547222, -0.6769568)
+
+[node name="Chain_3_Link_100" parent="BlenderFrame" index="419" unique_id=664346532]
+transform = Transform3D(1, 0, 0, 0, -0.4771608, 0.878816, 0, -0.878816, -0.4771608, 1.375, -0.26629478, -0.7517604)
+
+[node name="Chain_3_Link_101" parent="BlenderFrame" index="420" unique_id=1247181392]
+transform = Transform3D(1, 0, 0, 0, 0.09336178, 0.99563223, 0, -0.99563223, 0.09336178, 1.375, -0.19208573, -0.79205287)
+
+[node name="Chain_3_Link_103" parent="BlenderFrame" index="422" unique_id=425320723]
+transform = Transform3D(1, 0, 0, 0, 0.95666844, 0.2911796, 0, -0.2911796, 0.95666844, 1.375, -0.04258781, -0.73078305)
+
+[node name="Chain_4_Link_046" parent="BlenderFrame" index="469" unique_id=1739564321]
+transform = Transform3D(1, 0, 0, 0, 0.9995635, -0.029542968, 0, 0.029542968, 0.9995635, 2.75, -0.018, 3.2914312)
+
+[node name="Chain_4_Link_048" parent="BlenderFrame" index="471" unique_id=848723693]
+transform = Transform3D(1, 0, 0, 0, 0.47715908, -0.87881696, 0, 0.87881696, 0.47715908, 2.75, -0.05970522, 3.4517605)
+
+[node name="Chain_4_Link_049" parent="BlenderFrame" index="472" unique_id=1298976244]
+transform = Transform3D(1, 0, 0, 0, -0.09336045, -0.99563235, 0, 0.99563235, -0.09336045, 2.75, -0.13391428, 3.4920528)
+
+[node name="Chain_4_Link_050" parent="BlenderFrame" index="473" unique_id=1773028989]
+transform = Transform3D(1, 0, 0, 0, -0.6322225, -0.7747869, 0, 0.7747869, -0.6322225, 2.75, -0.21798754, 3.4841692)
+
+[node name="Chain_4_Link_051" parent="BlenderFrame" index="474" unique_id=1270457715]
+transform = Transform3D(1, 0, 0, 0, -0.9566685, -0.2911794, 0, 0.2911794, -0.9566685, 2.75, -0.2834122, 3.430783)
+
+[node name="Chain_4_Link_098" parent="BlenderFrame" index="521" unique_id=1296145314]
+transform = Transform3D(1, 0, 0, 0, -0.9995635, 0.029542828, 0, -0.029542828, -0.9995635, 2.75, -0.308, -0.5914312)
+
+[node name="Chain_4_Link_099" parent="BlenderFrame" index="522" unique_id=1871075846]
+transform = Transform3D(1, 0, 0, 0, -0.88585794, 0.46395656, 0, -0.46395656, -0.88585794, 2.75, -0.30547222, -0.6769568)
+
+[node name="Chain_4_Link_100" parent="BlenderFrame" index="523" unique_id=2033093646]
+transform = Transform3D(1, 0, 0, 0, -0.4771608, 0.878816, 0, -0.878816, -0.4771608, 2.75, -0.26629478, -0.7517604)
+
+[node name="Chain_4_Link_101" parent="BlenderFrame" index="524" unique_id=1560695508]
+transform = Transform3D(1, 0, 0, 0, 0.09336178, 0.99563223, 0, -0.99563223, 0.09336178, 2.75, -0.19208573, -0.79205287)
+
+[node name="Chain_4_Link_103" parent="BlenderFrame" index="526" unique_id=464744443]
+transform = Transform3D(1, 0, 0, 0, 0.95666844, 0.2911796, 0, -0.2911796, 0.95666844, 2.75, -0.04258781, -0.73078305)
+
+[node name="LandingDeckBottom" type="StaticBody3D" parent="." unique_id=497435538]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.06288624, -0.08346003, 1.2862735)
+script = ExtResource("3_bottom")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LandingDeckBottom"]
+shape = SubResource("BoxShape3D_15q6v")
+
+[node name="LandingDeckBoardStop" type="StaticBody3D" parent="." unique_id=429799534]
+transform = Transform3D(0.99825215, 0, 0.059098944, 0, 1, 0, -0.059098944, 0, 0.99825215, 2.9626243, 0, -0.053771973)
+physics_material_override = SubResource("PhysicsMaterial_stop")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LandingDeckBoardStop"]
+shape = SubResource("BoxShape3D_jjb4j")
+
+[editable path="BlenderFrame"]
