@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## Edger assembly: sequences the builders/ scripts to construct the whole machine.
+
 const FrameBuilder := preload("res://game/machines/edger/builders/edger_frame_builder.gd")
 const InfeedBuilder := preload("res://game/machines/edger/builders/edger_infeed_builder.gd")
 const PinBuilder := preload("res://game/machines/edger/builders/edger_pin_builder.gd")

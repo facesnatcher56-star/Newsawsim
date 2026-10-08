@@ -14,7 +14,7 @@ extends SceneTree
 ##   no_holddowns      the edger's outfeed hold-down pressure is released
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/edger_transfer_variants.gd -- <variant>
+##   godot --headless --path . --script res://dev/probes/edger_transfer_variants.gd -- <variant>
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const EDGER_END_X := 47.80      # world X where the edger's bed finishes

@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## Edger builder: outfeed hold-downs, waste handling and delivery belt.
+
 var edger: SawmillEdger
 var factory: RefCounted
 

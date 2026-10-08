@@ -1,6 +1,8 @@
 @tool
 extends Node3D
 
+## Visual-only chain tracks, sprockets and shafts for the log chain decks (no physics).
+
 @export var deck_length: float = 4.2
 @export var link_spacing: float = 0.32
 @export var chain_speed: float = 0.55

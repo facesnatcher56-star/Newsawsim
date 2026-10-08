@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## Edger builder: position pins and cushion pins.
+
 var edger: SawmillEdger
 var factory: RefCounted
 

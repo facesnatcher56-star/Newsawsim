@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## Edger builder: frame and side fences.
+
 var edger: SawmillEdger
 var factory: RefCounted
 

@@ -1,5 +1,7 @@
 extends SceneTree
 
+## Test: a board cut by the edger leaves the edger and travels onto the landing deck. Run: godot --headless --path . --script res://dev/tests/edger_board_flow_test.gd
+
 func _init():
 	call_deferred("run_test")
 

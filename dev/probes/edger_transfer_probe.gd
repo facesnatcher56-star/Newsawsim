@@ -9,7 +9,7 @@ extends SceneTree
 ##   - the board is simply no longer being driven across the gap.
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/edger_transfer_probe.gd
+##   godot --headless --path . --script res://dev/probes/edger_transfer_probe.gd
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const FRAMES := 900

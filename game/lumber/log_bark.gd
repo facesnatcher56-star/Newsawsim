@@ -1,5 +1,7 @@
 extends RefCounted
 
+## Helper owned by log.gd: builds, peels and removes a log's bark coat as it passes the debarker.
+
 var log_node: RigidBody3D = null
 var bark_enabled: bool = true
 var debarker_node_path: NodePath

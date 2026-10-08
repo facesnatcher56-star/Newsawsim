@@ -1,15 +1,15 @@
 extends SceneTree
 
-## Fine-grained probe of the deck -> incline hand-over window.
+## Contact-point probe of the deck -> incline hand-over.
 ##
-## Prints the board's position, attitude and - decisively - which bodies it is
-## touching while it crosses the pickup, together with the incline's hold flags.
-## A lug station in that contact list while the board is tipping means the board
-## is riding up on a lug; no station in the list while it tips means something
-## else is throwing it.
+## Prints every solver contact on the tracked board, in incline-local
+## coordinates, while it crosses the pickup. Reading the contact heights against
+## the board's own face angle shows what is actually lifting it: a lug standing
+## proud of the deck under the board's underside, or a lug pushing its trailing
+## face. Guessing from body names alone cannot tell those apart.
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/pickup_probe.gd
+##   godot --headless --path . --script res://dev/probes/pickup_contact_probe.gd
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const FRAMES := 1500
@@ -22,7 +22,6 @@ func run() -> void:
 	root.add_child(mill)
 	current_scene = mill
 
-	var deck: Node3D = mill.get_node("landing_deck_frame")
 	var incline: Node3D = mill.get_node("BoardLugIncline")
 	var board: RigidBody3D = _pick_board(mill)
 	if board == null:
@@ -33,27 +32,31 @@ func run() -> void:
 	board.max_contacts_reported = 16
 
 	print("tracking %s" % board.name)
-	print("f | incl z   y | face swing | v.z    | hold over | touching")
+	var state: PhysicsDirectBodyState3D = null
 	for frame in range(FRAMES):
 		await physics_frame
 		if not is_instance_valid(board):
 			break
 		var local: Vector3 = incline.to_local(board.global_position)
-		if local.z < -1.2 or local.z > 1.6:
+		if local.z < -1.0 or local.z > 1.2:
+			continue
+		state = PhysicsServer3D.body_get_direct_state(board.get_rid())
+		if state == null:
 			continue
 		var basis: Basis = board.global_transform.basis
 		var face: float = rad_to_deg(acos(clampf(absf(basis.y.normalized().dot(Vector3.UP)), 0.0, 1.0)))
 		var swing: float = rad_to_deg(acos(clampf(absf(basis.x.normalized().dot(Vector3.RIGHT)), 0.0, 1.0)))
-		var touching: Array[String] = []
-		for body in board.get_colliding_bodies():
-			var label := String((body as Node).name)
-			if not touching.has(label):
-				touching.append(label)
-		print("%4d | %7.3f %6.3f | %5.0f %5.0f | %6.3f | %5s %5s | %s" % [
-			frame, local.z, local.y, face, swing,
-			board.linear_velocity.dot(incline.global_basis.z),
-			str(incline.get("_pickup_held")), str(incline.get("_pickup_handed_over")),
-			", ".join(touching) if not touching.is_empty() else "-"])
+		var parts: Array[String] = []
+		for index in state.get_contact_count():
+			var point: Vector3 = incline.to_local(state.get_contact_local_position(index))
+			var other: Object = state.get_contact_collider_object(index)
+			var label: String = String((other as Node).name) if other is Node else "?"
+			parts.append("%s@(x%.2f z%.2f y%.2f)" % [label, point.x, point.z, point.y])
+		print("f%4d z%7.3f y%6.3f face%5.0f swing%5.0f contacts=%d\n        %s" % [
+			frame, local.z, local.y, face, swing, state.get_contact_count(),
+			"\n        ".join(parts)])
+		if local.z > 1.15:
+			break
 	quit(0)
 
 func _pick_board(mill: Node) -> RigidBody3D:

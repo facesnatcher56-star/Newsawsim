@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## Edger builder: saw box, motors and drives.
+
 var edger: SawmillEdger
 var factory: RefCounted
 

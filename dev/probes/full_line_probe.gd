@@ -7,7 +7,7 @@ extends SceneTree
 ## stall at the new under-deck pickup is visible rather than inferred.
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/full_line_probe.gd
+##   godot --headless --path . --script res://dev/probes/full_line_probe.gd
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const FRAMES := 3000

@@ -2,6 +2,8 @@
 class_name EdgerPinSystem
 extends Node3D
 
+## Edger runtime component: position and cushion pins that locate a board for sawing.
+
 var edger: SawmillEdger
 
 @export_category("Position Pins")

@@ -2,6 +2,8 @@
 class_name EdgerInfeedSystem
 extends Node3D
 
+## Edger runtime component: infeed chain motion and delivery state.
+
 var edger: SawmillEdger
 
 @export_category("Infeed Chain")

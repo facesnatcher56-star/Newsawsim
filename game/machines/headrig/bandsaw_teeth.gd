@@ -1,6 +1,8 @@
 @tool
 extends Node3D
 
+## Headrig bandsaw blade: generates the teeth and moves them around the blade loop.
+
 @export var tooth_count: int = 28
 @export var min_y: float = 0.46
 @export var max_y: float = 3.34

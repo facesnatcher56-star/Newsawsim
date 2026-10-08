@@ -1,5 +1,7 @@
 extends Node3D
 
+## Decorative drifting cloud layer; clouds wrap around a square area.
+
 @export var cloud_count: int = 16
 @export var sky_height: float = 22.0
 @export var wind_speed: float = 0.4 # units per second

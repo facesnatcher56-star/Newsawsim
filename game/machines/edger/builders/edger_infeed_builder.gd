@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## Edger builder: infeed chains, parking ramps and infeed hold-downs.
+
 var edger: SawmillEdger
 var factory: RefCounted
 var pin_builder: RefCounted

@@ -2,6 +2,8 @@
 class_name EdgerParkingRampSystem
 extends Node3D
 
+## Edger runtime component: parking ramps that park a board before it is fed.
+
 var edger: SawmillEdger
 
 @export_category("Parking Ramps")

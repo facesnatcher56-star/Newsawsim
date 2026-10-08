@@ -1,5 +1,8 @@
 extends SceneTree
 
+## Tool: dumps the mill level's node tree to inspect_tree.log.
+## Run: godot --headless --path . --script res://dev/tools/print_tree.gd
+
 func _init():
 	var file = FileAccess.open("inspect_tree.log", FileAccess.WRITE)
 	var scene = load("res://game/levels/mill_prototype.tscn")

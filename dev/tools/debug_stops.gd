@@ -1,5 +1,8 @@
 extends SceneTree
 
+## Tool: simulates the log-feed retractable stops in the mill level and writes debug_stops.log.
+## Run: godot --headless --path . --script res://dev/tools/debug_stops.gd
+
 func _init():
 	var file = FileAccess.open("debug_stops.log", FileAccess.WRITE)
 	var scene = load("res://game/levels/mill_prototype.tscn")

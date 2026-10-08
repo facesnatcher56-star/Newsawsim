@@ -1,5 +1,7 @@
 extends Node
 
+## Autoload-style recorder that samples frame timing and node inventory during a play session and writes CSVs under dev/performance/logs/ (git-ignored).
+
 const LOG_ROOT := "res://dev/performance/logs"
 const SAMPLE_INTERVAL_SECONDS := 0.25
 const SUMMARY_CHECKPOINT_INTERVAL_SECONDS := 60.0

@@ -5,7 +5,7 @@ extends SceneTree
 ## to the flag that caused it rather than guessed at.
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/pickup_state_probe.gd
+##   godot --headless --path . --script res://dev/probes/pickup_state_probe.gd
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const FRAMES := 1400

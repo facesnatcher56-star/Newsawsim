@@ -1,5 +1,8 @@
 extends SceneTree
 
+## Tool: exercises the chain trough conveyor and writes debug_trough_conveyor.log.
+## Run: godot --headless --path . --script res://dev/tools/debug_trough_conveyor.gd
+
 func _init():
 	var file = FileAccess.open("debug_trough_conveyor.log", FileAccess.WRITE)
 	file.store_line("=== TESTING CHAIN TROUGH CONVEYOR ===")

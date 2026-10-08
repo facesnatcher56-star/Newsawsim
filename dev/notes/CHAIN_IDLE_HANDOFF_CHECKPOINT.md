@@ -1,6 +1,8 @@
 # Checkpoint: board unscrambler width and load-driven chain idle
 
-**Status: work in progress, NOT a verified end-to-end fix.** Stop point requested by user. Do not claim the full line works until the final regression below is resolved and retested. No screenshots; use headless physics tests and position/contact probes.
+**Update 2026-10-08: `dev/probes/full_line_probe.gd` now passes (sorter took the board at frame 2999) with the extent-aware wake change. The sections below are the original checkpoint; the 'FAIL' entry is resolved. `board_lug_incline_test.gd` had regressed (board skewed by a lug parked at the sorter inlet, then tipped on edge); fixed by starting the overhead chain with the lug gap at the inlet (`bin_sorter._setup_chain_system`). All `dev/tests/` pass.**
+
+**Original status: work in progress, NOT a verified end-to-end fix.** Stop point requested by user. Do not claim the full line works until the final regression below is resolved and retested. No screenshots; use headless physics tests and position/contact probes.
 
 ## Changes in this checkpoint
 
@@ -21,7 +23,7 @@
 
 ## Resume here
 
-1. Re-run `godot --headless --path . --script res://dev/tests/full_line_probe.gd` once to determine whether the latest extent-aware deck wake corrected the yaw/stall; report the result honestly. Do not use screenshots.
+1. Re-run `godot --headless --path . --script res://dev/probes/full_line_probe.gd` once to determine whether the latest extent-aware deck wake corrected the yaw/stall; report the result honestly. Do not use screenshots.
 2. If still stuck, compare deck and edger transfer timing, board yaw and contact probes (`pickup_state_probe.gd`, `pickup_contact_probe.gd`) against the earlier working full-line run. Do not weaken safety interlocks merely to pass a test.
 3. Re-run `chain_load_idle_test.gd`, `unscrambler_chain_test.gd`, `incline_idle_pickup_test.gd`, `board_lug_incline_test.gd`, `edger_board_flow_test.gd`, `sorter_physical_board_flow_test.gd`, and `test_chain_drive_kinematics.gd` after the extent change. Check for syntax/runtime errors and `git diff --check`.
 4. `game/levels/mill_prototype.tscn` also has an unrelated `Ground/Visuals` transform change made in the open editor. It is intentionally **not** part of this checkpoint commit; do not discard the user's working-tree change.

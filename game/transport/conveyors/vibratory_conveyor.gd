@@ -1,5 +1,7 @@
 extends StaticBody3D
 
+## Vibratory conveyor that shakes its surface while carrying material along `direction`.
+
 @export var speed: float = 1.2
 @export var direction: Vector3 = Vector3(0.989, 0.148, 0) # Slanted direction (matching ~8.5 degrees incline)
 @export var vibration_frequency: float = 45.0 # Hz

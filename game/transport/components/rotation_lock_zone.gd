@@ -1,5 +1,7 @@
 extends Area3D
 
+## Zone that locks the rotation of rigid bodies inside it (keeps logs aligned).
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)

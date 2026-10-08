@@ -1,4 +1,8 @@
 extends SceneTree
+
+## Test: board hand-over from the edger line into the bin sorter.
+## Run: godot --headless --path . --script res://dev/tests/edger_sorter_integration_test.gd
+
 func _init():
 	call_deferred("check")
 func check():

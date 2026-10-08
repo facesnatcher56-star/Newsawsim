@@ -1,5 +1,8 @@
 extends SceneTree
 
+## Tool: exercises the waste conveyor kicker and writes debug_waste_kicker.log.
+## Run: godot --headless --path . --script res://dev/tools/debug_waste_kicker.gd
+
 func _init():
 	var file = FileAccess.open("debug_waste_kicker.log", FileAccess.WRITE)
 	file.store_line("=== TESTING WASTE CONVEYOR KICKER ===")

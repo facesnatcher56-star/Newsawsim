@@ -1,5 +1,8 @@
 extends SceneTree
 
+## Tool: loads every scene/resource under res://game and reports any that fail to load.
+## Run: godot --headless --path . --script res://dev/tools/validate_resources.gd
+
 const ROOTS: PackedStringArray = [
 	"res://game",
 ]

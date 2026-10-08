@@ -1,5 +1,7 @@
 extends Node3D
 
+## Spins its node continuously about `axis` at `speed`.
+
 @export var speed: float = 5.0
 @export var axis: Vector3 = Vector3.FORWARD
 

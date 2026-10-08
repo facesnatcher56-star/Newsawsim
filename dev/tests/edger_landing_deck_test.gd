@@ -1,4 +1,8 @@
 extends SceneTree
+
+## Test: standalone edger landing deck (transport, stop, reversal, board identity, ramp traversal). Prints LANDING_DECK_TEST PASS/FAIL.
+## Run: godot --headless --path . --script res://dev/tests/edger_landing_deck_test.gd
+
 var failures: int = 0
 func _init(): call_deferred("check")
 func expect(ok: bool, message: String):

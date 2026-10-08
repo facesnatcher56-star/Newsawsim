@@ -9,7 +9,7 @@ extends SceneTree
 ## machine; nothing but chain friction means it simply ran out of drive.
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/edger_transfer_contacts.gd
+##   godot --headless --path . --script res://dev/probes/edger_transfer_contacts.gd
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const FRAMES := 900

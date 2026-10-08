@@ -1,5 +1,7 @@
 extends StaticBody3D
 
+## Generic belt conveyor (StaticBody3D surface velocity) with optional kicker, downstream backpressure and load-driven idle.
+
 @export var speed: float = 5.0:
 	set(v):
 		if speed != v:

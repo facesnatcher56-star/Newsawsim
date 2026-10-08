@@ -1,5 +1,7 @@
 extends StaticBody3D
 
+## Sloped chain conveyor for logs, with animated links and load-driven idle.
+
 @export var speed: float = 1.4
 @export var direction: Vector3 = Vector3(0.0, 0.447, -0.894) # Sloped towards -Z
 @export var conveyor_length: float = 9.0

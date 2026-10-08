@@ -9,7 +9,7 @@ extends SceneTree
 ## plus which bodies the board is actually touching.
 ##
 ## Run with:
-##   godot --headless --path . --script res://dev/tests/deck_drive_diagnosis.gd
+##   godot --headless --path . --script res://dev/probes/deck_drive_diagnosis.gd
 
 const LEVEL := "res://game/levels/mill_prototype.tscn"
 const FRAMES := 1200

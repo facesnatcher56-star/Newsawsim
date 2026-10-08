@@ -1,5 +1,8 @@
 extends SceneTree
 
+## Tool: dumps headrig rail system / carriage / incline transforms from the mill level to inspect.log.
+## Run: godot --headless --path . --script res://dev/tools/inspect.gd
+
 func _init():
 	var file = FileAccess.open("inspect.log", FileAccess.WRITE)
 	var scene = load("res://game/levels/mill_prototype.tscn")

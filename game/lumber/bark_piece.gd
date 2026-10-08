@@ -1,5 +1,7 @@
 extends RigidBody3D
 
+## Loose bark chunk (RigidBody3D) that despawns after `lifetime` seconds.
+
 @export var lifetime: float = 12.0
 
 func _ready() -> void:

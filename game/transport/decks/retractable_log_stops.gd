@@ -1,6 +1,8 @@
 @tool
 extends Node3D
 
+## Rotating log stops that hold a log on a deck, then retract to release it.
+
 enum StopState {
 	EXTENDED,
 	HOLDING_LOG,

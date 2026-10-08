@@ -2,6 +2,8 @@
 class_name EdgerHoldDownSystem
 extends Node3D
 
+## Edger runtime component: infeed/outfeed hold-down rollers and their contact forces on boards.
+
 var edger: SawmillEdger
 
 @export_category("Hold-Down Rollers")

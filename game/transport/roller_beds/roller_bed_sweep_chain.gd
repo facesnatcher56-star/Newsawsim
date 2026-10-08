@@ -2,6 +2,8 @@
 class_name RollerBedSweepChain
 extends RefCounted
 
+## roller_bed.gd component: sweep chain that pushes material across the bed.
+
 const SWEEP_SPROCKET_R := 0.08
 const SWEEP_PITCH := 0.12
 

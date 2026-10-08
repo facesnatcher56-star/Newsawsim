@@ -2,6 +2,8 @@
 class_name SawmillEdger
 extends StaticBody3D
 
+## Edger machine root. Owns exports and board physics; geometry comes from builders/, runtime behaviour from components/.
+
 const SawmillEdgerAssemblyBuilder := preload("res://game/machines/edger/sawmill_edger_assembly_builder.gd")
 const SawmillEdgerPartFactory := preload("res://game/machines/edger/builders/edger_part_factory.gd")
 const SawmillEdgerSceneCollector := preload("res://game/machines/edger/builders/edger_scene_collector.gd")

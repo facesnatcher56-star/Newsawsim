@@ -1,6 +1,8 @@
 @tool
 extends RefCounted
 
+## simple_chain_deck.gd builder: frame, support tubes, chain races and cross beams.
+
 const DECK_SURFACE_Y := 0.06
 const SPROCKET_R := 0.15
 const SPROCKET_T := 0.045
