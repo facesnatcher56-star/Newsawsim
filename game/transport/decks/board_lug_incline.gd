@@ -25,6 +25,9 @@ extends Node3D
 @export_range(10.0, 40.0, 0.5) var slope_angle_deg: float = 26.0
 ## Vertical climb of the carrying plane, ramp foot to crest.
 @export_range(0.5, 6.0, 0.005) var rise: float = 2.785
+## How round the bend is where the ramp meets the flat top, in metres. Bigger = a longer, gentler curve.
+## 0 = a sharp corner. Keep it under about 5 or the curve will not fit the ramp.
+@export_range(0.0, 8.0, 0.1) var ramp_blend_radius: float = 3.0
 ## Length of the level crest that delivers onto the sorter infeed rails.
 @export_range(0.2, 6.0, 0.005) var level_length: float = 2.153
 ## Overall bed width.
@@ -77,12 +80,6 @@ const ROLLER_R := 0.024
 const CARRIER_DROP := 0.024
 const SLOT_GAP := 0.16      # open channel each chain runs in
 const STRIP_T := 0.12       # carrying strip thickness
-const RAIL_W := 0.06
-const RAIL_TOP := 0.22      # guide rail height above the carrying plane
-const HOLD_DOWN_CLEARANCE := 0.065
-const HOLD_DOWN_HEIGHT := 0.05
-const HOLD_DOWN_WIDTH := 0.08
-const HOLD_DOWN_X: Array[float] = [-1.375, 0.0, 1.375]
 const STRINGER_W := 0.08
 const STRINGER_H := 0.18
 const LUG_POST_W := 0.11
@@ -90,7 +87,6 @@ const LUG_POST_D := 0.11
 const LUG_POST_H := 0.24
 const LUG_SHOE_H := 0.05
 const LUG_SHOE_D := 0.245
-const RAIL_FOOT_CLEAR := 0.09
 const LEG_FOOT_CLEAR := 0.14
 const LEG_SPACING := 1.55
 
@@ -98,7 +94,9 @@ const LEG_SPACING := 1.55
 var actual_speed: float = 0.0
 var _travel: float = 0.0
 var _loop_len: float = 0.0
-var _run_len: float = 0.0          # slope + crest, the driven carrying run
+var _run_len: float = 0.0          # slope + bend + crest, the driven carrying run
+var _blend_radius: float = 0.0     # radius of the chain path round the bend (0 = sharp corner)
+var _blend_centre := Vector2.ZERO  # centre of that bend, (z, y); the deck surface bends around the same centre
 var _a: float = 0.0
 var _run: float = 0.0
 var _slope_len: float = 0.0
@@ -223,13 +221,31 @@ func _build_path() -> void:
 	_ret_top = a2 + Vector2(0.0, -2.0 * SPR)
 	_ret_foot = _pickup_point - n0 * (CARRIER_DROP + 2.0 * SPR)
 
+	# The ramp meets the flat top through a round bend instead of a sharp corner.
+	# The bend's tangent length is radius * tan(half the slope angle); clamp it so it
+	# always fits inside both the ramp and the flat top.
+	var ramp_chain_len: float = a1.distance_to(pickup_chain)
+	var level_chain_len: float = a2.x - a1.x
+	var tangent_len: float = 0.0
+	_blend_radius = 0.0
+	if ramp_blend_radius > 0.05:
+		tangent_len = ramp_blend_radius * tan(_a * 0.5)
+		tangent_len = minf(tangent_len, minf(ramp_chain_len * 0.5, level_chain_len * 0.8))
+		_blend_radius = tangent_len / tan(_a * 0.5)
+		_blend_centre = Vector2(a1.x + tangent_len, a1.y - _blend_radius)
+
 	_segments = [
-		{"kind": "line", "start": pickup_chain, "dir": d0, "len": a1.distance_to(pickup_chain)},
-		{"kind": "line", "start": a1, "dir": level, "len": a2.x - a1.x},
-		{"kind": "arc", "centre": _top_centre, "radius": SPR, "angle": PI * 0.5, "sweep": -PI, "len": PI * SPR},
+		{"kind": "line", "start": pickup_chain, "dir": d0, "len": ramp_chain_len - tangent_len},
 	]
-	_run_len = float(_segments[0]["len"]) + float(_segments[1]["len"])
-	_return_start_s = _run_len + float(_segments[2]["len"])
+	if tangent_len > 0.0:
+		_segments.append({"kind": "arc", "centre": _blend_centre, "radius": _blend_radius,
+			"angle": PI * 0.5 + _a, "sweep": -_a, "len": _blend_radius * _a})
+	_segments.append({"kind": "line", "start": a1 + level * tangent_len, "dir": level, "len": level_chain_len - tangent_len})
+	_run_len = 0.0
+	for segment: Dictionary in _segments:
+		_run_len += float(segment["len"])
+	_segments.append({"kind": "arc", "centre": _top_centre, "radius": SPR, "angle": PI * 0.5, "sweep": -PI, "len": PI * SPR})
+	_return_start_s = _run_len + PI * SPR
 
 	# The unloaded lower strand is deliberately not stretched parallel to the
 	# bed. A sampled catenary gives it real visual weight while preserving an
@@ -311,9 +327,9 @@ func _rebuild() -> void:
 
 
 func _stamp() -> String:
-	return "%s|%s|%s|%s|%s|%s|%s|%s" % [
+	return "%s|%s|%s|%s|%s|%s|%s|%s|%s" % [
 		str(slope_angle_deg), str(rise), str(level_length), str(bed_width),
-		str(track_x_positions), str(pickup_overlap), str(floor_y), str(return_sag)]
+		str(track_x_positions), str(pickup_overlap), str(floor_y), str(return_sag), str(ramp_blend_radius)]
 
 
 func _material(colour: Color, metallic: float, roughness: float) -> StandardMaterial3D:
@@ -355,39 +371,6 @@ func _build_bed() -> void:
 	# ── Guide rails on the outer edges, proud of the boards. The ramp rail starts
 	# just uphill of the bottom tangent so its square-cut foot does not run back
 	# into the landing deck's end sprockets.
-	var d0 := Vector2(cos(_a), sin(_a))
-	var rail_mid := (_p0 + _p1) * 0.5 + n0 * ((RAIL_TOP - STRIP_T) * 0.5) + d0 * (RAIL_FOOT_CLEAR * 0.5)
-	var rail_len := _slope_len - RAIL_FOOT_CLEAR
-	for side: float in [-1.0, 1.0]:
-		var rx := side * (half_w - RAIL_W * 0.5)
-		_mesh_box(frame, Vector3(RAIL_W, RAIL_TOP + STRIP_T, rail_len),
-			Vector3(rx, rail_mid.y, rail_mid.x), -_a, steel, "Rail")
-		_mesh_box(frame, Vector3(RAIL_W, RAIL_TOP + STRIP_T, level_length),
-			Vector3(rx, rise + (RAIL_TOP - STRIP_T) * 0.5, _p1.x + level_length * 0.5), 0.0, steel, "Rail")
-
-	# ── Low hold-down skids keep thin boards flat while the lugs push their rear
-	# edge uphill. They sit between lug lanes, with 27 mm clearance over a 2-inch
-	# board, so they provide containment only when a nose or tail starts to lift.
-	# Without them a real rigid board can rotate onto its 286 mm edge at the crest.
-	var hold_start: Vector2 = Vector2(0.80, _plane_y(0.80))
-	var hold_ramp_length: float = hold_start.distance_to(_p1)
-	var lead_start: Vector2 = Vector2(0.0, 0.35)
-	var lead_end: Vector2 = hold_start + Vector2(0.0, HOLD_DOWN_CLEARANCE)
-	var lead_delta: Vector2 = lead_end - lead_start
-	var lead_angle: float = atan2(lead_delta.y, lead_delta.x)
-	var lead_normal: Vector2 = Vector2(-sin(lead_angle), cos(lead_angle))
-	var lead_mid: Vector2 = (lead_start + lead_end) * 0.5 + lead_normal * HOLD_DOWN_HEIGHT * 0.5
-	for hold_x: float in HOLD_DOWN_X:
-		# A high, shallow entry converges onto the low skid. It accepts a board
-		# arriving unsettled from the pickup, then physically presses it flat.
-		_mesh_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, lead_delta.length()),
-			Vector3(hold_x, lead_mid.y, lead_mid.x), -lead_angle, steel, "HoldDownLeadIn")
-		var ramp_hold_mid: Vector2 = (hold_start + _p1) * 0.5 + n0 * (HOLD_DOWN_CLEARANCE + HOLD_DOWN_HEIGHT * 0.5)
-		_mesh_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, hold_ramp_length),
-			Vector3(hold_x, ramp_hold_mid.y, ramp_hold_mid.x), -_a, steel, "HoldDownSkid")
-		_mesh_box(frame, Vector3(HOLD_DOWN_WIDTH, HOLD_DOWN_HEIGHT, level_length),
-			Vector3(hold_x, rise + HOLD_DOWN_CLEARANCE + HOLD_DOWN_HEIGHT * 0.5, _p1.x + level_length * 0.5), 0.0, steel, "HoldDownSkid")
-
 	# ── Subframe: stringers under the strips, cross ties, legs to the floor.
 	var ramp_drop := STRIP_T / cos(_a)
 	for side: float in [-1.0, 1.0]:
@@ -444,15 +427,44 @@ func _leg_positions() -> Array[float]:
 	return out
 
 
-## One carrying strip (visual), top face on the carrying plane.
+## Tangent length of the bend on the deck surface: where the straight ramp ends and the curve begins.
+func _blend_plane_tangent() -> float:
+	if _blend_radius <= 0.0:
+		return 0.0
+	return (_blend_radius + CARRIER_DROP) * tan(_a * 0.5)
+
+
+## One carrying strip (visual): straight ramp, round bend, flat crest. Top face on the carrying plane.
 func _add_strip(frame: Node3D, mat: Material, centre_x: float, width: float, hint: String) -> void:
-	var mid := (_p0 + _p1) * 0.5
 	var n0 := Vector2(-sin(_a), cos(_a))
-	var ramp_centre := mid - n0 * (STRIP_T * 0.5)
-	_mesh_box(frame, Vector3(width, STRIP_T, _slope_len),
+	var d0 := Vector2(cos(_a), sin(_a))
+	var plane_t: float = _blend_plane_tangent()
+	var ramp_len: float = _slope_len - plane_t
+	var ramp_centre := _p0 + d0 * (ramp_len * 0.5) - n0 * (STRIP_T * 0.5)
+	_mesh_box(frame, Vector3(width, STRIP_T, ramp_len),
 		Vector3(centre_x, ramp_centre.y, ramp_centre.x), -_a, mat, hint)
-	_mesh_box(frame, Vector3(width, STRIP_T, level_length),
-		Vector3(centre_x, rise - STRIP_T * 0.5, _p1.x + level_length * 0.5), 0.0, mat, hint)
+	_add_bend(frame, mat, width, STRIP_T, -STRIP_T * 0.5, centre_x, hint)
+	var crest_start_z: float = _p1.x + plane_t
+	var crest_len: float = _p2.x - crest_start_z
+	_mesh_box(frame, Vector3(width, STRIP_T, crest_len),
+		Vector3(centre_x, rise - STRIP_T * 0.5, crest_start_z + crest_len * 0.5), 0.0, mat, hint)
+
+
+## The round bend between ramp and crest, built from thin slices that turn a little each.
+## `offset` is how far above (+) or below (-) the carrying surface the slab's middle sits.
+func _add_bend(parent: Node3D, mat: Material, width: float, thickness: float, offset: float, centre_x: float, hint: String) -> void:
+	if _blend_radius <= 0.0:
+		return
+	var slices: int = maxi(4, int(ceil(rad_to_deg(_a) / 2.0)))
+	var step: float = _a / float(slices)
+	var radius: float = _blend_radius + CARRIER_DROP + offset
+	for i in slices:
+		var heading: float = _a - (float(i) + 0.5) * step
+		var on_arc := _blend_centre + radius * Vector2(cos(PI * 0.5 + heading), sin(PI * 0.5 + heading))
+		# A touch longer than the chord so neighbouring slices overlap with no gap.
+		var slice_len: float = 2.0 * radius * sin(step * 0.5) * 1.06
+		_mesh_box(parent, Vector3(width, thickness, slice_len),
+			Vector3(centre_x, on_arc.y, on_arc.x), -heading, mat, hint)
 
 
 func _mesh_box(parent: Node3D, size: Vector3, pos: Vector3, rot_x: float, mat: Material, hint: String) -> MeshInstance3D:

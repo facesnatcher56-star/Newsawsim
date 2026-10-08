@@ -5,7 +5,8 @@ extends StaticBody3D
 
 ## How rough the floor is. 0 = like ice, the board slides very easily.
 ## Higher = the board is harder to drag across it. Too high and the lugs may not be able to push the board.
-@export_range(0.0, 5.0, 0.05, "or_greater") var grip: float = 0.3:
+## On this steep ramp it needs to be around 0.5 or more, or boards slip backwards down the slope.
+@export_range(0.0, 5.0, 0.05, "or_greater") var grip: float = 0.7:
 	set(value):
 		grip = value
 		_apply_grip()

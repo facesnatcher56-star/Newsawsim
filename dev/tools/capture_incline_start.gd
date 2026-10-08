@@ -33,6 +33,9 @@ func _run() -> void:
 	for i in 20:
 		await physics_frame
 	await _shot("incline_started_23")
+	cam.global_position = incline.to_global(Vector3(4.5, 5.2, 2.5))
+	cam.look_at(incline.to_global(Vector3(0.0, 2.7, 5.7)), Vector3.UP)
+	await _shot("incline_bend")
 	print("CAPTURE DONE incline start")
 	quit()
 
