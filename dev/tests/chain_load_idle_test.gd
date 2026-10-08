@@ -45,12 +45,10 @@ func run() -> void:
 	var trough: StaticBody3D = mill.get_node("DebarkerStation/DebarkInfeedConveyor")
 	var incline: StaticBody3D = mill.get_node("InclineOutfeed/InclineChainConveyor")
 	var sorter: BinSorter = mill.get_node("BinSorter")
-	var landing: EdgerLandingDeck = mill.get_node("landing_deck_frame")
 	var unscrambler: StaticBody3D = mill.get_node("InclineOutfeed/BoardUnscrambler")
 	expect(chain_deck.constant_linear_velocity.is_zero_approx(), "empty chain-log deck is stopped")
 	expect(trough.constant_linear_velocity.is_zero_approx(), "empty trough chains are stopped")
 	expect(incline.constant_linear_velocity.is_zero_approx(), "empty log incline chain is stopped")
-	expect(landing.actual_speed < 0.02, "empty landing chains are stopped")
 	expect(unscrambler.constant_linear_velocity.is_zero_approx(), "empty board unscrambler is stopped")
 	expect(not sorter._top_active and not sorter._haulout_active, "sorter overhead and floor chains are stopped")
 

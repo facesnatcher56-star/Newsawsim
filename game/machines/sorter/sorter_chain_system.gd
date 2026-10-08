@@ -1,9 +1,9 @@
 class_name SorterChainSystem
 extends Node3D
 
-## High-performance, physically synchronized closed-loop chain drive system.
-## Simulates continuous roller chains wrapping around drive and idler sprockets
-## with zero slip, rigid-link chordal seating, and synchronized push lugs.
+## Closed-loop chain visuals for the sorter (no collision).
+## Roller chains wrap around drive and idler sprockets with rigid-link chordal seating
+## and lugs. Boards are moved by collision boxes placed in the level, not by these lugs.
 
 # -----------------------------------------------------------------------------
 # TOP OVERHEAD CONVEYOR PARAMETERS
@@ -42,10 +42,6 @@ var _mm_top_links: MultiMeshInstance3D = null
 var _mm_top_lugs: MultiMeshInstance3D = null
 var _mm_haul_links: MultiMeshInstance3D = null
 
-# One synchronized AnimatableBody3D per lug pitch. Each station has a collision
-# post at all four chain lanes; the MultiMeshes are visuals only.
-var _top_lug_bodies: Array[AnimatableBody3D] = []
-var _top_lug_shapes: Array[Array] = []
 
 # Current continuous distance along closed paths
 var current_top_dist: float = 0.0
@@ -54,7 +50,6 @@ var current_haul_dist: float = 0.0
 func _ready() -> void:
 	_calculate_loop_geometry()
 	_setup_multimeshes()
-	_setup_physical_lugs()
 	update_chains(0.0, 0.0)
 
 func _calculate_loop_geometry() -> void:
@@ -117,46 +112,6 @@ func _setup_multimeshes() -> void:
 		mm_haul.mesh = haul_link_mesh
 		_mm_haul_links.multimesh = mm_haul
 		add_child(_mm_haul_links)
-
-
-func _setup_physical_lugs() -> void:
-	_top_lug_bodies.clear()
-	_top_lug_shapes.clear()
-	var lug_material: PhysicsMaterial = PhysicsMaterial.new()
-	lug_material.friction = 0.45
-	lug_material.bounce = 0.0
-	for lug_index: int in _top_lugs_per_strand:
-		var station: AnimatableBody3D = AnimatableBody3D.new()
-		station.name = "SorterLugStation_%03d" % lug_index
-		station.sync_to_physics = true
-		station.physics_material_override = lug_material
-		add_child(station)
-		var shapes: Array[CollisionShape3D] = []
-		for lane_z: float in TOP_STRANDS:
-			var collision: CollisionShape3D = CollisionShape3D.new()
-			var box: BoxShape3D = BoxShape3D.new()
-			# The post descends from the overhead chain far enough to meet the
-			# trailing face of a board resting on the 4.30 m slide rails.
-			box.size = Vector3(0.11, 0.38, 0.14)
-			collision.shape = box
-			collision.position = Vector3(0.0, -0.19, lane_z)
-			station.add_child(collision)
-			shapes.append(collision)
-		_top_lug_bodies.append(station)
-		_top_lug_shapes.append(shapes)
-	_place_physical_lugs()
-
-
-func _place_physical_lugs() -> void:
-	for lug_index: int in _top_lug_bodies.size():
-		var s: float = fposmod(current_top_dist + float(lug_index) * TOP_PITCH * 5.0, _top_loop_len)
-		var station: AnimatableBody3D = _top_lug_bodies[lug_index]
-		var station_transform: Transform3D = get_top_lug_transform(lug_index, 0)
-		station_transform.origin.z = 0.0
-		station.transform = station_transform
-		var on_working_run: bool = s < TOP_SPAN
-		for shape: CollisionShape3D in _top_lug_shapes[lug_index]:
-			shape.disabled = not on_working_run
 
 
 ## Samples the 2D path coordinates at distance s along the overhead loop.
@@ -232,7 +187,6 @@ func _make_link_transform(p1: Vector2, p2: Vector2, z: float) -> Transform3D:
 func advance_physics(top_dist_delta: float, haul_dist_delta: float) -> void:
 	current_top_dist = fposmod(current_top_dist + top_dist_delta, _top_loop_len)
 	current_haul_dist = fposmod(current_haul_dist + haul_dist_delta, _haul_loop_len)
-	_place_physical_lugs()
 
 
 ## Compatibility helper used by tests and standalone callers.

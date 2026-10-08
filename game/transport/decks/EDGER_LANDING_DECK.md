@@ -1,40 +1,10 @@
-# Edger landing chain deck
+# Edger landing deck
 
-Editable Blender source: `dev/art/edger_landing_deck.blend`.
-Reusable Godot assembly: `game/transport/decks/edger_landing_deck.tscn`.
-Blender exports: `game/assets/models/edger_landing_deck/`.
+Assembly: `game/transport/decks/edger_landing_deck.tscn` (placed in the mill as `landing_deck_frame`).
+Script: `game/transport/decks/edger_landing_deck.gd`
 
-## Geometry
+**Visuals only.** The deck is a Blender-built frame with five animated roller chains and two sprocket shafts. The script animates the chains (`chain_speed`, `reverse_direction`, `running`, `acceleration`). It has **no collision**: boards are carried across it by collision boxes placed in the level.
 
-Five roller-chain tracks spaced 1.375 m apart across X; 4 m straight chain runs along Z. The receiving span is approximately 6 m, designed around the existing 16 ft boards. Shorter stock needs enough overlap with multiple tracks; change track spacing and rebuild for other stock requirements.
+Local +X is the edger entry, local +Z is the carry direction, and the origin is the chain-top plane at the landing lane centre. The deck spans x -3.1 to 3.1 and z -0.65 to 3.35. Keep scale at (1, 1, 1).
 
-The origin is the chain-top height at the center of the landing lane. Boards enter along local +X. Each 8 mm steel ramp rises 84 mm toward the next chain and ends approximately 6 mm below its top. Ramps occupy only Z = -0.4 to +0.4 m. The remaining chain gaps are open. An additional short ramp leads onto the first chain.
-
-The model includes beveled painted steel framing, anchor feet and bolts, bearings, five complete roller-chain loops, sprockets, common shafts, gearbox, motor and coupling guard. Static geometry is combined by material; 525 moving links use a MultiMesh. Both sprocket shafts rotate with chain travel. No textures or Blender installation are required to run the exported scene in Godot.
-
-## Controls
-
-- `running`: start/stop with acceleration.
-- `chain_speed`: target speed in metres per second.
-- `reverse_direction`: false carries toward local +Z; true toward local -Z.
-- `external_stop`: stop input for a downstream interlock.
-- `acceleration`: rate of speed change.
-- `actual_speed`: read-only runtime speed for other controllers.
-
-Use unit scale. Rotation is supported. Chains move real rigid bodies through surface friction; the controller does not freeze, teleport, replace or relabel boards. Ramps and frame have separate static collisions. Motion and sprocket rotation stop with the physical conveyor.
-
-The long takeaway side extends to Z = +3.35 m and the near end to Z = -0.65 m. Reversing sends stock toward the near end; arrange a receiver there if using reverse as the delivery direction. No downstream receiver or automatic discharge gate is included.
-
-## Mill placement and integration status
-
-Root position for the current unrotated edger: `(50.803027, 0.2271245, 18.297045)`. Chain tops are 20 mm below the edger output support height. This is provided as `edger_landing_deck_mill_placement.tscn`; `mill_prototype.tscn` instances the deck at that placement as `landing_deck_frame`.
-
-The deck is no longer the end of the line. `game/transport/decks/board_lug_incline.tscn` sits at the deck's discharge (`50.803027, 0.2271245, 21.647045`), starts level with these chain tops at the exact Z they end, and lifts boards to the bin sorter's infeed. The incline holds this deck's `external_stop` whenever it is holding boards for the sorter, so a blocked sorter backs up to the deck instead of piling boards into the infeed. See `BOARD_LUG_INCLINE.md`.
-
-Standalone physical transport, stop, reversal, board identity, rotated transport direction and driven ramp traversal are verified by `dev/tests/edger_landing_deck_test.gd`. The edger-to-deck handoff is verified by `dev/tests/edger_board_flow_test.gd`, and one board is followed through the whole line (edger, deck, incline, sorter) by `dev/probes/full_line_probe.gd`. These are single-board checks, not a throughput test.
-
-## Rebuild and test
-
-Run Blender in background with `--python dev/art/build_edger_landing_deck.py` to regenerate source and GLBs. Reimport the GLBs in Godot afterward. Blender source lives under a `.gdignore` directory to avoid a Blender dependency in game imports.
-
-Run Godot headless with `--path . --script res://dev/tests/edger_landing_deck_test.gd`. Success prints `LANDING_DECK_TEST PASS failures=0`. The ramp probe uses an input force representing continuing edger thrust. Validation uses geometry and physics logs, not screenshots.
+Regenerate the model with Blender in background: `--python dev/art/build_edger_landing_deck.py`, then reimport the GLBs in Godot.

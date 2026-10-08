@@ -18,27 +18,18 @@ No screenshot-based validation: use headless physics, position/contact probes an
 
 | Script | Covers |
 | --- | --- |
-| `board_lug_incline_test.gd` | Lug incline lifts a board from landing deck to sorter infeed |
-| `chain_load_idle_test.gd` | Every powered chain starts idle, wakes for lumber, idles 2 s after empty |
-| `edger_board_flow_test.gd` | Board leaves the edger and reaches the landing deck |
-| `edger_landing_deck_test.gd` | Landing deck transport, stop, reversal, ramp traversal |
-| `edger_sorter_integration_test.gd` | Edger line to bin sorter hand-over |
-| `incline_idle_pickup_test.gd` | Incline parks its pickup before a board arrives |
+| `chain_load_idle_test.gd` | Powered chains start idle, wake for lumber, idle 2 s after empty |
 | `mill_enclosure_test.gd` | Machines stand on the slab, clear walls, fit under the roof |
-| `sorter_physical_board_flow_test.gd` | Rigid boards through overhead sorter and into the cradle |
 | `test_chain_drive_kinematics.gd` | Sorter chain loop continuity and drive synchronisation |
 | `unscrambler_chain_test.gd` | Unscrambler chain rails, width and rotated belt |
-| `verify_sorter_clearance.gd` | 16 ft board clears all 50-bay sorter motion paths |
+
+The landing deck, board incline and bin sorter no longer have any collision of their own (visuals only), so the tests that checked their old script-built physics were removed. Add tests for the collision boxes placed in the level when they exist.
 
 ## probes/
 
 | Script | Traces |
 | --- | --- |
-| `full_line_probe.gd` | One board: edger outfeed -> landing deck -> incline -> sorter |
 | `edger_infeed_handoff_probe.gd` | Initial board from take-away onto the edger infeed |
-| `edger_transfer_probe.gd`, `edger_transfer_contacts.gd`, `edger_transfer_variants.gd` | Edger -> landing deck transfer: motion, contact points, controlled variants |
-| `pickup_probe.gd`, `pickup_contact_probe.gd`, `pickup_state_probe.gd` | Deck -> incline hand-over: attitude, solver contacts, interlock flags |
-| `deck_drive_diagnosis.gd` | Drive state of both machines when a board stalls on the landing deck |
 
 ## Notes
 

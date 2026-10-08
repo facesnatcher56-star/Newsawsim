@@ -42,8 +42,9 @@ var _gate_hold_timers: Array[float] = []
 # Node references from BlenderFrame
 var _gate_nodes: Array[Node3D] = []
 var _cradle_nodes: Array[Node3D] = []
+# Collision bodies the cradles/gates ride on. The sorter has no collision of its own;
+# these stay empty until collision boxes are connected.
 var _cradle_bodies: Array[AnimatableBody3D] = []
-var _gate_bodies: Array[AnimatableBody3D] = []
 var _cradle_plates_mm: MultiMeshInstance3D = null
 var _cradle_spines_mm: MultiMeshInstance3D = null
 var _cradle_shafts_mm: MultiMeshInstance3D = null
@@ -52,7 +53,6 @@ var _top_drive_shaft: Node3D = null
 var _top_tail_shaft: Node3D = null
 var _haulout_drive_shaft: Node3D = null
 var _haulout_tail_shaft: Node3D = null
-var _floor_bed: StaticBody3D = null
 var _chain_system: Node3D = null
 var _chain_visual_elapsed: float = 0.0
 const CHAIN_IDLE_DELAY: float = 2.0
@@ -74,7 +74,6 @@ func _ready() -> void:
 	_init_state_arrays()
 	_bind_blender_frame_nodes()
 	_setup_reference_cradle_visuals()
-	_setup_physics_collision()
 	_setup_chain_system()
 	_setup_standalone_camera()
 
@@ -132,16 +131,6 @@ func _setup_reference_cradle_visuals() -> void:
 	_cradle_spines_mm = root.get_node("RearSpines") as MultiMeshInstance3D
 	_cradle_shafts_mm = root.get_node("PivotShafts") as MultiMeshInstance3D
 	_cradle_collars_mm = root.get_node("PivotCollars") as MultiMeshInstance3D
-
-func _setup_physics_collision() -> void:
-	var res := SorterCollisionBuilder.build(self, _gate_nodes)
-	_floor_bed = res.floor_bed
-	_cradle_bodies = res.cradle_bodies
-	_gate_bodies = res.gate_bodies
-	
-	var infeed: Area3D = res.infeed_zone
-	if infeed and not infeed.body_entered.is_connected(_on_infeed_body_entered):
-		infeed.body_entered.connect(_on_infeed_body_entered)
 
 func _setup_chain_system() -> void:
 	_chain_system = SorterChainSystemScript.new()
@@ -291,8 +280,6 @@ func _physics_process(delta: float) -> void:
 			_chain_visual_elapsed = fmod(_chain_visual_elapsed, 1.0 / 30.0)
 
 	# 2. Update haul-out constant linear velocity
-	if is_instance_valid(_floor_bed):
-		_floor_bed.constant_linear_velocity = global_basis.x * haul_drive
 
 	# 3. Track fully dynamic boards while physical overhead lugs push them. This
 	# code only chooses/opens the target gate and records a landing after contact;
@@ -335,8 +322,6 @@ func _physics_process(delta: float) -> void:
 		_gate_angles[b] = move_toward(_gate_angles[b], _target_gate_angles[b], gate_speed * delta)
 		if b < _gate_nodes.size() and is_instance_valid(_gate_nodes[b]):
 			_gate_nodes[b].rotation.z = _gate_angles[b]
-		if b < _gate_bodies.size() and is_instance_valid(_gate_bodies[b]):
-			_gate_bodies[b].rotation.z = _gate_angles[b]
 
 	# 5. Animate cradle carriages & manage discharge lifecycle
 	for b in range(num_bins):

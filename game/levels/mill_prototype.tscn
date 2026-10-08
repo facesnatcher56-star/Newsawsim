@@ -322,7 +322,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.194214, -0.48825264, 27.5)
 shape = SubResource("BoxShape3D_ground")
 
 [node name="Visuals" type="MeshInstance3D" parent="Ground" unique_id=100000042]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.080214, -0.5130651, 27.388226)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.071468, -0.34626555, 27.437326)
 mesh = SubResource("BoxMesh_Ground")
 
 [node name="ReSawDeck1" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
@@ -1242,8 +1242,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 18.29704
 
 [node name="BoardLugIncline" parent="." unique_id=1898085262 instance=ExtResource("17_incline")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 21.647045)
-sorter_path = NodePath("../BinSorter")
-upstream_deck_path = NodePath("../landing_deck_frame")
 
 [node name="BinSorter" parent="." unique_id=754893477 instance=ExtResource("15_0cce1")]
 transform = Transform3D(-0.0012300834, 0, -0.99999917, 0, 1, 0, 0.99999917, 0, -0.0012300834, 50.895523, -1.2882519, 30.090652)
