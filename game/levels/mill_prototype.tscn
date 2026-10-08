@@ -321,7 +321,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.194214, -0.48825264, 27.5)
 shape = SubResource("BoxShape3D_ground")
 
 [node name="Visuals" type="MeshInstance3D" parent="Ground" unique_id=100000042]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.071468, -0.34626555, 27.437326)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.1469, -0.27109218, 27.41228)
 mesh = SubResource("BoxMesh_Ground")
 
 [node name="ReSawDeck1" parent="Ground" unique_id=347498683 instance=ExtResource("2_1dclx")]
@@ -399,6 +399,7 @@ conveyor_length = 8.0
 conveyor_width = 0.8
 
 [node name="CollisionBottom" parent="DebarkerStation/DebarkInfeedConveyor" index="0" unique_id=32245668]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.056192994, 0)
 shape = SubResource("BoxShape3D_e1uyi")
 
 [node name="CollisionLeft" parent="DebarkerStation/DebarkInfeedConveyor" index="1" unique_id=426988166]
@@ -438,6 +439,9 @@ material = SubResource("3")
 
 [node name="Stop" parent="DebarkerStation" index="9" unique_id=1741714093]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 19.605684, 1.2457577, 2.2462158)
+
+[node name="FrontWallWindowCutout" parent="DebarkerStation/DebarkerEnclosure/CSGCombiner3D" parent_id_path=PackedInt32Array(771215760, 1270012401) index="7" unique_id=1270012409]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0498915, 1.3046095, 2.9721737)
 
 [node name="LogFeedStation" parent="." unique_id=1362207346 instance=ExtResource("4_logfeed")]
 
@@ -1252,8 +1256,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24495697, 0, -0.014503479)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 21.647045)
 chain_speed = 0.2
 
+[node name="CollisionShape3D" parent="BoardLugIncline/InclineTop" parent_id_path=PackedInt32Array(1898085262, 1465584866) index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0002450943, -0.011985779)
+
 [node name="InclineLug" parent="BoardLugIncline" index="2" unique_id=186927790]
-transform = Transform3D(1, 0, 0, 0, 0.94805485, 0.31810778, 0, -0.31810778, 0.94805485, -2.0627594, -0.25739768, -0.79458046)
+transform = Transform3D(1, 0, 0, 0, 0.97103363, 0.23894396, 0, -0.23894396, 0.97103363, -2.0627594, -0.25739768, -0.79458046)
 
 [node name="CollisionShape3D" parent="BoardLugIncline/InclineStartTrigger" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.10444987, 0)
