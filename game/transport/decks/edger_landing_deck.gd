@@ -7,6 +7,10 @@ extends Node3D
 @export var running: bool = true
 @export var reverse_direction: bool = false
 @export var external_stop: bool = false
+## Turn off this machine's own generated collision and board handling. The deck then
+## only draws itself, and boards are carried by the CarrySurface boxes in
+## landing_deck_surfaces.tscn instead.
+@export var physics_enabled: bool = true
 ## Set by a downstream machine that has taken the board off this deck's end. The
 ## chains stop driving and go slippery rather than merely slowing: a board that is
 ## still being dragged by this deck while a lug pushes it up an incline at a
@@ -38,6 +42,17 @@ var _shafts: Array[Node] = []
 var _chain_link_nodes: Array[Array] = []
 
 func _ready() -> void:
+	_build()
+	if not physics_enabled and not Engine.is_editor_hint():
+		_disable_physics()
+
+## Removes every collision object this machine generated (visuals are kept).
+func _disable_physics() -> void:
+	for body in find_children("*", "CollisionObject3D", true, false):
+		(body as CollisionObject3D).collision_layer = 0
+		(body as CollisionObject3D).collision_mask = 0
+
+func _build() -> void:
 	_belts.clear()
 	_chain_link_nodes.clear()
 	var frame_node := get_node_or_null("BlenderFrame")
@@ -226,7 +241,7 @@ func _is_board_entering(ignore: RigidBody3D = null) -> bool:
 	return false
 
 func _physics_process(delta: float) -> void:
-	if Engine.is_editor_hint(): return
+	if Engine.is_editor_hint() or not physics_enabled: return
 	var loaded: bool = ConveyorLoadSensor.has_load(self,
 		Vector3(-3.35, -0.35, -0.65), Vector3(3.35, 0.65, 3.45), true, false)
 	if loaded:

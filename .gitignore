@@ -14,3 +14,7 @@ addons/ziva_agent/
 
 # Blender backup files
 *.blend1
+
+# Screenshot captures from dev/tools/capture_views.gd
+/dev/captures/*
+!/dev/captures/.gdignore
