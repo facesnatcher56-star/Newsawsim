@@ -60,10 +60,6 @@ extends Node3D
 @export var running: bool = true
 ## Stop input for a downstream interlock.
 @export var external_stop: bool = false
-## Turn off this machine's own generated collision and board handling. The incline
-## then only draws itself, and boards are carried by the CarrySurface boxes in
-## incline_surfaces.tscn instead.
-@export var physics_enabled: bool = true
 ## Distance between lug pockets along the chain loop.
 @export_range(0.2, 2.0, 0.01) var lug_pitch: float = 0.74
 ## Vertical slack at the centre of the unloaded lower return. This creates the
@@ -181,11 +177,6 @@ var _geometry_stamp: String = ""
 func _ready() -> void:
 	_rebuild()
 	if Engine.is_editor_hint():
-		return
-	if not physics_enabled:
-		for body in find_children("*", "CollisionObject3D", true, false):
-			(body as CollisionObject3D).collision_layer = 0
-			(body as CollisionObject3D).collision_mask = 0
 		return
 	_resolve_line_links()
 
@@ -835,7 +826,7 @@ func _add_area_box(area: Area3D, size: Vector3, pos: Vector3, rot_x: float) -> v
 # ─────────────────────────────────────────────────────────────────────────────
 
 func _physics_process(delta: float) -> void:
-	if Engine.is_editor_hint() or not physics_enabled:
+	if Engine.is_editor_hint():
 		return
 
 	if _link_retries > 0:
