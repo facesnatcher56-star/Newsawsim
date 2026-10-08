@@ -21,10 +21,13 @@ friction = 0.42
 [node name="SorterBay" type="Node3D"]
 script = ExtResource("1_bay")
 
-[node name="Divider" type="StaticBody3D" parent="."]
+[node name="Divider" parent="." instance=ExtResource("2_carry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, 0)
+enabled = false
+speed = 0.0
+colour = Color(0.6, 0.6, 0.7, 0.35)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Divider"]
+[node name="CollisionShape3D" parent="Divider" index="0"]
 shape = SubResource("Divider_shape")
 
 [node name="TopSurface" parent="." instance=ExtResource("2_carry")]

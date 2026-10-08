@@ -44,26 +44,38 @@ colour = Color(0.2, 0.8, 0.3, 0.35)
 [node name="CollisionShape3D" parent="CrestSurface" index="0"]
 shape = SubResource("BoxShape3D_1")
 
-[node name="RailLeftRamp" type="StaticBody3D" parent="."]
+[node name="RailLeftRamp" parent="." instance=ExtResource("1_carry")]
 transform = Transform3D(1, 0, 0, 0, 0.898794, 0.438371, 0, -0.438371, 0.898794, -2.75, 1.4913673450929084, 2.8068272732523716)
+enabled = false
+speed = 0.0
+colour = Color(0.6, 0.6, 0.7, 0.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RailLeftRamp"]
+[node name="CollisionShape3D" parent="RailLeftRamp" index="0"]
 shape = SubResource("BoxShape3D_2")
 
-[node name="RailRightRamp" type="StaticBody3D" parent="."]
+[node name="RailRightRamp" parent="." instance=ExtResource("1_carry")]
 transform = Transform3D(1, 0, 0, 0, 0.898794, 0.438371, 0, -0.438371, 0.898794, 2.75, 1.4913673450929084, 2.8068272732523716)
+enabled = false
+speed = 0.0
+colour = Color(0.6, 0.6, 0.7, 0.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RailRightRamp"]
+[node name="CollisionShape3D" parent="RailRightRamp" index="0"]
 shape = SubResource("BoxShape3D_3")
 
-[node name="RailLeftCrest" type="StaticBody3D" parent="."]
+[node name="RailLeftCrest" parent="." instance=ExtResource("1_carry")]
 transform = Transform3D(1, 0, 0, 0, 1.000000, -0.000000, 0, 0.000000, 1.000000, -2.75, 2.895, 6.786596198798341)
+enabled = false
+speed = 0.0
+colour = Color(0.6, 0.6, 0.7, 0.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RailLeftCrest"]
+[node name="CollisionShape3D" parent="RailLeftCrest" index="0"]
 shape = SubResource("BoxShape3D_4")
 
-[node name="RailRightCrest" type="StaticBody3D" parent="."]
+[node name="RailRightCrest" parent="." instance=ExtResource("1_carry")]
 transform = Transform3D(1, 0, 0, 0, 1.000000, -0.000000, 0, 0.000000, 1.000000, 2.75, 2.895, 6.786596198798341)
+enabled = false
+speed = 0.0
+colour = Color(0.6, 0.6, 0.7, 0.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RailRightCrest"]
+[node name="CollisionShape3D" parent="RailRightCrest" index="0"]
 shape = SubResource("BoxShape3D_5")

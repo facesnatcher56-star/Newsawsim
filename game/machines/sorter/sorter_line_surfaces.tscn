@@ -33,8 +33,11 @@ colour = Color(1, 0.7, 0.2, 0.35)
 [node name="CollisionShape3D" parent="HaulOutSurface" index="0"]
 shape = SubResource("Haul_shape")
 
-[node name="EndWall" type="StaticBody3D" parent="."]
+[node name="EndWall" parent="." instance=ExtResource("1_carry")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.0, 2.85, 0)
+enabled = false
+speed = 0.0
+colour = Color(0.6, 0.6, 0.7, 0.5)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="EndWall"]
+[node name="CollisionShape3D" parent="EndWall" index="0"]
 shape = SubResource("End_shape")

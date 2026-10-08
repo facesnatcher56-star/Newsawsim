@@ -29,17 +29,54 @@ extends StaticBody3D
 	set(value):
 		show_arrow = value
 		_update_arrow()
-@export var colour: Color = Color(0.2, 0.8, 0.3, 0.35):
+@export var colour: Color = Color(0.2, 0.8, 0.3, 0.4):
 	set(value):
 		colour = value
 		_update_arrow()
 
 var _arrow: MeshInstance3D
+var _box: MeshInstance3D
 
 
 func _ready() -> void:
 	_apply_grip()
 	_update_arrow()
+	if not Engine.is_editor_hint():
+		for helper in ["EditorBox", "EditorArrow"]:
+			var node := get_node_or_null(helper)
+			if node != null:
+				node.queue_free()
+
+
+## Editor only: keeps a see-through coloured solid in step with the collision box,
+## so the box is easy to see and follows it as you drag the handles.
+func _process(_delta: float) -> void:
+	if not Engine.is_editor_hint():
+		return
+	var shape_node: CollisionShape3D = null
+	for child in get_children():
+		if child is CollisionShape3D and (child as CollisionShape3D).shape is BoxShape3D:
+			shape_node = child as CollisionShape3D
+			break
+	if shape_node == null:
+		return
+	if not is_instance_valid(_box):
+		_box = get_node_or_null("EditorBox") as MeshInstance3D
+	if not is_instance_valid(_box):
+		_box = MeshInstance3D.new()
+		_box.name = "EditorBox"
+		_box.mesh = BoxMesh.new()
+		add_child(_box)
+	var material: StandardMaterial3D = _box.material_override as StandardMaterial3D
+	if material == null:
+		material = StandardMaterial3D.new()
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		_box.material_override = material
+	if material.albedo_color != colour:
+		material.albedo_color = colour
+	(_box.mesh as BoxMesh).size = (shape_node.shape as BoxShape3D).size
+	_box.transform = shape_node.transform
 
 
 func _physics_process(_delta: float) -> void:
