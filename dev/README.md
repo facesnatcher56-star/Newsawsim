@@ -7,7 +7,7 @@ Nothing in `game/` depends on this folder. Run any script with
 | --- | --- | --- |
 | `tests/` | Regression tests. Each prints `PASS`/`FAIL` or `failures: N`. Run these before committing. | Yes |
 | `probes/` | Diagnostics that print measured values (positions, contacts, drive state) to trace a problem. They answer "what is happening?", not "is it correct?". | No (except `full_line_probe`, which reports whether the sorter took the board) |
-| `tools/` | Small utilities (`capture_views.gd` takes screenshots from set camera angles; needs a window, not `--headless`; images go to `dev/captures/`): dump the scene tree, validate resources, one-off debug scripts. They write `*.log` files in the working directory (git-ignored). | No |
+| `tools/` | Small utilities (`capture_views.gd` and `capture_sorter_bay.gd` take screenshots from set camera angles; needs a window, not `--headless`; images go to `dev/captures/`): dump the scene tree, validate resources, one-off debug scripts. They write `*.log` files in the working directory (git-ignored). | No |
 | `performance/` | Frame-time recorder, A/B performance probes and `physics_cost_bench.gd` (headless ms per physics frame). Logs go to `performance/logs/` (git-ignored). | No |
 | `art/` | Blender/Python scripts that generate the GLB models in `game/assets/models/`. `legacy/` holds superseded generators. | - |
 | `notes/` | Dated status and findings documents. Historical: check the date before trusting them. | - |
@@ -24,7 +24,7 @@ No screenshot-based validation: use headless physics, position/contact probes an
 | `edger_landing_deck_test.gd` | Landing deck transport, stop, reversal, ramp traversal |
 | `edger_sorter_integration_test.gd` | Edger line to bin sorter hand-over |
 | `mill_enclosure_test.gd` | Machines stand on the slab, clear walls, fit under the roof |
-| `sorter_physical_board_flow_test.gd` | Rigid boards through overhead sorter and into the cradle |
+| `sorter_surfaces_test.gd` | Sorter bay and surface boxes route a board to its bay and stack a second one |
 | `test_chain_drive_kinematics.gd` | Sorter chain loop continuity and drive synchronisation |
 | `unscrambler_chain_test.gd` | Unscrambler chain rails, width and rotated belt |
 | `verify_sorter_clearance.gd` | 16 ft board clears all 50-bay sorter motion paths |

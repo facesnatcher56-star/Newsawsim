@@ -1,0 +1,63 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://game/machines/sorter/sorter_bay.gd" id="1_bay"]
+[ext_resource type="PackedScene" path="res://game/transport/surfaces/carry_surface.tscn" id="2_carry"]
+
+[sub_resource type="BoxShape3D" id="Divider_shape"]
+size = Vector3(0.08, 2.5, 5.0)
+
+[sub_resource type="BoxShape3D" id="Top_shape"]
+size = Vector3(1.0, 0.04, 5.0)
+
+[sub_resource type="BoxShape3D" id="Spine_shape"]
+size = Vector3(0.14, 0.11, 4.8)
+
+[sub_resource type="BoxShape3D" id="Fork_shape"]
+size = Vector3(0.85, 0.11, 0.14)
+
+[sub_resource type="PhysicsMaterial" id="Cradle_material"]
+friction = 0.42
+
+[node name="SorterBay" type="Node3D"]
+script = ExtResource("1_bay")
+
+[node name="Divider" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Divider"]
+shape = SubResource("Divider_shape")
+
+[node name="TopSurface" parent="." instance=ExtResource("2_carry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 4.28, 0)
+speed = 2.5
+direction = Vector3(1, 0, 0)
+grip = 0.6
+colour = Color(0.2, 0.6, 1, 0.35)
+
+[node name="CollisionShape3D" parent="TopSurface" index="0"]
+shape = SubResource("Top_shape")
+
+[node name="Cradle" type="AnimatableBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 3.4, 0)
+physics_material_override = SubResource("Cradle_material")
+sync_to_physics = true
+
+[node name="Spine" type="CollisionShape3D" parent="Cradle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.35, -0.055, 0)
+shape = SubResource("Spine_shape")
+
+[node name="Fork1" type="CollisionShape3D" parent="Cradle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005, -0.055, -1.5)
+shape = SubResource("Fork_shape")
+
+[node name="Fork2" type="CollisionShape3D" parent="Cradle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005, -0.055, -0.5)
+shape = SubResource("Fork_shape")
+
+[node name="Fork3" type="CollisionShape3D" parent="Cradle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005, -0.055, 0.5)
+shape = SubResource("Fork_shape")
+
+[node name="Fork4" type="CollisionShape3D" parent="Cradle"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.005, -0.055, 1.5)
+shape = SubResource("Fork_shape")

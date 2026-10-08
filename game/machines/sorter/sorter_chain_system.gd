@@ -48,6 +48,8 @@ var _top_lug_bodies: Array[AnimatableBody3D] = []
 var _top_lug_shapes: Array[Array] = []
 
 # Current continuous distance along closed paths
+## Build the collision lugs. Off when boards ride the bay surfaces instead (visual chain only).
+var physical_lugs: bool = true
 var current_top_dist: float = 0.0
 var current_haul_dist: float = 0.0
 
@@ -122,6 +124,8 @@ func _setup_multimeshes() -> void:
 func _setup_physical_lugs() -> void:
 	_top_lug_bodies.clear()
 	_top_lug_shapes.clear()
+	if not physical_lugs:
+		return
 	var lug_material: PhysicsMaterial = PhysicsMaterial.new()
 	lug_material.friction = 0.45
 	lug_material.bounce = 0.0

@@ -24,6 +24,11 @@ const sorter_height: float = 4.30
 @export_range(1, 50, 1) var max_boards_per_bay: int = 10
 @export var random_bay_sorting: bool = false
 
+@export_group("Physics")
+## Carry boards on the editable bay and surface scenes (Bay_00..Bay_49, LineSurfaces).
+## Off falls back to the old script-built rails, gates and lugs.
+@export var scene_physics: bool = true
+
 @export_group("Testing & Simulation")
 @export var auto_spawn_test_board: bool = false
 @export var continuous_infeed_spawner: bool = false
@@ -53,6 +58,10 @@ var _top_tail_shaft: Node3D = null
 var _haulout_drive_shaft: Node3D = null
 var _haulout_tail_shaft: Node3D = null
 var _floor_bed: StaticBody3D = null
+# Bay and surface nodes are used by duck typing (see sorter_bay.gd and carry_surface.gd).
+var _bays: Array = []
+var _infeed_surface: StaticBody3D = null
+var _haulout_surface: StaticBody3D = null
 var _chain_system: Node3D = null
 var _chain_visual_elapsed: float = 0.0
 const CHAIN_IDLE_DELAY: float = 2.0
@@ -68,6 +77,8 @@ var _bay_boards: Array[Array] = []
 var _bay_stack_heights: Array[float] = []
 
 const TOP_CATCH_Y: float = 3.40
+## Gravity multiplier for boards inside the sorter (lumber is 4.5 elsewhere).
+const SOFT_FALL_GRAVITY_SCALE: float = 2.0
 const FLOOR_DISCHARGE_Y: float = 0.05
 
 func _ready() -> void:
@@ -133,11 +144,36 @@ func _setup_reference_cradle_visuals() -> void:
 	_cradle_shafts_mm = root.get_node("PivotShafts") as MultiMeshInstance3D
 	_cradle_collars_mm = root.get_node("PivotCollars") as MultiMeshInstance3D
 
+## Finds the saved bay and surface nodes the sorter drives in scene_physics mode.
+## Sets every carrying surface to the sorter's current drive speeds.
+func _drive_scene_surfaces(top_speed: float, haul_speed: float) -> void:
+	if is_instance_valid(_infeed_surface):
+		_infeed_surface.set("speed", top_speed)
+	for bay in _bays:
+		if is_instance_valid(bay):
+			bay.set_top_speed(top_speed)
+	if is_instance_valid(_haulout_surface):
+		_haulout_surface.set("speed", haul_speed)
+
+
+func _bind_scene_physics() -> void:
+	_bays.clear()
+	_cradle_bodies.clear()
+	for b in range(num_bins):
+		var bay = get_node_or_null("Bay_%02d" % b)
+		_bays.append(bay)
+		_cradle_bodies.append(bay.cradle if bay != null else null)
+	_infeed_surface = get_node_or_null("LineSurfaces/InfeedSurface") as StaticBody3D
+	_haulout_surface = get_node_or_null("LineSurfaces/HaulOutSurface") as StaticBody3D
+
+
 func _setup_physics_collision() -> void:
-	var res := SorterCollisionBuilder.build(self, _gate_nodes)
+	var res := SorterCollisionBuilder.build(self, _gate_nodes, scene_physics)
 	_floor_bed = res.floor_bed
 	_cradle_bodies = res.cradle_bodies
 	_gate_bodies = res.gate_bodies
+	if scene_physics:
+		_bind_scene_physics()
 	
 	var infeed: Area3D = res.infeed_zone
 	if infeed and not infeed.body_entered.is_connected(_on_infeed_body_entered):
@@ -148,6 +184,7 @@ func _setup_chain_system() -> void:
 	_chain_system.name = "SorterChainSystem"
 	# Start parked with the lug gap at the inlet, not a post standing there.
 	_chain_system.current_top_dist = SorterChainSystem.TOP_PITCH * 5.0 * 0.5
+	_chain_system.physical_lugs = not scene_physics
 	add_child(_chain_system)
 
 func _setup_standalone_camera() -> void:
@@ -208,6 +245,10 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 	rigid_board.contact_monitor = true
 	rigid_board.max_contacts_reported = maxi(rigid_board.max_contacts_reported, 16)
 	rigid_board.sleeping = false
+	if scene_physics:
+		# Boards fall about a metre into the bay: a softer fall stops thin boards
+		# squashing into the stack below on impact.
+		rigid_board.gravity_scale = SOFT_FALL_GRAVITY_SCALE
 	_tracked_boards.append(tracking)
 
 
@@ -293,6 +334,8 @@ func _physics_process(delta: float) -> void:
 	# 2. Update haul-out constant linear velocity
 	if is_instance_valid(_floor_bed):
 		_floor_bed.constant_linear_velocity = global_basis.x * haul_drive
+	if scene_physics:
+		_drive_scene_surfaces(top_drive, haul_drive)
 
 	# 3. Track fully dynamic boards while physical overhead lugs push them. This
 	# code only chooses/opens the target gate and records a landing after contact;
@@ -307,7 +350,10 @@ func _physics_process(delta: float) -> void:
 
 		var local_pos: Vector3 = to_local(tracking.board.global_position)
 		var bay_x: float = float(tracking.target_bin) * bin_width
-		if not tracking.gate_triggered and local_pos.x >= bay_x - bin_width * 0.10:
+		# Surfaces carry the board at full speed, so the gate opens once the board is
+		# well into the bay, so it drops against the far wall and boards stack in one place.
+		var gate_x: float = bay_x + 0.55 if scene_physics else bay_x - bin_width * 0.10
+		if not tracking.gate_triggered and local_pos.x >= gate_x:
 			tracking.gate_triggered = true
 			_target_gate_angles[tracking.target_bin] = 0.85
 			_gate_hold_timers[tracking.target_bin] = 3.0
@@ -337,6 +383,8 @@ func _physics_process(delta: float) -> void:
 			_gate_nodes[b].rotation.z = _gate_angles[b]
 		if b < _gate_bodies.size() and is_instance_valid(_gate_bodies[b]):
 			_gate_bodies[b].rotation.z = _gate_angles[b]
+		if scene_physics and b < _bays.size() and is_instance_valid(_bays[b]):
+			_bays[b].set_gate_open(_gate_angles[b] > 0.2)
 
 	# 5. Animate cradle carriages & manage discharge lifecycle
 	for b in range(num_bins):

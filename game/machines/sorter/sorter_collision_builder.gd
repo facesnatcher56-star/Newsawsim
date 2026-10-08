@@ -3,7 +3,9 @@ extends RefCounted
 
 ## Builds runtime collision bodies and detection triggers for the 50-bay bin sorter.
 
-static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
+## `zone_only` skips every physical part (the sorter then uses the bay and line scenes)
+## and builds just the infeed detection zone.
+static func build(sorter: Node3D, gate_nodes: Array[Node3D], zone_only: bool = false) -> Dictionary:
 	var old := sorter.get_node_or_null("RuntimeParts")
 	if is_instance_valid(old):
 		old.free()
@@ -29,6 +31,14 @@ static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
 	var bay_d: float = float(sorter.get("bin_depth"))
 	var sorter_h: float = float(sorter.get("sorter_height"))
 	var total_len: float = num_bays * bay_w
+
+	if zone_only:
+		return {
+			"floor_bed": null,
+			"cradle_bodies": [] as Array[AnimatableBody3D],
+			"gate_bodies": [] as Array[AnimatableBody3D],
+			"infeed_zone": _make_infeed_zone(parts, bay_d, sorter_h),
+		}
 
 
 	# 1. Infeed Table Approach Rails
@@ -101,18 +111,7 @@ static func build(sorter: Node3D, gate_nodes: Array[Node3D]) -> Dictionary:
 		cradle_bodies.append(cradle_col_body)
 
 	# 7. Infeed Scanner Detection Zone
-	var infeed_zone := Area3D.new()
-	infeed_zone.name = "InfeedScannerZone"
-	parts.add_child(infeed_zone)
-	var zone_col := CollisionShape3D.new()
-	var zone_shape := BoxShape3D.new()
-	# Admit only after the board is far enough onto the rails for the first
-	# physical sorter lug (working run starts at X=-0.70) to get behind it. The old
-	# broad zone claimed the board at X~-1.0, then stopped the incline beyond lug reach.
-	zone_shape.size = Vector3(0.50, 1.0, bay_d)
-	zone_col.shape = zone_shape
-	zone_col.position = Vector3(-0.10, sorter_h + 0.3, 0.0)
-	infeed_zone.add_child(zone_col)
+	var infeed_zone: Area3D = _make_infeed_zone(parts, bay_d, sorter_h)
 
 	return {
 		"floor_bed": floor_bed,
@@ -129,3 +128,19 @@ static func _add_box_col(parent: Node3D, pos: Vector3, size: Vector3) -> Collisi
 	col.position = pos
 	parent.add_child(col)
 	return col
+
+
+static func _make_infeed_zone(parts: Node3D, bay_d: float, sorter_h: float) -> Area3D:
+	var infeed_zone := Area3D.new()
+	infeed_zone.name = "InfeedScannerZone"
+	parts.add_child(infeed_zone)
+	var zone_col := CollisionShape3D.new()
+	var zone_shape := BoxShape3D.new()
+	# Admit only after the board is far enough onto the rails for the first
+	# physical sorter lug (working run starts at X=-0.70) to get behind it. The old
+	# broad zone claimed the board at X~-1.0, then stopped the incline beyond lug reach.
+	zone_shape.size = Vector3(0.50, 1.0, bay_d)
+	zone_col.shape = zone_shape
+	zone_col.position = Vector3(-0.10, sorter_h + 0.3, 0.0)
+	infeed_zone.add_child(zone_col)
+	return infeed_zone
