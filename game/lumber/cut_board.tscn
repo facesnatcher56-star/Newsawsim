@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dr75yl2dpwycc" path="res://game/lumber/cut_board.gd" id="1"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_wood"]
-rough = true
+rough = false
 
 [sub_resource type="BoxShape3D" id="1"]
 size = Vector3(4.877, 0.038, 0.184)
