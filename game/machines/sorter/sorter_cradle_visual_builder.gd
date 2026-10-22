@@ -123,17 +123,17 @@ static func _make_steel_material() -> StandardMaterial3D:
 
 
 static func _make_tapered_plate_set(material: Material) -> ArrayMesh:
-	# Flat load edge with a deep heel and rounded, tapered nose. The plate hangs
-	# below Y=0 so its bearing edge agrees with the existing cradle collision.
+	# Flat load edge with a deep heel and rounded, tapered nose. The flat bearing
+	# edge stays at Y=0 while the tapered body faces upward toward +Y.
 	var profile: Array[Vector2] = [
 		Vector2(-0.42, 0.0),
+		Vector2(-0.42, 0.245),
+		Vector2(-0.18, 0.245),
+		Vector2(0.30, 0.135),
+		Vector2(0.41, 0.105),
+		Vector2(0.43, 0.055),
+		Vector2(0.38, 0.015),
 		Vector2(0.28, 0.0),
-		Vector2(0.38, -0.015),
-		Vector2(0.43, -0.055),
-		Vector2(0.41, -0.105),
-		Vector2(0.30, -0.135),
-		Vector2(-0.18, -0.245),
-		Vector2(-0.42, -0.245),
 	]
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
