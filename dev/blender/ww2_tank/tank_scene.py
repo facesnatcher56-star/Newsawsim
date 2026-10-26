@@ -4,7 +4,11 @@ import math
 import bpy
 from mathutils import Vector
 
-import tank_lib as L
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
+import mesh_lib as L  # noqa: E402
 
 COLL = "Tank_Scene"
 

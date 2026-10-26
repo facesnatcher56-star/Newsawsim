@@ -1,12 +1,15 @@
 """Procedural M4A3 (75) Sherman, roughly to scale. +X forward, +Y left, +Z up, metres."""
 import math
+import os
+import sys
 
 import bmesh
 import bpy
 from mathutils import Matrix, Vector
 
-import tank_lib as L
-from tank_lib import mat
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
+import mesh_lib as L  # noqa: E402
+from mesh_lib import mat  # noqa: E402
 
 COLL = "M4A3_Sherman"
 

@@ -18,3 +18,9 @@ addons/ziva_agent/
 # Screenshot captures from dev/tools/capture_views.gd
 /dev/captures/*
 !/dev/captures/.gdignore
+
+__pycache__/
+
+# USNR manual pages (confidential, keep local)
+dev/blender/edger_4ta36/reference/
+dev/blender/edger_4ta36/questions/
