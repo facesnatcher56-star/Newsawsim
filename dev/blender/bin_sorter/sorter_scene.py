@@ -45,7 +45,7 @@ def build(M, open_gate=None, stacks=EMPTY, demo_lumber=False):
     for i in range(S.NB):
         bx = S.bay_x(i)
         angle = 42.0 if i == open_gate else 0.0
-        L.link_copy(gate, "Gate_%02d" % i, coll, S.G(bx + S.GATE_X0, S.DECK_Y, 0.0), (0, angle, 0))
+        L.link_copy(gate, "Gate_%02d" % i, coll, S.G(bx + S.GATE_X0, S.DECK_Y + S.GATE_AXIS_DY, 0.0), (0, angle, 0))
         # Gate cylinders: barrel on the deck-beam clevis, rod to the lever pin.
         (px, py), (ax, ay) = S.gate_pin_world(i, angle), S.gate_anchor_world(i)
         for z in (-S.GATE_CYL_Z, S.GATE_CYL_Z):

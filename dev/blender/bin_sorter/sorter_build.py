@@ -12,8 +12,10 @@ Board path (every step is a physical part):
 2. The overhead lug chain's tail sprocket sits above the waiting board's
    trailing side, so each lug comes down behind a board, never on top of one.
    The stop drops and the lug pushes the board along the deck (DECK_Y).
-3. Over its bay the board rides a hinged gate; two air cylinders swing the gate
-   down and the board slides off onto that bay's fork carriage.
+3. The deck is not plate: the board slides on UHMW-capped wear rails, and over
+   its bay it rides that bay's gate arms, all keyed to one cross shaft. Two air
+   cylinders rotate the shaft, every arm drops together, and the board slides off
+   onto that bay's fork carriage.
 4. Each carriage hangs from two cables on its own hoist (cross shaft, drums,
    gearmotor) and steps down by one board thickness per board.
 5. A full bay lowers its tines below the haul-out chains, leaving the stack on
@@ -46,9 +48,16 @@ COL_Z = 3.05                # column lines
 TOP_BEAM_Y = 5.95           # centre of the top beams (return-run lugs point up and must clear them)
 CROSS_BOTTOM = TOP_BEAM_Y - 0.125
 
-GATE_X0 = 0.1               # gate hinge offset inside each bay
-GATE_W = 0.8
+GATE_X0 = 0.1               # gate shaft axis offset inside each bay
+GATE_W = 0.8                # arm length from the shaft axis
+GATE_AXIS_DY = -0.06        # gate shaft axis below the deck plane
+GATE_SHAFT_HALF = 2.76      # inside the hoist cables at +/-END_BLOCK_Z
+GATE_ARM_Z = (-2.40, -1.75, -1.05, -0.35, 0.35, 1.05, 1.75, 2.40)   # arm and wear-rail lines; 8 ft boards span four
+GATE_BEARING_Z = (-2.08, -0.70, 0.70, 2.08)                          # between the arms
 GATE_CYL_Z = 2.70           # gate cylinders sit outside the board ends (16 ft board = +/-2.44)
+RAIL_W = 0.05               # wear rail / arm top flange width
+WEAR_T = 0.008              # UHMW cap on rails and arms
+RAIL_GAP = 0.05             # fixed rails stop this far upstream of a gate shaft
 CATCH_Y = 3.20              # carriage tine top at the catch position
 CARRIAGE_X = 0.20           # carriage origin offset inside each bay (clear of the deck supports)
 END_BLOCK_Z = COL_Z - 0.20  # carriage end blocks and hoist drums
@@ -196,33 +205,38 @@ def build_frame(coll, M):
 
 
 def build_deck(coll, M):
-    bm = bmesh.new()
-    bmu = bmesh.new()
+    bm = bmesh.new()      # steel: dead plate, rail bars, brackets
+    bmh = bmesh.new()     # gate shaft bearings
+    bmu = bmesh.new()     # UHMW wear caps
     y = DECK_Y - DECK_T / 2
-    strips = []
-    for i in range(1, NB):
-        strips.append((bay_x(i) - (BAY - GATE_X0 - GATE_W), bay_x(i) + GATE_X0))
-    strips.append((BX0 + NB - (BAY - GATE_X0 - GATE_W), TOP_X_HEAD - 0.03))   # stops short of the head guard
-    for x0, x1 in strips:
-        gbox_span(bm, (x0, y - DECK_T / 2, -DECK_HALF), (x1, y + DECK_T / 2, DECK_HALF))
+    # Fixed wear rails between gates, in line with the gate arms, lying on the deck support beams.
+    spans = [(bay_x(i) - (BAY - GATE_X0 - GATE_W) + 0.005, bay_x(i) + GATE_X0 - RAIL_GAP) for i in range(1, NB)]
+    spans.append((BX0 + NB - (BAY - GATE_X0 - GATE_W) + 0.005, TOP_X_HEAD - 0.03))   # stops short of the head guard
+    for x0, x1 in spans:
+        for z in GATE_ARM_Z:
+            gbox_span(bm, (x0, DECK_Y - DECK_T, z - RAIL_W / 2), (x1, DECK_Y - WEAR_T, z + RAIL_W / 2))
+            gbox_span(bmu, (x0, DECK_Y - WEAR_T, z - RAIL_W / 2), (x1, DECK_Y, z + RAIL_W / 2))
     # Dead plate between the roll case and bay 0, slotted for the stop fingers.
     edges = [-DECK_HALF]
     for z in STOP_ZS:
         edges += [z - 0.04, z + 0.04]
     edges.append(DECK_HALF)
     for k in range(0, len(edges), 2):
-        gbox_span(bm, (DEAD_X0, y - DECK_T / 2, edges[k]), (BX0 + GATE_X0, y + DECK_T / 2, edges[k + 1]))
-    # Gate hinge knuckles along the downstream edge of every strip that has a gate after it.
+        gbox_span(bm, (DEAD_X0, y - DECK_T / 2, edges[k]), (BX0 + GATE_X0 - RAIL_GAP, y + DECK_T / 2, edges[k + 1]))
+    # Gate shaft bearings on brackets bolted to the deck support beam web, between the arms.
     for i in range(NB):
-        for z in (-2.4, -1.0, 1.0, 2.4):
-            gcyl(bmu, (bay_x(i) + GATE_X0 - 0.01, y - 0.03, z), 0.022, 0.12, 'z', segs=10)
+        ax, ay = bay_x(i) + GATE_X0, DECK_Y + GATE_AXIS_DY
+        for z in GATE_BEARING_Z:
+            gcyl(bmh, (ax, ay, z), 0.045, 0.07, 'z', segs=16)
+            gbox_span(bm, (bay_x(i) + 0.005, ay - 0.035, z - 0.03), (ax - 0.04, ay + 0.01, z + 0.03))
     # Clevis brackets on the deck support webs that anchor the gate cylinders.
     for i in range(NB):
         x = bay_x(i + 1)
         for z in (-GATE_CYL_Z, GATE_CYL_Z):
             gbox_span(bm, (x - 0.06, DECK_Y - 0.19, z - 0.04), (x - 0.005, DECK_Y - 0.11, z + 0.04))
     deck = obj("DeckFixed", bm, coll, [M["deck"]], bevel=0.003, segs=1)
-    hinges = obj("DeckHinges", bmu, coll, [M["shaft"]], bevel=0.0)
+    hinges = obj("DeckHinges", bmh, coll, [M["shaft"]], bevel=0.002, segs=1)
+    obj("DeckWearStrips", bmu, coll, [M["uhmw"]], bevel=0.0)
     return deck, hinges
 
 
@@ -513,21 +527,30 @@ def build_end_table(coll, M):
 # ---------------------------------------------------------------- moving parts
 
 def build_gate(coll, M):
-    """One drop gate. Origin on the hinge axis, plate extending +X; levers at the cylinder lines."""
+    """One drop gate: tapered arms keyed to a cross shaft, levers at the cylinder lines.
+
+    Origin on the shaft axis, arms extending +X. The arm tops sit -GATE_AXIS_DY above
+    the axis, so as the gate drops nothing rises above the deck plane.
+    """
     bm = bmesh.new()
-    gbox_span(bm, (0.003, -DECK_T, -DECK_HALF + 0.02), (GATE_W - 0.003, 0.0, DECK_HALF - 0.02), 0)
-    for z in (-2.4, -1.0, 1.0, 2.4):
-        gbox_span(bm, (0.03, -DECK_T - 0.08, z - 0.04), (GATE_W - 0.05, -DECK_T, z - 0.03), 1)
-        gbox_span(bm, (0.03, -DECK_T - 0.08, z + 0.03), (GATE_W - 0.05, -DECK_T, z + 0.04), 1)
-    for z in (-1.7, 1.7):
-        gcyl(bm, (0.0, -0.03, z), 0.022, 0.5, 'z', mi=1, segs=10)
+    top = -GATE_AXIS_DY
+    flange = top - WEAR_T
+    gcyl(bm, (0.0, 0.0, 0.0), 0.03, 2 * GATE_SHAFT_HALF, 'z', mi=2, segs=16)
+    for z in GATE_ARM_Z:
+        # Web plate deep at the hub, tapering to the tip; flat bar flange on top under the UHMW cap.
+        L.add_prism(bm, [(0.0, flange - 0.01), (GATE_W, flange - 0.01), (GATE_W, top - 0.045), (0.25, -0.03), (0.0, -0.03)],
+                    -z - 0.01, -z + 0.01)
+        gbox_span(bm, (0.0, flange - 0.01, z - RAIL_W / 2), (GATE_W, flange, z + RAIL_W / 2))
+        gbox_span(bm, (0.0, flange, z - RAIL_W / 2), (GATE_W, top, z + RAIL_W / 2), mi=1)
+        gcyl(bm, (0.0, 0.0, z), 0.045, 0.06, 'z', segs=16)                                         # hub, keyed to the shaft
     for z in (-GATE_CYL_Z, GATE_CYL_Z):
-        gbox_span(bm, (0.06, -0.15, z - 0.03), (0.13, -DECK_T, z + 0.03), 1)
-        gcyl(bm, GATE_LEVER_PIN + (z,), 0.015, 0.08, 'z', mi=1, segs=8)
-    return obj("Gate", bm, coll, [M["deck"], M["orange"]], bevel=0.003, segs=1)
+        gcyl(bm, (0.0, 0.0, z), 0.045, 0.06, 'z', segs=16)
+        gbeam(bm, (0.0, 0.0, z), GATE_LEVER_PIN + (z,), 0.02, 0.05)                                # lever
+        gcyl(bm, GATE_LEVER_PIN + (z,), 0.015, 0.06, 'z', mi=2, segs=8)
+    return obj("Gate", bm, coll, [M["orange"], M["uhmw"], M["shaft"]], bevel=0.003, segs=1)
 
 
-GATE_LEVER_PIN = (0.095, -0.13)      # cylinder rod pin on the gate lever, gate-local (x, y)
+GATE_LEVER_PIN = (0.095, -0.07)      # cylinder rod pin on the gate lever, gate-local (x, y)
 
 
 def gate_pin_world(i, angle_deg):
@@ -536,7 +559,7 @@ def gate_pin_world(i, angle_deg):
     lx, ly = GATE_LEVER_PIN
     x = lx * math.cos(a) + ly * math.sin(a)
     y = -lx * math.sin(a) + ly * math.cos(a)
-    return bay_x(i) + GATE_X0 + x, DECK_Y + y
+    return bay_x(i) + GATE_X0 + x, DECK_Y + GATE_AXIS_DY + y
 
 
 def gate_anchor_world(i):
