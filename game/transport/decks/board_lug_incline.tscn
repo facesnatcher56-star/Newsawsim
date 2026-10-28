@@ -7,7 +7,7 @@
 size = Vector3(6.251709, 0.4630127, 7.8295517)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_jjb4j"]
-size = Vector3(5.5078125, 0.2524414, 2.2432861)
+size = Vector3(5.5078125, 0.2524414, 2.1342)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_trigger"]
 size = Vector3(5, 0.6, 0.1)

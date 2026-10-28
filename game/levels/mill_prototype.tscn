@@ -296,9 +296,6 @@ size = Vector3(2.4, 0.8, 0.5)
 [sub_resource type="BoxShape3D" id="BoxShape3D_p41h0"]
 size = Vector3(2.198, 0.942, 2.7)
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_miayt"]
-friction = 0.0
-
 [node name="MillPrototype" type="Node3D" unique_id=2093779747]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2064356020]
@@ -1272,7 +1269,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.2271245, 21.64704
 chain_speed = 0.2
 
 [node name="CollisionShape3D" parent="BoardLugIncline/InclineTop" parent_id_path=PackedInt32Array(1898085262, 1465584866) index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0002450943, -0.011985779)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0002450943, -0.0665)
 
 [node name="InclineLug" parent="BoardLugIncline" index="2" unique_id=186927790]
 transform = Transform3D(1, 0, 0, 0, 0.97103363, 0.23894396, 0, -0.23894396, 0.97103363, -2.0627594, -0.25739768, -0.79458046)
@@ -1281,10 +1278,8 @@ transform = Transform3D(1, 0, 0, 0, 0.97103363, 0.23894396, 0, -0.23894396, 0.97
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.10444987, 0)
 
 [node name="BinSorter" parent="." unique_id=754893477 instance=ExtResource("15_0cce1")]
-transform = Transform3D(-0.0012300834, 0, -0.99999917, 0, 1, 0, 0.99999917, 0, -0.0012300834, 50.895523, -1.2882519, 30.090652)
-physics_material_override = SubResource("PhysicsMaterial_miayt")
-conveyor_speed = 0.5
-haulout_speed = 0.5
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 50.80303, -1.2878755, 30.09018)
+lug_drive = NodePath("../BoardLugIncline")
 
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]
@@ -1312,4 +1307,3 @@ haulout_speed = 0.5
 [editable path="landing_deck_frame"]
 [editable path="landing_deck_frame/BlenderFrame"]
 [editable path="BoardLugIncline"]
-[editable path="BinSorter"]

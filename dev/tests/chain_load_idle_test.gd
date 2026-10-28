@@ -50,7 +50,7 @@ func run() -> void:
 	expect(trough.constant_linear_velocity.is_zero_approx(), "empty trough chains are stopped")
 	expect(incline.constant_linear_velocity.is_zero_approx(), "empty log incline chain is stopped")
 	expect(unscrambler.constant_linear_velocity.is_zero_approx(), "empty board unscrambler is stopped")
-	expect(not sorter._top_active and not sorter._haulout_active, "sorter overhead and floor chains are stopped")
+	expect(is_zero_approx(sorter._top_speed) and is_zero_approx(sorter._haul_current), "sorter overhead and floor chains are stopped")
 
 	var deck_log: RigidBody3D = _load(chain_deck, Vector3(-1.1, 1.29, 0.0), "logs")
 	var trough_log: RigidBody3D = _load(trough, Vector3(0.0, 0.16, 0.0), "logs")

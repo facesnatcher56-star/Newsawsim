@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://dk3ifewhjfaa"
-path="res://.godot/imported/haulout_chain_link.glb-58c3f6665c4a3b5036531943b14ff1ab.scn"
+uid="uid://c0f5ro4l43hb"
+path="res://.godot/imported/sorter_infeed_stop.glb-4b7d904cf2c0448c21ebb7d6770c8c03.scn"
 
 [deps]
 
-source_file="res://game/assets/models/bin_sorter/haulout_chain_link.glb"
-dest_files=["res://.godot/imported/haulout_chain_link.glb-58c3f6665c4a3b5036531943b14ff1ab.scn"]
+source_file="res://game/assets/models/bin_sorter/sorter_infeed_stop.glb"
+dest_files=["res://.godot/imported/sorter_infeed_stop.glb-4b7d904cf2c0448c21ebb7d6770c8c03.scn"]
 
 [params]
 

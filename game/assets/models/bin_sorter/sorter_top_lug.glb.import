@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://d1xgqvs4k4yqc"
-path="res://.godot/imported/bin_cradle.glb-c304a45d1afe8843aae0e6d731acf17e.scn"
+uid="uid://cpqr6dm0su3oi"
+path="res://.godot/imported/sorter_top_lug.glb-3388e6b66d8a1f7c39b0543ffb1be45b.scn"
 
 [deps]
 
-source_file="res://game/assets/models/bin_sorter/bin_cradle.glb"
-dest_files=["res://.godot/imported/bin_cradle.glb-c304a45d1afe8843aae0e6d731acf17e.scn"]
+source_file="res://game/assets/models/bin_sorter/sorter_top_lug.glb"
+dest_files=["res://.godot/imported/sorter_top_lug.glb-3388e6b66d8a1f7c39b0543ffb1be45b.scn"]
 
 [params]
 

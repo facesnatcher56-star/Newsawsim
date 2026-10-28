@@ -22,8 +22,7 @@ func _run() -> void:
 	await _advance(60)
 
 	var sorter: Node3D = _mill.get_node("BinSorter") as Node3D
-	var cradles: Node3D = sorter.get_node("CradleVisuals") as Node3D
-	var chains: Node3D = sorter.get_node("SorterChainSystem") as Node3D
+	var moving: Node3D = sorter.get_node("RuntimeParts") as Node3D
 	var incline: Node3D = _mill.get_node("BoardLugIncline") as Node3D
 	var landing: Node3D = _mill.get_node("landing_deck_frame") as Node3D
 	var building: Node3D = _mill.get_node("MillBuilding") as Node3D
@@ -32,13 +31,9 @@ func _run() -> void:
 	print("\n=== WINDOWED RENDER REGRESSION PROBE ===")
 	await _measure("baseline")
 
-	cradles.visible = false
-	await _settle_measure("no cradle visuals")
-	cradles.visible = true
-
-	chains.visible = false
-	await _settle_measure("no sorter chains")
-	chains.visible = true
+	moving.visible = false
+	await _settle_measure("no sorter moving parts")
+	moving.visible = true
 
 	sorter.visible = false
 	await _settle_measure("sorter hidden")

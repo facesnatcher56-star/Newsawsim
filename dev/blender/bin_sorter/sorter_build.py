@@ -15,7 +15,7 @@ Board path (every step is a physical part):
 3. The deck is not plate: the board slides on UHMW-capped wear rails, and over
    its bay it rides that bay's gate arms, all keyed to one cross shaft. Two air
    cylinders rotate the shaft, every arm drops together, and the board slides off
-   onto that bay's fork carriage.
+   onto that bay's fork carriage; the bay front bars stop it overshooting.
 4. Each carriage hangs from two cables on its own hoist (cross shaft, drums,
    gearmotor) and steps down by one board thickness per board.
 5. A full bay lowers its tines below the haul-out chains, leaving the stack on
@@ -58,6 +58,10 @@ GATE_CYL_Z = 2.70           # gate cylinders sit outside the board ends (16 ft b
 RAIL_W = 0.05               # wear rail / arm top flange width
 WEAR_T = 0.008              # UHMW cap on rails and arms
 RAIL_GAP = 0.05             # fixed rails stop this far upstream of a gate shaft
+FRONT_X = 0.985             # bay front bars, from the bay's upstream edge: past the tine tips, short of the next carriage
+FRONT_BOTTOM = 1.2          # nearly down to the haul-out: a pile stays boxed in as the forks lower it,
+                            # and stacks riding out on the haul chains still pass beneath
+FRONT_Z = (-2.4, -1.7, -1.0, -0.3, 0.3, 1.0, 1.7, 2.4)
 CATCH_Y = 3.20              # carriage tine top at the catch position
 CARRIAGE_X = 0.20           # carriage origin offset inside each bay (clear of the deck supports)
 END_BLOCK_Z = COL_Z - 0.20  # carriage end blocks and hoist drums
@@ -81,11 +85,25 @@ OUT_ROLLER_Z, OUT_ROLLER_R = 0.046, 0.012   # outboard pin rollers that ride the
 X_START = TOP_X_TAIL - 0.30          # frame extents along X
 X_END = TOP_X_HEAD + 0.30
 
-INFEED_X = -0.62            # roll case starts under the incline crest end
-ROLL_R = 0.05
-ROLL_XS = tuple(-0.52 + k * 0.14 for k in range(8))   # 4 cm gaps: narrower than any board
-DEAD_X0 = 0.55              # dead plate from here to bay 0's gate
+CREST_X = -0.58             # the incline's lugs push boards off its crest here
+DEAD_X0 = 0.55              # end of the old roll case; the stop's frame starts here
 STOP_X = BX0 - 0.15         # board leading edge waits here
+PLATE_TOP = DECK_Y - 0.004  # infeed dead plate: just under the transfer chain tops
+
+# Live chain transfer: smooth-top chains carry a board from the crest to the stop and slide
+# under it while it waits. Lanes clear the incline's lug lanes and the stop fingers.
+XFER_Z = (-1.35, -0.3, 0.3, 1.35)
+XFER_TAIL = -0.52           # tail sprockets right at the crest, just above the incline's head bearing block
+XFER_HEAD = 0.70            # head shaft, upstream of the stop rocker
+XFER_PITCH = 0.0508
+XFER_TEETH = 6              # small enough to clear the incline's head bearing block (top DECK_Y - 0.12)
+XFER_SPR = XFER_PITCH / (2 * math.sin(math.pi / XFER_TEETH))
+XFER_PIN_Y = DECK_Y - 0.010                 # link plates reach 8 mm above the pins: 2 mm under the deck line
+XFER_TOOTH_R = 0.004                        # sprocket tooth form: tips stay under the chain's top
+XFER_SHAFT_Y = XFER_PIN_Y - XFER_SPR
+XFER_ROLLER_R = 0.0075
+INCLINE_LANES = (-2.0625, -0.6875, 0.6875, 2.0625)
+INCLINE_SWEEP_X = -0.15     # the incline's lugs swing through the plate up to here as they go round its head
 STOP_ZS = (-2.0, -0.6, 0.6, 2.0)     # stop fingers, clear of the lug lanes
 
 HAUL_STRANDS = (-1.375, 0.0, 1.375)
@@ -99,6 +117,7 @@ HAUL_TOP = HAUL_SHAFT_Y + HAUL_SPR + 0.012   # top of the carrying chain: stacks
 HAUL_HALF = 2.6
 TABLE_X0 = BX0 + NB + 0.6
 STACK_STOP_X = HAUL_X_HEAD - HAUL_SPR - 0.25    # stacks stop before the chains wrap the head sprocket
+END_STOP_Z = (-1.9, -0.65, 0.65, 1.9)           # end stop posts, between the haul strands
 
 TINE_Z = (-2.05, -0.65, 0.65, 2.05)
 CATWALK_Z0, CATWALK_Z1 = 3.25, 4.15
@@ -216,13 +235,12 @@ def build_deck(coll, M):
         for z in GATE_ARM_Z:
             gbox_span(bm, (x0, DECK_Y - DECK_T, z - RAIL_W / 2), (x1, DECK_Y - WEAR_T, z + RAIL_W / 2))
             gbox_span(bmu, (x0, DECK_Y - WEAR_T, z - RAIL_W / 2), (x1, DECK_Y, z + RAIL_W / 2))
-    # Dead plate between the roll case and bay 0, slotted for the stop fingers.
-    edges = [-DECK_HALF]
-    for z in STOP_ZS:
-        edges += [z - 0.04, z + 0.04]
-    edges.append(DECK_HALF)
-    for k in range(0, len(edges), 2):
-        gbox_span(bm, (DEAD_X0, y - DECK_T / 2, edges[k]), (BX0 + GATE_X0 - RAIL_GAP, y + DECK_T / 2, edges[k + 1]))
+    # Infeed dead plate from the incline crest to bay 0's gate, slotted for the transfer
+    # chains, the stop fingers and the incline's lugs as they swing round its head sprocket.
+    holes = [(XFER_TAIL - 0.1, XFER_HEAD + 0.1, z - 0.025, z + 0.025) for z in XFER_Z]
+    holes += [(STOP_X - 0.11, STOP_X + 0.15, z - 0.04, z + 0.04) for z in STOP_ZS]
+    holes += [(CREST_X - 0.01, INCLINE_SWEEP_X, z - 0.08, z + 0.08) for z in INCLINE_LANES]
+    slotted_plate(bm, CREST_X, BX0 + GATE_X0 - RAIL_GAP, -DECK_HALF, DECK_HALF, PLATE_TOP - DECK_T, PLATE_TOP, holes)
     # Gate shaft bearings on brackets bolted to the deck support beam web, between the arms.
     for i in range(NB):
         ax, ay = bay_x(i) + GATE_X0, DECK_Y + GATE_AXIS_DY
@@ -237,51 +255,126 @@ def build_deck(coll, M):
     deck = obj("DeckFixed", bm, coll, [M["deck"]], bevel=0.003, segs=1)
     hinges = obj("DeckHinges", bmh, coll, [M["shaft"]], bevel=0.002, segs=1)
     obj("DeckWearStrips", bmu, coll, [M["uhmw"]], bevel=0.0)
+    build_bay_fronts(coll, M)
     return deck, hinges
 
 
+def slotted_plate(bm, x0, x1, z0, z1, y0, y1, holes, mi=0):
+    """Plate from (x0, z0) to (x1, z1) with rectangular holes (hx0, hx1, hz0, hz1) left out,
+    built from the grid cells that fall outside every hole."""
+    xs = sorted({x0, x1, *[min(max(h[0], x0), x1) for h in holes], *[min(max(h[1], x0), x1) for h in holes]})
+    zs = sorted({z0, z1, *[min(max(h[2], z0), z1) for h in holes], *[min(max(h[3], z0), z1) for h in holes]})
+    for a, b in zip(xs, xs[1:]):
+        for c, d in zip(zs, zs[1:]):
+            mx, mz = (a + b) / 2, (c + d) / 2
+            if b - a < 1e-4 or d - c < 1e-4:
+                continue
+            if any(h[0] < mx < h[1] and h[2] < mz < h[3] for h in holes):
+                continue
+            gbox_span(bm, (a, y0, c), (b, y1, d), mi)
+
+
+def build_bay_fronts(coll, M):
+    """Bin front at the downstream side of every bay: flat bars hung from an angle bolted
+    under the next deck support beam. A board coming off the gate arms fast hits them
+    and drops onto the tines instead of carrying on into the next bay."""
+    bm = bmesh.new()
+    beam_bottom = DECK_Y - DECK_T - 0.18
+    for i in range(NB):
+        x = bay_x(i) + FRONT_X
+        gbox_span(bm, (x - 0.01, beam_bottom - 0.05, -2.6), (bay_x(i + 1) + 0.04, beam_bottom, 2.6))   # angle under the beam
+        for z in FRONT_Z:
+            gbox_span(bm, (x - 0.01, FRONT_BOTTOM, z - 0.025), (x + 0.01, beam_bottom - 0.05, z + 0.025))
+    return obj("BayFronts", bm, coll, [M["green"]], bevel=0.003, segs=1)
+
+
 def build_infeed(coll, M):
-    """Powered roll case and pop-up stop between the incline and bay 0."""
+    """Live chain transfer and pop-up stop between the incline and bay 0.
+
+    Four smooth-top chains run in slots in the dead plate, their tops flush with the deck:
+    they carry a board off the incline crest up to the stop and slide on under it while it
+    waits. Tail sprockets sit on stub shafts hung below the incline's lug sweep; the head
+    shaft carries the drive."""
     bmg = bmesh.new()     # stand (green)
-    bms = bmesh.new()     # rolls (steel)
     bmo = bmesh.new()     # stop and actuators (orange)
-    bmm = bmesh.new()     # drive (grey)
-    rail_top = DECK_Y - ROLL_R - 0.02
+    bmm = bmesh.new()     # bearings and drive (grey)
+    bmu = bmesh.new()     # chain wear strips (UHMW)
+    plate_bottom = PLATE_TOP - DECK_T
+    rail_x0 = -0.46       # clear of the incline's head bearing block
+    rail_bottom = plate_bottom - 0.12
     for z in (-2.75, 2.75):
-        gbox_span(bmg, (INFEED_X, rail_top - 0.12, z - 0.04), (DEAD_X0 + 0.07, rail_top, z + 0.04))   # side rail
-        for x in (INFEED_X + 0.05, DEAD_X0):
-            gbox_span(bmg, (x - 0.05, 0.0, z - 0.05), (x + 0.05, rail_top - 0.12, z + 0.05))           # leg
+        gbox_span(bmg, (rail_x0, rail_bottom, z - 0.04), (DEAD_X0 + 0.07, plate_bottom, z + 0.04))   # side rail
+        for x in (-0.40, DEAD_X0):
+            gbox_span(bmg, (x - 0.05, 0.0, z - 0.05), (x + 0.05, rail_bottom, z + 0.05))           # leg
             gbox(bmg, (x, 0.012, z), (0.22, 0.024, 0.22))
-        gbeam(bmg, (INFEED_X + 0.05, 0.3, z), (DEAD_X0, rail_top - 0.5, z), 0.06, 0.06)               # sway brace
-    for x in (INFEED_X + 0.05, DEAD_X0):
-        gbox_span(bmg, (x - 0.04, 1.0, -2.75), (x + 0.04, 1.08, 2.75))                                 # floor-level tie
-    # Rolls: tube + shaft, each shaft sitting in a bearing on the side rails.
-    for x in ROLL_XS:
-        gcyl(bms, (x, DECK_Y - ROLL_R, 0.0), ROLL_R, 5.3, 'z', segs=24)
-        gcyl(bms, (x, DECK_Y - ROLL_R, 0.0), 0.02, 5.7, 'z', segs=10)
-        for z in (-2.75, 2.75):
-            gbox_span(bmm, (x - 0.05, rail_top, z - 0.04), (x + 0.05, DECK_Y - ROLL_R + 0.03, z + 0.04))   # bearing
-        gcyl(bmm, (x, DECK_Y - ROLL_R, -2.86), 0.05, 0.02, 'z', segs=12)                                 # drive sprocket
-    # Drive chain loop along the sprockets and the gearmotor under the far rail.
-    gbox_span(bmm, (ROLL_XS[0], DECK_Y - ROLL_R + 0.04, -2.87), (ROLL_XS[-1], DECK_Y - ROLL_R + 0.055, -2.85))
-    gbox_span(bmm, (ROLL_XS[0], DECK_Y - ROLL_R - 0.055, -2.87), (ROLL_XS[-1], DECK_Y - ROLL_R - 0.04, -2.85))
-    gbox(bmm, (0.0, rail_top - 0.27, -2.75), (0.3, 0.3, 0.22))                                # gearmotor hung under the rail
-    gcyl(bmm, (0.25, rail_top - 0.27, -2.75), 0.09, 0.22, 'x', segs=20)
-    # Cross angle under the dead plate's upstream edge, sitting on the side rails.
-    gbox_span(bmg, (DEAD_X0 + 0.01, rail_top, -2.79), (DEAD_X0 + 0.07, DECK_Y - DECK_T, 2.79))
+        gbeam(bmg, (-0.40, 0.3, z), (DEAD_X0, rail_bottom - 0.4, z), 0.06, 0.06)                   # sway brace
+    for x in (-0.40, DEAD_X0):
+        gbox_span(bmg, (x - 0.04, 1.0, -2.75), (x + 0.04, 1.08, 2.75))                             # floor-level tie
+    # Plate stiffeners between the chain slots (and the incline lug slots), resting on the rails.
+    for x in (-0.20, 0.25, DEAD_X0 + 0.05):
+        cuts = sorted([z for lane in XFER_Z for z in (lane - 0.03, lane + 0.03)]
+                      + ([z for lane in INCLINE_LANES for z in (lane - 0.09, lane + 0.09)] if x < INCLINE_SWEEP_X else []))
+        edges = [-2.78] + cuts + [2.78]
+        for k in range(0, len(edges), 2):
+            gbox_span(bmg, (x - 0.025, plate_bottom - 0.04, edges[k]), (x + 0.025, plate_bottom, edges[k + 1]))
+    # Chain channels: a UHMW strip for the top run's rollers in a U channel under each lane,
+    # each carried on posts beside the return run from cross beams bolted under the rails.
+    strip_top = XFER_PIN_Y - XFER_ROLLER_R
+    ret_bottom = XFER_SHAFT_Y - XFER_SPR - 0.008
+    for lane in XFER_Z:
+        x0, x1 = XFER_TAIL + XFER_SPR + 0.03, XFER_HEAD - XFER_SPR - 0.03     # where the chain leaves the sprockets
+        gbox_span(bmu, (x0, strip_top - 0.01, lane - 0.015), (x1, strip_top, lane + 0.015))
+        gbox_span(bmg, (x0, strip_top - 0.016, lane - 0.022), (x1, strip_top - 0.01, lane + 0.022))
+        for side in (-1, 1):
+            gbox_span(bmg, (x0, strip_top - 0.016, min(lane + side * 0.016, lane + side * 0.022)),
+                      (x1, strip_top + 0.004, max(lane + side * 0.016, lane + side * 0.022)))
+        for x in (0.0, 0.45):
+            gbox_span(bmg, (x - 0.02, rail_bottom - 0.06 + 0.06, lane + 0.03), (x + 0.02, strip_top - 0.016, lane + 0.04))   # post
+            gbox_span(bmg, (x - 0.02, strip_top - 0.022, lane + 0.016), (x + 0.02, strip_top - 0.016, lane + 0.04))       # gusset
+    for x in (0.0, 0.45):
+        gbox_span(bmg, (x - 0.03, rail_bottom - 0.06, -2.78), (x + 0.03, rail_bottom, 2.78))       # cross beam under the rails
+    assert rail_bottom < ret_bottom, "return run must clear the cross beams"
+    # Tail: stub shafts on bearing blocks either side of each sprocket, hung from the plate's
+    # underside (the incline's head bearing block fills the space below).
+    for lane in XFER_Z:
+        for side in (-1, 1):
+            z = lane + side * 0.032
+            gbox(bmm, (XFER_TAIL, XFER_SHAFT_Y, z), (0.05, 0.04, 0.02))                           # bearing block
+            gbox_span(bmg, (XFER_TAIL - 0.02, XFER_SHAFT_Y + 0.02, z - 0.008), (XFER_TAIL + 0.02, plate_bottom, z + 0.008))
+    # Head: pillow blocks hung from the plate's underside, gearmotor on the far end.
+    for z in (-2.75, 2.75):
+        pillow_block(bmm, XFER_HEAD, XFER_SHAFT_Y, z, base_down=False)
+        gbox_span(bmg, (XFER_HEAD - 0.13, XFER_SHAFT_Y + 0.085, z - 0.05), (XFER_HEAD + 0.13, plate_bottom, z + 0.05))
+    gbox(bmm, (XFER_HEAD, XFER_SHAFT_Y - 0.03, -2.98), (0.28, 0.3, 0.2))
+    gcyl(bmm, (XFER_HEAD - 0.26, XFER_SHAFT_Y - 0.08, -2.98), 0.08, 0.26, 'x', segs=18)
+    gbox_span(bmg, (XFER_HEAD - 0.4, XFER_SHAFT_Y - 0.18, -3.08), (XFER_HEAD + 0.14, XFER_SHAFT_Y - 0.165, -2.88))   # motor shelf
+    gbox_span(bmg, (XFER_HEAD - 0.4, XFER_SHAFT_Y - 0.165, -2.80), (XFER_HEAD - 0.1, plate_bottom, -2.79))           # shelf hanger, upstream of the shaft
     # Pop-up stop: a rocker shaft under the dead plate whose arms rise through the slots.
     sy = DECK_Y - DECK_T - 0.08
     gcyl(bmo, (STOP_X - 0.03, sy, 0.0), 0.03, 4.9, 'z', segs=14)
     for z in (-2.45, 2.45):
-        gbox_span(bmg, (STOP_X - 0.09, sy - 0.05, z - 0.05), (STOP_X + 0.03, DECK_Y - DECK_T, z + 0.05))   # bearing hanger
+        gbox_span(bmg, (STOP_X - 0.09, sy - 0.05, z - 0.05), (STOP_X + 0.03, plate_bottom, z + 0.05))   # bearing hanger
     for z in STOP_ZS:
         gbox_span(bmo, (STOP_X - 0.05, sy, z - 0.025), (STOP_X, DECK_Y + 0.06, z + 0.025))                # finger
     gbox_span(bmo, (STOP_X - 0.05, sy - 0.06, 2.3 - 0.03), (STOP_X - 0.01, sy, 2.3 + 0.03))              # lever
     grod(bmo, (STOP_X - 0.03, sy - 0.04, 2.3), (BX0 - 0.005, sy - 0.04, 2.3), 0.025)                       # cylinder to the beam web
-    obj("InfeedStand", bmg, coll, [M["green"]], bevel=0.004)
-    obj("InfeedRolls", bms, coll, [M["shaft"]], bevel=0.0)
+    obj("InfeedStand", bmg, coll, [M["green"]], bevel=0.003, segs=1)
     obj("InfeedDrive", bmm, coll, [M["grey"]], bevel=0.003, segs=1)
+    obj("TransferWearStrips", bmu, coll, [M["uhmw"]], bevel=0.0)
     obj("InfeedStop", bmo, coll, [M["orange"]], bevel=0.003, segs=1)
+    # Rotating parts, origins on their axes so the game can spin them about Z.
+    bmh = bmesh.new()
+    gcyl(bmh, (0, 0, 0), 0.025, 2 * 2.98, 'z', mi=0, segs=16)
+    for lane in XFER_Z:
+        sprocket_ring(bmh, XFER_TEETH, XFER_SPR, XFER_TOOTH_R, 0.008, lane, 0.032, mi=1)
+        gcyl(bmh, (0, 0, lane), 0.035, 0.04, 'z', mi=0, segs=14)
+    obj("TransferHeadShaft", bmh, coll, [M["shaft"], M["chain"]], bevel=0.0, loc=(XFER_HEAD, XFER_SHAFT_Y, 0))
+    bmt = bmesh.new()
+    for lane in XFER_Z:
+        gcyl(bmt, (0, 0, lane), 0.018, 0.1, 'z', mi=0, segs=12)
+        sprocket_ring(bmt, XFER_TEETH, XFER_SPR, XFER_TOOTH_R, 0.008, lane, 0.022, mi=1)
+        gcyl(bmt, (0, 0, lane), 0.026, 0.03, 'z', mi=0, segs=12)
+    obj("TransferTailSprockets", bmt, coll, [M["shaft"], M["chain"]], bevel=0.0, loc=(XFER_TAIL, XFER_SHAFT_Y, 0))
 
 
 def build_chain_supports(coll, M):
@@ -515,8 +608,9 @@ def build_end_table(coll, M):
     for z in (-2.2, 2.2):
         gbox_span(bm, (x0, 0.0, z - 0.06), (HAUL_X_HEAD - 0.35, 0.25, z + 0.06))
     # End stops between the chain strands, ahead of the head sprocket: the stack halts here
-    # while the drag chains slide on beneath it.
-    for z in (-1.9, 1.9):
+    # while the drag chains slide on beneath it. Inner pair too, so an 8 ft board (+/-1.22)
+    # cannot pass between the posts.
+    for z in END_STOP_Z:
         gbox_span(bm, (STACK_STOP_X, 0.0, z - 0.08), (STACK_STOP_X + 0.12, 0.9, z + 0.08))
         gbeam(bm, (STACK_STOP_X + 0.12, 0.05, z), (STACK_STOP_X + 0.7, 0.05, z), 0.08, 0.06)
         gbeam(bm, (STACK_STOP_X + 0.6, 0.02, z), (STACK_STOP_X + 0.1, 0.75, z), 0.06, 0.06)       # stop kicker brace
@@ -630,6 +724,14 @@ def build_chain_parts(coll, M):
         L.add_prism(bm, [(-0.012, -0.012), (p + 0.012, -0.012), (p + 0.012, 0.012), (-0.012, 0.012)], -(z + 0.003), -(z - 0.003))
     gcyl(bm, (0, 0, 0), 0.012, 0.026, 'z', segs=8)
     parts["HaulChainLink"] = obj("HaulChainLink", bm, coll, [M["chain"]], bevel=0.0)
+    # Transfer chain: smooth-top roller chain, plates reach 8 mm above the pins.
+    bm = bmesh.new()
+    p = XFER_PITCH
+    for side in (-1, 1):
+        z = side * 0.0095
+        L.add_prism(bm, [(-0.006, -0.008), (p + 0.006, -0.008), (p + 0.006, 0.008), (-0.006, 0.008)], -(z + 0.0015), -(z - 0.0015))
+    gcyl(bm, (0, 0, 0), XFER_ROLLER_R, 0.016, 'z', segs=8)
+    parts["TransferChainLink"] = obj("TransferChainLink", bm, coll, [M["chain"]], bevel=0.0)
     return parts
 
 
@@ -669,6 +771,26 @@ def haul_path(s, total):
     s -= span
     phi = -math.pi / 2 - s / HAUL_SPR
     return Vector((HAUL_X_TAIL + HAUL_SPR * math.cos(phi), HAUL_SHAFT_Y + HAUL_SPR * math.sin(phi)))
+
+
+def xfer_path(s, total):
+    """Transfer chain loop from the tail's top tangent: carrying run +X, head wrap, return
+    run -X underneath, tail wrap."""
+    span = XFER_HEAD - XFER_TAIL
+    arc = math.pi * XFER_SPR
+    s %= total
+    if s < span:
+        return Vector((XFER_TAIL + s, XFER_PIN_Y))
+    s -= span
+    if s < arc:
+        phi = math.pi / 2 - s / XFER_SPR
+        return Vector((XFER_HEAD + XFER_SPR * math.cos(phi), XFER_SHAFT_Y + XFER_SPR * math.sin(phi)))
+    s -= arc
+    if s < span:
+        return Vector((XFER_HEAD - s, XFER_SHAFT_Y - XFER_SPR))
+    s -= span
+    phi = -math.pi / 2 - s / XFER_SPR
+    return Vector((XFER_TAIL + XFER_SPR * math.cos(phi), XFER_SHAFT_Y + XFER_SPR * math.sin(phi)))
 
 
 TO_BLENDER = Matrix(((1, 0, 0), (0, 0, -1), (0, 1, 0)))   # Godot (x, y, z) -> Blender (x, -z, y)
@@ -712,6 +834,8 @@ def build_chain_preview(coll, M, parts, top_phase=0.0):
     place(parts["TopChainLink"], [M["chain"]], top_path, top_total, TOP_PITCH, TOP_STRANDS, name="PreviewTopChain", phase=top_phase)
     place(parts["TopChainLug"], [M["orange"]], top_path, top_total, TOP_PITCH, TOP_STRANDS, every=LUG_EVERY, name="PreviewTopLugs", phase=top_phase)
     place(parts["HaulChainLink"], [M["chain"]], haul_path, haul_total, HAUL_PITCH, HAUL_STRANDS, name="PreviewHaulChain")
+    xfer_total = 2 * (XFER_HEAD - XFER_TAIL) + 2 * math.pi * XFER_SPR
+    place(parts["TransferChainLink"], [M["chain"]], xfer_path, xfer_total, XFER_PITCH, XFER_Z, name="PreviewTransferChain")
     for src in parts.values():
         src.hide_render = True
         src.location = G(0, -5, 0)

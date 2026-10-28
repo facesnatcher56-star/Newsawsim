@@ -52,7 +52,7 @@ def sweep(name, p0, p1, exclude):
 def run(lowered_bay=4):
     y0 = S.DECK_Y + 0.002
     legs = [
-        sweep("infeed rolls to stop", (S.INFEED_X, y0, -BOARD_HALF_LEN), (S.STOP_X - 0.051, y0 + BOARD_MAX_T, BOARD_HALF_LEN),
+        sweep("infeed transfer to stop", (S.CREST_X, y0, -BOARD_HALF_LEN), (S.STOP_X - 0.051, y0 + BOARD_MAX_T, BOARD_HALF_LEN),
               ["PreviewTopLugs"]),
         sweep("deck: stop to last bay", (S.STOP_X - 0.05, y0, -BOARD_HALF_LEN), (S.bay_x(S.NB - 1) + S.GATE_X0 + S.GATE_W, y0 + BOARD_MAX_T, BOARD_HALF_LEN),
               ["PreviewTopLugs", "InfeedStop"]),
