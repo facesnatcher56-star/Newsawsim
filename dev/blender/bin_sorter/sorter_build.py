@@ -19,7 +19,7 @@ Board path (every step is a physical part):
 4. Each carriage hangs from two cables on its own hoist (cross shaft, drums,
    gearmotor) and steps down by one board thickness per board.
 5. A full bay lowers its tines below the haul-out chains, leaving the stack on
-   them; the chains carry it to the end table stops.
+   them; the chains carry it on to the green stacker's surge chains.
 
 Support: every part rests on, hangs from, or is bolted to something that
 traces back to the column base plates (checked with common/support_check.py).
@@ -407,6 +407,72 @@ def build_chain_supports(coll, M):
     return obj("ChainSupports", bm, coll, [M["green"]], bevel=0.002, segs=1), obj("RaceWearStrips", bmu, coll, [M["uhmw"]], bevel=0.0)
 
 
+STAIR_Z0 = 3.38             # sorter stair inner stringer: clear of the haul-out drive motor (z <= 3.33)
+STAIR_GOING = 0.26
+STAIR_MAX_RISE = 0.19
+STAIR_LANDING = 1.0
+RAIL_H, MID_H = 1.07, 0.55
+
+
+def stair(grate, rails, frame, x_top, y_top, z0, z1, dirx):
+    """Straight stair from a walkway edge at (x_top, y_top) down to the floor, running along
+    dirx (+1/-1). Grating treads, channel stringers, handrails both sides; a landing halfway
+    when the rise is over 3.6 m. Returns the floor x of the bottom step."""
+    n = math.ceil(y_top / STAIR_MAX_RISE)
+    r = y_top / n
+    flights = [n] if y_top <= 3.6 else [n // 2, n - n // 2]
+    x, y = x_top, y_top
+    for f, m in enumerate(flights):
+        for k in range(1, m):                                   # treads (the last step is the landing/floor)
+            ty = y - k * r
+            xa, xb = x + dirx * (k - 1) * STAIR_GOING, x + dirx * k * STAIR_GOING
+            gbox_span(grate, (min(xa, xb), ty - 0.03, z0), (max(xa, xb), ty, z1))
+            gbox_span(grate, (min(xa, xb), ty - 0.05, z0), (min(xa, xb) + 0.02, ty, z1))       # nosing bar
+        x_end, y_end = x + dirx * (m - 1) * STAIR_GOING, y - m * r
+        for z in (z0, z1):                                      # stringers and rails along the nosing line
+            gbeam(frame, (x, y - 0.12, z), (x_end + dirx * 0.1, y_end + 0.05, z), 0.012, 0.22)
+            for h in (RAIL_H, MID_H):
+                grod(rails, (x, y + h, z), (x_end, y_end + r + h, z), 0.021 if h == RAIL_H else 0.017, segs=10)
+            for xx, yy in ((x, y), (x_end, y_end + r)):
+                grod(rails, (xx, yy, z), (xx, yy + RAIL_H, z), 0.021, segs=10)
+        x, y = x_end, y_end
+        if f < len(flights) - 1:                                # landing on four posts
+            xl = x + dirx * STAIR_LANDING
+            gbox_span(grate, (min(x, xl), y - 0.03, z0), (max(x, xl), y, z1))
+            for xx in (x, xl):
+                for z in (z0, z1):
+                    gbox_span(frame, (xx - 0.04, 0.0, z - 0.04), (xx + 0.04, y - 0.03, z + 0.04))
+            for z in (z0, z1):
+                for h in (RAIL_H, MID_H):
+                    grod(rails, (x, y + h, z), (xl, y + h, z), 0.021 if h == RAIL_H else 0.017, segs=10)
+                grod(rails, (xl, y, z), (xl, y + RAIL_H, z), 0.021, segs=10)
+            x = xl
+    return x
+
+
+def walkway(grate, rails, x0, x1, y, z0, z1, rail_zs, end_rails=()):
+    """Bar-grating walkway between x0 and x1, with kick plates, posts, top and mid rails
+    along each z in rail_zs and across each x in end_rails."""
+    n = int((x1 - x0) / 0.04)
+    for k in range(n + 1):
+        gbox(grate, (x0 + k * (x1 - x0) / n, y - 0.015, (z0 + z1) / 2), (0.005, 0.03, z1 - z0))
+    for k in range(int((x1 - x0) / 0.1) + 1):
+        gbox(grate, (x0 + k * 0.1, y - 0.01, (z0 + z1) / 2), (0.004, 0.02, z1 - z0))
+    for z in (z0, z1):
+        gbox_span(grate, (x0, y - 0.1, z - 0.02), (x1, y, z + 0.02))
+    for z in rail_zs:
+        posts = [x0 + 0.05 + k * 1.5 for k in range(int((x1 - x0 - 0.1) / 1.5) + 1)] + [x1 - 0.05]
+        for x in posts:
+            grod(rails, (x, y, z), (x, y + RAIL_H, z), 0.021, segs=10)
+        for h in (RAIL_H, MID_H):
+            grod(rails, (x0 + 0.05, y + h, z), (x1 - 0.05, y + h, z), 0.021 if h == RAIL_H else 0.017, segs=10)
+        gbox_span(rails, (x0 + 0.05, y, z - 0.005), (x1 - 0.05, y + 0.1, z + 0.005))
+    for x in end_rails:
+        for h in (RAIL_H, MID_H):
+            grod(rails, (x, y + h, z0), (x, y + h, z1), 0.021 if h == RAIL_H else 0.017, segs=10)
+        gbox_span(rails, (x - 0.005, y, z0), (x + 0.005, y + 0.1, z1))
+
+
 def build_catwalk(coll, M):
     grate = bmesh.new()
     rails = bmesh.new()
@@ -433,13 +499,12 @@ def build_catwalk(coll, M):
     grod(rails, (x0 + 0.05, y + 1.07, z1 - 0.03), (x1 - 0.05, y + 1.07, z1 - 0.03), 0.021, segs=10)
     grod(rails, (x0 + 0.05, y + 0.55, z1 - 0.03), (x1 - 0.05, y + 0.55, z1 - 0.03), 0.017, segs=10)
     gbox_span(rails, (x0 + 0.05, y, z1 - 0.04), (x1 - 0.05, y + 0.1, z1 - 0.03))
-    # Ladder up to a landing at the infeed end of the catwalk.
-    lx = x0 - 0.25
-    for z in (z0 + 0.25, z1 - 0.25):
-        grod(rails, (lx, 0.0, z), (lx, y + 1.07, z), 0.025, segs=10)
-    for k in range(1, int(y / 0.3) + 1):
-        grod(rails, (lx, k * 0.3, z0 + 0.25), (lx, k * 0.3, z1 - 0.25), 0.014, segs=8)
-    gbox_span(rails, (lx - 0.1, y - 0.05, z0 + 0.2), (x0, y, z1 - 0.2))
+    # Rail across the closed infeed end; a stair down from the head end (in the outer part of
+    # the walkway, clear of the haul-out drive motor).
+    grod(rails, (x0 + 0.05, y + 1.07, z0 + 0.05), (x0 + 0.05, y + 1.07, z1 - 0.03), 0.021, segs=10)
+    grod(rails, (x0 + 0.05, y + 0.55, z0 + 0.05), (x0 + 0.05, y + 0.55, z1 - 0.03), 0.017, segs=10)
+    grod(rails, (x0 + 0.05, y, z0 + 0.05), (x0 + 0.05, y + 1.07, z0 + 0.05), 0.021, segs=10)
+    stair(grate, rails, brackets, x1, y, STAIR_Z0, z1, 1.0)
     obj("CatwalkBrackets", brackets, coll, [M["green"]], bevel=0.003, segs=1)
     return obj("CatwalkGrating", grate, coll, [M["galv"]], bevel=0.0), obj("CatwalkRails", rails, coll, [M["yellow"]], bevel=0.003, segs=1)
 
@@ -607,13 +672,8 @@ def build_end_table(coll, M):
             gbox_span(bm, (x - 0.05, 0.0, -2.0), (x + 0.05, 0.08, 2.0))
     for z in (-2.2, 2.2):
         gbox_span(bm, (x0, 0.0, z - 0.06), (HAUL_X_HEAD - 0.35, 0.25, z + 0.06))
-    # End stops between the chain strands, ahead of the head sprocket: the stack halts here
-    # while the drag chains slide on beneath it. Inner pair too, so an 8 ft board (+/-1.22)
-    # cannot pass between the posts.
-    for z in END_STOP_Z:
-        gbox_span(bm, (STACK_STOP_X, 0.0, z - 0.08), (STACK_STOP_X + 0.12, 0.9, z + 0.08))
-        gbeam(bm, (STACK_STOP_X + 0.12, 0.05, z), (STACK_STOP_X + 0.7, 0.05, z), 0.08, 0.06)
-        gbeam(bm, (STACK_STOP_X + 0.6, 0.02, z), (STACK_STOP_X + 0.1, 0.75, z), 0.06, 0.06)       # stop kicker brace
+    # No end stops: stacks run on over the head sprocket onto the green stacker's surge chains
+    # (dev/blender/green_stacker), whose tail sprockets reach in between the haul strands.
     obj("EndTable", bm, coll, [M["green"]], bevel=0.004)
     obj("HaulWearStrips", bmu, coll, [M["uhmw"]], bevel=0.0)
 

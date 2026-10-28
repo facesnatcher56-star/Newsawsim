@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/machines/stacker/green_stacker.gd" id="1_stacker"]
+[ext_resource type="PackedScene" path="res://game/assets/models/green_stacker/stacker_frame.glb" id="2_frame"]
+
+[node name="GreenStacker" type="Node3D"]
+script = ExtResource("1_stacker")
+
+[node name="Model" parent="." instance=ExtResource("2_frame")]

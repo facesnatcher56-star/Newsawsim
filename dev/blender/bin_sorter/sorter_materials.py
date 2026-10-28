@@ -117,24 +117,96 @@ def concrete(name="Sorter_Concrete"):
     return g.mat
 
 
-def lumber(name="Sorter_Lumber"):
-    """Freshly sawn softwood: pale, with grain and saw-mark banding."""
-    g = Graph(name)
+def _board_space(g):
+    """Texture space unique to each board: object coordinates shifted by the board's own
+    'board_off' attribute (set per board when boards are merged into one mesh) and by the
+    object's random value (boards that are separate objects). Returns (vector, per-board 0-1)."""
     obj = g.coord.outputs['Object']
     info = g.node('ShaderNodeObjectInfo')
-    # Growth rings around the board's long axis (Blender Y = game Z), stretched along it.
-    grain = g.node('ShaderNodeTexWave', wave_type='RINGS', rings_direction='Y')
-    g.link(g.mapping(obj, scale=(1, 0.04, 1)), grain.inputs['Vector'])
-    grain.inputs['Scale'].default_value = 6
-    grain.inputs['Distortion'].default_value = 4
+    off = g.node('ShaderNodeAttribute', attribute_name='board_off')
+    seed = g.node('ShaderNodeAttribute', attribute_name='board_seed')
+    rnd = g.math('FRACT', g.math('ADD', seed.outputs['Fac'], info.outputs['Random']))
+    # Separate board objects (no attribute) get their pith shifted a little sideways and down
+    # from the board's centre by their own random value.
+    shift = g.node('ShaderNodeCombineXYZ')
+    r = info.outputs['Random']
+    g.link(g.math('MULTIPLY', g.math('SUBTRACT', g.math('FRACT', g.math('MULTIPLY', r, 37.0)), 0.5), 0.3), shift.inputs[0])
+    g.link(g.math('MULTIPLY', r, 53.0), shift.inputs[1])
+    g.link(g.math('ADD', g.math('MULTIPLY', g.math('FRACT', g.math('MULTIPLY', r, 71.0)), 0.25), 0.06), shift.inputs[2])
+    v = g.node('ShaderNodeVectorMath', operation='ADD')
+    g.link(obj, v.inputs[0])
+    g.link(off.outputs['Vector'], v.inputs[1])
+    v2 = g.node('ShaderNodeVectorMath', operation='ADD')
+    g.link(v.outputs['Vector'], v2.inputs[0])
+    g.link(shift.outputs['Vector'], v2.inputs[1])
+    return v2.outputs['Vector'], rnd
+
+
+def lumber(name="Sorter_Lumber"):
+    """Freshly sawn green softwood (fir/pine), different on every board: each board gets its
+    own colour (pale sapwood through pinkish heartwood), its own flat-sawn grain figure, its own
+    scatter of knots, faint saw-mark banding across the face and a damp rough-sawn finish.
+    Board long axis is Blender Y (game Z)."""
+    g = Graph(name)
+    vec, rnd = _board_space(g)
+    # Grain: growth rings round the long axis, stretched along it; ring spacing and figure vary
+    # per board.
+    grain = g.node('ShaderNodeTexWave', wave_type='RINGS', rings_direction='Y', wave_profile='SAW')
+    g.link(g.mapping(vec, scale=(1, 0.06, 1)), grain.inputs['Vector'])
+    g.link(g.math('ADD', g.math('MULTIPLY', rnd, 160.0), 120.0), grain.inputs['Scale'])        # 3-8 mm rings
+    g.link(g.math('ADD', g.math('MULTIPLY', rnd, 3.0), 2.0), grain.inputs['Distortion'])
     grain.inputs['Detail'].default_value = 3
-    knots = g.maprange(g.noise(g.mapping(obj, scale=(3, 0.4, 3)), 2.0, 4).outputs['Fac'], 0.68, 0.75)
-    col = g.ramp(grain.outputs['Fac'], [(0.25, (0.5, 0.35, 0.18)), (0.75, (0.72, 0.56, 0.34))])
-    col = g.mix(g.math('MULTIPLY', info.outputs['Random'], 0.35), col, (0.62, 0.48, 0.3))
-    col = g.mix(g.math('MULTIPLY', knots, 0.8), col, (0.25, 0.14, 0.06))
+    grain.inputs['Detail Scale'].default_value = 0.6
+    late = g.maprange(grain.outputs['Fac'], 0.70, 0.97)                 # dark latewood lines
+    fine = g.noise(g.mapping(vec, scale=(60, 2, 60)), 1.0, 6, 0.6).outputs['Fac']
+    # Board colour (linear): pale sapwood, clear, pinkish heartwood, darker heart.
+    base = g.ramp(rnd, [(0.0, (0.62, 0.43, 0.21)), (0.3, (0.56, 0.37, 0.17)), (0.6, (0.55, 0.30, 0.16)),
+                        (0.82, (0.47, 0.27, 0.13)), (1.0, (0.38, 0.22, 0.10))])
+    patch = g.noise(g.mapping(vec, scale=(3, 0.25, 3)), 1.0, 3, 0.5).outputs['Fac']   # heart/sap streaks along the length
+    col = g.mix(g.maprange(patch, 0.45, 0.75, 0.0, 0.4), base, (0.50, 0.26, 0.14))
+    col = g.mix(g.math('MULTIPLY', fine, 0.2), col, (0.68, 0.50, 0.28))
+    col = g.mix(g.math('MULTIPLY', late, 0.7), col, (0.24, 0.13, 0.05))
+    # Knots on the face: some 2D Voronoi cells (across x along) hold a knot, a dark core with a
+    # darker ring of grain round it; each board's offset puts them in different places.
+    vor = g.node('ShaderNodeTexVoronoi', feature='F1', voronoi_dimensions='2D')
+    g.link(g.mapping(vec, scale=(5.0, 1.8, 1.0)), vor.inputs['Vector'])
+    vor.inputs['Scale'].default_value = 1.0
+    has = g.maprange(vor.outputs['Color'], 0.55, 0.58)
+    dist = vor.outputs['Distance']
+    core = g.math('MULTIPLY', g.maprange(dist, 0.08, 0.05), has)
+    halo = g.math('MULTIPLY', g.maprange(dist, 0.2, 0.08), has)
+    col = g.mix(g.math('MULTIPLY', halo, 0.45), col, (0.36, 0.2, 0.08))
+    col = g.mix(g.math('MULTIPLY', core, 0.95), col, (0.12, 0.06, 0.02))
+    # Saw marks: faint bands across the face, spaced along the length.
+    saw = g.node('ShaderNodeTexWave', wave_type='BANDS', bands_direction='Y')
+    g.link(vec, saw.inputs['Vector'])
+    saw.inputs['Scale'].default_value = 18
+    saw.inputs['Distortion'].default_value = 2
+    marks = g.maprange(saw.outputs['Fac'], 0.6, 1.0, 0.0, 0.12)
+    col = g.mix(marks, col, (0.32, 0.2, 0.1))
     g.link(col, g.bsdf.inputs['Base Color'])
-    g.bsdf.inputs['Roughness'].default_value = 0.8
-    g.link(g.bump(grain.outputs['Fac'], 0.1, 0.005), g.bsdf.inputs['Normal'])
+    g.link(g.mixf(fine, 0.62, 0.85), g.bsdf.inputs['Roughness'])
+    h = g.math('ADD', g.math('MULTIPLY', late, 0.4), g.math('MULTIPLY', marks, 2.0))
+    h = g.math('SUBTRACT', h, g.math('MULTIPLY', core, 0.6))
+    g.link(g.bump(h, 0.25, 0.004), g.bsdf.inputs['Normal'])
+    return g.mat
+
+
+def sticks(name="Stacker_Sticks"):
+    """Kiln sticks: dried and reused, so much darker and greyer than green lumber."""
+    g = Graph(name)
+    vec, rnd = _board_space(g)
+    grain = g.node('ShaderNodeTexWave', wave_type='RINGS', rings_direction='X')
+    g.link(g.mapping(vec, scale=(0.04, 1, 1)), grain.inputs['Vector'])
+    grain.inputs['Scale'].default_value = 12
+    grain.inputs['Distortion'].default_value = 5
+    base = g.ramp(rnd, [(0.0, (0.16, 0.11, 0.07)), (0.5, (0.12, 0.085, 0.055)), (1.0, (0.09, 0.07, 0.05))])
+    col = g.mix(g.math('MULTIPLY', g.maprange(grain.outputs['Fac'], 0.6, 0.95), 0.6), base, (0.05, 0.035, 0.025))
+    grime = g.noise(vec, 6, 6, 0.6).outputs['Fac']
+    col = g.mix(g.maprange(grime, 0.5, 0.75, 0.0, 0.5), col, (0.11, 0.105, 0.1))
+    g.link(col, g.bsdf.inputs['Base Color'])
+    g.bsdf.inputs['Roughness'].default_value = 0.9
+    g.link(g.bump(grain.outputs['Fac'], 0.15, 0.003), g.bsdf.inputs['Normal'])
     return g.mat
 
 
@@ -151,5 +223,7 @@ def build_all():
         "shaft": simple("Sorter_MachinedSteel", (0.5, 0.5, 0.5), 0.3, 1.0),
         "rubber": simple("Sorter_Rubber", (0.015, 0.015, 0.015), 0.8, 0.0),
         "lumber": lumber(),
+        "sticks": sticks(),
+        "drum": mill_paint("Stacker_DrumShell", (0.03, 0.03, 0.03), (0.06, 0.06, 0.065), (0.12, 0.12, 0.12), chip=0.9),
         "concrete": concrete(),
     }

@@ -141,6 +141,17 @@ const PROFILES: Array[String] = ["1x4", "1x6", "1x8", "1x10", "1x12", "2x4", "2x
 @export_range(0.0, 0.8, 0.05) var gate_speed_spread: float = 0.35
 ## Boards per bay before the pile is lowered onto the haul-out chains.
 @export_range(1, 20, 1) var max_boards_per_bay: int = 10
+## Which nominal size each bay takes, bay 0 first. A size not listed goes to the bay with the
+## nearest dressed size.
+@export var bay_sizes: Array[String] = ["1x4", "1x6", "1x8", "1x10", "1x12", "2x4", "2x6", "2x8", "2x10", "2x12"]
+## Boards per pack for each bay, same order as bay_sizes; a missing or 0 entry uses
+## max_boards_per_bay. With a stacker connected, every pack is rounded to whole stacker
+## layers (its boards per layer for that size), at least one layer.
+@export var bay_pack_boards: Array[int] = []
+## The green stacker the haul-out runs packs on to. Its surge chains take the place of the
+## end table: packs leave the haul-out onto them and the bays only wait when the surge queue
+## has backed up onto the haul-out.
+@export var stacker: NodePath
 ## How long a bay's photo eye must stay blocked before its forks lower, seconds; a board
 ## falling past the beam doesn't count.
 @export_range(0.1, 2.0, 0.05) var eye_delay: float = 0.4
@@ -185,6 +196,9 @@ var _carried: Array[Carried] = []
 var _hauled: Dictionary = {}          # board -> seconds it has been still
 var _parked: Array[RigidBody3D] = []  # boards resting on the end table
 var _table_full_logged: bool = false
+var _stacker: Node = null              # GreenStacker taking packs off the haul-out head
+var _locked: bool = false              # stopped by the crew (lockout) to clear a jam
+var _loose_t: Dictionary = {}          # board -> seconds lying still outside the sorter's hands
 
 var _top_loop: float = 0.0
 var _top_span: float = TOP_X_HEAD - TOP_X_TAIL
@@ -250,6 +264,12 @@ func _ready() -> void:
 			_shafts[shaft_name] = shaft
 	if Engine.is_editor_hint():
 		return
+	if not stacker.is_empty():
+		_stacker = get_node_or_null(stacker)
+	if _stacker != null:
+		var stops := get_node_or_null("EndStops")
+		if stops != null:
+			stops.queue_free()
 	var zone := get_node_or_null("InfeedZone") as Area3D
 	if zone != null:
 		zone.body_entered.connect(_on_infeed_body_entered)
@@ -267,6 +287,91 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 		return
 	_queue.append(board)
 	_log("queued for bay %d" % _bay_for(board), board)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  JAMS (used by the crew: game/machines/sorter/sorter_crew.gd)
+# ─────────────────────────────────────────────────────────────────────────────
+
+## Stop (lock out) or restart the sorter and the lug incline feeding it.
+func set_locked(on: bool) -> void:
+	if on == _locked:
+		return
+	_locked = on
+	var drive := get_node_or_null(lug_drive)
+	if drive != null:
+		drive.set("running", not on)
+	_log("sorter %s" % ("STOPPED (lockout)" if on else "restarted"))
+
+
+func is_locked() -> bool:
+	return _locked
+
+
+## Is this board in the sorter's hands (queued, carried, in a bay, hauling or parked)?
+func _owned(b: RigidBody3D) -> bool:
+	if _queue.has(b) or _is_carried(b) or _hauled.has(b) or _parked.has(b):
+		return true
+	for bay: Bay in _bays:
+		if bay.boards.has(b):
+			return true
+	return false
+
+
+## Time each loose board (not the sorter's, not culled) has lain still near the sorter.
+func _track_loose(delta: float) -> void:
+	for b: Variant in _loose_t.keys():
+		if not is_instance_valid(b):
+			_loose_t.erase(b)
+	for n: Node in get_tree().get_nodes_in_group("cut_boards"):
+		var b := n as RigidBody3D
+		if b == null or b.freeze or b.is_in_group("cull") or _owned(b):
+			_loose_t.erase(b)
+			continue
+		var p: Vector3 = to_local(b.global_position)
+		if p.x < -0.8 or p.x > HAUL_X_HEAD or absf(p.z) > 6.0 or p.y > DECK_Y + 0.6:
+			_loose_t.erase(b)
+			continue
+		_loose_t[b] = float(_loose_t.get(b, 0.0)) + delta if b.linear_velocity.length() < 0.05 else 0.0
+
+
+## The first sorter jam, or {}: "deck" a board lying loose on the deck (it missed its lug or
+## its bay), "floor" a board that fell off onto the floor. "at" is in sorter coordinates.
+func find_jam() -> Dictionary:
+	for b: Variant in _loose_t.keys():
+		var board := b as RigidBody3D
+		if float(_loose_t[b]) < 4.0:
+			continue
+		var p: Vector3 = to_local(board.global_position)
+		if p.y > DECK_Y - 0.3 and p.x > STOP_X + 0.1 and p.x < TOP_X_HEAD:
+			return {"kind": "deck", "board": board, "at": p}
+		if p.y < 1.0:
+			return {"kind": "floor", "board": board, "at": p}
+	return {}
+
+
+## The bay a loose deck board can go in by hand (one taking its size, with room), or -1:
+## then it goes to the cull pile, never into another size's pack.
+func hand_bay(board: RigidBody3D) -> int:
+	return _choose_bay(board)
+
+
+## Where a worker puts a loose deck board by hand: flat on top of the pile in the bay taking
+## its size (hand_bay), and the bay counts it.
+func hand_place(board: RigidBody3D) -> Transform3D:
+	var i: int = maxi(_choose_bay(board), 0)
+	var bay: Bay = _bays[i]
+	var top: float = bay.carriage_y
+	for o: RigidBody3D in bay.boards:
+		if is_instance_valid(o):
+			top = maxf(top, to_local(o.global_position).y + float(o.get("board_thickness")) * 0.5)
+	bay.boards.append(board)
+	bay.count += 1
+	if bay.count >= _bay_capacity(i):
+		bay.phase = BayPhase.FULL
+	_loose_t.erase(board)
+	var t: float = float(board.get("board_thickness"))
+	return global_transform * Transform3D(Basis(), Vector3(bay_x(i) + CARRIAGE_X + 0.35, top + t * 0.5 + 0.01, 0.0))
 
 
 func _log(text: String, board: RigidBody3D = null) -> void:
@@ -294,6 +399,16 @@ func _physics_process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 	_clock += delta
+	_track_loose(delta)
+	if _locked:
+		_top_speed = 0.0
+		_haul_current = 0.0
+		_infeed_current = 0.0
+		for n: String in ["TransferChains", "HaulChains"]:
+			var body := get_node_or_null(n) as StaticBody3D
+			if body != null:
+				body.constant_linear_velocity = Vector3.ZERO
+		return
 	_update_infeed()
 	_update_top_chain(delta)
 	_update_carried(delta)
@@ -531,7 +646,7 @@ func _land(c: Carried) -> void:
 	var bay: Bay = _bays[c.bay]
 	bay.boards.append(c.board)
 	bay.count += 1
-	if bay.count >= max_boards_per_bay:
+	if bay.count >= _bay_capacity(c.bay):
 		bay.phase = BayPhase.FULL
 
 
@@ -650,17 +765,39 @@ func _in_flight(bay: int) -> int:
 
 
 func _bay_has_room(bay: int) -> bool:
-	return _bays[bay].phase == BayPhase.CATCH and _bays[bay].count + _in_flight(bay) < max_boards_per_bay
+	return _bays[bay].phase == BayPhase.CATCH and _bays[bay].count + _in_flight(bay) < _bay_capacity(bay)
+
+
+func _bay_capacity(bay: int) -> int:
+	var wanted: int = bay_pack_boards[bay] if bay < bay_pack_boards.size() and bay_pack_boards[bay] > 0 else max_boards_per_bay
+	if _stacker == null:
+		return wanted
+	# Feeding the stacker, every pack is whole layers (the stacker's boards per layer for the
+	# size in the bay), so a size change on the stacker always comes between layers. A set pack
+	# size is rounded to the nearest whole layers; the default is as many layers as fit in
+	# max_boards_per_bay. Never less than one layer.
+	var size: String = _bays[bay].size if bay < _bays.size() and _bays[bay].size != "" else bay_sizes[mini(bay, bay_sizes.size() - 1)]
+	var per: int = int((_stacker.call("layer_plan", size) as Vector2i).x)
+	var layers: int = roundi(float(wanted) / per) if bay < bay_pack_boards.size() and bay_pack_boards[bay] > 0 		else floori(float(wanted) / per)
+	return per * maxi(layers, 1)
 
 
 ## The haul-out chains run while a stack is moving on them and stop once every stack has
 ## come to rest against the end stops (or the stack ahead of it).
 func _update_haul(delta: float) -> void:
+	if _stacker != null:
+		_update_haul_to_stacker(delta)
+		return
 	for b: Variant in _hauled.keys():
 		if not is_instance_valid(b):
 			_hauled.erase(b)
 			continue
 		var board := b as RigidBody3D
+		if _stacker != null and _trailing(board) > HAUL_X_HEAD:
+			# Off the haul-out and on the surge chains: the stacker's now.
+			_hauled.erase(b)
+			_stacker.call("receive", board)
+			continue
 		var moving: bool = absf(board.linear_velocity.x) > 0.03 or to_local(board.global_position).y > HAUL_TOP + 0.6
 		_hauled[b] = 0.0 if moving or _haul_current < haul_approach_speed * 0.5 else float(_hauled[b]) + delta
 		if float(_hauled[b]) > 0.5:
@@ -679,8 +816,44 @@ func _update_haul(delta: float) -> void:
 	_haul_dist = fposmod(_haul_dist + _haul_current * delta, _haul_loop)
 
 
+## With a green stacker: each stack set down on the haul-out is run straight on to the
+## stacker's surge chains (no waiting for other bays). Every board is followed until it is
+## off the haul-out head, then handed to the stacker. The chains only stop when the surge
+## queue has backed up to the haul-out head; they slow for the last half metre before it.
+func _update_haul_to_stacker(delta: float) -> void:
+	_parked.clear()
+	for b: Variant in _hauled.keys():
+		if not is_instance_valid(b):
+			_hauled.erase(b)
+			continue
+		var board := b as RigidBody3D
+		if _trailing(board) > HAUL_X_HEAD:
+			_hauled.erase(b)
+			_stacker.call("receive", board)
+			_log("handed to the green stacker", board)
+		elif to_local(board.global_position).y < HAUL_TOP - 0.15:
+			_hauled.erase(b)          # fell off the chains
+	var target: float = 0.0
+	if not _hauled.is_empty() and not bool(_stacker.call("is_locked")):
+		var back: float = float(_stacker.call("surge_back"))
+		var lead: float = -INF
+		for b: Variant in _hauled.keys():
+			lead = maxf(lead, _leading(b as RigidBody3D))
+		var room: float = back - lead
+		if room < 0.05:
+			target = 0.0
+		elif room < 0.5 + _haul_current * _haul_current / (2.0 * 0.25):
+			target = haul_approach_speed
+		else:
+			target = haul_speed
+	_haul_current = move_toward(_haul_current, target, 0.25 * delta)
+	_haul_dist = fposmod(_haul_dist + _haul_current * delta, _haul_loop)
+
+
 ## Has the queue of stacks on the end table reached back to the table's start?
 func _end_table_full() -> bool:
+	if _stacker != null:
+		return bool(_stacker.call("surge_full"))
 	for p: RigidBody3D in _parked:
 		if is_instance_valid(p) and _trailing(p) < TABLE_X0 + 0.5:
 			if not _table_full_logged:
@@ -703,7 +876,7 @@ func _stack_arriving() -> bool:
 		if not is_instance_valid(board):
 			continue
 		var lead: float = _leading(board)
-		var obstacle: float = STACK_STOP_X
+		var obstacle: float = STACK_STOP_X if _stacker == null else float(_stacker.call("surge_back"))
 		for p: RigidBody3D in _parked:
 			var t: float = _trailing(p)
 			if t > lead - 0.05 and t < obstacle:
@@ -763,17 +936,21 @@ func _leading(board: RigidBody3D) -> float:
 	return to_local(board.global_position).x + _half_width(board)
 
 
-## One nominal size per bay. Anything else goes to the bay with the nearest dressed size.
+## One nominal size per bay (bay_sizes). Anything else goes to the bay with the nearest
+## dressed size.
 func _bay_for(board: RigidBody3D) -> int:
 	var nominal: String = str(board.get("nominal_size"))
-	var index: int = PROFILES.find(nominal)
-	if index >= 0:
+	var index: int = bay_sizes.find(nominal)
+	if index >= 0 and index < NB:
 		return index
+	index = 0
 	var t: float = float(board.get("board_thickness"))
 	var w: float = float(board.get("board_width"))
 	var best: float = INF
-	for i in PROFILES.size():
-		var spec: Dictionary = CutBoardScript.LUMBER_SPECS[PROFILES[i]]
+	for i in mini(bay_sizes.size(), NB):
+		if not CutBoardScript.LUMBER_SPECS.has(bay_sizes[i]):
+			continue
+		var spec: Dictionary = CutBoardScript.LUMBER_SPECS[bay_sizes[i]]
 		var d: float = absf(float(spec["thickness"]) - t) * 4.0 + absf(float(spec["width"]) - w)
 		if d < best:
 			best = d
