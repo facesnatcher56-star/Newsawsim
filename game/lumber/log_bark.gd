@@ -236,4 +236,13 @@ func _get_debarker_position() -> Vector3:
 	var debarker = log_node.get_node_or_null(debarker_node_path)
 	if debarker is Node3D:
 		return debarker.global_position
+	# The ring debarker's rotor joins this group; logs come from anywhere (yard piles,
+	# the mill root), so a fixed relative path rarely resolves.
+	var best: Node3D = null
+	for ring in log_node.get_tree().get_nodes_in_group("debarker_ring"):
+		if ring is Node3D and (best == null or ring.global_position.distance_squared_to(log_node.global_position)
+				< best.global_position.distance_squared_to(log_node.global_position)):
+			best = ring
+	if best:
+		return best.global_position
 	return fallback_debarker_pos

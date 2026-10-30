@@ -28,8 +28,8 @@
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.352941, 0.54902, 0.85098, 1)
 sky_horizon_color = Color(0.647059, 0.74902, 0.85098, 1)
-ground_bottom_color = Color(0.2, 0.160784, 0.129412, 1)
-ground_horizon_color = Color(0.647059, 0.74902, 0.85098, 1)
+ground_bottom_color = Color(0.12, 0.1, 0.08, 1)
+ground_horizon_color = Color(0.36, 0.31, 0.25, 1)
 
 [sub_resource type="Sky" id="Sky_sky"]
 sky_material = SubResource("ProceduralSkyMaterial_sky")
@@ -37,14 +37,21 @@ sky_material = SubResource("ProceduralSkyMaterial_sky")
 [sub_resource type="Environment" id="Env_1"]
 background_mode = 2
 sky = SubResource("Sky_sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.62, 0.6, 0.56, 1)
+ambient_light_sky_contribution = 0.35
+ambient_light_energy = 1.1
+reflected_light_source = 2
 tonemap_mode = 2
+ssao_enabled = true
+ssao_intensity = 1.5
 glow_enabled = true
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_kilnyard"]
 size = Vector3(34, 0.2, 69)
 
 [sub_resource type="StandardMaterial3D" id="Material_kilnyard"]
-albedo_color = Color(0.5, 0.5, 0.48, 1)
+albedo_color = Color(0.3, 0.29, 0.27, 1)
 roughness = 0.95
 
 [sub_resource type="BoxMesh" id="BoxMesh_kilnyard"]
@@ -319,6 +326,7 @@ environment = SubResource("Env_1")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=522720136]
 transform = Transform3D(0.8660253, -0.4330129, 0.2500001, 0, 0.49999994, 0.86602545, -0.50000024, -0.74999994, 0.43301257, 11.351148, 5, 0)
+light_energy = 1.35
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 65.0
 
@@ -407,57 +415,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 0, 34)
 script = ExtResource("16_building")
 
 [node name="DebarkerStation" parent="." unique_id=771215760 instance=ExtResource("3_debark")]
-
-[node name="DebarkInfeedConveyor" parent="DebarkerStation" index="0" unique_id=1866187276]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -1.4334319, 0.49387634, 2.118352)
-constant_linear_velocity = Vector3(0, 0, 0)
-speed = 0.2
-conveyor_length = 8.0
-conveyor_width = 0.8
-
-[node name="CollisionBottom" parent="DebarkerStation/DebarkInfeedConveyor" index="0" unique_id=32245668]
-shape = SubResource("BoxShape3D_hhae2")
-
-[node name="CollisionLeft" parent="DebarkerStation/DebarkInfeedConveyor" index="1" unique_id=426988166]
-transform = Transform3D(0.9063077, 0.42261824, 0, -0.42261824, 0.9063077, 0, 0, 0, 1, -0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_kmj6o")
-
-[node name="CollisionRight" parent="DebarkerStation/DebarkInfeedConveyor" index="2" unique_id=558373768]
-transform = Transform3D(0.9063077, -0.42261824, 0, 0.42261824, 0.9063077, 0, 0, 0, 1, 0.39499998, 0.08592999, 0)
-shape = SubResource("BoxShape3D_e17c0")
-
-[node name="CollisionShape3D" parent="DebarkerStation/DebarkInfeedConveyor/LogArea" parent_id_path=PackedInt32Array(771215760, 1866187276, 1655586341) index="0" unique_id=2087271807]
-shape = SubResource("BoxShape3D_5cgyg")
-
-[node name="LeftWall" parent="DebarkerStation/DebarkInfeedConveyor" index="4" unique_id=1514265469]
-material = SubResource("StandardMaterial3D_metal")
-
-[node name="RightWall" parent="DebarkerStation/DebarkInfeedConveyor" index="5" unique_id=43193196]
-material = SubResource("StandardMaterial3D_metal")
-
-[node name="WasteConveyor2" parent="DebarkerStation" index="7" unique_id=1270012316]
-transform = Transform3D(-4.371139e-08, 0, 1.5, 0, 1, 0, -1, 0, -6.556708e-08, 10.217128, 0.45578635, 2.118159)
-
-[node name="CollisionShape3D" parent="DebarkerStation/WasteConveyor2" index="0" unique_id=1942707640]
-shape = SubResource("1")
-
-[node name="CollisionShape3D" parent="DebarkerStation/WasteConveyor2/LogArea" parent_id_path=PackedInt32Array(771215760, 1270012316, 848567675) index="0" unique_id=562636902]
-shape = SubResource("4")
-
-[node name="Belt" parent="DebarkerStation/WasteConveyor2/Visuals" parent_id_path=PackedInt32Array(771215760, 1270012316, 299685672) index="0" unique_id=1866090059]
-material = SubResource("2")
-
-[node name="RailLeft" parent="DebarkerStation/WasteConveyor2/Visuals" parent_id_path=PackedInt32Array(771215760, 1270012316, 299685672) index="1" unique_id=968185684]
-material = SubResource("3")
-
-[node name="RailRight" parent="DebarkerStation/WasteConveyor2/Visuals" parent_id_path=PackedInt32Array(771215760, 1270012316, 299685672) index="2" unique_id=487435278]
-material = SubResource("3")
-
-[node name="Stop" parent="DebarkerStation" index="9" unique_id=1741714093]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 19.605684, 1.2457577, 2.2462158)
-
-[node name="FrontWallWindowCutout" parent="DebarkerStation/DebarkerEnclosure/CSGCombiner3D" parent_id_path=PackedInt32Array(771215760, 1270012401) index="7" unique_id=1270012409]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.0498915, 1.3046095, 2.9721737)
 
 [node name="LogFeedStation" parent="." unique_id=1362207346 instance=ExtResource("4_logfeed")]
 
@@ -1166,10 +1123,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.66, -1.288, 110.8)
 [editable path="Ground/ReSawDeck1"]
 [editable path="Ground/ReSawDeck2"]
 [editable path="Ground/SweepRoller"]
-[editable path="DebarkerStation"]
-[editable path="DebarkerStation/DebarkInfeedConveyor"]
-[editable path="DebarkerStation/WasteConveyor2"]
-[editable path="DebarkerStation/VibratoryConveyor"]
 [editable path="LogFeedStation"]
 [editable path="LogFeedStation/DebarkDeckTest"]
 [editable path="LogFeedStation/OppositeDebarkDeckTest"]

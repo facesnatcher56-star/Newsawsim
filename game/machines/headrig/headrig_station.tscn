@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_blue.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_green.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_yellow.tscn" id="6"]
-[ext_resource type="PackedScene" path="res://game/transport/roller_beds/smooth_roller.tscn" id="7"]
 [ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://game/machines/headrig/bandsaw_teeth.gd" id="8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_outfeed"]
@@ -128,14 +127,6 @@ texture_albedo = SubResource("Texture_LaserLine")
 texture_emission = SubResource("Texture_LaserLine")
 emission_energy = 8.0
 modulate = Color(0, 1, 0, 1)
-
-[node name="SmoothRoller" parent="." unique_id=894314069 instance=ExtResource("7")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.5494087, 1.8345357, 2.114215)
-speed = 0.2
-
-[node name="SmoothRoller2" parent="." unique_id=894314070 instance=ExtResource("7")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 4.587456, 1.8345357, 2.114215)
-speed = 0.2
 
 [node name="MarkerRed" parent="." unique_id=1863297703 instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 14.093609, 0.13435018, 2.9617114)

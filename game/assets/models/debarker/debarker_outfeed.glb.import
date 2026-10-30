@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bo7hpjp2jfjyf"
-path="res://.godot/imported/DebarkerRing.glb-75781c5bf38b1cac35719f7813692666.scn"
+uid="uid://ckkjnao8iyn2k"
+path="res://.godot/imported/debarker_outfeed.glb-05210031deb3548e8d9ebf92a24a8bc0.scn"
 
 [deps]
 
-source_file="res://game/assets/models/DebarkerRing.glb"
-dest_files=["res://.godot/imported/DebarkerRing.glb-75781c5bf38b1cac35719f7813692666.scn"]
+source_file="res://game/assets/models/debarker/debarker_outfeed.glb"
+dest_files=["res://.godot/imported/debarker_outfeed.glb-05210031deb3548e8d9ebf92a24a8bc0.scn"]
 
 [params]
 
@@ -43,4 +43,4 @@ materials/extract_path=""
 _subresources={}
 gltf/naming_version=2
 gltf/embedded_image_handling=1
-gltf/texture_map_mode=0
+gltf/texture_map_mode=1

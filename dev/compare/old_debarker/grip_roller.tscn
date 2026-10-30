@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c3mlf0h3g6a7r"]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://game/transport/components/carry_surface.gd" id="1"]
 [ext_resource type="Script" uid="uid://b6manf5t3mmr0" path="res://game/transport/components/rotator.gd" id="2"]

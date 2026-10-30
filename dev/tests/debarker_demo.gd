@@ -1,0 +1,95 @@
+extends Node3D
+
+## Demo to watch the debarker inside the running mill: the loaders feed the decks, the
+## decks drop logs into the debarker infeed, and the debarked logs carry on downstream.
+## Keys: 1-6 views, F cycles 1x / 2x / 4x speed, L drops a log straight onto the infeed.
+## Run: godot --path . res://dev/tests/debarker_demo.tscn
+
+const MILL_SCENE := preload("res://game/levels/mill_prototype.tscn")
+
+const VIEWS: Array = [
+	[Vector3(5.0, 5.5, 11.0), Vector3(5.0, 0.6, 2.1)],      # 1 whole debarker line from the deck side
+	[Vector3(2.0, 2.6, 5.6), Vector3(4.2, 0.8, 2.1)],       # 2 infeed and feed rolls
+	[Vector3(7.6, 2.4, 5.4), Vector3(5.2, 0.8, 2.1)],       # 3 ring from the outfeed side
+	[Vector3(5.2, 1.6, -2.4), Vector3(5.2, -0.6, 1.5)],     # 4 under the ring: bark belt
+	[Vector3(-3.0, 9.0, 14.0), Vector3(8.0, 0.0, 2.0)],     # 5 decks to outfeed overview
+	[Vector3(5.0, 6.8, 2.01), Vector3(5.0, 0.0, 2.0)],      # 6 straight down over the line (wide)
+]
+
+var _cam: Camera3D
+var _label: Label
+var _time: float = 0.0
+
+
+func _ready() -> void:
+	var mill := MILL_SCENE.instantiate()
+	add_child(mill)
+	# The mill has its own camera; ours takes over.
+	_cam = Camera3D.new()
+	_cam.fov = 60.0
+	add_child(_cam)
+	_cam.current = true
+	_set_view(1)
+	_label = Label.new()
+	_label.position = Vector2(12, 10)
+	_label.add_theme_font_size_override("font_size", 18)
+	var layer := CanvasLayer.new()
+	layer.add_child(_label)
+	add_child(layer)
+
+
+func _process(delta: float) -> void:
+	_time += delta
+	_cam.current = true
+	var lines := PackedStringArray(["t %.1f s   views: 1-6   F: %dx speed" % [_time, Engine.time_scale]])
+	var mill := get_child(0)
+	for deck_name in ["DebarkDeckTest", "OppositeDebarkDeckTest"]:
+		var stops := mill.get_node_or_null("LogFeedStation/%s/RetractableStops" % deck_name)
+		if stops:
+			lines.append("%s: stops %s  chains %.2f  logs %d" % [deck_name,
+				["EXTENDED", "HOLDING_LOG", "RETRACTING", "RETRACTED", "SETTLING", "EXTENDING"][stops._state],
+				stops._conveyor.speed, stops._get_deck_logs().size()])
+	var deb := mill.get_node_or_null("DebarkerStation")
+	if deb:
+		var on_infeed := 0
+		for b in deb.infeed_area.get_overlapping_bodies():
+			if b.is_in_group("logs"):
+				on_infeed += 1
+		lines.append("debarker: infeed logs %d  held %s  feeding %s  tools r %.2f" % [on_infeed,
+			deb.infeed.hold, deb._carry != null, deb._tool_r])
+	_label.text = "\n".join(lines)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+	if key == null or not key.pressed:
+		return
+	if key.keycode >= KEY_1 and key.keycode <= KEY_6:
+		_set_view(key.keycode - KEY_0)
+	elif key.keycode == KEY_I:
+		# Lists meshes around a spot, to identify parts on screen.
+		var spot := Vector3(6.8, 1.9, 1.3)
+		for node in get_tree().root.find_children("*", "CSGShape3D", true, false):
+			var c := node as CSGShape3D
+			if not c.is_root_shape():
+				continue
+			var aabb := c.global_transform * c.get_aabb()
+			if aabb.grow(2.0).has_point(spot):
+				print("[debarker_demo] CSG near %s: %s  aabb %s" % [spot, c.get_path(), aabb])
+	elif key.keycode == KEY_L:
+		var log_body := (load("res://game/lumber/log.tscn") as PackedScene).instantiate() as RigidBody3D
+		add_child(log_body)
+		log_body.global_position = Vector3(-0.8, 1.6, 2.118)
+		print("[debarker_demo] %.1f s dropped a log on the infeed" % _time)
+	elif key.keycode == KEY_F:
+		# 1x -> 2x -> 4x. Physics ticks scale with it so each step stays 1/60 s of game time.
+		var speed := 1.0 if Engine.time_scale >= 4.0 else Engine.time_scale * 2.0
+		Engine.time_scale = speed
+		Engine.physics_ticks_per_second = int(60 * speed)
+
+
+func _set_view(n: int) -> void:
+	var v: Array = VIEWS[n - 1]
+	_cam.fov = 110.0 if n == 6 else 60.0
+	_cam.position = v[0]
+	_cam.look_at(v[1])

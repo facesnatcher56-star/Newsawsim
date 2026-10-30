@@ -162,6 +162,12 @@ def materials(M):
     g.link(g.mixf(dents, 0.28, 0.42), g.bsdf.inputs['Roughness'])
     g.link(g.bump(ribs.outputs['Fac'], 0.35, 0.02), g.bsdf.inputs['Normal'])
     M["alu"] = g.mat
+    # Contrast against the cladding: a weathered dark galvalume roof, lighter insulated
+    # door panels and a concrete curb along the foot of the walls.
+    from materials_lib import simple
+    M["roof"] = simple("Kiln_Roof", (0.10, 0.105, 0.11), 0.55, 0.6, 2.0, 0.08)
+    M["door_panel"] = simple("Kiln_DoorPanel", (0.62, 0.63, 0.63), 0.45, 0.3, 3.0, 0.05)
+    M["curb"] = simple("Kiln_Curb", (0.24, 0.23, 0.21), 0.9, 0.0, 14.0, 0.3)
     from sorter_materials import mill_paint
     M["cart"] = mill_paint("Kiln_CartBlack", (0.015, 0.015, 0.016), (0.03, 0.03, 0.032), (0.07, 0.07, 0.07), chip=0.8)
     M["blue"] = mill_paint("Kiln_DoorBlue", (0.01, 0.02, 0.12), (0.02, 0.04, 0.22), (0.05, 0.08, 0.3), chip=0.5)
@@ -243,11 +249,22 @@ def build_building(coll, M):
         L.add_prism(bm, [(0.0, EAVE_Y), (BUILD_W, EAVE_Y), (XM, RIDGE_Y)], -max(za, zb), -min(za, zb))   # gable
     gbox_span(bm, (0.0, 0.0, Z_IN0), (WALL_T, EAVE_Y, Z_IN1))                                   # side walls
     gbox_span(bm, (BUILD_W - WALL_T, 0.0, Z_IN0), (BUILD_W, EAVE_Y, Z_IN1))
+    bmr = bmesh.new()
     for xe in (0.0, BUILD_W):                                                                    # roof slabs
         d = Vector((XM - xe, RIDGE_Y - EAVE_Y)).normalized()
         p0 = Vector((xe, EAVE_Y)) - d * 0.35
-        L.add_prism(bm, [(p0.x, p0.y), (XM, RIDGE_Y), (XM, RIDGE_Y + ROOF_T), (p0.x, p0.y + ROOF_T)],
+        L.add_prism(bmr, [(p0.x, p0.y), (XM, RIDGE_Y), (XM, RIDGE_Y + ROOF_T), (p0.x, p0.y + ROOF_T)],
                     -(Z_REAR + 0.3), -(Z_FRONT - 0.3))
+    # Concrete curb along the foot of every wall (piers only at the ends, not the doorways).
+    bmk = bmesh.new()
+    curb_h, curb_t = 0.45, 0.06
+    gbox_span(bmk, (-curb_t, 0.0, Z_FRONT - curb_t), (0.0, curb_h, Z_REAR + curb_t))
+    gbox_span(bmk, (BUILD_W, 0.0, Z_FRONT - curb_t), (BUILD_W + curb_t, curb_h, Z_REAR + curb_t))
+    for e in (0, 1):
+        face, s = end_face(e)
+        piers = [0.0] + [x for o in ops for x in o] + [BUILD_W]
+        for a, b in zip(piers[0::2], piers[1::2]):
+            gbox_span(bmk, (a, 0.0, face), (b, curb_h, out_z(e, curb_t)))
     gbox_span(bmf, (XM - 0.15, RIDGE_Y + ROOF_T - 0.04, Z_FRONT - 0.3), (XM + 0.15, RIDGE_Y + ROOF_T + 0.06, Z_REAR + 0.3))   # ridge cap
     for x in (-0.55, BUILD_W + 0.35):                                                            # eave gutters
         gbox_span(bmf, (x, EAVE_Y - 0.30, Z_FRONT - 0.3), (x + 0.2, EAVE_Y - 0.12, Z_REAR + 0.3))
@@ -260,6 +277,8 @@ def build_building(coll, M):
     for x, s in ((0.0, -1), (BUILD_W, 1)):
         gbox_span(bmd, (x + s * 0.06, 0.0, Z_IN0 + 3.0), (x, 2.1, Z_IN0 + 3.95))
     obj("KilnBuilding", bm, coll, [M["alu"]], bevel=0.01, segs=1)
+    obj("KilnRoof", bmr, coll, [M["roof"]], bevel=0.01, segs=1)
+    obj("KilnCurb", bmk, coll, [M["curb"]], bevel=0.01, segs=1)
     obj("KilnTrim", bmf, coll, [M["grey"]], bevel=0.004, segs=1)
     obj("KilnFittings", bmd, coll, [M["grey"]], bevel=0.01, segs=1)
 
@@ -505,7 +524,7 @@ def build_door(coll, M, e, t):
         x = xc + dx
         gbox_span(bmb, (x - 0.09, POCKET_Y[0], out_z(e, df)), (x + 0.09, POCKET_Y[1], out_z(e, df + POCKET_D)))
         gbox_span(bm, (x - 0.06, POCKET_Y[0] + 0.03, out_z(e, df + POCKET_D - 0.005)), (x + 0.06, POCKET_Y[1] - 0.03, out_z(e, df + POCKET_D + 0.001)))
-    door = obj("KilnDoor_%s%d" % ("FR"[e], t), bm, coll, [M["alu"]], bevel=0.01, segs=1)
+    door = obj("KilnDoor_%s%d" % ("FR"[e], t), bm, coll, [M["door_panel"]], bevel=0.01, segs=1)
     frame = obj("KilnDoorFrame_%s%d" % ("FR"[e], t), bmb, coll, [M["blue"]], bevel=0.004)
     frame.parent = door
     return door

@@ -376,6 +376,9 @@ func _downstream_clear() -> bool:
 
 	if _dump_target != null:
 		var debarker_station = _dump_target.get_parent()
+		# The ring debarker decides for itself (one log waiting on its infeed at a time).
+		if debarker_station != null and debarker_station.has_method("can_accept_log"):
+			return debarker_station.can_accept_log()
 		if debarker_station != null:
 			# Check DebarkInfeedConveyor (our dump target itself)
 			var infeed_area = _dump_target.get_node_or_null("LogArea") as Area3D

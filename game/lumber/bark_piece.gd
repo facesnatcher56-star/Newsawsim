@@ -2,7 +2,8 @@ extends RigidBody3D
 
 ## Loose bark chunk (RigidBody3D) that despawns after `lifetime` seconds.
 
-@export var lifetime: float = 12.0
+## Long enough to ride the debarker's bark belt up into the bin, which collects it.
+@export var lifetime: float = 30.0
 
 func _ready() -> void:
 	add_to_group("bark_pieces")
