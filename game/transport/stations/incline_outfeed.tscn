@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://dndnied0ni2ha" path="res://game/transport/conveyors/incline_chain_conveyor.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://d1mvyhaftsh6d" path="res://game/props/semi_trailer.tscn" id="3"]
-[ext_resource type="PackedScene" uid="uid://cu6kodccm1rqk" path="res://game/transport/roller_beds/roller_bed.tscn" id="4"]
 
 [node name="InclineOutfeed" type="Node3D" unique_id=2087427473]
 
@@ -11,15 +10,6 @@ transform = Transform3D(-1, 0, 0, 0, 0.894427, 0.447214, 0, 0.447214, -0.894427,
 
 [node name="SemiTrailer" parent="." unique_id=100000045 instance=ExtResource("3")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 5.165, -0.9, -9.75)
-
-[node name="RollerBed" parent="." unique_id=220690297 instance=ExtResource("4")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 27.382435, -0.2590027, 5.360077)
-constant_linear_velocity = Vector3(2, 0, -8.742278e-08)
-roller_count = 4
-roller_length = 1.35
-roller_diameter = 0.31
-roller_spacing = 0.7000000000000001
-transport_direction = Vector3(0, 0, 1)
 
 [node name="InclineConveyorLight" type="SpotLight3D" parent="." unique_id=100000046]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 5.165, 4, -4)

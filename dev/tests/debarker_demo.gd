@@ -21,6 +21,12 @@ const VIEWS: Array = [
 	[Vector3(21.5, 4.2, -3.0), Vector3(16.3, 0.4, 3.0)],    # 0 kicker, end stop and incline foot
 	[Vector3(20.0, 4.2, 11.5), Vector3(19.8, 0.3, 5.4)],    # H log deck, carriage and headrig saw
 	[Vector3(29.0, 5.5, -4.0), Vector3(29.0, -0.5, 7.0)],   # J headrig outfeed and the transfer on
+	[Vector3(33.0, 6.5, 0.0), Vector3(39.0, -0.5, 10.0)],   # K roller bed, transfer deck and unscrambler
+	[Vector3(41.0, 7.0, 9.0), Vector3(47.5, -0.5, 19.5)],   # L edger, takeaway, landing deck and sorter incline
+	[Vector3(37.0, 6.5, 6.01), Vector3(37.0, 0.0, 6.0)],   # E straight down over headrig outfeed to edger
+	[Vector3(39.5, 3.2, 0.2), Vector3(42.0, -0.6, 5.0)],    # R outfeed end stop, board kickers and chipper
+	[Vector3(32.5, 3.4, 13.5), Vector3(36.5, -0.3, 8.4)],   # I cant transfer, turner and gang
+	[Vector3(45.0, 2.8, 12.8), Vector3(40.5, -0.3, 8.6)],   # O gang outfeed lift rolls and board transfer
 ]
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
 const DROP_Z: Array[float] = [1.2, 1.9, 2.6, 3.3, 4.0, 4.7]
@@ -39,9 +45,10 @@ func _ready() -> void:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
 			deck.debug_log = true
-	var headrig := mill.get_node_or_null("Headrig")
-	if headrig and "debug_log" in headrig:
-		headrig.debug_log = true
+	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw"]:
+		var node := mill.get_node_or_null(node_name)
+		if node and "debug_log" in node:
+			node.debug_log = true
 	# The mill has its own camera; ours takes over.
 	_cam = Camera3D.new()
 	_cam.fov = 60.0
@@ -64,6 +71,12 @@ func _process(delta: float) -> void:
 	var headrig_node := mill.get_node_or_null("Headrig")
 	if headrig_node and headrig_node.has_method("status_text"):
 		lines.append("Headrig: %s" % headrig_node.status_text())
+	var outfeed_node := mill.get_node_or_null("HeadrigOutfeed")
+	if outfeed_node and outfeed_node.has_method("status_text"):
+		lines.append("Outfeed: %s" % outfeed_node.status_text())
+	var gang_node := mill.get_node_or_null("GangResaw")
+	if gang_node and gang_node.has_method("status_text"):
+		lines.append("Gang: %s" % gang_node.status_text())
 	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and deck.has_method("status_text"):
@@ -102,6 +115,18 @@ func _unhandled_input(event: InputEvent) -> void:
 		_set_view(11)
 	elif key.keycode == KEY_J:
 		_set_view(12)
+	elif key.keycode == KEY_Q:
+		_set_view(13)
+	elif key.keycode == KEY_W:
+		_set_view(14)
+	elif key.keycode == KEY_E:
+		_set_view(15)
+	elif key.keycode == KEY_R:
+		_set_view(16)
+	elif key.keycode == KEY_I:
+		_set_view(17)
+	elif key.keycode == KEY_O:
+		_set_view(18)
 	elif key.keycode == KEY_P:
 		# Probe: incline foot geometry and logs around the kicker.
 		var mill := get_child(0)
@@ -110,14 +135,34 @@ func _unhandled_input(event: InputEvent) -> void:
 			print("[probe] headrig: %s" % headrig.status_text())
 		for node in get_tree().get_nodes_in_group("logs"):
 			var l := node as Node3D
-			if l.global_position.x > 12.0 and l.global_position.x < 30.0:
-				print("[probe] log %s at %s" % [l.name, l.global_position])
+			if l.global_position.x > 12.0 and l.global_position.x < 46.0:
+				print("[probe] log %s at %s rot %s frozen %s" % [l.name, l.global_position, l.global_rotation_degrees,
+					(l as RigidBody3D).freeze])
 	elif key.keycode == KEY_G:
 		# A test log straight onto the headrig's log deck.
 		var log_body := (load("res://game/lumber/log.tscn") as PackedScene).instantiate() as RigidBody3D
 		add_child(log_body)
 		log_body.global_position = Vector3(16.9, 0.45, 4.3)
 		print("[debarker_demo] %.1f s dropped a log on the headrig deck" % _time)
+	elif key.keycode == KEY_U:
+		# A test cant: a log sawn on two faces, dropped on the gang's cant transfer.
+		var cant := (load("res://game/lumber/log.tscn") as PackedScene).instantiate() as RigidBody3D
+		add_child(cant)
+		cant.global_transform = Transform3D(Basis.IDENTITY, Vector3(32.7, 0.08, 6.55))
+		for face in 2:
+			for k in 2:
+				cant.cuts_on_current_face = k + 1
+				cant._update_csg_cut_position()
+			cant.start_new_cut_face()
+		cant.board_count = 0
+		print("[debarker_demo] %.1f s dropped a cant on the outfeed" % _time)
+	elif key.keycode == KEY_T or key.keycode == KEY_Y:
+		# A test slab (T) or board (Y) onto the headrig outfeed roll case.
+		var path := "res://game/lumber/cut_slab.tscn" if key.keycode == KEY_T else "res://game/lumber/cut_board.tscn"
+		var piece := (load(path) as PackedScene).instantiate() as RigidBody3D
+		add_child(piece)
+		piece.global_position = Vector3(30.2, 0.05, 5.25)
+		print("[debarker_demo] %.1f s dropped a %s on the outfeed" % [_time, "slab" if key.keycode == KEY_T else "board"])
 	elif key.keycode == KEY_B:
 		# Test speed for the headrig carriage: three times as fast through its cycle.
 		var hr := get_child(0).get_node_or_null("Headrig")
@@ -167,5 +212,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _set_view(n: int) -> void:
 	var v: Array = VIEWS[n - 1]
 	_cam.fov = 110.0 if n == 6 else 60.0
+	# The plan view is orthographic from just under the roof.
+	_cam.projection = Camera3D.PROJECTION_ORTHOGONAL if n == 15 else Camera3D.PROJECTION_PERSPECTIVE
+	_cam.size = 30.0
 	_cam.position = v[0]
 	_cam.look_at(v[1])

@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/machines/gang_resaw/gang_resaw.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://game/assets/models/gang_resaw/gang_resaw_frame.glb" id="2_frame"]
+[ext_resource type="PackedScene" path="res://game/assets/models/gang_resaw/gang_resaw_parts.glb" id="3_parts"]
+
+[node name="GangResaw" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.288, 0)
+
+[node name="Frame" parent="Model" instance=ExtResource("2_frame")]
+
+[node name="Parts" parent="Model" instance=ExtResource("3_parts")]
+
+[node name="GangLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 35.0, 4.0, 8.3)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 4.0
+spot_range = 7.0
+spot_angle = 60.0
