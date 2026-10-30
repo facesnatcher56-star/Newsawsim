@@ -31,7 +31,22 @@ const VIEWS: Array = [
 	[Vector3(36.2, 0.6, 11.4), Vector3(39.8, -0.2, 11.4)],  # X pocket and incline from the end
 	[Vector3(37.0, 3.2, 12.6), Vector3(41.0, 1.0, 15.4)],   # C lug loader, stops and flipper
 	[Vector3(35.0, 5.0, 23.5), Vector3(41.0, 0.8, 17.5)],   # V scanner deck from the infeed end
+	[Vector3(38.3, 3.0, 17.6), Vector3(42.6, 1.0, 21.4)],   # A positioners, ramps and lineal infeed
+	[Vector3(52.8, 3.4, 18.0), Vector3(48.3, 1.0, 21.8)],   # S edger and picker belt
 ]
+## Close-ups for checking boards on the board line's chains (PageDown cycles, PageUp back).
+const CLOSE_UPS: Array = [
+	[Vector3(38.2, 0.25, 6.9), Vector3(39.1, -0.2, 7.7)],      # feed chain tails under the board kickers
+	[Vector3(37.6, 0.55, 10.9), Vector3(38.7, 0.2, 11.6)],     # unscrambler lugs on the incline
+	[Vector3(37.6, 1.5, 13.6), Vector3(38.5, 1.1, 14.3)],      # unscrambler top, dead plate, take-away, lug loader
+	[Vector3(37.3, 1.45, 14.4), Vector3(38.4, 1.1, 15.0)],     # lug loader stops and flipper
+	[Vector3(37.3, 1.45, 16.9), Vector3(38.3, 1.1, 17.5)],     # scanner chain lugs
+	[Vector3(37.2, 1.5, 20.5), Vector3(38.3, 1.1, 21.2)],      # skids, positioner heads, ramps
+	[Vector3(42.4, 1.5, 20.5), Vector3(43.3, 1.1, 21.6)],      # sharp chain and hold-downs at the edger
+	[Vector3(44.7, 1.9, 19.9), Vector3(44.6, 1.3, 21.6)],      # saw box from the operator side
+	[Vector3(47.3, 1.6, 20.4), Vector3(48.3, 1.1, 21.6)],      # picker belt and picker
+]
+var _close_up: int = -1
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
 const DROP_Z: Array[float] = [1.2, 1.9, 2.6, 3.3, 4.0, 4.7]
 var _drops: int = 0
@@ -49,7 +64,7 @@ func _ready() -> void:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
 			deck.debug_log = true
-	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw", "UnscramblerLine", "ScannerDeck"]:
+	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw", "UnscramblerLine", "ScannerDeck", "EdgerLine"]:
 		var node := mill.get_node_or_null(node_name)
 		if node and "debug_log" in node:
 			node.debug_log = true
@@ -87,6 +102,9 @@ func _process(delta: float) -> void:
 	var deck_node := mill.get_node_or_null("ScannerDeck")
 	if deck_node and deck_node.has_method("status_text"):
 		lines.append("Deck: %s" % deck_node.status_text())
+	var edger_node := mill.get_node_or_null("EdgerLine")
+	if edger_node and edger_node.has_method("status_text"):
+		lines.append("Edger: %s" % edger_node.status_text())
 	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and deck.has_method("status_text"):
@@ -145,6 +163,36 @@ func _unhandled_input(event: InputEvent) -> void:
 		_set_view(21)
 	elif key.keycode == KEY_V:
 		_set_view(22)
+	elif key.keycode == KEY_A:
+		_set_view(23)
+	elif key.keycode == KEY_S:
+		_set_view(24)
+	elif key.keycode == KEY_PAGEDOWN or key.keycode == KEY_PAGEUP:
+		_close_up = posmod(_close_up + (1 if key.keycode == KEY_PAGEDOWN else -1), CLOSE_UPS.size())
+		var v: Array = CLOSE_UPS[_close_up]
+		_cam.projection = Camera3D.PROJECTION_PERSPECTIVE
+		_cam.fov = 50.0
+		_cam.position = v[0]
+		_cam.look_at(v[1])
+	elif key.keycode == KEY_HOME:
+		# Debug: open up the edger (hide its gates, lid and operator plates) to see inside.
+		var e := get_child(0).get_node_or_null("EdgerLine")
+		if e:
+			for n in ["SawGate", "ChipGate", "TopLid", "OperatorPlate", "Reman_OperatorPlate", "OperatorSide",
+					"OperatorPlate_001", "Reman_OperatorPlate_001"]:
+				for node in e.find_children(n + "*", "", true, false):
+					if node is Node3D:
+						node.visible = not node.visible
+			print("[debarker_demo] edger opened up for a look inside")
+	elif key.keycode == KEY_TAB:
+		# A rough flitch straight onto the positioning skids.
+		var fl := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
+		add_child(fl)
+		fl.configure_dimensions(4.877, 0.041, randf_range(0.22, 0.32))
+		fl.nominal_size = "flitch"
+		fl.set_wane(randf_range(0.015, 0.04), randf_range(0.015, 0.04))
+		fl.global_position = Vector3(41.2, 1.14, 20.7)
+		print("[debarker_demo] %.1f s a flitch onto the edger skids" % _time)
 	elif key.keycode == KEY_M:
 		# Four test boards onto the lug loader, a little apart.
 		for i in 4:

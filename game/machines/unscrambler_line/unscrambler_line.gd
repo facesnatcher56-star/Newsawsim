@@ -47,8 +47,9 @@ const REJECT_S := 1.9
 const REJECT_PIVOT := Vector2(11.2098, 1.0611)
 const REJECT_REST_DEG := -50.0
 const REJECT_FIRE_DEG := 50.0
-const LINK_PITCH := 0.152
-const CHAIN_SCENE := "res://game/assets/models/log_deck/log_deck_chain.glb"
+## 81X roller chain, modelled with its plate tops at the link origin (the chain-top line).
+const LINK_PITCH := 0.06627
+const CHAIN_SCENE := "res://game/assets/models/board_line/board_line_roller_link.glb"
 const CARRIER_SCENE := "res://game/assets/models/board_line/board_line_carrier.glb"
 
 @export var feed_speed: float = 0.5
@@ -355,10 +356,10 @@ func _build_chains() -> void:
 	var scene := load(CHAIN_SCENE) as PackedScene
 	if scene:
 		var src := scene.instantiate()
-		var link := src.find_child("LD_ChainLink", true, false) as MeshInstance3D
-		_links["feed"] = _chain_set(link.mesh, _feed_loop, FEED_X.size(), "FeedChains")
-		_links["uns"] = _chain_set(link.mesh, _uns_loop, _pair_xs().size(), "UnscramblerChains")
-		_links["take"] = _chain_set(link.mesh, _take_loop, TAKE_X.size(), "TakeAwayChains")
+		var link := src.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D
+		_links["feed"] = _chain_set(link.mesh, _feed_loop, FEED_X, "FeedChains")
+		_links["uns"] = _chain_set(link.mesh, _uns_loop, _pair_xs(), "UnscramblerChains")
+		_links["take"] = _chain_set(link.mesh, _take_loop, TAKE_X, "TakeAwayChains")
 		src.free()
 	var cscene := load(CARRIER_SCENE) as PackedScene
 	if cscene:
@@ -381,35 +382,33 @@ func _build_chains() -> void:
 	_move_lugs()
 
 
-func _chain_set(mesh: Mesh, loop, strands: int, node_name: String) -> MultiMesh:
+## A set of strands of chain on one loop, with its link positions baked for animation.
+func _chain_set(mesh: Mesh, loop, xs: Array, node_name: String) -> Dictionary:
 	var per := int(loop.length / LINK_PITCH)
 	var mm := MultiMesh.new()
 	mm.transform_format = MultiMesh.TRANSFORM_3D
 	mm.mesh = mesh
-	mm.instance_count = per * strands
+	mm.instance_count = per * xs.size()
 	var mmi := MultiMeshInstance3D.new()
 	mmi.name = node_name
 	mmi.multimesh = mm
 	add_child(mmi)
-	return mm
+	return {"mm": mm, "loop": loop, "per": per, "baked": loop.bake(per, xs, _frame, 8), "shown": -1}
 
 
 func _update_chains() -> void:
 	if _links.is_empty():
 		return
-	_lay(_links["feed"], _feed_loop, FEED_X, _feed_travel)
-	_lay(_links["uns"], _uns_loop, _pair_xs(), _uns_travel)
-	_lay(_links["take"], _take_loop, TAKE_X, _take_travel)
+	_lay(_links["feed"], _feed_travel)
+	_lay(_links["uns"], _uns_travel)
+	_lay(_links["take"], _take_travel)
 
 
-func _lay(mm: MultiMesh, loop, xs, travel: float) -> void:
-	var per: int = mm.instance_count / xs.size()
-	var k := 0
-	for i in per:
-		var smp: Array = loop.sample(i * loop.length / per + travel)
-		for x in xs:
-			mm.set_instance_transform(k, _frame(smp, x))
-			k += 1
+func _lay(chain: Dictionary, travel: float) -> void:
+	var k: int = chain["loop"].phase_index(travel, chain["per"], 8)
+	if k != chain["shown"]:
+		chain["shown"] = k
+		(chain["mm"] as MultiMesh).buffer = chain["baked"][k]
 
 
 func _spin_shafts() -> void:

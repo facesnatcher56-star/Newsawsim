@@ -67,6 +67,35 @@ func sample(s: float) -> Array:
 	return [a + (b - a) * ((s - _cum[lo]) / maxf(seg, 0.000001)), t]
 
 
+## Pre-bake MultiMesh buffers for `per` links on each of the strands at xs, at `phases` evenly
+## spaced offsets within one link spacing. frame(sample, x) -> Transform3D places one link.
+## The chain then animates by assigning baked[phase_index(travel)] to the MultiMesh's buffer.
+func bake(per: int, xs: Array, frame: Callable, phases: int = 16) -> Array[PackedFloat32Array]:
+	var out: Array[PackedFloat32Array] = []
+	var spacing := length / per
+	for k in phases:
+		var buf := PackedFloat32Array()
+		buf.resize(per * xs.size() * 12)
+		var j := 0
+		for i in per:
+			var smp: Array = sample(i * spacing + spacing * k / phases)
+			for x in xs:
+				var t: Transform3D = frame.call(smp, x)
+				var b := t.basis
+				buf[j] = b.x.x; buf[j + 1] = b.y.x; buf[j + 2] = b.z.x; buf[j + 3] = t.origin.x
+				buf[j + 4] = b.x.y; buf[j + 5] = b.y.y; buf[j + 6] = b.z.y; buf[j + 7] = t.origin.y
+				buf[j + 8] = b.x.z; buf[j + 9] = b.y.z; buf[j + 10] = b.z.z; buf[j + 11] = t.origin.z
+				j += 12
+		out.append(buf)
+	return out
+
+
+## Which baked buffer shows the chain moved on by `travel` (`per` links round the loop).
+func phase_index(travel: float, per: int, phases: int = 16) -> int:
+	var spacing := length / per
+	return int(fposmod(travel, spacing) / spacing * phases) % phases
+
+
 ## Distance along the carrying run (from the tail end of the path) of the path's point i.
 func path_distance(i: int) -> float:
 	return _cum[i]

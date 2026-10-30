@@ -170,7 +170,13 @@ func cut_board(_saw_pos: Vector3, travel_direction: Vector3 = Vector3.RIGHT) -> 
 			)
 		
 		board_node.add_collision_exception_with(self)
-		pass
+		# Side boards off the headrig are rough flitches: wider than the board they will make,
+		# with bark on their edges, for the scanner and edger to make the most of.
+		if not is_roundback and board_node.has_method("set_wane"):
+			var width := randf_range(0.21, 0.33)
+			board_node.configure_dimensions(LOG_PRODUCT_LENGTH, randf_range(0.038, 0.043), width)
+			board_node.nominal_size = "flitch"
+			board_node.set_wane(randf_range(0.012, 0.045), randf_range(0.012, 0.045))
 		
 	board_count -= 1
 	cuts_on_current_face += 1

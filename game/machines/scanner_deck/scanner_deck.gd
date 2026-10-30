@@ -15,8 +15,8 @@ extends Node3D
 ##     it go over the dead plate onto the scanner chains, so there is one board to a lug space
 ##   - on the scanner chains, upstream of the scanner, pop-up rollers between the chains lift each
 ##     board a little and drive it endwise against the zero line fence
-## While the lug loader's queue is full the unscrambler and its take-away are held. Until the
-## positioners and lineal infeed are in, the scanner chains stop when a board reaches their head.
+## While the lug loader's queue is full the unscrambler and its take-away are held. A board at the
+## scanner chain head waits there until the edger line's positioners are ready for it.
 
 const ChainLoop := preload("res://game/transport/chains/chain_loop.gd")
 
@@ -51,8 +51,9 @@ const SCANNER_Z := 18.5266
 const DECK_X := Vector2(36.3, 45.0)
 const DECK_Z := Vector2(13.853, 22.6)
 const DECK_Y := 0.0233
-const LINK_PITCH := 0.152
-const CHAIN_SCENE := "res://game/assets/models/log_deck/log_deck_chain.glb"
+## 81X roller chain, modelled with its plate tops at the link origin (the chain-top line).
+const LINK_PITCH := 0.06627
+const CHAIN_SCENE := "res://game/assets/models/board_line/board_line_roller_link.glb"
 const LUG_SCENE := "res://game/assets/models/board_line/board_deck_lug.glb"
 
 @export var loader_slow_speed: float = 0.45
@@ -67,9 +68,12 @@ const LUG_SCENE := "res://game/assets/models/board_line/board_deck_lug.glb"
 @export var queue_full: int = 4
 @export_group("Links")
 @export var unscrambler_path: NodePath
+## The positioners and lineal infeed (can_take()).
+@export var edger_path: NodePath
 @export var debug_log: bool = false
 
 var _unscrambler: Node
+var _edger: Node
 var _loop_a
 var _loop_b
 var _loop_scan
@@ -101,6 +105,7 @@ var _rng := RandomNumberGenerator.new()
 func _ready() -> void:
 	_rng.randomize()
 	_unscrambler = get_node_or_null(unscrambler_path)
+	_edger = get_node_or_null(edger_path)
 	_loop_a = ChainLoop.from_path(PackedVector2Array([Vector2(LUG_A_Z.x, CHAIN_Y), Vector2(LUG_A_Z.y, CHAIN_Y)]), LUG_R)
 	_loop_b = ChainLoop.from_path(PackedVector2Array([Vector2(LUG_B_Z.x, CHAIN_Y), Vector2(LUG_B_Z.y, CHAIN_Y)]), LUG_R)
 	_loop_scan = ChainLoop.from_path(PackedVector2Array([Vector2(SCAN_Z.x, SCAN_Y), Vector2(SCAN_Z.y, SCAN_Y)]), SCAN_R)
@@ -205,10 +210,13 @@ func _physics_process(delta: float) -> void:
 		var st: Dictionary = _stops[key]
 		st["down"] = move_toward(st["down"], 1.0 if st["want_down"] else 0.0, delta / stop_time)
 		_place_stop(key)
-	# The scanner chains stop with a board at their head until the infeed takes boards off.
+	# A board coming up to the head is pushed off onto the positioning skids only when the edger
+	# line is ready for it; otherwise the scanner chains wait.
 	_scan_v = scanner_speed
-	for b in _boards_in(37.5, 44.5, SCAN_Z.y - 0.25, SCAN_Z.y + 0.3, CHAIN_Y - 0.1, CHAIN_Y + 0.3):
-		_scan_v = 0.0
+	var edger_ready: bool = _edger != null and _edger.has_method("can_take") and _edger.can_take()
+	if not edger_ready:
+		for b in _boards_in(37.5, 44.5, SCAN_Z.y - 0.25, SCAN_Z.y + 0.3, CHAIN_Y - 0.1, CHAIN_Y + 0.3):
+			_scan_v = 0.0
 	_surf_a.constant_linear_velocity = Vector3(0.0, 0.0, loader_slow_speed)
 	_surf_b.constant_linear_velocity = Vector3(0.0, 0.0, loader_fast_speed)
 	_surf_scan.constant_linear_velocity = Vector3(0.0, 0.0, _scan_v)
@@ -441,10 +449,13 @@ func _build_visuals() -> void:
 	var scene := load(CHAIN_SCENE) as PackedScene
 	if scene:
 		var src := scene.instantiate()
-		var link := (src.find_child("LD_ChainLink", true, false) as MeshInstance3D).mesh
-		_mm["a"] = _multimesh(link, int(_loop_a.length / LINK_PITCH) * LUG_X.size(), "LugLoaderChainsA")
-		_mm["b"] = _multimesh(link, int(_loop_b.length / LINK_PITCH) * LUG_X.size(), "LugLoaderChainsB")
-		_mm["scan"] = _multimesh(link, int(_loop_scan.length / LINK_PITCH) * SCAN_X.size(), "ScannerChains")
+		var link := (src.find_children("*", "MeshInstance3D", true, false)[0] as MeshInstance3D).mesh
+		var xb: Array[float] = []
+		for x in LUG_X:
+			xb.append(x + LUG_B_OFFSET)
+		_mm["a"] = _chain_set(link, _loop_a, LUG_X, "LugLoaderChainsA")
+		_mm["b"] = _chain_set(link, _loop_b, xb, "LugLoaderChainsB")
+		_mm["scan"] = _chain_set(link, _loop_scan, SCAN_X, "ScannerChains")
 		src.free()
 	var lscene := load(LUG_SCENE) as PackedScene
 	if lscene:
@@ -470,12 +481,9 @@ func _multimesh(mesh: Mesh, count: int, node_name: String) -> MultiMesh:
 
 func _animate() -> void:
 	if _mm.has("a"):
-		var xb: Array[float] = []
-		for x in LUG_X:
-			xb.append(x + LUG_B_OFFSET)
-		_lay(_mm["a"], _loop_a, LUG_X, _travel_a)
-		_lay(_mm["b"], _loop_b, xb, _travel_b)
-		_lay(_mm["scan"], _loop_scan, SCAN_X, _travel_scan)
+		_lay(_mm["a"], _travel_a)
+		_lay(_mm["b"], _travel_b)
+		_lay(_mm["scan"], _travel_scan)
 	if _mm.has("lugs"):
 		var k := 0
 		for i in _lug_rows.size():
@@ -490,14 +498,18 @@ func _animate() -> void:
 			n.rotation.x = pair[1] / pair[2]
 
 
-func _lay(mm: MultiMesh, loop, xs: Array[float], travel: float) -> void:
-	var per := int(float(mm.instance_count) / xs.size())
-	var k := 0
-	for i in per:
-		var smp: Array = loop.sample(i * loop.length / per + travel)
-		for x in xs:
-			mm.set_instance_transform(k, _frame(smp, x))
-			k += 1
+## A set of strands of chain on one loop, with its link positions baked for animation.
+func _chain_set(mesh: Mesh, loop, xs: Array[float], node_name: String) -> Dictionary:
+	var per := int(loop.length / LINK_PITCH)
+	var mm := _multimesh(mesh, per * xs.size(), node_name)
+	return {"mm": mm, "loop": loop, "per": per, "baked": loop.bake(per, xs, _frame, 8), "shown": -1}
+
+
+func _lay(chain: Dictionary, travel: float) -> void:
+	var k: int = chain["loop"].phase_index(travel, chain["per"], 8)
+	if k != chain["shown"]:
+		chain["shown"] = k
+		(chain["mm"] as MultiMesh).buffer = chain["baked"][k]
 
 
 ## The chain frame at a loop sample, at world x: (across, out of the loop, -travel).

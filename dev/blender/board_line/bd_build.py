@@ -49,7 +49,7 @@ DECK_Y = B.RAISED_Y
 CHAIN_Y = 1.108                                 # lug loader
 SCAN_Y = 1.101                                  # scanner chains
 DECK_X = (36.3, 45.0)
-DECK_Z = (zye(305.0), 22.6)                     # from the retaining edge to past the infeed line
+DECK_Z = (zye(305.0), 24.6)                     # from the retaining edge to past the edger's drive side
 
 
 def xin(d):

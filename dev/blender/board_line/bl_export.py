@@ -29,9 +29,10 @@ def export_all():
     tops = [o for o in coll.objects if o.parent is None]
     frame = [o for o in tops if o.name == "BL_Frame"]
     carrier = [o for o in tops if o.name == "BL_Carrier"]
-    parts = [o for o in tops if o not in frame and o not in carrier]
+    link = [o for o in tops if o.name == "BL_RollerLink"]
+    parts = [o for o in tops if o not in frame and o not in carrier and o not in link]
     out = {}
-    for name, roots in (("frame", frame), ("parts", parts), ("carrier", carrier)):
+    for name, roots in (("frame", frame), ("parts", parts), ("carrier", carrier), ("roller_link", link)):
         fn = "board_line_%s.glb" % name
         out[fn] = HE._export(roots, os.path.join(OUT, fn))
     return out

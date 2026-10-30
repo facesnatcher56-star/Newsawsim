@@ -139,6 +139,41 @@ func _apply_dimensions(length: float, thickness: float, width: float) -> void:
 		slab_cut_box.size.x = length + 0.5
 
 
+## Bark-edged (wane) strip along each long edge of the top face, in metres across the board, as
+## sawn by the headrig before the edger. Shown as bark on those edges.
+var wane_left: float = 0.0
+var wane_right: float = 0.0
+
+
+## Mark this board as a rough flitch with wane on its -Z (left) and +Z (right) edges.
+func set_wane(left: float, right: float) -> void:
+	wane_left = maxf(left, 0.0)
+	wane_right = maxf(right, 0.0)
+	var mi := get_node_or_null("MeshInstance3D") as MeshInstance3D
+	if mi == null:
+		return
+	for n in ["WaneLeft", "WaneRight"]:
+		var old := mi.get_node_or_null(n)
+		if old:
+			old.queue_free()
+	var bark := StandardMaterial3D.new()
+	bark.albedo_color = Color(0.27, 0.17, 0.10)
+	bark.roughness = 0.95
+	for side in [-1, 1]:
+		var w := wane_left if side < 0 else wane_right
+		if w <= 0.0:
+			continue
+		var strip := MeshInstance3D.new()
+		strip.name = "WaneLeft" if side < 0 else "WaneRight"
+		var box := BoxMesh.new()
+		# The bark side of a flitch is rounded off: a sloped band across the wane on the top face.
+		box.size = Vector3(product_length, board_thickness * 0.55, w)
+		box.material = bark
+		strip.mesh = box
+		strip.position = Vector3(0.0, board_thickness * 0.24, side * (board_width * 0.5 - w * 0.5))
+		mi.add_child(strip)
+
+
 func _on_board_input_event(_camera: Node, event: InputEvent, _pos: Vector3, _normal: Vector3, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		_inspect_board()

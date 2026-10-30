@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://c35h6ymar3a40" path="res://game/machines/edger/sawmill_edger.tscn" id="12_fjvqp"]
+
+[node name="OldEdger" type="Node3D"]
+
+[node name="SawmillEdger" parent="." unique_id=1576143709 instance=ExtResource("12_fjvqp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.4878755, 18.297045)
+cushion_pin_extension = 0.12
+show_waste_chutes = false
+
+[node name="InfeedSystem" parent="SawmillEdger" index="0" unique_id=100000001]
+infeed_chain_feed_speed = 3.8
+feed_roller_spin_speed = 1.66
+
+[node name="HoldDownSystem" parent="SawmillEdger" index="1" unique_id=100000002]
+hold_down_roller_spin_resistance = 2.5
+
+[node name="PinSystem" parent="SawmillEdger" index="3" unique_id=100000004]
+position_pin_raise_height = 0.2
+position_pin_z_travel_speed = 0.71
+retraction_delay = 1.5
+cushion_pin_speed = 0.61
+
+[editable path="SawmillEdger"]

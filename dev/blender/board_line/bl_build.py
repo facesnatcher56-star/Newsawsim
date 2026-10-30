@@ -376,6 +376,27 @@ def carrier(coll, mats):
     return e
 
 
+ROLLER_PITCH = 2.609 * IN                      # 81X roller chain
+
+
+def roller_link(coll, mats):
+    """One pitch of the board line's roller chain, for instancing round every chain loop: side
+    plates either side, a roller and pin; the plate tops are at the origin (the chain-top line the
+    boards ride on), local X across the chain, Y out of the loop, travel along -Z."""
+    e = empty("BL_RollerLink", coll, None, (0, 0, 0), 0.03)
+    bm = bmesh.new()
+    p = ROLLER_PITCH
+    h = 0.03
+    for s in (-1, 1):
+        # Plates alternate inner/outer pitch to pitch: draw one inner and one outer pair per pitch.
+        L.add_box(bm, (0.004, p * 0.98, h), Matrix.Translation((s * 0.012, 0, -h / 2)), M["dark"])
+        L.add_box(bm, (0.004, p * 0.98, h * 0.94), Matrix.Translation((s * 0.017, p / 2, -h / 2)), M["dark"])
+    L.add_cyl(bm, 0.011, 0.02, L.mat(loc=(0, p / 2, -h / 2), rot=(0, 90, 0)), segs=10, mat_index=M["wear"])
+    L.add_cyl(bm, 0.0045, 0.042, L.mat(loc=(0, p / 2, -h / 2), rot=(0, 90, 0)), segs=8, mat_index=M["chrome"])
+    H.make("BL_RollerLinkMesh", bm, coll, mats, e)
+    return e
+
+
 def build_all():
     L.clear_collection(COLL)
     coll = L.collection(COLL)
@@ -400,5 +421,6 @@ def build_all():
     shaft(coll, mats, "BL_TakeTail", tc0, TAKE_X, TAKE_R)
     shaft(coll, mats, "BL_TakeHead", tc1, TAKE_X, TAKE_R)
     carrier(coll, mats)
+    roller_link(coll, mats)
     return {"objects": len(coll.all_objects), "uns_path": [tuple(round(v, 3) for v in p) for p in unscrambler_path()],
             "feed": feed_path(), "take": take_path(), "uns_foot": uf, "uns_head": uh, "ll_y": LL_Y}

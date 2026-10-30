@@ -10,9 +10,9 @@
 [ext_resource type="PackedScene" path="res://game/machines/gang_resaw/gang_resaw.tscn" id="5_gang"]
 [ext_resource type="PackedScene" path="res://game/machines/unscrambler_line/unscrambler_line.tscn" id="5_unscr"]
 [ext_resource type="PackedScene" path="res://game/machines/scanner_deck/scanner_deck.tscn" id="5_deck"]
+[ext_resource type="PackedScene" path="res://game/machines/edger_line/edger_line.tscn" id="5_edger"]
 [ext_resource type="PackedScene" uid="uid://shur11w6bum3" path="res://game/transport/decks/edger_landing_deck.tscn" id="5_nmjje"]
 [ext_resource type="PackedScene" uid="uid://c0alpbtit8nxv" path="res://game/transport/stations/incline_outfeed.tscn" id="6_incline"]
-[ext_resource type="PackedScene" uid="uid://c35h6ymar3a40" path="res://game/machines/edger/sawmill_edger.tscn" id="12_fjvqp"]
 [ext_resource type="PackedScene" uid="uid://c63j5eq6tw5ta" path="res://game/machines/sorter/bin_sorter.tscn" id="15_0cce1"]
 [ext_resource type="Script" uid="uid://bu6le1hn76hsq" path="res://game/environment/mill_building.gd" id="16_building"]
 [ext_resource type="PackedScene" uid="uid://b5j5jvlacvbcg" path="res://game/transport/decks/board_lug_incline.tscn" id="17_incline"]
@@ -380,26 +380,11 @@ board_target_path = NodePath("../UnscramblerLine")
 
 [node name="ScannerDeck" parent="." instance=ExtResource("5_deck")]
 unscrambler_path = NodePath("../UnscramblerLine")
+edger_path = NodePath("../EdgerLine")
+
+[node name="EdgerLine" parent="." instance=ExtResource("5_edger")]
 
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
-
-[node name="SawmillEdger" parent="." unique_id=1576143709 instance=ExtResource("12_fjvqp")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.403027, -0.4878755, 18.297045)
-cushion_pin_extension = 0.12
-show_waste_chutes = false
-
-[node name="InfeedSystem" parent="SawmillEdger" index="0" unique_id=100000001]
-infeed_chain_feed_speed = 3.8
-feed_roller_spin_speed = 1.66
-
-[node name="HoldDownSystem" parent="SawmillEdger" index="1" unique_id=100000002]
-hold_down_roller_spin_resistance = 2.5
-
-[node name="PinSystem" parent="SawmillEdger" index="3" unique_id=100000004]
-position_pin_raise_height = 0.2
-position_pin_z_travel_speed = 0.71
-retraction_delay = 1.5
-cushion_pin_speed = 0.61
 
 [node name="landing_deck_frame" parent="." unique_id=2114419410 instance=ExtResource("5_nmjje")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.1014605, 18.297045)
@@ -470,7 +455,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.66, -1.288, 110.8)
 
 [editable path="LogFeedStation"]
 [editable path="InclineOutfeed"]
-[editable path="SawmillEdger"]
 [editable path="landing_deck_frame"]
 [editable path="landing_deck_frame/BlenderFrame"]
 [editable path="BoardLugIncline"]

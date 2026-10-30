@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/machines/edger_line/edger_line.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://game/assets/models/board_line/board_edger_frame.glb" id="2_frame"]
+[ext_resource type="PackedScene" path="res://game/assets/models/board_line/board_edger_parts.glb" id="3_parts"]
+[ext_resource type="PackedScene" path="res://game/assets/models/board_line/board_edger_4ta36.glb" id="4_edger"]
+
+[node name="EdgerLine" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.288, 0)
+
+[node name="Frame" parent="Model" instance=ExtResource("2_frame")]
+
+[node name="Parts" parent="Model" instance=ExtResource("3_parts")]
+
+[node name="Edger" parent="Model" instance=ExtResource("4_edger")]
+
+[node name="InfeedLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 41.0, 5.4, 21.2)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 4.0
+spot_range = 7.0
+spot_angle = 60.0
+
+[node name="BeltLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 49.5, 5.4, 21.6)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 4.0
+spot_range = 7.0
+spot_angle = 60.0
