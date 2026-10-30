@@ -27,6 +27,10 @@ const VIEWS: Array = [
 	[Vector3(39.5, 3.2, 0.2), Vector3(42.0, -0.6, 5.0)],    # R outfeed end stop, board kickers and chipper
 	[Vector3(32.5, 3.4, 13.5), Vector3(36.5, -0.3, 8.4)],   # I cant transfer, turner and gang
 	[Vector3(45.0, 2.8, 12.8), Vector3(40.5, -0.3, 8.6)],   # O gang outfeed lift rolls and board transfer
+	[Vector3(35.5, 3.0, 15.5), Vector3(40.5, -0.4, 10.8)],  # Z unscrambler from the deck end
+	[Vector3(36.2, 0.6, 11.4), Vector3(39.8, -0.2, 11.4)],  # X pocket and incline from the end
+	[Vector3(37.0, 3.2, 12.6), Vector3(41.0, 1.0, 15.4)],   # C lug loader, stops and flipper
+	[Vector3(35.0, 5.0, 23.5), Vector3(41.0, 0.8, 17.5)],   # V scanner deck from the infeed end
 ]
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
 const DROP_Z: Array[float] = [1.2, 1.9, 2.6, 3.3, 4.0, 4.7]
@@ -45,7 +49,7 @@ func _ready() -> void:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
 			deck.debug_log = true
-	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw"]:
+	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw", "UnscramblerLine", "ScannerDeck"]:
 		var node := mill.get_node_or_null(node_name)
 		if node and "debug_log" in node:
 			node.debug_log = true
@@ -77,6 +81,12 @@ func _process(delta: float) -> void:
 	var gang_node := mill.get_node_or_null("GangResaw")
 	if gang_node and gang_node.has_method("status_text"):
 		lines.append("Gang: %s" % gang_node.status_text())
+	var uns_node := mill.get_node_or_null("UnscramblerLine")
+	if uns_node and uns_node.has_method("status_text"):
+		lines.append("Unscrambler: %s" % uns_node.status_text())
+	var deck_node := mill.get_node_or_null("ScannerDeck")
+	if deck_node and deck_node.has_method("status_text"):
+		lines.append("Deck: %s" % deck_node.status_text())
 	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and deck.has_method("status_text"):
@@ -127,12 +137,53 @@ func _unhandled_input(event: InputEvent) -> void:
 		_set_view(17)
 	elif key.keycode == KEY_O:
 		_set_view(18)
+	elif key.keycode == KEY_Z:
+		_set_view(19)
+	elif key.keycode == KEY_X:
+		_set_view(20)
+	elif key.keycode == KEY_C:
+		_set_view(21)
+	elif key.keycode == KEY_V:
+		_set_view(22)
+	elif key.keycode == KEY_M:
+		# Four test boards onto the lug loader, a little apart.
+		for i in 4:
+			var b := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
+			add_child(b)
+			b.global_position = Vector3(41.0 + 0.04 * i, 1.16, 14.3 + 0.22 * i)
+		print("[debarker_demo] %.1f s four boards onto the lug loader" % _time)
+	elif key.keycode == KEY_N:
+		# Three test boards onto the feed chains, a little apart.
+		for i in 3:
+			var b := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
+			b.debug_contacts = key.shift_pressed
+			b.debug_interval = 2.0
+			add_child(b)
+			b.global_position = Vector3(41.06 + 0.05 * i, -0.1, 6.7 + 0.45 * i)
+		print("[debarker_demo] %.1f s three boards onto the feed chains" % _time)
 	elif key.keycode == KEY_P:
 		# Probe: incline foot geometry and logs around the kicker.
 		var mill := get_child(0)
 		var headrig := mill.get_node_or_null("Headrig")
 		if headrig and headrig.has_method("status_text"):
 			print("[probe] headrig: %s" % headrig.status_text())
+		for node in get_tree().get_nodes_in_group("cut_boards"):
+			var bd := node as RigidBody3D
+			if bd.global_position.x > 36.0 and bd.global_position.z > 12.5 and bd.global_position.z < 22.0:
+				print("[probe] board %s at %s rot %s v %s" % [bd.name, bd.global_position, bd.global_rotation_degrees,
+					bd.linear_velocity])
+				# What the board overlaps (slightly grown), to find what holds it.
+				var cs := bd.get_node_or_null("CollisionShape3D") as CollisionShape3D
+				if cs:
+					var q := PhysicsShapeQueryParameters3D.new()
+					var grown := (cs.shape as BoxShape3D).duplicate() as BoxShape3D
+					grown.size += Vector3(0.02, 0.02, 0.02)
+					q.shape = grown
+					q.transform = cs.global_transform
+					q.exclude = [bd.get_rid()]
+					for hit in bd.get_world_3d().direct_space_state.intersect_shape(q, 8):
+						var c := hit["collider"] as Node
+						print("[probe]   touches %s (%s)" % [str(c.get_path()) if c else "?", hit["shape"]])
 		for node in get_tree().get_nodes_in_group("logs"):
 			var l := node as Node3D
 			if l.global_position.x > 12.0 and l.global_position.x < 46.0:

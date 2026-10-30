@@ -1,0 +1,51 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://dmko1r1aasdqt" path="res://game/transport/decks/simple_chain_deck.tscn" id="8_yfjmh"]
+[ext_resource type="PackedScene" uid="uid://rm6tpbbydav1" path="res://game/lumber/cut_board.tscn" id="9_55ft6"]
+[ext_resource type="PackedScene" uid="uid://cultjcvh75pbd" path="res://game/machines/unscrambler/board_unscrambler.tscn" id="11_enqqo"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l8n6b"]
+size = Vector3(2.4, 0.7, 0.35)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p41h0"]
+size = Vector3(3.9, 0.01, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qbkg8"]
+size = Vector3(4.3, 1.2, 5.7)
+
+[node name="OldBoardLine" type="Node3D"]
+
+[node name="SimpleChainDeck" parent="." unique_id=1183748203 instance=ExtResource("8_yfjmh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.495, -0.2975, 8.8176)
+running = true
+load_zone_position = Vector3(0, 0.35, -2.380826)
+load_zone_size = Vector3(2.4, 0.7, 0.35)
+top_zone_position = Vector3(0, -0.4, 2.729)
+top_zone_size = Vector3(3.9, -2, 0.3)
+deck_area_size = Vector3(4.3, 1.2, 5.7)
+
+[node name="LoadZone" parent="SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="2" unique_id=363196828]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -2.380826)
+
+[node name="CollisionShape3D" parent="SimpleChainDeck/DeckRoot/LoadZone" index="0" unique_id=1144213617]
+shape = SubResource("BoxShape3D_l8n6b")
+
+[node name="TopZone" parent="SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="3" unique_id=1473847192]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 2.729)
+
+[node name="CollisionShape3D" parent="SimpleChainDeck/DeckRoot/TopZone" index="0" unique_id=580698439]
+shape = SubResource("BoxShape3D_p41h0")
+
+[node name="CollisionShape3D" parent="SimpleChainDeck/DeckRoot/DeckArea" parent_id_path=PackedInt32Array(1183748203, 1538561045) index="0" unique_id=1572588527]
+shape = SubResource("BoxShape3D_qbkg8")
+
+[node name="CutBoard" parent="." unique_id=551924559 instance=ExtResource("9_55ft6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.584663, 0.3187671, 15.061665)
+
+[node name="BoardUnscrambler" parent="." unique_id=1077583790 instance=ExtResource("11_enqqo")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, 42.541286, -0.8000488, 11.884068)
+constant_linear_velocity = Vector3(0, 0, 0)
+machine_width = 4.2
+speed = 0.6
+
+[editable path="SimpleChainDeck"]
