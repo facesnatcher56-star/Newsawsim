@@ -29,7 +29,7 @@ The line runs in this order. Each row is a folder under `machines/` or `transpor
 
 | Stage | Folder | Main files |
 | --- | --- | --- |
-| Log feed | `machines/log_feed/` | `knuckle_boom_loader`, `log_feed_station` |
+| Log feed | `machines/log_feed/` | `knuckle_boom_loader` (model built by `dev/blender/knuckle_boom`), `log_yard_pile`, `log_feed_station` |
 | Debarker | `machines/debarker/` | `debarker_station.tscn`, `grip_roller.tscn`, `log_lock_zone.gd` |
 | Headrig (sawing) | `machines/headrig/` | `headrig_station.tscn`, `headrig_carriage.gd`, `headrig_rail_system.tscn`, `bandsaw_teeth.gd` |
 | Edger | `machines/edger/` | `sawmill_edger.gd` (root), `builders/` (geometry), `components/` (runtime behaviour) |

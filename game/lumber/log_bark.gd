@@ -9,8 +9,16 @@ var debarker_peel_radius: float = 0.04
 var debarker_alignment_radius: float = 0.85
 var fallback_debarker_pos: Vector3 = Vector3.ZERO
 
+## Spacing of the BarkSection markers in log.tscn; each one peels a 16 cm band.
+const BARK_SECTION_LENGTH := 0.161109
+## Bark is thicker at the butt end (+X) than at the top end, like a real stem.
+const BARK_BUTT_RADIUS := 0.300
+const BARK_TOP_RADIUS := 0.284
+
+static var _coat_material: ShaderMaterial = null
+
 var bark_sections: Array[Node3D] = []
-var bark_coat: CSGCylinder3D = null
+var bark_coat: MeshInstance3D = null
 
 func setup(
 	owner_log: RigidBody3D,
@@ -69,21 +77,28 @@ func _create_bark_coat() -> void:
 	var bark_root := log_node.get_node_or_null("Bark") as Node3D
 	if bark_root == null:
 		return
-	bark_coat = bark_root.get_node_or_null("BarkCoat") as CSGCylinder3D
+	bark_coat = bark_root.get_node_or_null("BarkCoat") as MeshInstance3D
 	if bark_coat:
 		return
 
-	bark_coat = CSGCylinder3D.new()
+	var mesh := CylinderMesh.new()
+	# CylinderMesh runs along local Y; rotated +90 deg about Z its bottom lands at +X,
+	# so the butt (bottom) radius goes at +X and the log tapers toward -X.
+	mesh.bottom_radius = BARK_BUTT_RADIUS
+	mesh.top_radius = BARK_TOP_RADIUS
+	mesh.height = log_node.get_log_core_length()
+	mesh.radial_segments = 40
+	mesh.rings = 1
+	bark_coat = MeshInstance3D.new()
 	bark_coat.name = "BarkCoat"
-	bark_coat.radius = 0.291
-	bark_coat.height = log_node.get_log_core_length()
-	bark_coat.sides = 48
-	bark_coat.smooth_faces = true
+	bark_coat.mesh = mesh
 	bark_coat.rotation.z = PI * 0.5
-	bark_coat.material = _create_bark_coat_material()
+	bark_coat.material_override = _get_bark_coat_material()
 	bark_root.add_child(bark_coat)
 
-func _create_bark_coat_material() -> ShaderMaterial:
+func _get_bark_coat_material() -> ShaderMaterial:
+	if _coat_material != null:
+		return _coat_material
 	var shader := Shader.new()
 	shader.code = """
 shader_type spatial;
@@ -91,25 +106,49 @@ render_mode diffuse_burley;
 
 varying vec3 bark_pos;
 
+float hash(vec2 p) {
+	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
+
+float vnoise(vec2 p) {
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	vec2 u = f * f * (3.0 - 2.0 * f);
+	return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x),
+		mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+}
+
 void vertex() {
 	bark_pos = VERTEX;
 }
 
 void fragment() {
+	// Plates of bark split by deep, wandering vertical furrows (conifer bark).
 	float angle = atan(bark_pos.z, bark_pos.x);
-	float long_furrow = sin(angle * 11.0 + bark_pos.y * 3.5);
-	float broken_furrow = sin(angle * 19.0 - bark_pos.y * 8.0 + sin(angle * 5.0));
-	float fine_grain = sin(bark_pos.y * 37.0 + angle * 7.0);
-	float grain = long_furrow * 0.16 + broken_furrow * 0.10 + fine_grain * 0.035;
-	vec3 dark_bark = vec3(0.105, 0.047, 0.018);
-	vec3 light_bark = vec3(0.285, 0.135, 0.045);
-	ALBEDO = mix(dark_bark, light_bark, clamp(0.52 + grain, 0.0, 1.0));
-	ROUGHNESS = 0.96;
+	vec2 uv = vec2(angle * 2.6, bark_pos.y * 2.2);
+	float wander = vnoise(uv * vec2(0.6, 0.35)) * 2.0;
+	float furrow = abs(sin(angle * 9.0 + wander + bark_pos.y * 0.6));
+	float plates = smoothstep(0.05, 0.45, furrow);
+	float cracks = smoothstep(0.82, 0.95, vnoise(uv * vec2(3.0, 9.0)));
+	float tone = vnoise(uv * 1.7) * 0.6 + vnoise(uv * 6.0) * 0.4;
+	vec3 furrow_col = vec3(0.045, 0.022, 0.010);
+	vec3 plate_dark = vec3(0.11, 0.055, 0.024);
+	vec3 plate_light = vec3(0.22, 0.12, 0.055);
+	vec3 col = mix(plate_dark, plate_light, tone);
+	col = mix(furrow_col, col, plates * (1.0 - cracks * 0.7));
+	// Odd patches of grey-green lichen on the plate faces.
+	float lichen = smoothstep(0.84, 0.9, vnoise(uv * vec2(1.3, 2.4) + 17.0)) * plates;
+	col = mix(col, vec3(0.20, 0.21, 0.17), lichen * 0.5);
+	ALBEDO = col;
+	ROUGHNESS = mix(0.98, 0.88, plates);
+	// Furrows read as recessed.
+	AO = mix(0.35, 1.0, plates);
+	AO_LIGHT_AFFECT = 0.6;
 }
 """
-	var material := ShaderMaterial.new()
-	material.shader = shader
-	return material
+	_coat_material = ShaderMaterial.new()
+	_coat_material.shader = shader
+	return _coat_material
 
 func _collect_bark_sections() -> void:
 	bark_sections.clear()
@@ -156,26 +195,11 @@ func _update_bark_coat() -> void:
 		bark_coat.visible = false
 		return
 	bark_coat.visible = true
-	var section_length := _get_bark_section_length()
-	bark_coat.height = maxf(section_length, last_x - first_x + section_length)
+	var section_length := BARK_SECTION_LENGTH
+	var mesh := bark_coat.mesh as CylinderMesh
+	if mesh:
+		mesh.height = maxf(section_length, last_x - first_x + section_length)
 	bark_coat.position.x = (first_x + last_x) * 0.5
-
-func _get_bark_section_length() -> float:
-	for section in bark_sections:
-		if not is_instance_valid(section):
-			continue
-		var body := section.get_node_or_null("Body") as CSGCylinder3D
-		if body:
-			return body.height
-	if bark_sections.size() >= 2:
-		var positions: Array[float] = []
-		for section in bark_sections:
-			if is_instance_valid(section):
-				positions.append(section.position.x)
-		positions.sort()
-		if positions.size() >= 2:
-			return absf(positions[1] - positions[0])
-	return 0.161109
 
 func _spawn_bark_piece(pos: Vector3) -> void:
 	var bark_scene = load("res://game/lumber/bark_piece.tscn")

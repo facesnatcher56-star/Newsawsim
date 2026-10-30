@@ -47,6 +47,14 @@ var _dumping_logs: Array[RigidBody3D] = []
 var _deck_logs: Array[RigidBody3D] = []
 var _dump_target_run_speed: float = 0.0
 var _deck_start_timer: float = -1.0
+## Set by the knuckleboom loader while it pushes a log off another one: the chains
+## stand still so the logs it is working on stay put.
+var hold_chains: bool = false
+## The deck will not advance with a log turned further than this off square, or with a
+## log riding on top of another; it waits for the loader to fix it.
+@export var skew_stop_deg: float = 12.0
+@export var rider_stop_height: float = 0.25
+const DECK_LOG_RADIUS := 0.292
 
 func _ready() -> void:
 	_current_rot = extended_rotation_deg
@@ -105,7 +113,9 @@ func _physics_process(delta: float) -> void:
 						body.axis_lock_angular_x = true
 						body.axis_lock_angular_y = true
 						body.axis_lock_angular_z = true
-				if deck_logs.is_empty():
+				if hold_chains or has_misplaced_log(deck_logs):
+					_conveyor.speed = 0.0
+				elif deck_logs.is_empty():
 					_deck_start_timer = -1.0
 					_conveyor.speed = 0.0
 				elif _deck_start_timer > 0.0:
@@ -169,6 +179,33 @@ func _physics_process(delta: float) -> void:
 			_move_stops_toward(extended_rotation_deg, delta)
 			if is_equal_approx(_current_rot, extended_rotation_deg):
 				_state = StopState.EXTENDED
+
+## True while a log on the deck lies turned off square or rides on another log.
+func has_misplaced_log(deck_logs: Array[RigidBody3D]) -> bool:
+	if _conveyor == null:
+		return false
+	var deck_axis := _conveyor.global_basis.x
+	var flat := Vector2(deck_axis.x, deck_axis.z).normalized()
+	var surface := _deck_surface_y()
+	for body in deck_logs:
+		if not is_instance_valid(body) or body.freeze:
+			continue
+		if body.global_position.y - surface - DECK_LOG_RADIUS > rider_stop_height:
+			return true
+		var axis := body.global_basis.x
+		var cos_off := absf(Vector2(axis.x, axis.z).normalized().dot(flat))
+		if cos_off < cos(deg_to_rad(skew_stop_deg)):
+			return true
+	return false
+
+
+func _deck_surface_y() -> float:
+	for child in _conveyor.get_children():
+		var cs := child as CollisionShape3D
+		if cs and cs.shape is BoxShape3D:
+			return _conveyor.to_global(cs.position + Vector3(0.0, (cs.shape as BoxShape3D).size.y * 0.5, 0.0)).y
+	return _conveyor.global_position.y
+
 
 func _move_stops_toward(target_rot: float, delta: float) -> void:
 	_current_rot = move_toward(_current_rot, target_rot, rotation_speed * delta)

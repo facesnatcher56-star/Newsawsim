@@ -3,13 +3,10 @@
 [ext_resource type="PackedScene" path="res://game/transport/decks/chain_log_deck.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://c6lerd07omkj7" path="res://game/machines/log_feed/knuckle_boom_loader.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://d1qddmxhkrbxi" path="res://game/transport/conveyors/waste_conveyor_kicker.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://game/machines/log_feed/log_yard_pile.tscn" id="6_pile"]
 
 [sub_resource type="BoxShape3D" id="BoxShape_kicker"]
 size = Vector3(1.0029297, 1, 0.973114)
-
-[sub_resource type="StandardMaterial3D" id="Material_Ground"]
-albedo_color = Color(0.35, 0.35, 0.38, 1)
-roughness = 0.95
 
 [node name="LogFeedStation" type="Node3D" unique_id=1736691262]
 
@@ -47,76 +44,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.7683716e-07, 0.5, -1.33151
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00360322, 0, -0.93274593)
 shape = SubResource("BoxShape_kicker")
 
-[node name="LogBunk" type="Node3D" parent="." unique_id=471500047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, -0.9, -2)
+[node name="LogYardPile" parent="." instance=ExtResource("6_pile")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, -1.288, 9)
 
-[node name="Base" type="CSGBox3D" parent="LogBunk" unique_id=1011912949]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
-size = Vector3(1.5, 0.1, 2.5)
-material = SubResource("Material_Ground")
+[node name="LogYardPileOpposite" parent="." instance=ExtResource("6_pile")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, -1.288, -4.6)
 
-[node name="PostLeftFront" type="CSGBox3D" parent="LogBunk" unique_id=1587174899]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
+[node name="KnuckleBoomLoader" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, -1.288, 9)
+deck_path = NodePath("../DebarkDeckTest")
+pile_path = NodePath("../LogYardPile")
 
-[node name="PostLeftBack" type="CSGBox3D" parent="LogBunk" unique_id=2051296868]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightFront" type="CSGBox3D" parent="LogBunk" unique_id=2001313652]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightBack" type="CSGBox3D" parent="LogBunk" unique_id=656102065]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-
-[node name="LogBunkOpposite" type="Node3D" parent="." unique_id=1006123451]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.1, -0.9, 6)
-
-[node name="Base" type="CSGBox3D" parent="LogBunkOpposite" unique_id=2011912949]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
-size = Vector3(1.5, 0.1, 2.5)
-material = SubResource("Material_Ground")
-
-[node name="PostLeftFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1707792397]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostLeftBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1243670428]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightFront" type="CSGBox3D" parent="LogBunkOpposite" unique_id=-1293653644]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, -1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="PostRightBack" type="CSGBox3D" parent="LogBunkOpposite" unique_id=1656102065]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0.5, 1.1)
-size = Vector3(0.1, 1, 0.1)
-material = SubResource("Material_Ground")
-
-[node name="KnuckleBoomLoader" parent="." unique_id=100000048 instance=ExtResource("3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, -2)
-enabled = false
-
-[node name="ExhaustSmoke" parent="KnuckleBoomLoader/Turret/ExhaustStack" parent_id_path=PackedInt32Array(100000048, 355837707) index="0" unique_id=926347748]
-emitting = false
-
-[node name="CollisionShape3D" parent="KnuckleBoomLoader/ConveyorIntakeZone" parent_id_path=PackedInt32Array(100000048, 199236215) index="0" unique_id=966195758]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05609107, 0, 0)
-
-[node name="KnuckleBoomLoaderOpposite" parent="." unique_id=1006123450 instance=ExtResource("3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, -0.9, 6)
-
-[node name="ExhaustSmoke" parent="KnuckleBoomLoaderOpposite/Turret/ExhaustStack" parent_id_path=PackedInt32Array(1006123450, 355837707) index="0" unique_id=926347748]
-emitting = false
+[node name="KnuckleBoomLoaderOpposite" parent="." instance=ExtResource("3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, -1.288, -4.6)
+deck_path = NodePath("../OppositeDebarkDeckTest")
+pile_path = NodePath("../LogYardPileOpposite")
 
 [node name="DebarkerDeckLight" type="SpotLight3D" parent="." unique_id=100000035]
 transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, -0.77, 3, 1.6)
@@ -133,5 +75,3 @@ spot_range = 6.0
 [editable path="DebarkDeckTest"]
 [editable path="OppositeDebarkDeckTest"]
 [editable path="WasteConveyor3"]
-[editable path="KnuckleBoomLoader"]
-[editable path="KnuckleBoomLoaderOpposite"]
