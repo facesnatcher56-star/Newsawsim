@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://d1qddmxhkrbxi"]
+[gd_scene format=3]
 
 [ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://game/transport/conveyors/conveyor.gd" id="1_conv"]
-[ext_resource type="Script" uid="uid://54b4e8rwgoph" path="res://game/transport/conveyors/kicker.gd" id="2_kick"]
-[ext_resource type="Script" uid="uid://ds71220o0sgm7" path="res://game/transport/conveyors/waste_kicker_arm.gd" id="3_arm"]
+[ext_resource type="Script" path="res://dev/compare/old_kicker/old_kicker.gd" id="2_kick"]
+[ext_resource type="Script" path="res://dev/compare/old_kicker/old_waste_kicker_arm.gd" id="3_arm"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_bottom"]
 size = Vector3(1.05, 0.25, 4.05)

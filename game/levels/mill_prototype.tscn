@@ -423,73 +423,9 @@ dump_target_path = NodePath("../../DebarkerStation/DebarkInfeedConveyor")
 
 [node name="LogDeckOpposite" parent="LogFeedStation" index="1" unique_id=258696570]
 dump_target_path = NodePath("../../DebarkerStation/DebarkInfeedConveyor")
-[node name="WasteConveyor3" parent="LogFeedStation" index="2" unique_id=570863566]
-transform = Transform3D(-4.371139e-08, 0, -1.5, 0, 1, 0, 1, 0, -6.556708e-08, 16.151764, 0.45677352, 2.118968)
-
-[node name="CollisionShape3D" parent="LogFeedStation/WasteConveyor3" index="0" unique_id=2061922085]
-shape = SubResource("BoxShape3D_bottom")
-
-[node name="CollisionShape3D" parent="LogFeedStation/WasteConveyor3/LogArea" parent_id_path=PackedInt32Array(1362207346, 570863566, 228214738) index="0" unique_id=1504252916]
-shape = SubResource("BoxShape3D_log_area")
-
-[node name="Belt" parent="LogFeedStation/WasteConveyor3/Visuals" parent_id_path=PackedInt32Array(1362207346, 570863566, 487249694) index="0" unique_id=1235911681]
-material = SubResource("Material_Belt")
-
-[node name="RailBody" parent="LogFeedStation/WasteConveyor3/Visuals/RailLeft" parent_id_path=PackedInt32Array(1362207346, 570863566, 1855516434) index="0" unique_id=1624333004]
-material = SubResource("Material_Rail")
-
-[node name="Roller_0" parent="LogFeedStation/WasteConveyor3/Visuals/RailLeft" parent_id_path=PackedInt32Array(1362207346, 570863566, 1855516434) index="4" unique_id=139905503]
-material = SubResource("StandardMaterial3D_black_metal")
-
-[node name="Roller_1" parent="LogFeedStation/WasteConveyor3/Visuals/RailLeft" parent_id_path=PackedInt32Array(1362207346, 570863566, 1855516434) index="5" unique_id=1978467073]
-material = SubResource("StandardMaterial3D_black_metal")
-
-[node name="Roller_2" parent="LogFeedStation/WasteConveyor3/Visuals/RailLeft" parent_id_path=PackedInt32Array(1362207346, 570863566, 1855516434) index="6" unique_id=1929291073]
-material = SubResource("StandardMaterial3D_black_metal")
-
-[node name="KickerShaft" parent="LogFeedStation/WasteConveyor3" index="3" unique_id=834760892]
-kick_duration = 4.0
-
-[node name="ShaftVisual" parent="LogFeedStation/WasteConveyor3/KickerShaft" index="0" unique_id=373651069]
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("CylinderMesh_shaft")
-
-[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/LowerArm" parent_id_path=PackedInt32Array(1362207346, 570863566, 822765290) index="0" unique_id=1189437979]
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("BoxMesh_lower_arm")
-
-[node name="Collision" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/UpperArmBody_0" parent_id_path=PackedInt32Array(1362207346, 570863566, 931538699) index="0" unique_id=839016093]
-shape = SubResource("BoxShape3D_upper_arm")
-
-[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_0/UpperArmBody_0" parent_id_path=PackedInt32Array(1362207346, 570863566, 931538699) index="1" unique_id=1652576944]
-transform = Transform3D(1.0000002, 0, 0, 0, 1.0000002, 0, 0, 0, 1, 0, 0.31806642, 0)
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("BoxMesh_upper_arm")
-
-[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_1/LowerArm" parent_id_path=PackedInt32Array(1362207346, 570863566, 806818957) index="0" unique_id=466556993]
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("BoxMesh_lower_arm")
-
-[node name="Collision" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_1/UpperArmBody_1" parent_id_path=PackedInt32Array(1362207346, 570863566, 1076809619) index="0" unique_id=240708081]
-shape = SubResource("BoxShape3D_upper_arm")
-
-[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_1/UpperArmBody_1" parent_id_path=PackedInt32Array(1362207346, 570863566, 1076809619) index="1" unique_id=567105919]
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("BoxMesh_upper_arm")
-
-[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_2/LowerArm" parent_id_path=PackedInt32Array(1362207346, 570863566, 1988639691) index="0" unique_id=1535913954]
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("BoxMesh_lower_arm")
-
-[node name="Collision" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_2/UpperArmBody_2" parent_id_path=PackedInt32Array(1362207346, 570863566, 375820458) index="0" unique_id=1254633233]
-shape = SubResource("BoxShape3D_upper_arm")
-
-[node name="Mesh" parent="LogFeedStation/WasteConveyor3/KickerShaft/ArmPivot_2/UpperArmBody_2" parent_id_path=PackedInt32Array(1362207346, 570863566, 375820458) index="1" unique_id=1700181950]
-material_override = SubResource("StandardMaterial3D_yfjmh")
-mesh = SubResource("BoxMesh_upper_arm")
-
-[node name="KickerZone" parent="LogFeedStation/WasteConveyor3" index="4" unique_id=182965496]
-incline_path = NodePath("../../../InclineOutfeed/InclineLogDeck")
+[node name="LogKicker" parent="LogFeedStation" index="2" unique_id=570863566]
+incline_path = NodePath("../../InclineOutfeed/InclineLogDeck")
+outfeed_path = NodePath("../../DebarkerStation/DebarkOutfeedConveyor")
 
 [node name="HeadrigStation" parent="." unique_id=1393812162 instance=ExtResource("5_headrig")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8971043, 0, 0)
@@ -900,7 +836,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.66, -1.288, 110.8)
 [editable path="Ground/ReSawDeck2"]
 [editable path="Ground/SweepRoller"]
 [editable path="LogFeedStation"]
-[editable path="LogFeedStation/WasteConveyor3"]
 [editable path="HeadrigStation"]
 [editable path="HeadrigStation/HeadrigRailSystemInstance"]
 [editable path="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck"]

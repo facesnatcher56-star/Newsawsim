@@ -18,6 +18,7 @@ const VIEWS: Array = [
 	[Vector3(4.5, 3.6, 6.8), Vector3(-0.8, 0.8, 4.3)],      # 7 step feeder, deck side
 	[Vector3(6.5, 5.0, 12.5), Vector3(-0.8, 0.3, 7.0)],     # 8 whole log deck
 	[Vector3(4.5, 3.6, -2.56), Vector3(-0.8, 0.8, -0.06)],  # 9 step feeder, opposite deck
+	[Vector3(21.5, 4.2, -3.0), Vector3(16.3, 0.4, 3.0)],    # 0 kicker, end stop and incline foot
 ]
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
 const DROP_Z: Array[float] = [1.2, 1.9, 2.6, 3.3, 4.0, 4.7]
@@ -32,7 +33,7 @@ var _time: float = 0.0
 func _ready() -> void:
 	var mill := MILL_SCENE.instantiate()
 	add_child(mill)
-	for deck_name in ["LogDeck", "LogDeckOpposite"]:
+	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
 			deck.debug_log = true
@@ -55,7 +56,7 @@ func _process(delta: float) -> void:
 	_cam.current = true
 	var lines := PackedStringArray(["t %.1f s   views: 1-9   F: %dx speed   D: log on deck" % [_time, Engine.time_scale]])
 	var mill := get_child(0)
-	for deck_name in ["LogDeck", "LogDeckOpposite"]:
+	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and deck.has_method("status_text"):
 			lines.append("%s: %s" % [deck_name, deck.status_text()])
@@ -87,6 +88,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if key.keycode >= KEY_1 and key.keycode <= KEY_9:
 		_set_view(key.keycode - KEY_0)
+	elif key.keycode == KEY_0:
+		_set_view(10)
+	elif key.keycode == KEY_P:
+		# Probe: incline foot geometry and logs around the kicker.
+		var mill := get_child(0)
+		for path in ["InclineOutfeed/InclineLogDeck/SlopeRoot", "InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone/CollisionShape3D",
+				"InclineOutfeed/InclineLogDeck/SlopeRoot/DeckBottom/CollisionShape3D"]:
+			var n := mill.get_node_or_null(path) as Node3D
+			if n:
+				var extra := ""
+				if n is CollisionShape3D and (n as CollisionShape3D).shape is BoxShape3D:
+					extra = " size %s" % ((n as CollisionShape3D).shape as BoxShape3D).size
+				print("[probe] %s %s%s" % [path, n.global_transform, extra])
+		for node in get_tree().get_nodes_in_group("logs"):
+			var l := node as Node3D
+			if l.global_position.x > 12.0 and l.global_position.x < 21.0:
+				print("[probe] log %s at %s" % [l.name, l.global_position])
+	elif key.keycode == KEY_K:
+		# A test log onto the conveyor past the debarker, short of the kicker.
+		var log_body := (load("res://game/lumber/log.tscn") as PackedScene).instantiate() as RigidBody3D
+		add_child(log_body)
+		log_body.global_position = Vector3(14.6, 1.2, 2.118)
+		print("[debarker_demo] %.1f s dropped a log on the kicker conveyor" % _time)
 	elif key.keycode == KEY_D:
 		# A test log straight onto a deck's chains (Shift: the opposite deck).
 		var deck_name := "LogDeckOpposite" if key.shift_pressed else "LogDeck"

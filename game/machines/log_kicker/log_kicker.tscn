@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/machines/log_kicker/log_kicker.gd" id="1_kicker"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_kicker/log_kicker_frame.glb" id="2_frame"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_kicker/log_kicker_paddles.glb" id="3_paddles"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_kicker/log_kicker_bumper.glb" id="4_bumper"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_kicker/log_kicker_cylinder.glb" id="5_cylinder"]
+
+[sub_resource type="BoxShape3D" id="Box_flank"]
+size = Vector3(6.3, 0.1, 0.5)
+
+[sub_resource type="BoxShape3D" id="Box_stop"]
+size = Vector3(0.2, 0.6, 0.8)
+
+[node name="LogKicker" type="Node3D"]
+script = ExtResource("1_kicker")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.288, 0)
+
+[node name="Frame" parent="Model" instance=ExtResource("2_frame")]
+
+[node name="Paddles" parent="Model" instance=ExtResource("3_paddles")]
+
+[node name="Bumper" parent="Model" instance=ExtResource("4_bumper")]
+
+[node name="Cylinder" parent="Model" instance=ExtResource("5_cylinder")]
+
+[node name="Trough" type="StaticBody3D" parent="."]
+
+[node name="FlankNear" type="CollisionShape3D" parent="Trough"]
+transform = Transform3D(1, 0, 0, 0, 0.70711, 0.70711, 0, -0.70711, 0.70711, 16.4, 0.655, 2.384)
+shape = SubResource("Box_flank")
+
+[node name="FlankFar" type="CollisionShape3D" parent="Trough"]
+transform = Transform3D(1, 0, 0, 0, 0.70711, -0.70711, 0, 0.70711, 0.70711, 16.4, 0.655, 1.852)
+shape = SubResource("Box_flank")
+
+[node name="EndStop" type="StaticBody3D" parent="."]
+
+[node name="Bumper" type="CollisionShape3D" parent="EndStop"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.5, 0.87, 2.118)
+shape = SubResource("Box_stop")
