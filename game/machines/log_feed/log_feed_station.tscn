@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cv2doupq74rvb"]
 
-[ext_resource type="PackedScene" path="res://game/transport/decks/chain_log_deck.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://game/transport/decks/live_log_deck.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://c6lerd07omkj7" path="res://game/machines/log_feed/knuckle_boom_loader.tscn" id="3"]
 [ext_resource type="PackedScene" uid="uid://d1qddmxhkrbxi" path="res://game/transport/conveyors/waste_conveyor_kicker.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://game/machines/log_feed/log_yard_pile.tscn" id="6_pile"]
@@ -10,27 +10,13 @@ size = Vector3(1.0029297, 1, 0.973114)
 
 [node name="LogFeedStation" type="Node3D" unique_id=1736691262]
 
-[node name="DebarkDeckTest" parent="." unique_id=1006123449 instance=ExtResource("1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.277256, 0.22059476, 5.068916)
+[node name="LogDeck" parent="." unique_id=1006123449 instance=ExtResource("1")]
+downstream_kicker_path = NodePath("../WasteConveyor3/KickerZone")
 
-[node name="RetractableStops" parent="DebarkDeckTest" index="4" unique_id=1420736936]
-rotation_speed = 45.0
-deck_start_delay = 5.0
-downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
-
-[node name="CollisionShape3D" parent="DebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(1006123449, 1464854583) index="0" unique_id=624450580]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.60839957, 0, 0, -0.018068075)
-
-[node name="OppositeDebarkDeckTest" parent="." unique_id=258696570 instance=ExtResource("1")]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.922744, 0.22059476, -0.832212)
-
-[node name="RetractableStops" parent="OppositeDebarkDeckTest" index="4" unique_id=1420736936]
-rotation_speed = 45.0
-deck_start_delay = 5.0
-downstream_kicker_path = NodePath("../../WasteConveyor3/KickerZone")
-
-[node name="CollisionShape3D" parent="OppositeDebarkDeckTest/RetractableStops/TriggerArea" parent_id_path=PackedInt32Array(258696570, 1464854583) index="0" unique_id=624450580]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.13981593)
+[node name="LogDeckOpposite" parent="." unique_id=258696570 instance=ExtResource("1")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -1.646, 0, 4.236)
+downstream_kicker_path = NodePath("../WasteConveyor3/KickerZone")
+service_side = -1
 
 [node name="WasteConveyor3" parent="." unique_id=570863566 groups=["kicker_outfeed"] instance=ExtResource("5")]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 13.254882, 0.45677352, 2.118968)
@@ -52,12 +38,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, -1.288, -4.6)
 
 [node name="KnuckleBoomLoader" parent="." instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, -1.288, 9)
-deck_path = NodePath("../DebarkDeckTest")
+deck_path = NodePath("../LogDeck/Bed")
 pile_path = NodePath("../LogYardPile")
 
 [node name="KnuckleBoomLoaderOpposite" parent="." instance=ExtResource("3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, -1.288, -4.6)
-deck_path = NodePath("../OppositeDebarkDeckTest")
+deck_path = NodePath("../LogDeckOpposite/Bed")
 pile_path = NodePath("../LogYardPileOpposite")
 
 [node name="DebarkerDeckLight" type="SpotLight3D" parent="." unique_id=100000035]
@@ -72,6 +58,4 @@ light_color = Color(1, 0.9, 0.8, 1)
 light_energy = 4.0
 spot_range = 6.0
 
-[editable path="DebarkDeckTest"]
-[editable path="OppositeDebarkDeckTest"]
 [editable path="WasteConveyor3"]

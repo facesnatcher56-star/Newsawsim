@@ -1,8 +1,6 @@
-[gd_scene format=3 uid="uid://bfk0yjriqgpdo"]
+[gd_scene format=3]
 
-[ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://game/transport/conveyors/conveyor.gd" id="1"]
-[ext_resource type="Script" uid="uid://c84rvs354fyen" path="res://game/transport/decks/chain_deck_visuals.gd" id="2"]
-[ext_resource type="Script" uid="uid://d1gtkkq6jdh2t" path="res://game/transport/decks/retractable_log_stops.gd" id="3"]
+[ext_resource type="Script" path="res://dev/compare/old_log_deck/old_chain_deck_visuals.gd" id="2"]
 
 [sub_resource type="BoxShape3D" id="BoxShape_deck"]
 size = Vector3(5.2, 0.16, 4.2)
@@ -34,8 +32,6 @@ roughness = 0.35
 
 [node name="ChainLogDeck" type="StaticBody3D" unique_id=945966321]
 constant_linear_velocity = Vector3(0, 0, -0.2)
-script = ExtResource("1")
-speed = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=290170045]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 1.07, 0)
@@ -160,7 +156,6 @@ material = SubResource("Material_Frame")
 script = ExtResource("2")
 
 [node name="RetractableStops" type="Node3D" parent="." unique_id=1420736936]
-script = ExtResource("3")
 
 [node name="DeckArea" type="Area3D" parent="RetractableStops" unique_id=1671479672]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1, 1.2, 0)

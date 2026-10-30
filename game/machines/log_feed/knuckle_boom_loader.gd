@@ -13,7 +13,7 @@ extends Node3D
 ## it swings when the turret starts and stops; the operator waits for it to settle before
 ## biting logs or setting them down. The rotator turns the logs to line up with the deck.
 ##
-## Logs on the deck cannot roll (the deck stops lock their rotation), so a log that lands
+## Logs on the deck cannot roll (the live deck locks their rotation), so a log that lands
 ## on top of another rides there until somebody fixes it. After every set-down the loader
 ## looks over the deck. For each log riding on another it holds the deck chains, brakes
 ## the grapple plumb, comes down beside the rider with the tongs closed and pushes it
@@ -40,16 +40,19 @@ const BUNDLE_SLOTS := {
 	4: [Vector3(0.0, -1.80, 0.30), Vector3(0.0, -1.80, -0.30), Vector3(0.0, -1.24, 0.30), Vector3(0.0, -1.24, -0.30)],
 }
 const BUNDLE_TONG := { 1: 0.06, 2: 0.18, 3: 0.30, 4: 0.33 }
-## Deck-local landing spot: middle of the deck width, near the infeed end.
-const DECK_DROP_LOCAL := Vector3(-1.1, 0.0, 1.15)
+## The deck is the live deck's chain bed (LiveLogDeck/Bed): origin at the foot of the step
+## feeder's first riser, logs along X centred on 0, chains carry them down-slope to -Z,
+## Y up off the chains.
+## Deck-local landing spot: middle of the deck width, towards the loader end.
+const DECK_DROP_LOCAL := Vector3(0.0, 0.0, 5.55)
 ## Deck-local box that must be clear of logs before another bundle goes down.
-const DECK_ROOM_MIN := Vector3(-3.8, -0.3, -0.1)
-const DECK_ROOM_MAX := Vector3(1.6, 1.5, 2.3)
+const DECK_ROOM_MIN := Vector3(-2.7, -0.3, 4.3)
+const DECK_ROOM_MAX := Vector3(2.7, 1.5, 7.2)
 ## Deck-local span the loader treats as the deck (logs along X, chains run along Z).
-const DECK_SPAN_MIN := Vector3(-4.0, -0.4, -2.4)
-const DECK_SPAN_MAX := Vector3(1.8, 2.0, 2.4)
-## Where a log centre may sit on the chains: clear of the infeed end beam and the stops.
-const CHAIN_Z_LIMITS := Vector2(-1.75, 1.75)
+const DECK_SPAN_MIN := Vector3(-2.9, -0.4, -0.2)
+const DECK_SPAN_MAX := Vector3(2.9, 2.0, 7.3)
+## Where a log centre may sit on the chains: off the feeder pocket and the tail sprockets.
+const CHAIN_Z_LIMITS := Vector2(0.6, 6.7)
 ## Centre spacing that counts as "touching" for two logs side by side on the chains.
 const LOG_PITCH := 0.62
 ## A log whose centre sits this far above lying on the chains is riding on another one
@@ -177,8 +180,11 @@ func _ready() -> void:
 			find_child("KBL_%sRod" % pair[0], true, false), pair[1]])
 	_deck = get_node_or_null(deck_path) as Node3D
 	_pile = get_node_or_null(pile_path) as Node3D
-	if _deck:
-		_deck_stops = _deck.get_node_or_null("RetractableStops")
+	# Whoever runs the chains (the deck above its chain bed) takes hold_chains.
+	var owner_node: Node = _deck
+	while owner_node != null and not ("hold_chains" in owner_node):
+		owner_node = owner_node.get_parent()
+	_deck_stops = owner_node
 	_build_pusher()
 	_rng.randomize()
 
@@ -237,8 +243,12 @@ func _run_phase(delta: float) -> void:
 				_set_tip_height(maxf(_hover_height(), _lift_clear_height() + 0.3))
 				_enter(Phase.LIFT_PILE)
 		Phase.LIFT_PILE:
-			# Start the swing once the load has cleared whatever it came off.
-			if _tip_height_world() > _lift_clear_height():
+			# Start the swing once the load has cleared whatever it came off. Close in to
+			# a tall pile the boom tops out a little short of the full margin; once the lift
+			# has stalled with the logs still well clear, go anyway.
+			var stalled := _timer > 5.0
+			if _tip_height_world() > _lift_clear_height() \
+					or (stalled and _tip_height_world() > _lift_clear_height() - 0.4):
 				_aim_at_deck(_hover_height())
 				_enter(Phase.TO_DECK)
 		Phase.TO_DECK:
@@ -661,8 +671,7 @@ func _deck_logs() -> Array[RigidBody3D]:
 ## Deck-local position with y measured as the log centre's height above lying on the chains.
 func _deck_local_on_chains(l: Node3D) -> Vector3:
 	var p := _deck.to_local(l.global_position)
-	var deck_origin := _deck.global_position
-	p.y -= _deck.to_local(Vector3(deck_origin.x, _deck_top(), deck_origin.z)).y + LOG_RADIUS
+	p.y -= _deck_surface_local() + LOG_RADIUS
 	return p
 
 
@@ -805,21 +814,26 @@ func _pile_top() -> float:
 	return _pile.top_height() if _pile else global_position.y
 
 
+## World height of the chains under the current drop spot (the deck slopes).
 func _deck_top() -> float:
 	if _deck == null:
 		return global_position.y
+	return _deck.to_global(Vector3(_drop_local.x, _deck_surface_local(), _drop_local.z)).y
+
+
+## Height of the chain surface in the deck's own frame: the top of its first box shape.
+func _deck_surface_local() -> float:
 	for child in _deck.get_children():
 		var cs := child as CollisionShape3D
 		if cs and cs.shape is BoxShape3D:
-			return _deck.to_global(cs.position + Vector3(0.0, (cs.shape as BoxShape3D).size.y * 0.5, 0.0)).y
-	return _deck.global_position.y + 1.15
+			return cs.position.y + (cs.shape as BoxShape3D).size.y * 0.5
+	return 0.0
 
 
 func _deck_has_room() -> bool:
 	if _deck == null:
 		return true
-	var deck_origin := _deck.global_position
-	var top_local := _deck.to_local(Vector3(deck_origin.x, _deck_top(), deck_origin.z)).y
+	var top_local := _deck_surface_local()
 	for node in get_tree().get_nodes_in_group("logs"):
 		var l := node as RigidBody3D
 		if l == null or _bundle.has(l):

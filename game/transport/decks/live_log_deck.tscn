@@ -1,0 +1,88 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/transport/decks/live_log_deck.gd" id="1_deck"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_deck/log_deck_frame.glb" id="2_frame"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_deck/log_deck_moving.glb" id="3_moving"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_deck/log_deck_drive.glb" id="4_drive"]
+[ext_resource type="PackedScene" path="res://game/assets/models/log_deck/log_deck_catwalk.glb" id="5_catwalk"]
+
+[sub_resource type="BoxShape3D" id="Box_surface"]
+size = Vector3(6, 0.2, 7)
+
+[sub_resource type="BoxShape3D" id="Box_guard"]
+size = Vector3(0.1, 0.34, 6.6)
+
+[sub_resource type="BoxShape3D" id="Box_riser1"]
+size = Vector3(5.3, 1.698, 0.14)
+
+[sub_resource type="BoxShape3D" id="Box_tread"]
+size = Vector3(5.3, 0.1, 0.653)
+
+[sub_resource type="BoxShape3D" id="Box_top_tread"]
+size = Vector3(5.3, 0.1, 0.432)
+
+[sub_resource type="BoxShape3D" id="Box_riser"]
+size = Vector3(5.3, 0.47, 0.05)
+
+[node name="LiveLogDeck" type="Node3D"]
+script = ExtResource("1_deck")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.288, 0)
+
+[node name="Frame" parent="Model" instance=ExtResource("2_frame")]
+
+[node name="MovingSteps" parent="Model" instance=ExtResource("3_moving")]
+
+[node name="Drive" parent="Model" instance=ExtResource("4_drive")]
+
+[node name="Catwalk" parent="Model" instance=ExtResource("5_catwalk")]
+
+[node name="Bed" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.99863, -0.05234, 0, 0.05234, 0.99863, -0.823, 0.16, 5.38)
+
+[node name="Surface" type="CollisionShape3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 3.5)
+shape = SubResource("Box_surface")
+
+[node name="GuardLeft" type="CollisionShape3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.07, 0.17, 3.6)
+shape = SubResource("Box_guard")
+
+[node name="GuardRight" type="CollisionShape3D" parent="Bed"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.07, 0.17, 3.6)
+shape = SubResource("Box_guard")
+
+[node name="FeederSteps" type="StaticBody3D" parent="."]
+
+[node name="Riser1" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.823, -0.319, 5.31)
+shape = SubResource("Box_riser1")
+
+[node name="Tread1" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 0.99756, -0.06976, 0, 0.06976, 0.99756, -0.823, 0.45724, 5.055)
+shape = SubResource("Box_tread")
+
+[node name="Riser2" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.823, 0.61951, 4.705)
+shape = SubResource("Box_riser")
+
+[node name="Tread2" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 0.99756, -0.06976, 0, 0.06976, 0.99756, -0.823, 0.78179, 4.405)
+shape = SubResource("Box_tread")
+
+[node name="Riser3" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.823, 0.94406, 4.055)
+shape = SubResource("Box_riser")
+
+[node name="Tread3" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 0.99756, -0.06976, 0, 0.06976, 0.99756, -0.823, 1.10634, 3.755)
+shape = SubResource("Box_tread")
+
+[node name="Riser4" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.823, 1.26861, 3.405)
+shape = SubResource("Box_riser")
+
+[node name="TopTread" type="CollisionShape3D" parent="FeederSteps"]
+transform = Transform3D(1, 0, 0, 0, 0.99756, -0.06976, 0, 0.06976, 0.99756, -0.823, 1.43781, 3.214)
+shape = SubResource("Box_top_tread")
