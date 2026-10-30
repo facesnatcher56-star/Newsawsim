@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/machines/headrig/headrig.gd" id="1_headrig"]
+[ext_resource type="PackedScene" path="res://game/assets/models/headrig/headrig_frame.glb" id="2_frame"]
+[ext_resource type="PackedScene" path="res://game/assets/models/headrig/headrig_parts.glb" id="3_parts"]
+
+[node name="Headrig" type="Node3D"]
+script = ExtResource("1_headrig")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.288, 0)
+
+[node name="Frame" parent="Model" instance=ExtResource("2_frame")]
+
+[node name="Parts" parent="Model" instance=ExtResource("3_parts")]
+
+[node name="SawLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 21.2, 3.4, 6.6)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 4.0
+spot_range = 7.0
+spot_angle = 50.0
+
+[node name="CarriageLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.258819, 0.965926, 0, -0.965926, 0.258819, 17.0, 3.6, 5.6)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 4.0
+spot_range = 7.0
+spot_angle = 55.0

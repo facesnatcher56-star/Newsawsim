@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cu6kodccm1rqk" path="res://game/transport/roller_beds/roller_bed.tscn" id="3_n1fx5"]
 [ext_resource type="PackedScene" uid="uid://cv2doupq74rvb" path="res://game/machines/log_feed/log_feed_station.tscn" id="4_logfeed"]
 [ext_resource type="PackedScene" uid="uid://jsxgi8kpb468" path="res://game/lumber/log.tscn" id="5_fe1yo"]
-[ext_resource type="PackedScene" uid="uid://cg4jswye55rr5" path="res://game/machines/headrig/headrig_station.tscn" id="5_headrig"]
+[ext_resource type="PackedScene" path="res://game/machines/headrig/headrig.tscn" id="5_headrig"]
 [ext_resource type="PackedScene" uid="uid://shur11w6bum3" path="res://game/transport/decks/edger_landing_deck.tscn" id="5_nmjje"]
 [ext_resource type="PackedScene" uid="uid://c0alpbtit8nxv" path="res://game/transport/stations/incline_outfeed.tscn" id="6_incline"]
 [ext_resource type="PackedScene" uid="uid://dmko1r1aasdqt" path="res://game/transport/decks/simple_chain_deck.tscn" id="8_yfjmh"]
@@ -424,215 +424,13 @@ dump_target_path = NodePath("../../DebarkerStation/DebarkInfeedConveyor")
 [node name="LogDeckOpposite" parent="LogFeedStation" index="1" unique_id=258696570]
 dump_target_path = NodePath("../../DebarkerStation/DebarkInfeedConveyor")
 [node name="LogKicker" parent="LogFeedStation" index="2" unique_id=570863566]
-incline_path = NodePath("../../InclineOutfeed/InclineLogDeck")
+incline_path = NodePath("../../Headrig")
 outfeed_path = NodePath("../../DebarkerStation/DebarkOutfeedConveyor")
 
-[node name="HeadrigStation" parent="." unique_id=1393812162 instance=ExtResource("5_headrig")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8971043, 0, 0)
+[node name="Headrig" parent="." unique_id=1393812162 instance=ExtResource("5_headrig")]
 
-[node name="HeadrigRailSystemInstance" parent="HeadrigStation" index="0" unique_id=100000003]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 13.6249485, 0.70538116, 6.551477)
-
-[node name="CollisionLeft" parent="HeadrigStation/HeadrigRailSystemInstance/Rails" parent_id_path=PackedInt32Array(1393812162, 100000003, 1511761556) index="0" unique_id=1543666625]
-shape = SubResource("Shape_Rail")
-
-[node name="CollisionRight" parent="HeadrigStation/HeadrigRailSystemInstance/Rails" parent_id_path=PackedInt32Array(1393812162, 100000003, 1511761556) index="1" unique_id=1704915729]
-shape = SubResource("Shape_Rail")
-
-[node name="RailLeft" parent="HeadrigStation/HeadrigRailSystemInstance/Rails/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 930270636) index="0" unique_id=2045642716]
-material = SubResource("Material_Rails")
-
-[node name="RailRight" parent="HeadrigStation/HeadrigRailSystemInstance/Rails/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 930270636) index="1" unique_id=962434688]
-material = SubResource("Material_Rails")
-
-[node name="CollisionPlatform" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage" parent_id_path=PackedInt32Array(1393812162, 100000003, 1428221871) index="0" unique_id=17843778]
-shape = SubResource("Shape_Platform")
-
-[node name="Platform" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1224975401) index="0" unique_id=465874381]
-material = SubResource("Material_Carriage")
-
-[node name="Tread" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelFL" parent_id_path=PackedInt32Array(1393812162, 100000003, 282762889) index="0" unique_id=2111145621]
-mesh = SubResource("Mesh_Tread")
-
-[node name="InnerFlange" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelFL" parent_id_path=PackedInt32Array(1393812162, 100000003, 282762889) index="1" unique_id=409599786]
-mesh = SubResource("Mesh_InnerFlange")
-
-[node name="RotationMarker" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelFL" parent_id_path=PackedInt32Array(1393812162, 100000003, 282762889) index="2" unique_id=162000584]
-mesh = SubResource("Mesh_RotationMarker")
-
-[node name="Tread" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelFR" parent_id_path=PackedInt32Array(1393812162, 100000003, 1557417972) index="0" unique_id=771572339]
-mesh = SubResource("Mesh_Tread")
-
-[node name="InnerFlange" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelFR" parent_id_path=PackedInt32Array(1393812162, 100000003, 1557417972) index="1" unique_id=1168539955]
-mesh = SubResource("Mesh_InnerFlange")
-
-[node name="RotationMarker" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelFR" parent_id_path=PackedInt32Array(1393812162, 100000003, 1557417972) index="2" unique_id=1870129103]
-mesh = SubResource("Mesh_RotationMarker")
-
-[node name="Tread" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelRL" parent_id_path=PackedInt32Array(1393812162, 100000003, 338403020) index="0" unique_id=933681624]
-mesh = SubResource("Mesh_Tread")
-
-[node name="InnerFlange" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelRL" parent_id_path=PackedInt32Array(1393812162, 100000003, 338403020) index="1" unique_id=412597494]
-mesh = SubResource("Mesh_InnerFlange")
-
-[node name="RotationMarker" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelRL" parent_id_path=PackedInt32Array(1393812162, 100000003, 338403020) index="2" unique_id=796539009]
-mesh = SubResource("Mesh_RotationMarker")
-
-[node name="Tread" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelRR" parent_id_path=PackedInt32Array(1393812162, 100000003, 672033991) index="0" unique_id=1302256932]
-mesh = SubResource("Mesh_Tread")
-
-[node name="InnerFlange" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelRR" parent_id_path=PackedInt32Array(1393812162, 100000003, 672033991) index="1" unique_id=58243783]
-mesh = SubResource("Mesh_InnerFlange")
-
-[node name="RotationMarker" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/WheelRR" parent_id_path=PackedInt32Array(1393812162, 100000003, 672033991) index="2" unique_id=1558964347]
-mesh = SubResource("Mesh_RotationMarker")
-
-[node name="Shaft" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/FrontAxle" parent_id_path=PackedInt32Array(1393812162, 100000003, 340258778) index="0" unique_id=1448949930]
-mesh = SubResource("Mesh_Shaft")
-
-[node name="Shaft" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/RearAxle" parent_id_path=PackedInt32Array(1393812162, 100000003, 993444938) index="0" unique_id=2042587947]
-mesh = SubResource("Mesh_Shaft")
-
-[node name="CylinderMount1" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="0" unique_id=1894805654]
-material = SubResource("Material_Carriage")
-
-[node name="Cylinder1" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="1" unique_id=788244564]
-material = SubResource("Material_Hydraulics")
-
-[node name="Rod1" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="2" unique_id=1256835659]
-material = SubResource("Material_BiteSteel")
-
-[node name="CylinderMount2" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="3" unique_id=742435999]
-material = SubResource("Material_Carriage")
-
-[node name="Cylinder2" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="4" unique_id=631635578]
-material = SubResource("Material_Hydraulics")
-
-[node name="Rod2" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="5" unique_id=46479847]
-material = SubResource("Material_BiteSteel")
-
-[node name="CylinderMount3" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="6" unique_id=1763481758]
-material = SubResource("Material_Carriage")
-
-[node name="Cylinder3" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="7" unique_id=487713226]
-material = SubResource("Material_Hydraulics")
-
-[node name="Rod3" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/SetworksHydraulics" parent_id_path=PackedInt32Array(1393812162, 100000003, 1933167607) index="8" unique_id=218107200]
-material = SubResource("Material_BiteSteel")
-
-[node name="CollisionHeadblock1" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/HeadblockStopBody" parent_id_path=PackedInt32Array(1393812162, 100000003, 839770812) index="0" unique_id=797665402]
-shape = SubResource("Shape_Headblock")
-
-[node name="CollisionHeadblock2" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/HeadblockStopBody" parent_id_path=PackedInt32Array(1393812162, 100000003, 839770812) index="1" unique_id=289308680]
-shape = SubResource("Shape_Headblock")
-
-[node name="CollisionHeadblock3" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/HeadblockStopBody" parent_id_path=PackedInt32Array(1393812162, 100000003, 839770812) index="2" unique_id=766867914]
-shape = SubResource("Shape_Headblock")
-
-[node name="Headblock1" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="0" unique_id=735699228]
-material = SubResource("Material_Carriage")
-
-[node name="HeadblockFace1Left" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="1" unique_id=175023596]
-material = SubResource("Material_BiteSteel")
-
-[node name="HeadblockFace1Right" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="2" unique_id=637048843]
-material = SubResource("Material_BiteSteel")
-
-[node name="Headblock2" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="3" unique_id=807122254]
-material = SubResource("Material_Carriage")
-
-[node name="HeadblockFace2Left" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="4" unique_id=864490180]
-material = SubResource("Material_BiteSteel")
-
-[node name="HeadblockFace2Right" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="5" unique_id=609084910]
-material = SubResource("Material_BiteSteel")
-
-[node name="Headblock3" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="6" unique_id=1416947778]
-material = SubResource("Material_Carriage")
-
-[node name="HeadblockFace3Left" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="7" unique_id=336737857]
-material = SubResource("Material_BiteSteel")
-
-[node name="HeadblockFace3Right" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/CSGCombiner3D" parent_id_path=PackedInt32Array(1393812162, 100000003, 1255108667) index="8" unique_id=663380814]
-material = SubResource("Material_BiteSteel")
-
-[node name="DogSlideBar" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="0" unique_id=879856826]
-material = SubResource("Material_Hydraulics")
-
-[node name="HookUpperShank" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="1" unique_id=1775571261]
-material = SubResource("Material_Dogs")
-
-[node name="HookUpperNose" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="2" unique_id=1595504944]
-material = SubResource("Material_Dogs")
-
-[node name="HookLowerShank" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="3" unique_id=292080448]
-material = SubResource("Material_Dogs")
-
-[node name="HookLowerNose" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="4" unique_id=1248640422]
-material = SubResource("Material_Dogs")
-
-[node name="DogSlideCollision" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="5" unique_id=535692904]
-shape = SubResource("Shape_DogSlide")
-
-[node name="CollisionHookUpper" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="6" unique_id=7256267]
-shape = SubResource("Shape_DogTip")
-
-[node name="CollisionHookLower" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot1" parent_id_path=PackedInt32Array(1393812162, 100000003, 954420693) index="7" unique_id=1212617322]
-shape = SubResource("Shape_DogTip")
-
-[node name="DogSlideBar" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="0" unique_id=936171129]
-material = SubResource("Material_Hydraulics")
-
-[node name="HookUpperShank" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="1" unique_id=1347404774]
-material = SubResource("Material_Dogs")
-
-[node name="HookUpperNose" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="2" unique_id=1173237043]
-material = SubResource("Material_Dogs")
-
-[node name="HookLowerShank" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="3" unique_id=1451789997]
-material = SubResource("Material_Dogs")
-
-[node name="HookLowerNose" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="4" unique_id=965424767]
-material = SubResource("Material_Dogs")
-
-[node name="DogSlideCollision" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="5" unique_id=2119534089]
-shape = SubResource("Shape_DogSlide")
-
-[node name="CollisionHookUpper" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="6" unique_id=1486990243]
-shape = SubResource("Shape_DogTip")
-
-[node name="CollisionHookLower" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot2" parent_id_path=PackedInt32Array(1393812162, 100000003, 388908342) index="7" unique_id=1175789137]
-shape = SubResource("Shape_DogTip")
-
-[node name="DogSlideBar" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="0" unique_id=273755639]
-material = SubResource("Material_Hydraulics")
-
-[node name="HookUpperShank" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="1" unique_id=478520176]
-material = SubResource("Material_Dogs")
-
-[node name="HookUpperNose" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="2" unique_id=1045044363]
-material = SubResource("Material_Dogs")
-
-[node name="HookLowerShank" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="3" unique_id=2140831814]
-material = SubResource("Material_Dogs")
-
-[node name="HookLowerNose" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="4" unique_id=2131741359]
-material = SubResource("Material_Dogs")
-
-[node name="DogSlideCollision" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="5" unique_id=354942410]
-shape = SubResource("Shape_DogSlide")
-
-[node name="CollisionHookUpper" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="6" unique_id=611826507]
-shape = SubResource("Shape_DogTip")
-
-[node name="CollisionHookLower" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/DogPivot3" parent_id_path=PackedInt32Array(1393812162, 100000003, 932812058) index="7" unique_id=1686474104]
-shape = SubResource("Shape_DogTip")
-
-[node name="CollisionShape3D" parent="HeadrigStation/HeadrigRailSystemInstance/HeadrigCarriage/KneesAssembly/LogDetector" parent_id_path=PackedInt32Array(1393812162, 100000003, 623844403) index="0" unique_id=1055094244]
-shape = SubResource("Shape_Detector")
-
-[node name="SimpleChainDeck" parent="HeadrigStation/HeadrigConveyor/Visuals" parent_id_path=PackedInt32Array(1393812162, 100000012) index="2" unique_id=1183748203 instance=ExtResource("8_yfjmh")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 3.022561, -0.69253397, -14.898142)
+[node name="SimpleChainDeck" parent="." unique_id=1183748203 instance=ExtResource("8_yfjmh")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.495, -0.2975, 8.8176)
 running = true
 load_zone_position = Vector3(0, 0.35, -2.380826)
 load_zone_size = Vector3(2.4, 0.7, 0.35)
@@ -640,43 +438,24 @@ top_zone_position = Vector3(0, -0.4, 2.729)
 top_zone_size = Vector3(3.9, -2, 0.3)
 deck_area_size = Vector3(4.3, 1.2, 5.7)
 
-[node name="LoadZone" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="2" unique_id=363196828]
+[node name="LoadZone" parent="SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="2" unique_id=363196828]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, -2.380826)
 
-[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/LoadZone" index="0" unique_id=1144213617]
+[node name="CollisionShape3D" parent="SimpleChainDeck/DeckRoot/LoadZone" index="0" unique_id=1144213617]
 shape = SubResource("BoxShape3D_l8n6b")
 
-[node name="TopZone" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="3" unique_id=1473847192]
+[node name="TopZone" parent="SimpleChainDeck/DeckRoot" parent_id_path=PackedInt32Array(1183748203, 1267379701) index="3" unique_id=1473847192]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 2.729)
 
-[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/TopZone" index="0" unique_id=580698439]
+[node name="CollisionShape3D" parent="SimpleChainDeck/DeckRoot/TopZone" index="0" unique_id=580698439]
 shape = SubResource("BoxShape3D_p41h0")
 
-[node name="CollisionShape3D" parent="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck/DeckRoot/DeckArea" parent_id_path=PackedInt32Array(1183748203, 1538561045) index="0" unique_id=1572588527]
+[node name="CollisionShape3D" parent="SimpleChainDeck/DeckRoot/DeckArea" parent_id_path=PackedInt32Array(1183748203, 1538561045) index="0" unique_id=1572588527]
 shape = SubResource("BoxShape3D_qbkg8")
-
-[node name="MarkerRed" parent="HeadrigStation" index="5" unique_id=1863297703]
-transform = Transform3D(1, 0, 0, 0, 0.5013041, 0, 0, 0, 0.5132107, 37.215958, 0.3410695, 18.279066)
-
-[node name="MarkerYellow" parent="HeadrigStation" index="8" unique_id=1125315634]
-transform = Transform3D(0.04999692, 0, -0.0005550033, 0, 0.05, 0, 0.0005550033, 0, 0.04999692, 47.23282, 0.24592447, 21.185163)
 
 [node name="InclineOutfeed" parent="." unique_id=371482520 instance=ExtResource("6_incline")]
 
-[node name="InclineLogDeck" parent="InclineOutfeed" index="0" unique_id=428629830]
-transform = Transform3D(1, 0, 0, 0, 0.9724839, -0.23297013, 0, 0.23297013, 0.9724839, 16.518269, 0.13039482, 4.092802)
-
-[node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone" parent_id_path=PackedInt32Array(371482520, 428629830, 1737171531) index="0" unique_id=256738611]
-transform = Transform3D(1, 0, 0, 0, 0.99999154, -8.195639e-08, 0, 2.0861626e-07, 0.99998295, 0, -0.07921165, -0.30083942)
-
-[node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/TopZone" parent_id_path=PackedInt32Array(371482520, 428629830, 837465067) index="0" unique_id=9190689]
-transform = Transform3D(1, 0, 0, 0, 1.0000001, 0, 0, 0, 1.0000001, 0, -0.12431729, 0.3835845)
-
-[node name="CollisionShape3D" parent="InclineOutfeed/InclineLogDeck/SlopeRoot/DeckArea" parent_id_path=PackedInt32Array(371482520, 428629830, 803607564) index="0" unique_id=992939568]
-transform = Transform3D(0.99994, 0, 0, 0, 0.9999908, -1.7881393e-06, 0, 4.4703484e-08, 0.99999547, -0.0045166016, -0.059870005, 0.08882713)
-debug_fill = false
-
-[node name="RollerBed" parent="InclineOutfeed" index="3" unique_id=220690297]
+[node name="RollerBed" parent="InclineOutfeed" index="2" unique_id=220690297]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 32.029606, -0.32551575, 5.360077)
 constant_linear_velocity = Vector3(1, 0, -4.371139e-08)
 roller_count = 9
@@ -836,11 +615,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.66, -1.288, 110.8)
 [editable path="Ground/ReSawDeck2"]
 [editable path="Ground/SweepRoller"]
 [editable path="LogFeedStation"]
-[editable path="HeadrigStation"]
-[editable path="HeadrigStation/HeadrigRailSystemInstance"]
-[editable path="HeadrigStation/HeadrigConveyor/Visuals/SimpleChainDeck"]
+[editable path="SimpleChainDeck"]
 [editable path="InclineOutfeed"]
-[editable path="InclineOutfeed/InclineLogDeck"]
 [editable path="EdgerTakeAway"]
 [editable path="SlidingPlate"]
 [editable path="SlidingPlate2"]

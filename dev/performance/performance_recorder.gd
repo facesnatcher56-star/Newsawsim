@@ -18,7 +18,7 @@ const ISOLATION_CANDIDATES: PackedStringArray = [
 	"Ground",
 	"DebarkerStation",
 	"LogFeedStation",
-	"HeadrigStation",
+	"Headrig",
 	"InclineOutfeed",
 	"EdgerTakeAway",
 	"SawmillEdger",

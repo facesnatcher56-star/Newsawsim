@@ -7,6 +7,9 @@ extends Node3D
 ##
 ## AnimatableBody3D lugs handle log physics. All procedural meshes and the
 ## chain-link animation live in InclineDeckVisuals (incline_deck_visuals.gd).
+## (Archived for before/after shots: the visuals script is loaded by path.)
+
+const InclineDeckVisuals = preload("res://dev/compare/old_headrig/old_incline_deck_visuals.gd")
 
 @export var incline_angle_deg: float = 22.0
 @export var incline_length:    float = 5.0

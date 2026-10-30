@@ -1,5 +1,4 @@
 @tool
-class_name InclineDeckVisuals
 extends Node3D
 
 ## incline_deck_visuals.gd

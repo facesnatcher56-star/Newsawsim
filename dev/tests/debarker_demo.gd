@@ -19,6 +19,8 @@ const VIEWS: Array = [
 	[Vector3(6.5, 5.0, 12.5), Vector3(-0.8, 0.3, 7.0)],     # 8 whole log deck
 	[Vector3(4.5, 3.6, -2.56), Vector3(-0.8, 0.8, -0.06)],  # 9 step feeder, opposite deck
 	[Vector3(21.5, 4.2, -3.0), Vector3(16.3, 0.4, 3.0)],    # 0 kicker, end stop and incline foot
+	[Vector3(20.0, 4.2, 11.5), Vector3(19.8, 0.3, 5.4)],    # H log deck, carriage and headrig saw
+	[Vector3(29.0, 5.5, -4.0), Vector3(29.0, -0.5, 7.0)],   # J headrig outfeed and the transfer on
 ]
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
 const DROP_Z: Array[float] = [1.2, 1.9, 2.6, 3.3, 4.0, 4.7]
@@ -37,6 +39,9 @@ func _ready() -> void:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
 			deck.debug_log = true
+	var headrig := mill.get_node_or_null("Headrig")
+	if headrig and "debug_log" in headrig:
+		headrig.debug_log = true
 	# The mill has its own camera; ours takes over.
 	_cam = Camera3D.new()
 	_cam.fov = 60.0
@@ -56,6 +61,9 @@ func _process(delta: float) -> void:
 	_cam.current = true
 	var lines := PackedStringArray(["t %.1f s   views: 1-9   F: %dx speed   D: log on deck" % [_time, Engine.time_scale]])
 	var mill := get_child(0)
+	var headrig_node := mill.get_node_or_null("Headrig")
+	if headrig_node and headrig_node.has_method("status_text"):
+		lines.append("Headrig: %s" % headrig_node.status_text())
 	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and deck.has_method("status_text"):
@@ -90,21 +98,33 @@ func _unhandled_input(event: InputEvent) -> void:
 		_set_view(key.keycode - KEY_0)
 	elif key.keycode == KEY_0:
 		_set_view(10)
+	elif key.keycode == KEY_H:
+		_set_view(11)
+	elif key.keycode == KEY_J:
+		_set_view(12)
 	elif key.keycode == KEY_P:
 		# Probe: incline foot geometry and logs around the kicker.
 		var mill := get_child(0)
-		for path in ["InclineOutfeed/InclineLogDeck/SlopeRoot", "InclineOutfeed/InclineLogDeck/SlopeRoot/LoadZone/CollisionShape3D",
-				"InclineOutfeed/InclineLogDeck/SlopeRoot/DeckBottom/CollisionShape3D"]:
-			var n := mill.get_node_or_null(path) as Node3D
-			if n:
-				var extra := ""
-				if n is CollisionShape3D and (n as CollisionShape3D).shape is BoxShape3D:
-					extra = " size %s" % ((n as CollisionShape3D).shape as BoxShape3D).size
-				print("[probe] %s %s%s" % [path, n.global_transform, extra])
+		var headrig := mill.get_node_or_null("Headrig")
+		if headrig and headrig.has_method("status_text"):
+			print("[probe] headrig: %s" % headrig.status_text())
 		for node in get_tree().get_nodes_in_group("logs"):
 			var l := node as Node3D
-			if l.global_position.x > 12.0 and l.global_position.x < 21.0:
+			if l.global_position.x > 12.0 and l.global_position.x < 30.0:
 				print("[probe] log %s at %s" % [l.name, l.global_position])
+	elif key.keycode == KEY_G:
+		# A test log straight onto the headrig's log deck.
+		var log_body := (load("res://game/lumber/log.tscn") as PackedScene).instantiate() as RigidBody3D
+		add_child(log_body)
+		log_body.global_position = Vector3(16.9, 0.45, 4.3)
+		print("[debarker_demo] %.1f s dropped a log on the headrig deck" % _time)
+	elif key.keycode == KEY_B:
+		# Test speed for the headrig carriage: three times as fast through its cycle.
+		var hr := get_child(0).get_node_or_null("Headrig")
+		if hr:
+			for prop in ["gig_speed", "feed_speed", "return_speed", "setworks_speed", "dog_speed"]:
+				hr.set(prop, hr.get(prop) * 3.0)
+			print("[debarker_demo] headrig at test speed")
 	elif key.keycode == KEY_K:
 		# A test log onto the conveyor past the debarker, short of the kicker.
 		var log_body := (load("res://game/lumber/log.tscn") as PackedScene).instantiate() as RigidBody3D
@@ -139,7 +159,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		print("[debarker_demo] %.1f s dropped a log on the infeed" % _time)
 	elif key.keycode == KEY_F:
 		# 1x -> 2x -> 4x. Physics ticks scale with it so each step stays 1/60 s of game time.
-		var speed := 1.0 if Engine.time_scale >= 4.0 else Engine.time_scale * 2.0
+		var speed := 1.0 if Engine.time_scale >= 8.0 else Engine.time_scale * 2.0
 		Engine.time_scale = speed
 		Engine.physics_ticks_per_second = int(60 * speed)
 

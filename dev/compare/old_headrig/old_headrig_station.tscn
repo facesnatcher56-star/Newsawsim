@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://cg4jswye55rr5"]
 
-[ext_resource type="PackedScene" uid="uid://clivwn06kk54i" path="res://game/machines/headrig/headrig_rail_system.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://dev/compare/old_headrig/old_headrig_rail_system.tscn" id="1"]
 [ext_resource type="Script" uid="uid://bnhg073jjgpeh" path="res://game/transport/conveyors/conveyor.gd" id="2"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_red.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_blue.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_green.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://game/shared/markers/marker_yellow.tscn" id="6"]
-[ext_resource type="Script" uid="uid://bf52ar2jpx0jb" path="res://game/machines/headrig/bandsaw_teeth.gd" id="8"]
+[ext_resource type="Script" path="res://dev/compare/old_headrig/old_bandsaw_teeth.gd" id="8"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_outfeed"]
 size = Vector3(1.2, 0.25, 6.8)

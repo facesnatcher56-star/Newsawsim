@@ -9,7 +9,7 @@ extends Node3D
 const OLD_SCENE := preload("res://dev/compare/old_kicker/old_waste_conveyor_kicker.tscn")
 const OLD_STOP := preload("res://game/assets/models/Stop.glb")
 const NEW_SCENE := preload("res://game/machines/log_kicker/log_kicker.tscn")
-const INCLINE_SCENE := preload("res://game/transport/decks/incline_log_deck.tscn")
+const INCLINE_SCENE := preload("res://dev/compare/old_headrig/old_incline_log_deck.tscn")
 const LOG_SCENE := preload("res://game/lumber/log.tscn")
 const OUT := "res://dev/compare/kicker_before_after.png"
 const PANEL := Vector2i(1600, 1200)
