@@ -85,6 +85,8 @@ var _ramp_amt: float = 0.0
 var _pickers: Array[Node3D] = []
 var _picker_t: Array[float] = [-1.0, -1.0]
 var _picked := {}
+var _picker_piece: Array = [null, null]
+var _picker_from: Array = [Transform3D(), Transform3D()]
 var _saw_pivot: Node3D
 var _chip_pivot: Node3D
 var _reman: Node3D
@@ -160,7 +162,8 @@ func _build_bodies() -> void:
 	# Edging chutes down off each side of the belt to the deck.
 	for s in [-1.0, 1.0]:
 		var a := Vector2(Z_LINE + s * (BELT_HALF + 0.02), BELT_Y - 0.03)
-		var b := Vector2(Z_LINE + s * (BELT_HALF + 0.55), DECK_Y + 0.05)
+		# Down onto the tail of that side's edging slasher (waste system), just over its chains.
+		var b := Vector2(Z_LINE + s * 0.95, 0.335)
 		var d := (b - a).normalized()
 		var t := Vector3(0.0, d.y, d.x)
 		var n := Vector3(0.0, t.z, -t.y) * (-1.0 if s < 0.0 else 1.0)
@@ -170,8 +173,6 @@ func _build_bodies() -> void:
 		var mid := Vector3((BELT_X.x + BELT_X.y) * 0.5, (a.y + b.y) * 0.5, (a.x + b.x) * 0.5) - n * 0.01
 		_static_box("EdgingChute%s" % ("Near" if s < 0.0 else "Far"), mid,
 				Vector3(BELT_X.y - BELT_X.x - 0.8, 0.02, a.distance_to(b)), chute_basis)
-	# Until the landing deck is moved here, a stop plate at the end of the belt.
-	_static_box("BeltEndStop", Vector3(BELT_X.y + 0.12, BELT_Y + 0.15, Z_LINE), Vector3(0.03, 0.3, 0.7), Basis.IDENTITY)
 
 
 func _static_box(body_name: String, centre: Vector3, size: Vector3, box_basis: Basis) -> StaticBody3D:
@@ -515,15 +516,36 @@ func _run_pickers(delta: float) -> void:
 				if on_side and under:
 					_picker_t[i] = 0.0
 					_picked[e.get_instance_id()] = true
-					e.linear_velocity = Vector3(belt_speed, 0.6, side * 1.8)
-					e.angular_velocity = Vector3(-side * 2.0, 0.0, 0.0)
+					# The paddle comes down behind the edging and carries it out over the belt
+					# edge; it is the paddle that moves it, so it rides with the paddle.
+					e.freeze_mode = RigidBody3D.FREEZE_MODE_KINEMATIC
+					e.freeze = true
+					_picker_piece[i] = e
+					_picker_from[i] = e.global_transform
 					if debug_log:
 						print("[%s] %.1f s picker %d sweeps an edging off" % [name, Time.get_ticks_msec() / 1000.0, i + 1])
 					break
 			continue
 		_picker_t[i] += delta / picker_time
+		var swing := sin(PI * minf(_picker_t[i], 1.0))
 		if _pickers[i]:
-			_pickers[i].rotation.x = -side * deg_to_rad(38.0) * sin(PI * minf(_picker_t[i], 1.0))
+			_pickers[i].rotation.x = -side * deg_to_rad(38.0) * swing
+		var e := _picker_piece[i] as RigidBody3D
+		if e != null and is_instance_valid(e):
+			# Out to just past the belt edge over the first half of the stroke, then let go onto
+			# the chute.
+			var s := clampf(_picker_t[i] * 2.0, 0.0, 1.0)
+			var from: Transform3D = _picker_from[i]
+			var xf := from
+			xf.origin.x += belt_speed * _picker_t[i] * picker_time
+			xf.origin.z = lerpf(from.origin.z, Z_LINE + side * (BELT_HALF + 0.06), _ease(s))
+			xf.origin.y = from.origin.y + 0.02 * sin(PI * s)
+			e.global_transform = xf
+			if s >= 1.0:
+				e.freeze = false
+				e.linear_velocity = Vector3(0.0, -0.2, side * 0.8)
+				e.angular_velocity = Vector3.ZERO
+				_picker_piece[i] = null
 		if _picker_t[i] >= 1.0:
 			_picker_t[i] = -1.0
 

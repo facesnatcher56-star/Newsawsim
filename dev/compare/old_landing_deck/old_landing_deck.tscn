@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://shur11w6bum3" path="res://game/transport/decks/edger_landing_deck.tscn" id="5_nmjje"]
+
+[node name="OldLandingDeck" type="Node3D"]
+
+[node name="landing_deck_frame" parent="." unique_id=2114419410 instance=ExtResource("5_nmjje")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50.80303, 0.1014605, 18.297045)
+
+[node name="Chain_0_Link_100" parent="landing_deck_frame/BlenderFrame" parent_id_path=PackedInt32Array(2114419410, 56122373) index="107" unique_id=686029105]
+transform = Transform3D(1, 0, 0, 0, -0.47716084, 0.878816, 0, -0.878816, -0.47716084, -2.75, -0.26629478, -0.7517604)
+
+[node name="Chain_1_Link_100" parent="landing_deck_frame/BlenderFrame" parent_id_path=PackedInt32Array(2114419410, 56122373) index="211" unique_id=585333107]
+transform = Transform3D(1, 0, 0, 0, -0.47716084, 0.878816, 0, -0.878816, -0.47716084, -1.375, -0.26629478, -0.7517604)
+
+[node name="Chain_2_Link_100" parent="landing_deck_frame/BlenderFrame" parent_id_path=PackedInt32Array(2114419410, 56122373) index="315" unique_id=423296585]
+transform = Transform3D(1, 0, 0, 0, -0.47716084, 0.878816, 0, -0.878816, -0.47716084, 0, -0.26629478, -0.7517604)
+
+[node name="Chain_3_Link_100" parent="landing_deck_frame/BlenderFrame" parent_id_path=PackedInt32Array(2114419410, 56122373) index="419" unique_id=1708304632]
+transform = Transform3D(1, 0, 0, 0, -0.47716084, 0.878816, 0, -0.878816, -0.47716084, 1.375, -0.26629478, -0.7517604)
+
+[node name="Chain_4_Link_100" parent="landing_deck_frame/BlenderFrame" parent_id_path=PackedInt32Array(2114419410, 56122373) index="523" unique_id=91914138]
+transform = Transform3D(1, 0, 0, 0, -0.47716084, 0.878816, 0, -0.878816, -0.47716084, 2.75, -0.26629478, -0.7517604)
+
+[node name="LandingDeckBottom" parent="landing_deck_frame" index="1" unique_id=497435538]
+grip = 0.2
+
+[node name="CollisionShape3D" parent="landing_deck_frame/LandingDeckBoardStop" parent_id_path=PackedInt32Array(2114419410, 429799534) index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.24495697, 0, -0.014503479)
+
+[editable path="landing_deck_frame"]
+[editable path="landing_deck_frame/BlenderFrame"]

@@ -25,9 +25,9 @@ const GENERATED_GROUP := &"sawmill_building_geometry"
 ## cannot fit the current wall length is skipped, so a resized building never
 ## ends up with a hole in mid-air.
 const OPENINGS := [
-	{"wall": &"south", "offset": -16.75, "width": 8.0, "top": 6.0},   # incline outfeed
+	{"wall": &"south", "offset": -20.75, "width": 8.0, "top": 6.0},   # incline outfeed
 	{"wall": &"west", "offset": -27.4, "width": 14.0, "top": 6.5},     # log infeed / truck door
-	{"wall": &"north", "offset": 30.0, "width": 11.0, "top": 7.0},     # bin sorter haul-out
+	{"wall": &"north", "offset": 30.8, "width": 11.0, "top": 7.0},     # bin sorter haul-out
 	{"wall": &"east", "offset": -14.1, "width": 3.0, "top": 3.0},      # personnel door
 ]
 

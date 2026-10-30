@@ -88,6 +88,9 @@ BELT_R = 4.0 * IN
 PICKER_X = (xd(190.0), xd(290.0))
 PICKER_PIVOT_Y = DECK_Y + 84.0 * IN
 EXT_X = (BD.DECK_X[1], 53.6)
+# Edging chutes off the belt end on the edging slashers (waste system), just over their chains.
+CHUTE_OUT = 0.95
+CHUTE_END_Y = 0.335
 EXT_Z = (19.8, 24.6)
 
 
@@ -114,8 +117,12 @@ def build_deck(bm):
         for k in range(n + 1):
             px, pz = xa + (xb - xa) * k / n, za + (zb - za) * k / n
             gbox(bm, px - 0.02, px + 0.02, y, y + 1.07, pz - 0.02, pz + 0.02, M["moving"])
-    rail(x0, z1 - 0.03, x1 - 0.03, z1 - 0.03)
-    rail(x1 - 0.03, z1 - 0.03, x1 - 0.03, z0 + 0.03)
+    # The far edging slasher's chute goes out over the far edge: no rail there.
+    rail(x0, z1 - 0.03, BELT_X[0] - 0.1, z1 - 0.03)
+    rail(BELT_X[1] - 0.1, z1 - 0.03, x1 - 0.03, z1 - 0.03)
+    # End rail, open where boards run off the belt onto the landing table.
+    rail(x1 - 0.03, z1 - 0.03, x1 - 0.03, Z_LINE + 0.6)
+    rail(x1 - 0.03, Z_LINE - 0.6, x1 - 0.03, z0 + 0.03)
     rail(x0, z0 + 0.03, BELT_X[0] - 0.3, z0 + 0.03)
 
 
@@ -246,7 +253,8 @@ def build_picker_belt(coll, mats, bm):
         for s in (-1, 1):
             gbox(bm, xs - 0.03, xs + 0.03, DECK_Y, yt - 0.28, z + s * 13.5 * IN - 0.03, z + s * 13.5 * IN + 0.03, M["frame"])
         xs += 1.2
-    gbox(bm, x1 + 0.12, x1 + 0.55, yt - 0.3, yt - 0.02, z + 0.2, z + 0.45, M["motor"])
+    # Drive under the head end, clear of the landing table past the belt end.
+    gbox(bm, x1 - 0.5, x1 - 0.1, yt - 0.62, yt - 0.33, z - 0.15, z + 0.15, M["motor"])
     for name, xp in (("ED_BeltTail", x0), ("ED_BeltHead", x1)):
         e = empty(name, coll, None, G(xp, yt - BELT_R, z), 0.06)
         pb = bmesh.new()
@@ -256,8 +264,8 @@ def build_picker_belt(coll, mats, bm):
     # Edging chutes down off both sides of the belt, to the vibrating conveyors below the deck.
     for s in (-1, 1):
         ze = z + s * (BELT_HALF + 0.02)
-        zo = z + s * (BELT_HALF + 0.55)
-        beam(bm, ((x0 + x1) / 2, yt - 0.03, ze), ((x0 + x1) / 2, DECK_Y + 0.05, zo), x1 - x0 - 0.8, 0.012, M["wear"])
+        zo = z + s * CHUTE_OUT
+        beam(bm, ((x0 + x1) / 2, yt - 0.03, ze), ((x0 + x1) / 2, CHUTE_END_Y, zo), x1 - x0 - 0.8, 0.012, M["wear"])
     # Pendulum pickers: posts each side, pivot beam overhead, an air cylinder to each arm.
     for i, xp in enumerate(PICKER_X):
         for s in (-1, 1):

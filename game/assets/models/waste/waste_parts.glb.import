@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://rk47y3etkb0y"
-path="res://.godot/imported/headrig_outfeed_flight.glb-c6ddb1491f45c8ec868a4f6c52a79700.scn"
+uid="uid://cu1kapo3qaof0"
+path="res://.godot/imported/waste_parts.glb-adcba41f2dc3407bd1ac8813ba2793b7.scn"
 
 [deps]
 
-source_file="res://game/assets/models/headrig_outfeed/headrig_outfeed_flight.glb"
-dest_files=["res://.godot/imported/headrig_outfeed_flight.glb-c6ddb1491f45c8ec868a4f6c52a79700.scn"]
+source_file="res://game/assets/models/waste/waste_parts.glb"
+dest_files=["res://.godot/imported/waste_parts.glb-adcba41f2dc3407bd1ac8813ba2793b7.scn"]
 
 [params]
 

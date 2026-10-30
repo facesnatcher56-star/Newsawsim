@@ -1,4 +1,7 @@
-"""Headrig outfeed: live roll case with kicker arms, slab conveyor and drum chipper (run inside Blender).
+"""Headrig outfeed: live roll case with kicker arms (run inside Blender).
+
+Slabs are kicked onto the slab slasher of the waste system (dev/blender/waste); the slab flight
+trough and small drum chipper this file still has builders for are no longer built or exported.
 
 What comes off the band headrig rides the outfeed live rolls on down a roll case:
   - slab kickers (four arms on one shaft, -Z side pivot) tip slabs off the -Z edge down skid
@@ -203,7 +206,7 @@ def build_skids(bm):
         return [(edges[i], edges[i + 1]) for i in range(0, len(edges), 2)]
     slab_arms = KICKERS["Slab"]["xs"] + KICKERS["Cant"]["xs"]
     for xa, xb in runs(30.1, 35.6, slab_arms):
-        beam(bm, ((xa + xb) / 2, TOP_Y - 0.04, z0 - 0.04), ((xa + xb) / 2, -0.56, TROUGH_Z[1] + 0.03), xb - xa, 0.02,
+        beam(bm, ((xa + xb) / 2, TOP_Y - 0.04, z0 - 0.04), ((xa + xb) / 2, -0.43, 4.6), xb - xa, 0.02,
              M["wear"])
     for xa, xb in runs(38.7, 43.4, KICKERS["Board"]["xs"]):
         beam(bm, ((xa + xb) / 2, TOP_Y - 0.04, z1 + 0.18), ((xa + xb) / 2, TOP_Y - 0.12, 6.35), xb - xa, 0.02,
@@ -401,12 +404,8 @@ def build_all():
     bm = bmesh.new()
     build_case(bm)
     build_skids(bm)
-    build_trough(bm)
-    build_chipper(bm)
     kicks = [build_kicker(coll, mats, bm, n, s) for n, s in KICKERS.items()]
     H.make("HO_FrameMesh", bm, coll, mats, frame)
     rolls = build_rolls(coll, mats)
-    build_trough_parts(coll, mats)
-    build_feed_roll(coll, mats)
     pose()
     return {"objects": len(coll.all_objects), "rolls": len(rolls), "kickers": len(kicks)}

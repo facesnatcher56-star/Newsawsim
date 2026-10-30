@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://game/machines/waste_system/waste_system.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://game/assets/models/waste/waste_frame.glb" id="2_frame"]
+[ext_resource type="PackedScene" path="res://game/assets/models/waste/waste_parts.glb" id="3_parts"]
+
+[node name="WasteSystem" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Model" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.288, 0)
+
+[node name="Frame" parent="Model" instance=ExtResource("2_frame")]
+
+[node name="Parts" parent="Model" instance=ExtResource("3_parts")]
+
+[node name="ChipperLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 55.5, 4.0, 12.0)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 4.0
+spot_range = 7.0
+spot_angle = 60.0
+
+[node name="SlasherLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 32.7, 3.6, 3.6)
+light_color = Color(1, 0.95, 0.88, 1)
+light_energy = 3.0
+spot_range = 6.0
+spot_angle = 60.0

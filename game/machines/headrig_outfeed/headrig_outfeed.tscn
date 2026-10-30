@@ -13,12 +13,6 @@ size = Vector3(0.15, 0.42, 1.0)
 [sub_resource type="BoxShape3D" id="Box_guide"]
 size = Vector3(3.1, 0.18, 0.06)
 
-[sub_resource type="BoxShape3D" id="Box_trough_floor"]
-size = Vector3(16.6, 0.1, 0.65)
-
-[sub_resource type="BoxShape3D" id="Box_trough_wall"]
-size = Vector3(16.6, 0.4, 0.04)
-
 [node name="HeadrigOutfeed" type="Node3D"]
 script = ExtResource("1_script")
 
@@ -49,30 +43,9 @@ shape = SubResource("Box_guide")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.15, -0.04, 5.78)
 shape = SubResource("Box_guide")
 
-[node name="Trough" type="StaticBody3D" parent="."]
-
-[node name="Floor" type="CollisionShape3D" parent="Trough"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.7, -0.91, 3.875)
-shape = SubResource("Box_trough_floor")
-
-[node name="WallNear" type="CollisionShape3D" parent="Trough"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.7, -0.68, 3.53)
-shape = SubResource("Box_trough_wall")
-
-[node name="WallFar" type="CollisionShape3D" parent="Trough"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.7, -0.68, 4.22)
-shape = SubResource("Box_trough_wall")
-
 [node name="CaseLight" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 36.0, 4.2, 5.0)
 light_color = Color(1, 0.95, 0.88, 1)
 light_energy = 4.0
 spot_range = 7.0
 spot_angle = 60.0
-
-[node name="ChipperLight" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 46.0, 3.6, 3.6)
-light_color = Color(1, 0.95, 0.88, 1)
-light_energy = 3.0
-spot_range = 6.0
-spot_angle = 50.0

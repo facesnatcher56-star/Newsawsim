@@ -73,9 +73,9 @@ LIFT_DROP = 0.2
 OUT_STOP_X = 43.65
 # Chip duct to the slab chipper's blow pipe (its riser is at x 47.8, z 3.875).
 DUCT_R = 0.12
-DUCT_Y = 4.6
-PIPE_X = 47.8
-PIPE_Z = 3.875
+DUCT_Y = 5.0
+PIPE_X = 56.95
+PIPE_Z = 12.0
 
 
 def saw_zs():
@@ -265,14 +265,14 @@ def build_gang(bm):
         zc = LINE_Z + s * (CANT_H * 0.0 + chip_offset())
         cyl_z(bm, G(CHIP_X, top + 0.32, zc), 0.17, 0.55, segs=20, mat_index=M["motor"])
         cyl_z(bm, G(CHIP_X, top + 0.03, zc), 0.12, 0.06, segs=20, mat_index=M["dark"])
-    # Chip duct: from the hood up, across over the case and on to the chipper's blow pipe.
+    # Chip duct: from the hood up, across to z 12 and along to the big chipper's blow pipe by the
+    # east wall (waste system), joining it from above.
     hx, hz = CHIP_X + 0.55, LINE_Z
     cyl_z(bm, G(hx, (top + DUCT_Y) / 2, hz), DUCT_R, DUCT_Y - top, segs=16, mat_index=M["wear"])
-    for p in ((hx, DUCT_Y, hz), (hx, DUCT_Y, PIPE_Z), (PIPE_X, DUCT_Y, PIPE_Z)):
+    for p in ((hx, DUCT_Y, hz), (hx, DUCT_Y, PIPE_Z)):
         L.add_sphere(bm, DUCT_R * 1.1, Matrix.Translation(G(*p)), segs=16, rings=8, mat_index=M["wear"])
-    cyl_y(bm, G(hx, DUCT_Y, (hz + PIPE_Z) / 2), DUCT_R, hz - PIPE_Z, segs=16, mat_index=M["wear"])
+    cyl_y(bm, G(hx, DUCT_Y, (hz + PIPE_Z) / 2), DUCT_R, abs(PIPE_Z - hz), segs=16, mat_index=M["wear"])
     cyl_x(bm, G((hx + PIPE_X) / 2, DUCT_Y, PIPE_Z), DUCT_R, PIPE_X - hx, segs=16, mat_index=M["wear"])
-    cyl_z(bm, G(PIPE_X, (DUCT_Y + 4.3) / 2, PIPE_Z), DUCT_R, DUCT_Y - 4.3, segs=16, mat_index=M["wear"])
     for x in range(int(hx) + 2, int(PIPE_X), 3):
         gbox(bm, x - 0.02, x + 0.02, DUCT_Y + DUCT_R, 7.4, PIPE_Z - 0.02, PIPE_Z + 0.02, M["dark"])
 

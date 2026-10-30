@@ -45,6 +45,11 @@ const CLOSE_UPS: Array = [
 	[Vector3(42.4, 1.5, 20.5), Vector3(43.3, 1.1, 21.6)],      # sharp chain and hold-downs at the edger
 	[Vector3(44.7, 1.9, 19.9), Vector3(44.6, 1.3, 21.6)],      # saw box from the operator side
 	[Vector3(47.3, 1.6, 20.4), Vector3(48.3, 1.1, 21.6)],      # picker belt and picker
+	[Vector3(31.0, 0.9, 1.0), Vector3(32.7, -0.45, 3.8)],      # slab slasher and slab pan
+	[Vector3(48.0, 1.4, 18.0), Vector3(49.5, 0.1, 20.2)],      # near edging slasher and chute
+	[Vector3(52.0, 1.3, 9.2), Vector3(54.8, -0.8, 12.0)],      # pans into the collector and chipper
+	[Vector3(51.0, 3.0, 18.0), Vector3(55.6, 0.6, 24.5)],      # belt end, landing table and transfer
+	[Vector3(60.5, 3.2, 24.0), Vector3(55.6, 0.3, 29.0)],      # transfer end and lug incline foot
 ]
 var _close_up: int = -1
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
@@ -64,7 +69,8 @@ func _ready() -> void:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
 			deck.debug_log = true
-	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw", "UnscramblerLine", "ScannerDeck", "EdgerLine"]:
+	for node_name in ["Headrig", "HeadrigOutfeed", "GangResaw", "UnscramblerLine", "ScannerDeck", "EdgerLine",
+			"WasteSystem", "LandingTransfer"]:
 		var node := mill.get_node_or_null(node_name)
 		if node and "debug_log" in node:
 			node.debug_log = true
@@ -105,6 +111,12 @@ func _process(delta: float) -> void:
 	var edger_node := mill.get_node_or_null("EdgerLine")
 	if edger_node and edger_node.has_method("status_text"):
 		lines.append("Edger: %s" % edger_node.status_text())
+	var waste_node := mill.get_node_or_null("WasteSystem")
+	if waste_node and waste_node.has_method("status_text"):
+		lines.append("Waste: %s" % waste_node.status_text())
+	var landing_node := mill.get_node_or_null("LandingTransfer")
+	if landing_node and landing_node.has_method("status_text"):
+		lines.append("Landing: %s" % landing_node.status_text())
 	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and deck.has_method("status_text"):
@@ -184,6 +196,29 @@ func _unhandled_input(event: InputEvent) -> void:
 					if node is Node3D:
 						node.visible = not node.visible
 			print("[debarker_demo] edger opened up for a look inside")
+	elif key.keycode == KEY_INSERT:
+		# Short waste pieces straight onto both cross pans near the collector.
+		for i in 3:
+			var sp := (load("res://game/lumber/cut_slab.tscn") as PackedScene).instantiate() as RigidBody3D
+			add_child(sp)
+			sp.configure_length(1.2)
+			sp.add_to_group("waste_piece")
+			sp.global_position = Vector3(54.4, -0.6, 8.0 + 1.3 * i)
+		for i in 2:
+			var ep := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
+			add_child(ep)
+			ep.configure_dimensions(1.2, 0.04, 0.05)
+			ep.add_to_group("cut_slabs")
+			ep.add_to_group("edgings")
+			ep.add_to_group("waste_piece")
+			ep.global_position = Vector3(54.4, -0.6, 15.0 + 1.3 * i)
+		print("[debarker_demo] %.1f s waste pieces onto the cross pans" % _time)
+	elif key.keycode == KEY_END:
+		# A test slab straight onto the slab slasher's chains.
+		var sl := (load("res://game/lumber/cut_slab.tscn") as PackedScene).instantiate() as RigidBody3D
+		add_child(sl)
+		sl.global_position = Vector3(32.7, -0.35, 4.35)
+		print("[debarker_demo] %.1f s a slab onto the slab slasher" % _time)
 	elif key.keycode == KEY_TAB:
 		# A rough flitch straight onto the positioning skids.
 		var fl := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
@@ -215,9 +250,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		var headrig := mill.get_node_or_null("Headrig")
 		if headrig and headrig.has_method("status_text"):
 			print("[probe] headrig: %s" % headrig.status_text())
+		for node in get_tree().get_nodes_in_group("waste_piece"):
+			var wp := node as RigidBody3D
+			print("[probe] waste piece at %s v %s%s" % [wp.global_position, wp.linear_velocity, " frozen" if wp.freeze else ""])
 		for node in get_tree().get_nodes_in_group("cut_boards"):
 			var bd := node as RigidBody3D
-			if bd.global_position.x > 36.0 and bd.global_position.z > 12.5 and bd.global_position.z < 22.0:
+			if bd.global_position.x > 36.0 and bd.global_position.z > 12.5 and bd.global_position.z < 45.0 \
+					and not bd.is_in_group("waste_piece"):
 				print("[probe] board %s at %s rot %s v %s" % [bd.name, bd.global_position, bd.global_rotation_degrees,
 					bd.linear_velocity])
 				# What the board overlaps (slightly grown), to find what holds it.

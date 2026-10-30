@@ -28,10 +28,10 @@ def export_all():
     coll = bpy.data.collections[D.COLL]
     tops = [o for o in coll.objects if o.parent is None and not o.name.startswith("HO_Preview")]
     frame = [o for o in tops if o.name == "HO_Frame"]
-    flight = [o for o in tops if o.name == "HO_Flight"]
+    flight = []
     parts = [o for o in tops if o not in frame and o not in flight]
     out = {}
-    for name, roots in (("frame", frame), ("parts", parts), ("flight", flight)):
+    for name, roots in (("frame", frame), ("parts", parts)):
         fn = "headrig_outfeed_%s.glb" % name
         out[fn] = HE._export(roots, os.path.join(OUT, fn))
     return out

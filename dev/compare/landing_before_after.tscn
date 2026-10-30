@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://dev/compare/landing_before_after.gd" id="1_compare"]
+
+[node name="LandingBeforeAfter" type="Node3D"]
+script = ExtResource("1_compare")
