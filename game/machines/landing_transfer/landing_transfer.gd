@@ -14,7 +14,9 @@ const ChainLoop := preload("res://game/transport/chains/chain_loop.gd")
 
 const BOARD_X := 55.6
 const STOP_X := 58.04
-const STRAND_X: Array[float] = [52.85, 54.225, 55.6, 56.975, 58.35]
+## Five strands interleaved with the incline's lanes, plus two either side of the centre so a
+## 6 ft board, centred, lies on three.
+const STRAND_X: Array[float] = [52.85, 54.225, 55.26, 55.6, 55.94, 56.975, 58.35]
 const LANE_Z := 21.6
 const PATH := [Vector2(21.25, 1.060), Vector2(22.10, 1.060), Vector2(26.82, 0.127), Vector2(27.82, 0.127)]
 const SPROCKET_R := 0.0762
@@ -43,6 +45,7 @@ var _roll_travel: float = 0.0
 var _chain := {}
 var _shafts: Array[Node3D] = []
 var _landed: int = 0
+var _braked: bool = false
 
 
 func _ready() -> void:
@@ -103,13 +106,19 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# Drop the rolls once a board lies still against the end stop and the transfer start is clear.
+	# A photo eye at the table centre stops the rolls as a board's middle reaches it, so every
+	# length lands centred on the sorter line (the end stop only catches a 16 ft board that
+	# overruns). Then, with the board still and the transfer start clear, the rolls drop.
 	var at_stop := false
 	var on_table := false
+	var centred := false
 	for b in _boards_in(52.6, 59.0, LANE_Z - 0.45, LANE_Z + 0.45, 1.0, 1.3):
 		on_table = true
-		if b.global_position.x + _half_len(b) > STOP_X - 0.05 and absf(b.linear_velocity.x) < 0.1:
-			at_stop = true
+		if b.global_position.x >= BOARD_X - 0.03 or b.global_position.x + _half_len(b) > STOP_X - 0.05:
+			centred = true
+			if absf(b.linear_velocity.x) < 0.1:
+				at_stop = true
+	_braked = centred
 	var start_clear := _boards_in(52.6, 59.0, LANE_Z + 0.45, 22.4, 0.9, 1.3).is_empty()
 	if not _want_down and at_stop and start_clear:
 		_want_down = true
@@ -120,7 +129,7 @@ func _physics_process(delta: float) -> void:
 		_want_down = false
 	_down = move_toward(_down, 1.0 if _want_down else 0.0, delta / drop_time)
 	_place_lift()
-	var rv := roll_speed if _down < 0.5 else 0.0
+	var rv := roll_speed if _down < 0.5 and not _braked else 0.0
 	_lift_body.constant_linear_velocity = Vector3(rv, 0.0, 0.0)
 	_roll_travel += rv * delta
 	for r in _rolls:

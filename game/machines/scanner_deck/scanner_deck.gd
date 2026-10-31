@@ -30,13 +30,13 @@ const SCAN_Z := Vector2(15.8342, 20.4951)
 const SCAN_R := 0.1016
 const SCAN_LUG_PITCH := 0.6604
 const SCAN_LUG_H := 0.0635
-## Chain tops step down a few millimetres at each hand-off: take-away 1.114, dead plate 1.111,
-## lug loader 1.108, dead plate 1.1045, scanner chains 1.101.
+## Chain tops step down a few millimetres at each hand-off: take-away 1.114 (interleaved with the
+## lug loader's tail), lug loader 1.108, dead plate 1.1045, scanner chains 1.101.
 const CHAIN_Y := 1.108
 const SCAN_Y := 1.101
-const DEAD_IN_Y := 1.111
 const DEAD_OUT_Y := 1.1045
-const TAKE_END_Z := 14.0308
+const DEAD_LEAD := 0.012                          # dead plate lead edge below its top
+const LUG_LEAD := 0.06                            # lug loader tail: chain rising round the sprockets
 const STOP_HALF_Z := 14.8436
 const STOP_END_Z := 15.5294
 const STOP_UP := 0.0635
@@ -57,6 +57,7 @@ const CHAIN_SCENE := "res://game/assets/models/board_line/board_line_roller_link
 const LUG_SCENE := "res://game/assets/models/board_line/board_deck_lug.glb"
 
 @export var loader_slow_speed: float = 0.45
+@export var slow_chain_friction: float = 0.25
 @export var loader_fast_speed: float = 1.0
 @export var scanner_speed: float = 0.6
 @export var zero_roll_speed: float = 0.8
@@ -78,6 +79,8 @@ var _loop_a
 var _loop_b
 var _loop_scan
 var _travel_a: float = 0.0
+var _a_v: float = 0.0                              # slow section's chain speed now
+var _half_down_t: float = 0.0                      # how long the halfway stops have been down
 var _travel_b: float = 0.0
 var _travel_scan: float = 0.0
 var _scan_v: float = 0.0
@@ -125,15 +128,28 @@ func _build_bodies() -> void:
 			Vector3(DECK_X.y - DECK_X.x, 0.04, DECK_Z.y - DECK_Z.x))
 	var xa: float = LUG_X.min() + LUG_B_OFFSET - 0.05
 	var xb: float = LUG_X.max() + 0.05
-	_surf_a = _static_box("LugLoaderA", Vector3((xa + xb) * 0.5, CHAIN_Y - 0.03, (LUG_A_Z.x + LUG_A_Z.y) * 0.5),
-			Vector3(xb - xa, 0.06, LUG_A_Z.y - LUG_A_Z.x))
+	# The tail runs in under the take-away's head (chains interleaved); its first few cm follow the
+	# chain coming up round the tail sprockets, so a board sliding off the take-away rides on.
+	_surf_a = _static_box("LugLoaderA", Vector3((xa + xb) * 0.5, CHAIN_Y - 0.03,
+			(LUG_A_Z.x + LUG_LEAD + LUG_A_Z.y) * 0.5), Vector3(xb - xa, 0.06, LUG_A_Z.y - LUG_A_Z.x - LUG_LEAD))
+	# Plain chain on worn wear strips slides easily under a standing board; the fast section's
+	# chains grip, so a released board that still overhangs the stopped slow chains is pulled off.
+	var slick := PhysicsMaterial.new()
+	slick.friction = slow_chain_friction
+	_surf_a.physics_material_override = slick
+	var lead := _ramp_box("LugLoaderALead", (xa + xb) * 0.5, xb - xa, LUG_A_Z.x, CHAIN_Y - DEAD_LEAD,
+			LUG_A_Z.x + LUG_LEAD, CHAIN_Y)
+	var lead_cs := lead.get_child(0)
+	lead.remove_child(lead_cs)
+	_surf_a.add_child(lead_cs)
+	lead.queue_free()
 	_surf_b = _static_box("LugLoaderB", Vector3((xa + xb) * 0.5, CHAIN_Y - 0.03, (LUG_B_Z.x + LUG_B_Z.y) * 0.5),
 			Vector3(xb - xa, 0.06, LUG_B_Z.y - LUG_B_Z.x))
-	# Dead plates across the gaps: take-away to lug loader, lug loader to scanner chains.
-	_static_box("DeadPlateIn", Vector3((xa + xb) * 0.5, DEAD_IN_Y - 0.03, (TAKE_END_Z + LUG_A_Z.x) * 0.5),
-			Vector3(xb - xa + 0.1, 0.06, LUG_A_Z.x - TAKE_END_Z))
-	_static_box("DeadPlateOut", Vector3((SCAN_X.min() + SCAN_X.max()) * 0.5, DEAD_OUT_Y - 0.03,
-			(LUG_B_Z.y + SCAN_Z.x) * 0.5), Vector3(SCAN_X.max() - SCAN_X.min() + 0.2, 0.06, SCAN_Z.x - LUG_B_Z.y))
+	# Dead plate across the gap from the lug loader to the scanner chains. It slopes up from a
+	# chamfered lead edge well below the chain before it, since a heavy board settles a few mm into
+	# the chain surface and would butt a square edge.
+	_ramp_box("DeadPlateOut", (SCAN_X.min() + SCAN_X.max()) * 0.5, SCAN_X.max() - SCAN_X.min() + 0.2,
+			LUG_B_Z.y, DEAD_OUT_Y - DEAD_LEAD, SCAN_Z.x, DEAD_OUT_Y)
 	_surf_scan = _static_box("ScannerChains", Vector3((SCAN_X.min() + SCAN_X.max()) * 0.5, SCAN_Y - 0.03,
 			(SCAN_Z.x + SCAN_Z.y) * 0.5), Vector3(SCAN_X.max() - SCAN_X.min() + 0.1, 0.06, SCAN_Z.y - SCAN_Z.x))
 	_static_box("ZeroFence", Vector3(FENCE_X + 0.01, SCAN_Y + 0.05, (SCAN_Z.x + SCAN_Z.y) * 0.5),
@@ -199,6 +215,15 @@ func _static_box(body_name: String, centre: Vector3, size: Vector3) -> StaticBod
 	return body
 
 
+## A 6 cm plate across x (centre xc, width w) whose top runs from (z0, y0) up to (z1, y1).
+func _ramp_box(body_name: String, xc: float, w: float, z0: float, y0: float, z1: float, y1: float) -> StaticBody3D:
+	var body := _static_box(body_name, Vector3.ZERO, Vector3(w, 0.06, Vector2(z1 - z0, y1 - y0).length()))
+	var tilt := Basis(Vector3.RIGHT, -atan2(y1 - y0, z1 - z0))
+	var cs := body.get_child(0) as CollisionShape3D
+	cs.transform = Transform3D(tilt, Vector3(xc, (y0 + y1) * 0.5, (z0 + z1) * 0.5) - tilt.y * 0.03)
+	return body
+
+
 # --- Main loop ------------------------------------------------------------------------------------
 
 func _physics_process(delta: float) -> void:
@@ -217,10 +242,23 @@ func _physics_process(delta: float) -> void:
 	if not edger_ready:
 		for b in _boards_in(37.5, 44.5, SCAN_Z.y - 0.25, SCAN_Z.y + 0.3, CHAIN_Y - 0.1, CHAIN_Y + 0.3):
 			_scan_v = 0.0
-	_surf_a.constant_linear_velocity = Vector3(0.0, 0.0, loader_slow_speed)
+	# The slow section is stop-and-go off a photo eye at the halfway stops: it stops once a board is
+	# standing against them (so the queue behind never presses edge to edge and rides up) and stays
+	# stopped while they are down, so the released board is pulled off alone by the fast section.
+	# If a released board hasn't cleared in a few seconds (two boards ridden up together) it runs
+	# again to work the jam through.
+	var half: Dictionary = _stops["half"]
+	_half_down_t = _half_down_t + delta if half["want_down"] else 0.0
+	var a_stop: bool
+	if half["want_down"]:
+		a_stop = _half_down_t < 3.0
+	else:
+		a_stop = half["down"] > 0.0 or _flip_t >= 0.0 or _board_at(boards, STOP_HALF_Z) != null
+	_a_v = move_toward(_a_v, 0.0 if a_stop else loader_slow_speed, delta * 3.0)
+	_surf_a.constant_linear_velocity = Vector3(0.0, 0.0, _a_v)
 	_surf_b.constant_linear_velocity = Vector3(0.0, 0.0, loader_fast_speed)
 	_surf_scan.constant_linear_velocity = Vector3(0.0, 0.0, _scan_v)
-	_travel_a += loader_slow_speed * delta
+	_travel_a += _a_v * delta
 	_travel_b += loader_fast_speed * delta
 	_travel_scan += _scan_v * delta
 	_move_lug_rows()
@@ -231,7 +269,7 @@ func _physics_process(delta: float) -> void:
 		for b in boards:
 			if b.global_position.z < STOP_HALF_Z:
 				queued += 1
-		_unscrambler.hold = queued >= queue_full
+		_unscrambler.hold = queued >= queue_full or _a_v < loader_slow_speed * 0.5
 	_animate()
 
 

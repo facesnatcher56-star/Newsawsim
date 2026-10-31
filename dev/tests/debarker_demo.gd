@@ -52,6 +52,7 @@ const CLOSE_UPS: Array = [
 	[Vector3(60.5, 3.2, 24.0), Vector3(55.6, 0.3, 29.0)],      # transfer end and lug incline foot
 ]
 var _close_up: int = -1
+var _flitches: int = 0
 ## Chain bed spots (bed-local z) where D drops test logs, from near the feeder back.
 const DROP_Z: Array[float] = [1.2, 1.9, 2.6, 3.3, 4.0, 4.7]
 var _drops: int = 0
@@ -86,10 +87,73 @@ func _ready() -> void:
 	var layer := CanvasLayer.new()
 	layer.add_child(_label)
 	add_child(layer)
+	# Scripted runs: -- --keys=1:Delete,1:F,1:F --probe-every=20 --end=300 (game seconds).
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--keys="):
+			for item in arg.trim_prefix("--keys=").split(","):
+				var parts := item.split(":")
+				_auto_keys.append([float(parts[0]), OS.find_keycode_from_string(parts[1])])
+		elif arg.begins_with("--probe-every="):
+			_probe_every = float(arg.trim_prefix("--probe-every="))
+		elif arg.begins_with("--end="):
+			_auto_end = float(arg.trim_prefix("--end="))
+		elif arg.begins_with("--shots="):
+			# Comma-separated game times; each saves the view to --shot-dir as shot_<t>.png.
+			for t in arg.trim_prefix("--shots=").split(","):
+				_auto_shots.append(float(t))
+		elif arg.begins_with("--shot-dir="):
+			_shot_dir = arg.trim_prefix("--shot-dir=")
+		elif arg == "--no-hud":
+			_label.visible = false
+		elif arg.begins_with("--cam="):
+			# --cam=t:x,y,z:tx,ty,tz moves the camera at game time t (repeat for more moves).
+			var parts := arg.trim_prefix("--cam=").split(":")
+			var p := parts[1].split_floats(",")
+			var q := parts[2].split_floats(",")
+			_auto_cams.append([float(parts[0]), Vector3(p[0], p[1], p[2]), Vector3(q[0], q[1], q[2])])
+
+
+var _auto_keys: Array = []
+var _probe_every: float = 0.0
+var _next_probe: float = 0.0
+var _auto_end: float = 0.0
+var _auto_shots: Array[float] = []
+var _auto_cams: Array = []
+var _shot_dir: String = "user://"
+
+
+func _press(code: Key) -> void:
+	var ev := InputEventKey.new()
+	ev.keycode = code
+	ev.pressed = true
+	_unhandled_input(ev)
+
+
+func _run_auto() -> void:
+	while not _auto_keys.is_empty() and _time >= float(_auto_keys[0][0]):
+		_press(_auto_keys.pop_front()[1])
+	if _probe_every > 0.0 and _time >= _next_probe:
+		_next_probe = _time + _probe_every
+		print("[probe] ---- t %.1f s ----" % _time)
+		_press(KEY_P)
+	while not _auto_cams.is_empty() and _time >= float(_auto_cams[0][0]):
+		var c: Array = _auto_cams.pop_front()
+		_cam.projection = Camera3D.PROJECTION_PERSPECTIVE
+		_cam.fov = 50.0
+		_cam.position = c[1]
+		_cam.look_at(c[2])
+	while not _auto_shots.is_empty() and _time >= _auto_shots[0]:
+		var path := _shot_dir.path_join("shot_%05.1f.png" % _auto_shots.pop_front())
+		get_viewport().get_texture().get_image().save_png(path)
+		print("[debarker_demo] saved %s" % path)
+	if _auto_end > 0.0 and _time >= _auto_end:
+		print("[debarker_demo] scripted run done at %.1f s" % _time)
+		get_tree().quit()
 
 
 func _process(delta: float) -> void:
 	_time += delta
+	_run_auto()
 	_cam.current = true
 	var lines := PackedStringArray(["t %.1f s   views: 1-9   F: %dx speed   D: log on deck" % [_time, Engine.time_scale]])
 	var mill := get_child(0)
@@ -220,14 +284,29 @@ func _unhandled_input(event: InputEvent) -> void:
 		sl.global_position = Vector3(32.7, -0.35, 4.35)
 		print("[debarker_demo] %.1f s a slab onto the slab slasher" % _time)
 	elif key.keycode == KEY_TAB:
-		# A rough flitch straight onto the positioning skids.
+		# A rough flitch straight onto the positioning skids, even-ended at the zero line; each
+		# press is the next length, 6 ft to 16 ft.
+		var feet: int = 6 + 2 * (_flitches % 6)
+		_flitches += 1
+		var length := feet * 0.3048
 		var fl := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
 		add_child(fl)
-		fl.configure_dimensions(4.877, 0.041, randf_range(0.22, 0.32))
+		fl.configure_dimensions(length, 0.038, randf_range(0.22, 0.32))
 		fl.nominal_size = "flitch"
 		fl.set_wane(randf_range(0.015, 0.04), randf_range(0.015, 0.04))
-		fl.global_position = Vector3(41.2, 1.14, 20.7)
-		print("[debarker_demo] %.1f s a flitch onto the edger skids" % _time)
+		fl.global_position = Vector3(43.6 - length * 0.5, 1.14, 20.7)
+		print("[debarker_demo] %.1f s a %d ft flitch onto the edger skids" % [_time, feet])
+	elif key.keycode == KEY_DELETE:
+		# One board of each length, 6 ft to 16 ft, onto the feed chains even-ended at the zero line
+		# as the headrig outfeed's end stop leaves them.
+		for i in 6:
+			var feet := 6 + 2 * i
+			var length := feet * 0.3048
+			var b := (load("res://game/lumber/cut_board.tscn") as PackedScene).instantiate() as RigidBody3D
+			add_child(b)
+			b.configure_dimensions(length, 0.038, 0.184)
+			b.global_position = Vector3(43.4 - length * 0.5, -0.1, 6.6 + 0.42 * i)
+		print("[debarker_demo] %.1f s one board of each length 6-16 ft onto the feed chains" % _time)
 	elif key.keycode == KEY_M:
 		# Four test boards onto the lug loader, a little apart.
 		for i in 4:
@@ -250,18 +329,23 @@ func _unhandled_input(event: InputEvent) -> void:
 		var headrig := mill.get_node_or_null("Headrig")
 		if headrig and headrig.has_method("status_text"):
 			print("[probe] headrig: %s" % headrig.status_text())
+		for node_name in ["UnscramblerLine", "ScannerDeck", "EdgerLine", "LandingTransfer"]:
+			var m := mill.get_node_or_null(node_name)
+			if m and m.has_method("status_text"):
+				print("[probe] %s: %s" % [node_name, m.status_text()])
 		for node in get_tree().get_nodes_in_group("waste_piece"):
 			var wp := node as RigidBody3D
 			print("[probe] waste piece at %s v %s%s" % [wp.global_position, wp.linear_velocity, " frozen" if wp.freeze else ""])
 		for node in get_tree().get_nodes_in_group("cut_boards"):
 			var bd := node as RigidBody3D
-			if bd.global_position.x > 36.0 and bd.global_position.z > 12.5 and bd.global_position.z < 45.0 \
+			if bd.global_position.x > 36.0 and bd.global_position.z > 12.5 and bd.global_position.z < 70.0 \
 					and not bd.is_in_group("waste_piece"):
-				print("[probe] board %s at %s rot %s v %s" % [bd.name, bd.global_position, bd.global_rotation_degrees,
-					bd.linear_velocity])
+				print("[probe] board %s %.1f ft at %s rot %s v %s" % [bd.name,
+					(bd.product_length if "product_length" in bd else 0.0) / 0.3048, bd.global_position,
+					bd.global_rotation_degrees, bd.linear_velocity])
 				# What the board overlaps (slightly grown), to find what holds it.
 				var cs := bd.get_node_or_null("CollisionShape3D") as CollisionShape3D
-				if cs:
+				if cs and bd.global_position.z < 30.0:
 					var q := PhysicsShapeQueryParameters3D.new()
 					var grown := (cs.shape as BoxShape3D).duplicate() as BoxShape3D
 					grown.size += Vector3(0.02, 0.02, 0.02)

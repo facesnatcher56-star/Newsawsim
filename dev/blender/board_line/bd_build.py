@@ -91,8 +91,9 @@ ZERO_ROLL_Z = zye(196.0)
 ZERO_ROLL_R = 2.0 * IN
 ZERO_ROLL_TOP = SCAN_Y + 0.9 * IN
 SCANNER_Z = zye(121.0)
-DEAD_IN_Y = 1.111                               # take-away (1.114) to lug loader (1.108)
 DEAD_OUT_Y = 1.1045                             # lug loader (1.108) to scanner chains (1.101)
+LUG_TAIL_XA = 37.88                             # clear of the take-away's outer chain (x 38.13)
+DEAD_LEAD = 0.012                               # dead plate lead edges sit this far below their tops
 FENCE_X = B.X_ZERO + 0.15                       # just past the longest board ends coming in
 
 
@@ -146,16 +147,20 @@ def build_deck(bm):
 
 # --- Chain modules ----------------------------------------------------------------------------
 
-def chain_frame(bm, xs, z0, z1, r, lugged=False, ytop=CHAIN_Y):
-    """Stringers and wear strips under each chain, cross beams and legs to the deck, shaft bearings."""
+def chain_frame(bm, xs, z0, z1, r, lugged=False, ytop=CHAIN_Y, frame_z0=None, tail_xa=None):
+    """Stringers and wear strips under each chain, cross beams and legs to the deck, shaft bearings.
+
+    frame_z0 starts the stringers and cross beams later than the tail sprocket (to leave room for a
+    shaft crossing inside the loop); tail_xa moves the tail's -X bearing outboard."""
+    fz0 = frame_z0 if frame_z0 is not None else z0 + r
     for x in xs:
-        gbox(bm, x - 0.02, x + 0.02, ytop - 0.03, ytop - 0.012, z0 + r, z1 - r, M["wear"])
-        gbox(bm, x - 0.03, x + 0.03, ytop - 2 * r + 0.03, ytop - 0.03, z0 + r, z1 - r, M["frame"])
+        gbox(bm, x - 0.02, x + 0.02, ytop - 0.03, ytop - 0.012, fz0, z1 - r, M["wear"])
+        gbox(bm, x - 0.03, x + 0.03, ytop - 2 * r + 0.03, ytop - 0.03, fz0, z1 - r, M["frame"])
     xa, xb = min(xs) - 0.15, max(xs) + 0.1
     beam_top = ytop - 2 * r - 0.03 - (0.08 if lugged else 0.0)
-    n = max(2, int((z1 - z0) / 1.6) + 1)
+    n = max(2, int((z1 - fz0) / 1.6) + 1)
     for k in range(n):
-        z = z0 + r + 0.15 + (z1 - z0 - 2 * r - 0.3) * k / (n - 1)
+        z = fz0 + 0.15 + (z1 - fz0 - r - 0.3) * k / (n - 1)
         gbox(bm, xa, xb, beam_top - 0.1, beam_top, z - 0.04, z + 0.04, M["frame"])
         for x in xs:
             gbox(bm, x + 0.035, x + 0.055, beam_top, ytop - 0.03, z - 0.02, z + 0.02, M["frame"])
@@ -163,7 +168,7 @@ def chain_frame(bm, xs, z0, z1, r, lugged=False, ytop=CHAIN_Y):
             gbox(bm, x - 0.04, x + 0.04, DECK_Y, beam_top - 0.1, z - 0.04, z + 0.04, M["frame"])
     cy = ytop - r
     for z in (z0, z1):
-        for x in (xa, xb):
+        for x in (tail_xa if tail_xa is not None and z == z0 else xa, xb):
             gbox(bm, x - 0.04, x + 0.04, cy - 0.05, cy + 0.05, z - 0.05, z + 0.05, M["dark"])
             gbox(bm, x - 0.03, x + 0.03, DECK_Y, cy - 0.05, z - 0.03, z + 0.03, M["frame"])
     # Gearmotor on the head shaft, -X end.
@@ -172,9 +177,9 @@ def chain_frame(bm, xs, z0, z1, r, lugged=False, ytop=CHAIN_Y):
     gbox(bm, xa - 0.62, xa - 0.04, DECK_Y, cy - 0.09, z1 - 0.1, z1 + 0.1, M["frame"])
 
 
-def shaft(coll, mats, name, xs, z, r, ytop=CHAIN_Y):
+def shaft(coll, mats, name, xs, z, r, ytop=CHAIN_Y, xa=None):
     cy = ytop - r
-    xa, xb = min(xs) - 0.15, max(xs) + 0.1
+    xa, xb = (xa if xa is not None else min(xs) - 0.15), max(xs) + 0.1
     xm = (xa + xb) / 2
     e = empty(name, coll, None, G(xm, cy, z), 0.1)
     bm = bmesh.new()
@@ -285,12 +290,17 @@ def build_all():
     frame = empty("BD_Frame", coll, None, (0, 0, 0), 0.5)
     bm = bmesh.new()
     build_deck(bm)
-    chain_frame(bm, LUG_X, LUG_A_Z[0], LUG_A_Z[1], LUG_R)
+    # The take-away head runs on over the lug loader tail (chains interleaved): its head shaft crosses
+    # inside these loops, so the stringers start past it, and the tail bearing sits outboard of the
+    # take-away's outer chain.
+    chain_frame(bm, LUG_X, LUG_A_Z[0], LUG_A_Z[1], LUG_R, frame_z0=B.TAKE_ZS[1] + 0.07, tail_xa=LUG_TAIL_XA)
     chain_frame(bm, LUG_B_X, LUG_B_Z[0], LUG_B_Z[1], LUG_R)
     chain_frame(bm, SCAN_X, SCAN_Z[0], SCAN_Z[1], SCAN_R, lugged=True, ytop=SCAN_Y)
-    # Dead plates across the gaps: take-away to lug loader, lug loader to scanner chains.
-    gbox(bm, min(LUG_X) - 0.1, max(LUG_X) + 0.1, DEAD_IN_Y - 0.009, DEAD_IN_Y, B.TAKE_ZS[1], LUG_Z[0], M["wear"])
-    gbox(bm, min(SCAN_X) - 0.1, max(SCAN_X) + 0.1, DEAD_OUT_Y - 0.009, DEAD_OUT_Y, LUG_Z[1], SCAN_Z[0], M["wear"])
+    # Dead plate across the gap from the lug loader to the scanner chains, sloping up from a lead edge
+    # DEAD_LEAD below its top so a board can't butt it.
+    for xa, xb, za, zb, y in ((min(SCAN_X) - 0.1, max(SCAN_X) + 0.1, LUG_Z[1], SCAN_Z[0], DEAD_OUT_Y),):
+        xm = (xa + xb) / 2
+        beam(bm, (xm, y - DEAD_LEAD - 0.0045, za), (xm, y - 0.0045, zb), xb - xa, 0.009, M["wear"])
     build_fence(bm)
     build_scanner(bm)
     build_stop_set(coll, mats, bm, "BD_StopsHalf", STOP_HALF_Z)
@@ -298,7 +308,7 @@ def build_all():
     build_flipper(coll, mats, bm)
     build_zero_rolls(coll, mats, bm)
     H.make("BD_FrameMesh", bm, coll, mats, frame)
-    shaft(coll, mats, "BD_LugTail", LUG_X, LUG_A_Z[0], LUG_R)
+    shaft(coll, mats, "BD_LugTail", LUG_X, LUG_A_Z[0], LUG_R, xa=LUG_TAIL_XA)
     shaft(coll, mats, "BD_LugMidA", LUG_X, LUG_A_Z[1], LUG_R)
     shaft(coll, mats, "BD_LugMidB", LUG_B_X, LUG_B_Z[0], LUG_R)
     shaft(coll, mats, "BD_LugHead", LUG_B_X, LUG_B_Z[1], LUG_R)

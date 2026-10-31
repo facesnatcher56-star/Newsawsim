@@ -17,7 +17,8 @@ extends Node3D
 
 const ChainLoop := preload("res://game/transport/chains/chain_loop.gd")
 
-const FEED_X: Array[float] = [38.5, 39.5, 40.5, 41.5, 42.5]
+## Between the gang's lift rolls; 43.0 so a 6 ft board even-ended at the zero line lies on two.
+const FEED_X: Array[float] = [38.5, 39.5, 40.5, 41.5, 42.5, 43.0]
 const FEED_PATH := [Vector2(6.25, -0.2), Vector2(9.3064, -0.2), Vector2(9.5604, -0.3524)]
 const FEED_R := 0.09
 const POCKET_TOP := Vector2(9.5807, -0.4004)
@@ -40,7 +41,8 @@ const LUG_TOP := 0.05
 const CARRIER_PITCH := 0.762
 const TAKE_X: Array[float] = [42.973, 42.198, 41.258, 40.217, 39.176, 38.134]
 ## A few millimetres under the unscrambler's top run so boards step down onto it.
-const TAKE_PATH := [Vector2(13.6371, 1.114), Vector2(14.0308, 1.114)]
+## The head runs on over the lug loader's tail, chains interleaved (bl_build TAKE_ZS).
+const TAKE_PATH := [Vector2(13.6371, 1.114), Vector2(14.3864, 1.114)]
 const TAKE_R := 0.0762
 ## Double reject: photo eye station along the straight incline, the arm shaft over it, arm swing.
 const REJECT_S := 1.9

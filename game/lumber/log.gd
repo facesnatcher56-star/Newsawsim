@@ -16,6 +16,10 @@ const LogBark = preload("res://game/lumber/log_bark.gd")
 var max_boards: int = 4
 var cuts_on_current_face: int = 0
 var current_cut_face: int = 0
+## How much the log bows along its length (m at mid-length); -1 until first sawn. Most logs are
+## straight enough; a crooked one gives short side boards: a cut near the outside only runs
+## through wood for part of the length, and the sawyer saves what length he can.
+var sweep: float = -1.0
 
 const CUT_DEPTH_PER_PASS: float = 0.05
 const LOG_CORE_LENGTH: float = 4.922
@@ -174,15 +178,32 @@ func cut_board(_saw_pos: Vector3, travel_direction: Vector3 = Vector3.RIGHT) -> 
 		# with bark on their edges, for the scanner and edger to make the most of.
 		if not is_roundback and board_node.has_method("set_wane"):
 			var width := randf_range(0.21, 0.33)
-			board_node.configure_dimensions(LOG_PRODUCT_LENGTH, randf_range(0.038, 0.043), width)
+			var length := _board_length()
+			board_node.configure_dimensions(length, randf_range(0.038, 0.043), width)
 			board_node.nominal_size = "flitch"
 			board_node.set_wane(randf_range(0.012, 0.045), randf_range(0.012, 0.045))
+			# A short board comes from whichever stretch of the crooked log the cut stays in wood.
+			if length < LOG_PRODUCT_LENGTH - 0.01:
+				var slack := (LOG_PRODUCT_LENGTH - length) * 0.5
+				board_node.global_position.x += randf_range(-slack, slack)
 		
 	board_count -= 1
 	cuts_on_current_face += 1
 	
 	# Perform visual flat cut using CSG Subtraction!
 	_update_csg_cut_position()
+
+## Length of the side board this cut makes, in whole 2 ft steps from 6 to 16 ft: full length on
+## a straight log; on a crooked one the first board in from the slab is shortest and the next
+## longer, as the cut gets deeper into the log.
+func _board_length() -> float:
+	if sweep < 0.0:
+		# Roughly two logs in three are straight enough for full-length boards.
+		sweep = 0.0 if randf() < 0.65 else randf_range(0.03, 0.12)
+	var lose := sweep / 0.12 * (10.0 if cuts_on_current_face <= 1 else 5.0)
+	var feet := clampi(16 - 2 * int(round(lose * 0.5)), 6, 16)
+	return feet * 0.3048
+
 
 func start_new_cut_face() -> void:
 	cuts_on_current_face = 0

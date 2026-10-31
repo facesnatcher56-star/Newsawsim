@@ -36,7 +36,9 @@ COLL = "BoardLineLanding"
 BELT_END_X = 52.64
 BOARD_X = 55.6                                   # board centre on the table (sorter line)
 STOP_X = 58.04                                   # end stop face
-STRAND_X = tuple(BOARD_X + d for d in (-2.75, -1.375, 0.0, 1.375, 2.75))
+# Five strands interleaved with the lug incline's lanes (+-0.69, +-2.06), plus two either side of the
+# centre so a 6 ft board (centred) lies on three.
+STRAND_X = tuple(BOARD_X + d for d in (-2.75, -1.375, -0.34, 0.0, 0.34, 1.375, 2.75))
 LANE_Z = 21.6
 # Transfer chain path (z, y) of the chain tops, tail to head.
 PATH = ((21.25, 1.060), (22.10, 1.060), (26.82, 0.127), (27.82, 0.127))
@@ -50,7 +52,7 @@ ROLL_LEN = 0.6
 def roll_xs():
     xs, x = [], BELT_END_X + 0.22
     while x < STOP_X - 0.1:
-        if all(abs(x - s) > 0.13 for s in STRAND_X):
+        if all(abs(x - s) > 0.1 for s in STRAND_X):
             xs.append(x)
         x += 0.42
     return xs

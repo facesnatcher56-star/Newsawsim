@@ -58,7 +58,7 @@ def yin(z_in):
 
 
 # Feed chains (not on the drawings; level with the headrig outfeed's board transfer).
-FEED_X = (38.5, 39.5, 40.5, 41.5, 42.5)        # between the gang's lift rolls
+FEED_X = (38.5, 39.5, 40.5, 41.5, 42.5, 43.0)  # between the gang's lift rolls; 43.0 so a 6 ft board even-ended at the zero line lies on two
 FEED_TOP_Y = -0.2
 FEED_Z0 = 6.25                                  # tail sprocket
 FEED_LEVEL_END = zye(484.0)                     # level run ends, 10 in short of the head
@@ -79,8 +79,13 @@ REJECT_PIVOT_N = 0.95                           # shaft height off the chain lin
 REJECT_ARMS_X = (39.3, 40.5, 41.7, 42.9)
 # Take-away chains.
 TAKE_X = tuple(X_ZERO - d * IN for d in (20.75, 51.25, 88.25, 129.25, 170.25, 211.25))
-TAKE_ZS = (zye(313.5), zye(298.0))
+# The head runs on over the lug loader's tail (bd_build LUG_Z[0], Ye 292 in), the two sets of chains
+# interleaved, so a board is still carried by the take-away until it lies on the lug chains: a dead
+# plate here was narrower than a board and boards stalled on it once off the take-away.
+TAKE_ZS = (zye(313.5), zye(284.0))
 TAKE_R = 3.0 * IN
+TAKE_FRAME_END = zye(294.0)                     # stringers stop short of the lug loader's tail shaft
+TAKE_HEAD_XB = 43.36                            # head bearing outboard of the outer lug chain (x 43.17)
 
 
 def unscrambler_path():
@@ -323,12 +328,12 @@ def build_takeaway(bm):
     c0, c1 = sprocket_centres(path, TAKE_R)
     xa, xb = min(TAKE_X) - 0.15, max(TAKE_X) + 0.15
     for x in TAKE_X:
-        gbox(bm, x - 0.025, x + 0.025, path[0][1] - 0.03, path[0][1] - 0.01, TAKE_ZS[0] + 0.05, TAKE_ZS[1] - 0.05,
+        gbox(bm, x - 0.025, x + 0.025, path[0][1] - 0.03, path[0][1] - 0.01, TAKE_ZS[0] + 0.05, TAKE_FRAME_END,
              M["wear"])
-        gbox(bm, x - 0.03, x + 0.03, path[0][1] - 0.12, path[0][1] - 0.03, TAKE_ZS[0] + 0.05, TAKE_ZS[1] - 0.05,
+        gbox(bm, x - 0.03, x + 0.03, path[0][1] - 0.12, path[0][1] - 0.03, TAKE_ZS[0] + 0.05, TAKE_FRAME_END,
              M["frame"])
-    for (cz, cy) in (c0, c1):
-        for x in (xa, xb):
+    for (cz, cy), bx in ((c0, xb), (c1, TAKE_HEAD_XB)):
+        for x in (xa, bx):
             gbox(bm, x - 0.05, x + 0.05, cy - 0.06, cy + 0.06, cz - 0.06, cz + 0.06, M["dark"])
     # Dead plate from the unscrambler's top run across to the take-away chains.
     gbox(bm, xa, xb, TOP_DEAD_Y - 0.009, TOP_DEAD_Y, unscrambler_path()[-1][0], TAKE_ZS[0], M["wear"])
@@ -344,9 +349,9 @@ def build_takeaway(bm):
 
 # --- Moving parts -----------------------------------------------------------------------------
 
-def shaft(coll, mats, name, centre, xs, r, width=0.03):
+def shaft(coll, mats, name, centre, xs, r, width=0.03, xb=None):
     cz, cy = centre
-    xa, xb = min(xs) - 0.12, max(xs) + 0.12
+    xa, xb = min(xs) - 0.12, (xb if xb is not None else max(xs) + 0.12)
     xm = (xa + xb) / 2
     e = empty(name, coll, None, G(xm, cy, cz), 0.1)
     bm = bmesh.new()
@@ -419,7 +424,7 @@ def build_all():
     shaft(coll, mats, "BL_UnsHead", uh, xs, UNS_SPROCKET_R, 0.04)
     tc0, tc1 = sprocket_centres(take_path(), TAKE_R)
     shaft(coll, mats, "BL_TakeTail", tc0, TAKE_X, TAKE_R)
-    shaft(coll, mats, "BL_TakeHead", tc1, TAKE_X, TAKE_R)
+    shaft(coll, mats, "BL_TakeHead", tc1, TAKE_X, TAKE_R, xb=TAKE_HEAD_XB)
     carrier(coll, mats)
     roller_link(coll, mats)
     return {"objects": len(coll.all_objects), "uns_path": [tuple(round(v, 3) for v in p) for p in unscrambler_path()],
