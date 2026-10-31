@@ -313,6 +313,9 @@ def build_surge_stop(coll, M):
 
 # ---------------------------------------------------------------- unscrambler
 
+GUARD_H = 0.15                                  # incline side guards: top this far above the bed
+
+
 def build_unscrambler(coll, M):
     bm, bmd, bmu, bmy = bmesh.new(), bmesh.new(), bmesh.new(), bmesh.new()
     path_len = (UNS_HEAD - UNS_FOOT).length
@@ -353,6 +356,12 @@ def build_unscrambler(coll, M):
         pts = [(lip[0] - 0.05, 0.0), (lip[0] - 0.05, SURGE_TOP + 0.30), along(base, 0.0, 0.30), along(base, 1.4, 0.30),
                along(base, 1.4, -0.12), (low[0] + 0.1, 0.0)]
         L.add_prism(bmd, pts, -(z + 0.006), -(z - 0.006))
+    # Incline side guards bolted to the side stringers, on up from the pocket cheeks to short of
+    # the head bearings: a short board lying skewed on the lugs slides along them instead of
+    # hanging off the side of the bed and dropping to the floor.
+    for z in (-2.55, 2.55):
+        p0, p1 = along(base, 1.4, GUARD_H / 2 - 0.08), along(base, path_len - 0.4, GUARD_H / 2 - 0.08)
+        gbeam(bmd, (*p0, z), (*p1, z), 0.012, GUARD_H + 0.08)
     # Bearings and drive.
     for c, name in ((UNS_FOOT, "foot"), (UNS_HEAD, "head")):
         for z in (-2.45, 2.45):
@@ -503,7 +512,7 @@ def build_infeed(coll, M):
     return [head, tail]
 
 
-def build_pop_stops(coll, M, name, x_face):
+def build_pop_stops(coll, M, name, x_face, zs=None):
     """Pop-up stop fingers (moving part, shown raised; they drop STOP_DROP). Each short finger
     is lifted by a small air cylinder just upstream of it, through a lug on the rod end; the
     cylinder hangs from a bracket bolted to the side of the nearest chain way. No cross shaft
@@ -512,7 +521,7 @@ def build_pop_stops(coll, M, name, x_face):
     top = INFEED_TOP
     cx = x_face - 0.055
     bm, bmg = bmesh.new(), bmesh.new()
-    for z in STOP_Z:
+    for z in (STOP_Z if zs is None else zs):
         gbox_span(bm, (x_face, top - 0.02, z - 0.025), (x_face + 0.035, top + STOP_RISE, z + 0.025))          # finger
         gbox_span(bm, (cx - 0.02, top - 0.02, z - 0.02), (x_face, top + 0.01, z + 0.02))                       # rod-end lug
         gcyl(bm, (cx, top - 0.10, z), 0.01, 0.16, 'y', segs=8)                                                  # rod
@@ -527,6 +536,9 @@ def build_pop_stops(coll, M, name, x_face):
 
 
 STOP_Z = (-1.31, -0.26, 0.26, 1.31)             # between the chain ways and the forks
+# Layer stop fingers: each one between a chain way and the next fork tine out, so every board from
+# 6 ft up, even-ended at either fence, bears on two fingers either side of its chain strand.
+LAYER_STOP_Z = (-1.84, -0.79, 0.79, 1.84)
 STOP_RISE = 0.12
 STOP_DROP = 0.13                                # down: finger top 1 cm under the chain tops
 HOLD_STOP_X = 27.33                             # course divider face: keeps the next layer off the forks
@@ -607,9 +619,129 @@ def build_roll(coll, M):
     return obj("LineupRoll", bm, coll, [M["drum"], M["shaft"]], bevel=0.003, segs=1)
 
 
+# ---------------------------------------------------------------- far-end ending rolls and fence
+# The line-up rolls even-end every board at the -Z fence. A package of mixed lengths built
+# that way has all its short boards at the -Z end and holes all along the +Z face, so every
+# other layer is even-ended at the +Z end instead: a fence at the 16 ft board's far end, and
+# pop-up drum rolls between the forming chains that rise under the gathered layer and drive
+# it endwise (+Z) against that fence, then drop back under the chains before the forks lift it.
+FAR_FENCE_Z = LINEUP_FENCE_Z + 16 * 0.3048 + 0.005
+END_Z = (-2.32, -1.31, -0.26, 0.26, 1.31, 2.32)     # between the chain ways and the fork tines
+END_X0 = 27.45                                       # just downstream of the course divider fingers
+END_X1 = 28.98
+END_TOP = INFEED_TOP + 0.018                         # raised drum tops: boards lifted clear of the chains
+END_DROP = 0.05                                      # lowered: tops 3.2 cm under the chain tops
+END_AXLE_Y = END_TOP - ROLL_R
+END_CH_Y = END_AXLE_Y - 0.075                        # lift channel top (the bearing bases sit on it)
+END_CYL_X = (26.95, 29.05)                           # upstream / downstream cylinders, on the cross beams
+END_BARREL_TOP = END_CH_Y - 0.045 - END_DROP - 0.012  # just under the lowered channel
+END_POST_X = (27.0, 29.12)
+# Short-board idler rails: a 6 ft board even-ended at either fence has its middle over a single
+# chain strand (+-1.575) and would seesaw on it, so a rail of small free-spinning idler rollers
+# (axles across the line) between the outer fork tine and the outer ending drum carries its short
+# end. The rollers turn as the board rides over them, so they don't drag that end and skew it. The
+# rail lies in the pocket the fork risers and trolley guides sweep, so it spans from cross beam to
+# cross beam, clear of the line-up drum pedestals.
+SKID_Z = 2.21
+SKID_HALF = 0.017
+SKID_X = (26.99, 29.10)
+SKID_TOP = INFEED_TOP - 0.002                   # roller tops, level with the chain tops
+IDLER_R, IDLER_PITCH = 0.0125, 0.08
+# The surge chains have the same gap: an idler rail on each side guide (z +-2.25), from the tail
+# to short of the pack stop.
+SURGE_SKID_Z = 2.25
+SURGE_SKID_X = (SURGE_TAIL + SURGE_SPR + 0.08, SURGE_STOP_X - 0.05)
+SURGE_SKID_TOP = SURGE_TOP - 0.002
+
+
+def idler_rail(bm, bmr, x0, x1, z, base_y, top):
+    """Channel from base_y up past the roller axles, and a row of idler rollers on axles across
+    the line (along Z), their tops at `top`."""
+    axle = top - IDLER_R
+    gbox_span(bm, (x0, base_y, z - SKID_HALF), (x1, axle - 0.02, z + SKID_HALF))                          # web
+    for side in (-1, 1):
+        gbox_span(bm, (x0, axle - 0.02, z + side * SKID_HALF - 0.003), (x1, axle + 0.004, z + side * SKID_HALF))   # cheeks
+    n = int((x1 - x0 - 0.04) / IDLER_PITCH)
+    for k in range(n + 1):
+        x = x0 + 0.02 + k * IDLER_PITCH
+        gcyl(bmr, (x, axle, z), IDLER_R, 2 * SKID_HALF - 0.008, 'z', segs=12)
+        gcyl(bmr, (x, axle, z), 0.004, 2 * SKID_HALF, 'z', segs=6)
+
+
+def build_far_fence(coll, M):
+    """Static: the far-end fence with its flared lead-in and posts off the +Z side beam, and the
+    barrels of the ending-roll lift cylinders, standing on the infeed cross beams."""
+    bm, bmd, bmg = bmesh.new(), bmesh.new(), bmesh.new()
+    top = INFEED_TOP
+    z = FAR_FENCE_Z
+    gbox_span(bmd, (END_POST_X[0] - 0.05, top - 0.03, z), (END_POST_X[1] + 0.03, top + 0.20, z + 0.012))
+    gbeam(bmd, (END_POST_X[0] - 0.25, top + 0.085, z + 0.25), (END_POST_X[0] - 0.05, top + 0.085, z + 0.006), 0.012, 0.23)
+    for x in END_POST_X:
+        gbox_span(bm, (x - 0.03, FRAME_BEAM_TOP, FRAME_Z - 0.12), (x + 0.03, top + 0.18, FRAME_Z - 0.06))
+        gbox_span(bm, (x - 0.03, top + 0.12, z + 0.012), (x + 0.03, top + 0.18, FRAME_Z - 0.06))
+    for z in END_Z:
+        for x in END_CYL_X:
+            y0 = INF_BEAM_TOP
+            gbox_span(bmg, (x - 0.05, y0, z - 0.05), (x + 0.05, y0 + 0.012, z + 0.05))                  # base plate
+            gcyl(bmg, (x, (y0 + END_BARREL_TOP) / 2, z), 0.028, END_BARREL_TOP - y0, 'y', segs=14)
+            gcyl(bmg, (x, END_BARREL_TOP - 0.007, z), 0.032, 0.014, 'y', segs=14)                       # gland
+    bmu = bmesh.new()
+    for s in (-1, 1):
+        idler_rail(bm, bmu, SKID_X[0], SKID_X[1], s * SKID_Z, INF_BEAM_TOP, SKID_TOP)
+        idler_rail(bm, bmu, SURGE_SKID_X[0], SURGE_SKID_X[1], s * SURGE_SKID_Z, 0.25, SURGE_SKID_TOP)   # on the side guide
+    obj("ShortBoardSkids", bmu, coll, [M["shaft"]], bevel=0.0)
+    obj("FarFencePosts", bm, coll, [M["green"]], bevel=0.003, segs=1)
+    obj("FarFenceCylinders", bmg, coll, [M["grey"]], bevel=0.002, segs=1)
+    return obj("FarFence", bmd, coll, [M["deck"]], bevel=0.002, segs=1)
+
+
+def build_ending_lift(coll, M):
+    """Moving part, shown raised: under each ending drum a lift channel carrying the drum's two
+    pillow-block bearings, on two air cylinder rods. The drums are drum motors (the motor is
+    inside the shell), so the only drive gear is a terminal box and cable on each one."""
+    bm, bmy, rods = bmesh.new(), bmesh.new(), bmesh.new()
+    for z in END_Z:
+        x1 = END_X1
+        cyl = END_CYL_X
+        gbox_span(bm, (cyl[0] - 0.04, END_CH_Y - 0.045, z - 0.04), (cyl[1] + 0.04, END_CH_Y, z + 0.04))
+        for x in (END_X0 - 0.04, x1 + 0.035):
+            gbox_span(bmy, (x - 0.04, END_CH_Y, z - 0.07), (x + 0.04, END_AXLE_Y - 0.05, z + 0.07))   # base
+            gcyl(bmy, (x, END_AXLE_Y, z), 0.045, 0.06, 'x', segs=16)                                    # housing
+            for dz in (-0.05, 0.05):
+                gcyl(bmy, (x, END_AXLE_Y - 0.06, z + dz), 0.009, 0.03, 'y', segs=6)                     # bolts
+        gbox(bmy, (END_X0 - 0.04, END_AXLE_Y - 0.08, z + 0.055), (0.05, 0.04, 0.03))                     # terminal box
+        lo = END_BARREL_TOP - 0.03                        # rod end, inside the barrel
+        for x in cyl:
+            gcyl(rods, (x, (lo + END_CH_Y - 0.045) / 2, z), 0.012, END_CH_Y - 0.045 - lo, 'y', segs=10)
+    root = obj("EndingLift", bm, coll, [M["orange"]], bevel=0.003)
+    gear = obj("EndingLiftBearings", bmy, coll, [M["grey"]], bevel=0.002, segs=1)
+    gear.parent = root
+    r = obj("EndingLiftRods", rods, coll, [M["shaft"]], bevel=0.0)
+    r.parent = root
+    return root
+
+
+def build_ending_rolls(coll, M):
+    """Ending drum: shell, end discs and the stub shafts into the bearings. Origin on the axis
+    at the drum's middle (spun about X)."""
+    out = []
+    for name, x1 in (("EndingRoll", END_X1),):
+        bm = bmesh.new()
+        length = x1 - END_X0
+        gcyl(bm, (0, 0, 0), ROLL_R, length, 'x', mi=0, segs=28)
+        for e in (-1, 1):
+            gcyl(bm, (e * (length / 2 - 0.004), 0, 0), ROLL_R + 0.003, 0.008, 'x', mi=0, segs=28)
+            gcyl(bm, (e * (length / 2 + 0.03), 0, 0), 0.03, 0.06, 'x', mi=1, segs=12)
+        for k in range(6):                                 # weld beads, so the spin shows
+            a = k * math.pi / 3
+            gbox(bm, (0, math.sin(a) * ROLL_R, math.cos(a) * ROLL_R), (length - 0.02, 0.006, 0.006), mi=1)
+        out.append(obj(name, bm, coll, [M["drum"], M["shaft"]], bevel=0.002, segs=1))
+    return out
+
+
 # ---------------------------------------------------------------- forks, fence, sticks, hoist
 
-TROLLEY_X = FORK_X0 + 0.03                      # trolley centre at home, over the fork cross tube
+TROLLEY_X = FORK_X0 + 0.03                     # trolley centre at home, over the fork cross tube
 GUIDE_Z = FRAME_Z - 0.13                        # lift guides hang inboard of the side beams
 
 
@@ -968,6 +1100,14 @@ def build_rolls_preview(coll, roll):
     roll.location = G(0, -5, 0)
 
 
+def build_ending_preview(coll, rolls):
+    for i, z in enumerate(END_Z):
+        L.link_copy(rolls[0], "EndingRoll_%d" % i, coll, G((END_X0 + END_X1) / 2, END_AXLE_Y, z))
+    for r in rolls:
+        r.hide_render = True
+        r.location = G(0, -5, 0)
+
+
 PREVIEW_LAYERS = 9
 
 
@@ -1048,11 +1188,13 @@ def build(materials, preview_lumber=True, animated=False):
     build_holdover_rack(coll, materials)
     hoist = build_hoist(coll, materials)
     build_catwalks(coll, materials)
-    moving = [adjusters, build_surge_stop(coll, materials), build_pop_stops(coll, materials, "LayerStops", LAYER_STOP_X),
+    moving = [adjusters, build_surge_stop(coll, materials), build_pop_stops(coll, materials, "LayerStops", LAYER_STOP_X, LAYER_STOP_Z),
               build_course_divider(coll, materials), *build_forks(coll, materials),
               build_fork_trolley(coll, materials), build_fence(coll, materials), build_stick_gates(coll, materials), hoist,
-              build_landing_lift(coll, materials)]
+              build_landing_lift(coll, materials), build_ending_lift(coll, materials)]
+    build_far_fence(coll, materials)
     roll = build_roll(parts_coll, materials)
+    build_ending_preview(coll, build_ending_rolls(parts_coll, materials))
     chain_parts = build_chain_parts(parts_coll, materials)
     build_chain_preview(coll, materials, chain_parts)
     build_rolls_preview(coll, roll)

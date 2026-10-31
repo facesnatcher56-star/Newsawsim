@@ -3,8 +3,9 @@ extends Node3D
 ## The scanner deck's crew: a worker on the floor at the deck's fence end and a stack light.
 ##
 ## When the deck's double eye sees one board lying on another ahead of the scanner, the scanner
-## chains stop (scanner_deck.gd) and the light goes red. The worker walks along the end of the
-## deck to the double, shoulders the top board, carries it back down the aisle to the feed chains
+## chains stop (scanner_deck.gd) and the light goes red; the same goes for a board tipped up and
+## stuck on the take-away head or the lug loader. The worker walks along the end of the deck to
+## it, shoulders the board (the top one of a double), carries it back down the aisle to the feed chains
 ## ahead of the unscrambler and sets it down there to go round again. Back at his post the light
 ## goes green; the chains run again as soon as the double is gone.
 ##
@@ -114,13 +115,14 @@ func _physics_process(delta: float) -> void:
 	_run_tween(delta)
 	match _state:
 		St.WATCHING:
-			var top: RigidBody3D = _deck.call("find_double")
+			var top: RigidBody3D = _deck.call("find_fault")
 			_seen_t = _seen_t + delta if top != null else 0.0
 			if _seen_t < CONFIRM:
 				return
 			_board = top
 			_light(2)
-			_log("double at the scanner (%s at z %.2f), going over" % [top.name, top.global_position.z])
+			_log("%s (%s at z %.2f), going over" % ["double at the scanner" if top == _deck.call("find_double") else "board stuck on the lug loader",
+					top.name, top.global_position.z])
 			_worker.call("walk", _aisle(_worker.global_position.z, top.global_position.z))
 			_state = St.GOING
 		St.GOING:
@@ -153,7 +155,7 @@ func _physics_process(delta: float) -> void:
 			if _tween_t >= 0.0:
 				return
 			_cleared += 1
-			_log("top board back on the feed chains (%d so far)" % _cleared)
+			_log("board back on the feed chains (%d so far)" % _cleared)
 			_back()
 		St.RETURNING:
 			if not bool(_worker.call("is_walking")):
@@ -190,4 +192,4 @@ func _run_tween(delta: float) -> void:
 
 ## One line for debug HUDs and probes.
 func status_text() -> String:
-	return "%s, doubles cleared %d" % [St.keys()[_state], _cleared]
+	return "%s, boards cleared %d" % [St.keys()[_state], _cleared]

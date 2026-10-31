@@ -116,6 +116,9 @@ var _mm := {}
 var _shafts := {}
 var _scanned := {}
 var _double: RigidBody3D = null
+var _stuck: RigidBody3D = null
+var _tipped_since := {}                           # board id -> clock first seen tipped and still
+var _clock: float = 0.0
 var _counts := {"flipped": 0, "loaded": 0, "scanned": 0, "doubles": 0}
 var _rng := RandomNumberGenerator.new()
 
@@ -262,6 +265,8 @@ func _physics_process(delta: float) -> void:
 	_double = _find_double()
 	if _double != null:
 		_scan_v = 0.0
+	_clock += delta
+	_stuck = _find_stuck()
 	var edger_ready: bool = _edger != null and _edger.has_method("can_take") and _edger.can_take()
 	if not edger_ready:
 		for b in _boards_in(37.5, 44.5, SCAN_Z.y - 0.25, SCAN_Z.y + 0.3, CHAIN_Y - 0.1, CHAIN_Y + 0.3):
@@ -474,20 +479,60 @@ func _run_flip(delta: float) -> void:
 		_flip_t = -1.0
 
 
-## Double eye ahead of the scanner: the top board of any two lying one on the other on the scanner
-## chains between the zero rolls and the scanner, or null.
+## Double eye ahead of the scanner: of any two boards overlapping on the scanner chains between the
+## zero rolls and the scanner (one on the other, or shingled and tilted up together; flat boards
+## side by side only touch edges), the upper one, or null.
 func _find_double() -> RigidBody3D:
 	var zone := _boards_in(37.5, 44.5, ZERO_Z + 0.2, SCANNER_Z - 0.1, CHAIN_Y - 0.05, CHAIN_Y + 0.3)
-	for a in zone:
-		for b in zone:
-			if a != b and b.global_position.y - a.global_position.y > 0.02 					and absf(b.global_position.z - a.global_position.z) < _half_width(a) + _half_width(b) - 0.02:
-				return b
+	for i in zone.size():
+		for j in range(i + 1, zone.size()):
+			var a := zone[i]
+			var b := zone[j]
+			var overlap := _half_depth(a) + _half_depth(b) - absf(b.global_position.z - a.global_position.z)
+			if overlap > 0.02:
+				return b if b.global_position.y > a.global_position.y else a
 	return null
 
 
 ## The board the crew must take off a double on the scanner chains (null while there is none).
 func find_double() -> RigidBody3D:
 	return _double
+
+
+## A board the crew must take off by hand: the top of a double at the scanner, or one tipped up
+## and stuck from the take-away head to the end stops (ridden up on a stop or on another board).
+func find_fault() -> RigidBody3D:
+	return _double if _double != null else _stuck
+
+
+func _find_stuck() -> RigidBody3D:
+	var found: RigidBody3D = null
+	var seen := {}
+	var boards := _boards_in(37.5, 44.5, 13.25, STOP_END_Z + 0.4, CHAIN_Y - 0.15, CHAIN_Y + 0.4)
+	var at_end := _board_at(boards, STOP_END_Z)
+	for b in boards:
+		if b.linear_velocity.length() > 0.05:
+			continue
+		var a := rad_to_deg(b.global_basis.y.angle_to(Vector3.UP))
+		var z := b.global_position.z
+		# Boards lie flat on the lug loader; the take-away before it climbs, so allow more there.
+		var tipped := minf(a, 180.0 - a) > (8.0 if z > TAKE_HEAD_Z else 20.0)
+		# Between the halfway and end stops a board only ever waits against the end stops.
+		var lost := z > STOP_HALF_Z + 0.05 and z < STOP_END_Z + 0.15 and b != at_end
+		# Lying on another board on the lug loader (shingled up in the queue).
+		var riding := z > TAKE_HEAD_Z and b.global_position.y > CHAIN_Y + 0.019 + 0.02
+		if not tipped and not lost and not riding:
+			continue
+		var id := b.get_instance_id()
+		seen[id] = true
+		if not _tipped_since.has(id):
+			_tipped_since[id] = _clock
+		elif _clock - float(_tipped_since[id]) > 3.0 and (found == null or b.global_position.y > found.global_position.y):
+			found = b   # the top one of a pile first
+	for id in _tipped_since.keys():
+		if not seen.has(id):
+			_tipped_since.erase(id)
+	return found
 
 
 ## The upper board of a double standing at the halfway stops, or null. `held` may be either one.
@@ -645,7 +690,7 @@ func _ease(p: float) -> float:
 ## One line for debug HUDs.
 func status_text() -> String:
 	var at_half := _board_at(_loader_boards(), STOP_HALF_Z)
-	return ("DOUBLE at the scanner, chains stopped; " if _double else "") + "halfway %s (%.2f), end %s, slow %.2f m/s%s%s, scanner %.1f m/s, loaded %d, flipped %d, scanned %d, doubles %d" % [
+	return ("DOUBLE at the scanner, chains stopped; " if _double else "") + 			(("STUCK board %s; " % _stuck.name) if _stuck else "") + "halfway %s (%.2f), end %s, slow %.2f m/s%s%s, scanner %.1f m/s, loaded %d, flipped %d, scanned %d, doubles %d" % [
 			"down" if _stops["half"]["want_down"] else "up", _stops["half"]["down"],
 			"down" if _stops["end"]["want_down"] else "up", _a_v,
 			", flipping" if _flip_t >= 0.0 else "", (", at stop: %s" % at_half.name) if at_half else "",

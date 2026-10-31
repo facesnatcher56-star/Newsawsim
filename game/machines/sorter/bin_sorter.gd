@@ -203,6 +203,13 @@ var _table_full_logged: bool = false
 var _stacker: Node = null              # GreenStacker taking packs off the haul-out head
 var _locked: bool = false              # stopped by the crew (lockout) to clear a jam
 var _loose_t: Dictionary = {}          # board -> seconds lying still outside the sorter's hands
+var _carry_check: Dictionary = {}     # carried board -> [sorter-local x, clock] when it last moved
+var _tilted_since: Dictionary = {}     # board in a bay -> clock when it was first seen lying badly
+## Boards come even-ended (landing_transfer): their ends line up here, sorter-local Z.
+const EVEN_END_Z := -2.44
+## A board settled in a bay standing up past this is a jam the crew lays flat (gate timing spreads
+## make the odd one land on its edge).
+const BAY_TILT_DEG := 55.0
 
 var _top_loop: float = 0.0
 var _top_span: float = TOP_X_HEAD - TOP_X_TAIL
@@ -334,6 +341,28 @@ func _owned(b: RigidBody3D) -> bool:
 	return false
 
 
+## A board handed to a lug that hasn't moved for a while (piled up at the stop, or caught) is no
+## longer the sorter's: it becomes a loose deck board the crew lays in its bay by hand.
+func _check_carried_progress() -> void:
+	for c: Carried in _carried.duplicate():
+		if c.state != BoardState.CARRY or not is_instance_valid(c.board):
+			continue
+		var x: float = to_local(c.board.global_position).x
+		var last: Array = _carry_check.get(c.board, [x, _clock])
+		# Only while the chain runs: the sorter stops it on purpose at times (gates, no bay free).
+		if absf(x - float(last[0])) > 0.03 or _top_speed < 0.05:
+			_carry_check[c.board] = [x, _clock]
+		elif _clock - float(last[1]) > 8.0:
+			_carry_check.erase(c.board)
+			_carried.erase(c)
+			_log("STUCK on the deck, handed to the crew", c.board)
+		else:
+			_carry_check[c.board] = last
+	for b: Variant in _carry_check.keys():
+		if not is_instance_valid(b) or not _is_carried(b):
+			_carry_check.erase(b)
+
+
 ## Time each loose board (not the sorter's, not culled) has lain still near the sorter.
 func _track_loose(delta: float) -> void:
 	for b: Variant in _loose_t.keys():
@@ -354,16 +383,55 @@ func _track_loose(delta: float) -> void:
 ## The first sorter jam, or {}: "deck" a board lying loose on the deck (it missed its lug or
 ## its bay), "floor" a board that fell off onto the floor. "at" is in sorter coordinates.
 func find_jam() -> Dictionary:
-	for b: Variant in _loose_t.keys():
+	# Highest first: off the top of a pile before the board under it.
+	var loose: Array = _loose_t.keys().filter(func(b: Variant) -> bool: return is_instance_valid(b) and float(_loose_t[b]) >= 4.0)
+	loose.sort_custom(func(a: RigidBody3D, b: RigidBody3D) -> bool: return a.global_position.y > b.global_position.y)
+	for b: Variant in loose:
 		var board := b as RigidBody3D
-		if float(_loose_t[b]) < 4.0:
-			continue
 		var p: Vector3 = to_local(board.global_position)
-		if p.y > DECK_Y - 0.3 and p.x > STOP_X + 0.1 and p.x < TOP_X_HEAD:
+		if p.y > DECK_Y - 0.3 and p.x > CREST_X and p.x < TOP_X_HEAD:
 			return {"kind": "deck", "board": board, "at": p}
 		if p.y < 1.0:
 			return {"kind": "floor", "board": board, "at": p}
+	for i in NB:
+		var bay: Bay = _bays[i]
+		if bay.phase != BayPhase.CATCH:
+			continue
+		for o: RigidBody3D in bay.boards:
+			# Only boards lying loose on this bay's forks: not ones already handed on (held by the
+			# haul-out or the stacker) or below the forks.
+			if not is_instance_valid(o) or o.freeze or to_local(o.global_position).y < bay.carriage_y - 0.3:
+				continue
+			var a: float = rad_to_deg(o.global_basis.y.angle_to(Vector3.UP))
+			if minf(a, 180.0 - a) < BAY_TILT_DEG or o.linear_velocity.length() > 0.05:
+				_tilted_since.erase(o)
+				continue
+			if not _tilted_since.has(o):
+				_tilted_since[o] = _clock
+			elif _clock - float(_tilted_since[o]) > 2.0:
+				return {"kind": "bay", "board": o, "at": to_local(o.global_position)}
 	return {}
+
+
+## Where a worker lays a board that landed badly in its bay: flat on top of the rest of that
+## bay's pile, even-ended. It is already counted.
+func restack_place(board: RigidBody3D) -> Transform3D:
+	_tilted_since.erase(board)
+	for i in NB:
+		var bay: Bay = _bays[i]
+		if bay.boards.has(board):
+			var top: float = bay.carriage_y
+			for o: RigidBody3D in bay.boards:
+				if is_instance_valid(o) and o != board:
+					top = maxf(top, to_local(o.global_position).y + float(o.get("board_thickness")) * 0.5)
+			return global_transform * Transform3D(Basis(), Vector3(bay_x(i) + CARRIAGE_X + 0.35,
+					top + float(board.get("board_thickness")) * 0.5 + 0.01, _even_z(board)))
+	return board.global_transform
+
+
+## Sorter-local Z of an even-ended board's centre.
+func _even_z(board: RigidBody3D) -> float:
+	return EVEN_END_Z + float(board.get("product_length")) * 0.5
 
 
 ## The bay a loose deck board can go in by hand (one taking its size, with room), or -1:
@@ -387,7 +455,7 @@ func hand_place(board: RigidBody3D) -> Transform3D:
 		bay.phase = BayPhase.FULL
 	_loose_t.erase(board)
 	var t: float = float(board.get("board_thickness"))
-	return global_transform * Transform3D(Basis(), Vector3(bay_x(i) + CARRIAGE_X + 0.35, top + t * 0.5 + 0.01, 0.0))
+	return global_transform * Transform3D(Basis(), Vector3(bay_x(i) + CARRIAGE_X + 0.35, top + t * 0.5 + 0.01, _even_z(board)))
 
 
 func _log(text: String, board: RigidBody3D = null) -> void:
@@ -426,6 +494,7 @@ func _physics_process(delta: float) -> void:
 				body.constant_linear_velocity = Vector3.ZERO
 		return
 	_update_infeed()
+	_check_carried_progress()
 	# Only boards already pushed off the crest and down on the transfer count: the infeed zone
 	# also reaches boards still on the incline's lugs, which only the incline can deliver.
 	var waiting: int = 0
@@ -454,6 +523,9 @@ func _update_infeed() -> void:
 	for i in range(_queue.size() - 1, -1, -1):
 		if not is_instance_valid(_queue[i]) or to_local(_queue[i].global_position).y < DECK_Y - 0.3:
 			_queue.remove_at(i)
+	# The head is the board furthest in, not the first seen: the infeed zone reaches back over the
+	# incline crest, and a board still on the incline's lugs can't come in while it is held.
+	_queue.sort_custom(func(a: RigidBody3D, b: RigidBody3D) -> bool: return _trailing(a) > _trailing(b))
 	_hold_chain = false
 	# The stop's fingers swing up on an arc that pokes above the deck from STOP_X - 0.05 to
 	# STOP_X + 0.1; keep them down until every released board is past that, and never raise

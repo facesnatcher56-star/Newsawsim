@@ -45,11 +45,17 @@ MOVING = {
     "stacker_stick_gates.glb": ("StickGates", "StickGateRods"),
     "stacker_hoist.glb": ("Hoist", "HoistRods"),
     "stacker_landing_lift.glb": ("LandingLift", "LandingLiftRods"),
+    "stacker_ending_lift.glb": ("EndingLift", "EndingLiftBearings", "EndingLiftRods"),
+}
+# Static parts in their own files, in stacker coordinates.
+STATIC_PARTS = {
+    "stacker_far_fence.glb": ("FarFence", "FarFencePosts", "FarFenceCylinders", "ShortBoardSkids"),
 }
 PARTS = {
     "stacker_link.glb": ("BarChainLink",),
     "stacker_uns_lug.glb": ("UnscramblerLug",),
     "stacker_roll.glb": ("LineupRoll",),
+    "stacker_ending_roll.glb": ("EndingRoll",),
     "stacker_stick.glb": ("Stick",),
 }
 VIEWPORT = {
@@ -72,8 +78,42 @@ def export_all():
         # Zero only the root; parented children (rods) keep their offsets.
         out.append(SE._export(os.path.join(OUT, fname), names[:1], True) if len(names) == 1 else
                    _export_rooted(os.path.join(OUT, fname), names))
+    for fname, names in STATIC_PARTS.items():
+        out.append(SE._export(os.path.join(OUT, fname), names, False))
     for fname, names in PARTS.items():
         out.append(SE._export(os.path.join(OUT, fname), names, True))
+    return [os.path.basename(p) for p in out]
+
+
+def export_ending():
+    """Only the far-end ending parts (stacker_build.build_ending_lift / build_far_fence /
+    build_ending_rolls), leaving every other stacker glb as it is."""
+    os.makedirs(OUT, exist_ok=True)
+    SE._set_viewport_colours()
+    for name, (rgb, metal, rough) in VIEWPORT.items():
+        m = bpy.data.materials.get(name)
+        if m is not None:
+            m.diffuse_color = (*rgb, 1.0)
+            m.metallic = metal
+            m.roughness = rough
+    out = [_export_rooted(os.path.join(OUT, "stacker_ending_lift.glb"), MOVING["stacker_ending_lift.glb"])]
+    for fname, names in STATIC_PARTS.items():
+        out.append(SE._export(os.path.join(OUT, fname), names, False))
+    out.append(SE._export(os.path.join(OUT, "stacker_ending_roll.glb"), PARTS["stacker_ending_roll.glb"], True))
+    return [os.path.basename(p) for p in out]
+
+
+def export_layer_stops():
+    """The layer stops (moving) and the static frame, which holds their cylinder guides."""
+    SE._set_viewport_colours()
+    for name, (rgb, metal, rough) in VIEWPORT.items():
+        m = bpy.data.materials.get(name)
+        if m is not None:
+            m.diffuse_color = (*rgb, 1.0)
+            m.metallic = metal
+            m.roughness = rough
+    out = [SE._export(os.path.join(OUT, "stacker_frame.glb"), STATIC, False),
+           SE._export(os.path.join(OUT, "stacker_layer_stops.glb"), MOVING["stacker_layer_stops.glb"], True)]
     return [os.path.basename(p) for p in out]
 
 

@@ -33,6 +33,11 @@ var _snap_timer: float = 4.0
 var _snap_n: int = 0
 ## Started with `-- --view=N`: snapshots stay on that view instead of cycling.
 var _fixed_view: bool = false
+## Started with `-- --views=9,10,...`: snapshots cycle through only these views.
+var _views: Array[int] = []
+## Started with `-- --lengths`: packs of mixed lengths (6-16 ft in turn), even-ended at the
+## line-up fence end as the sorter sends them, to watch the stacker alternate its ending.
+var _lengths: bool = false
 
 const VIEWS: Array = [
 	[Vector3(26.0, 7.5, 12.0), Vector3(27.0, 1.5, 0.0)],     # 1 whole line from the +Z side
@@ -42,6 +47,12 @@ const VIEWS: Array = [
 	[Vector3(38.5, 3.2, 6.5), Vector3(33.5, 0.8, 0.0)],      # 5 outfeed and landing deck
 	[Vector3(36.0, 9.0, 14.0), Vector3(44.0, 0.8, 3.0)],     # 6 forklift and the yard row
 	[Vector3(18.5, 4.6, 10.5), Vector3(25.0, 1.6, 3.5)],     # 7 operator console, stair and catwalk
+	[Vector3(28.3, 4.9, -4.6), Vector3(28.1, 2.5, 0.2)],      # 8 forming section and both ending fences, from the -Z side
+	[Vector3(28.25, 8.5, 0.01), Vector3(28.25, 2.6, 0.0)],    # 9 forming section from straight above
+	[Vector3(29.85, 6.5, 0.01), Vector3(29.85, 2.4, 0.0)],     # 10 package on the hoist from straight above
+	[Vector3(37.6, 1.5, 5.4), Vector3(35.6, 0.75, 2.4)],      # 11 landed package, far (+Z) end face
+	[Vector3(37.6, 1.5, -5.5), Vector3(35.6, 0.75, -2.5)],    # 12 landed package, near (-Z) end face
+	[Vector3(25.95, 4.6, -1.2), Vector3(25.95, 2.6, -1.25)],   # 13 infeed and line-up fence from straight above
 ]
 ## Close-up of the fork cycle (used for the cycle burst snapshots).
 const CYCLE_VIEW: Array = [Vector3(32.6, 4.4, 2.6), Vector3(29.8, 2.6, 0.0)]   # above and downstream of the hoist
@@ -49,6 +60,9 @@ var _burst: int = 0
 
 
 func _ready() -> void:
+	# Test windows never take the mouse or focus from the user.
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
 	var env := WorldEnvironment.new()
 	var e := Environment.new()
 	e.background_mode = Environment.BG_SKY
@@ -113,6 +127,15 @@ func _ready() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--layers="):
 			_stacker.set("package_layers", maxi(arg.trim_prefix("--layers=").to_int(), 1))
+		if arg.begins_with("--views="):
+			for v: String in arg.trim_prefix("--views=").split(","):
+				_views.append(clampi(v.to_int(), 1, VIEWS.size()))
+			_set_view(_views[0])
+		if arg.begins_with("--snap-every="):
+			_snap_every = arg.trim_prefix("--snap-every=").to_float()
+		if arg == "--lengths":
+			_lengths = true
+			pack_boards = 7
 		if arg.begins_with("--view="):
 			_set_view(clampi(arg.trim_prefix("--view=").to_int(), 1, VIEWS.size()))
 			_fixed_view = true
@@ -131,7 +154,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	var key := event as InputEventKey
 	if key == null or not key.pressed or key.echo:
 		return
-	if key.keycode >= KEY_1 and key.keycode <= KEY_7:
+	if key.keycode >= KEY_1 and key.keycode <= KEY_9:
 		_set_view(key.keycode - KEY_0)
 	elif key.keycode == KEY_P:
 		_feeding = not _feeding
@@ -154,7 +177,9 @@ func _physics_process(delta: float) -> void:
 			_snap_n += 1
 			DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://dev/captures"))
 			get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path("res://dev/captures/stacker_%d_v%d.png" % [_snap_n, _view]))
-			if not _fixed_view:
+			if not _views.is_empty():
+				_set_view(_views[(_views.find(_view) + 1) % _views.size()])
+			elif not _fixed_view:
 				_set_view(_view % VIEWS.size() + 1)
 		# Burst of close-ups through the second fork cycle.
 		var phase: int = int(_stacker.get("_phase"))
@@ -201,10 +226,14 @@ func _feed_pack() -> void:
 		var board := BOARD_SCENE.instantiate() as RigidBody3D
 		board.set("nominal_size", size)
 		board.name = "Board_%d" % _fed
+		var z: float = randf_range(-0.04, 0.04)
+		if _lengths:
+			var feet: int = 6 + 2 * (_fed % 6)
+			board.call("configure_dimensions", feet * 0.3048, t, float(spec["width"]))
+			z = Stacker.LINEUP_FENCE_Z + 0.04 + feet * 0.3048 * 0.5
 		_fed += 1
 		add_child(board)
-		var p := Vector3(Stacker.SURGE_TAIL + 0.4, Stacker.SURGE_TOP + t * (float(i) + 0.5) + 0.002 * i,
-			randf_range(-0.04, 0.04))
+		var p := Vector3(Stacker.SURGE_TAIL + 0.4, Stacker.SURGE_TOP + t * (float(i) + 0.5) + 0.002 * i, z)
 		board.global_transform = _stacker.global_transform * Transform3D(Basis(Vector3.UP, -PI * 0.5), p)
 		# Already moving with the surge chains, as a pack coming off the haul-out would be.
 		board.linear_velocity = _stacker.global_basis.x * float(_stacker.get("surge_speed"))

@@ -7,6 +7,8 @@ extends Node3D
 ##   once (lockout) and the stack light goes red.
 ## - A board lying loose on the deck: the worker walks along the catwalk, reaches over and
 ##   lays it on top of its bay's pile.
+## - A board that landed on its edge (or badly tipped) in a bay: he reaches in and lays it flat
+##   on that bay's pile.
 ## - A board that fell to the floor: he goes down the sorter's stair, walks the aisle, steps
 ##   in across the stopped haul-out chains (safe: the line is locked out), carries the board
 ##   to the cull pile and goes back up to his post.
@@ -173,8 +175,10 @@ func _physics_process(delta: float) -> void:
 			_sorter.call("set_locked", true)
 			_ok_t = 0.0
 			_jam = jam
-			_repeats = _repeats + 1 if jam["kind"] == _last_kind else 1
-			_last_kind = jam["kind"]
+			# Each loose board is its own fault: only the same board coming back counts as a repeat.
+			var kind: String = "%s:%d" % [jam["kind"], (jam["board"] as Node).get_instance_id()]
+			_repeats = _repeats + 1 if kind == _last_kind else 1
+			_last_kind = kind
 			_light(2)
 			if _repeats > MAX_REPEATS:
 				_state = St.HALTED
@@ -182,7 +186,7 @@ func _physics_process(delta: float) -> void:
 				return
 			_log("jam: %s board at %s, sorter stopped" % [_jam["kind"], str(_jam["at"])])
 			var at: Vector3 = _jam["at"]
-			if _jam["kind"] == "deck":
+			if _jam["kind"] == "deck" or _jam["kind"] == "bay":
 				_worker.call("walk", _along(at.x))
 			else:
 				# Stand at the board's +Z end (boards lie along Z), clear of the columns.
@@ -197,7 +201,17 @@ func _physics_process(delta: float) -> void:
 			if not is_instance_valid(b):
 				_done()
 				return
-			if _jam["kind"] == "deck":
+			if _jam["kind"] == "bay":
+				# Landed badly in its bay: reach in and lay it flat on its pile.
+				if _step == 0:
+					_worker.call("face", b.global_position)
+					_worker.call("set_reach", true)
+					MillWorkerScript.lift_clear(b)
+					_tween(b, _sorter.call("restack_place", b))
+					_step = 1
+				else:
+					_done()
+			elif _jam["kind"] == "deck":
 				if _step == 0 and int(_sorter.call("hand_bay", b)) < 0:
 					# No bay taking its size has room: down to the cull pile with it, never into
 					# another size's pack.

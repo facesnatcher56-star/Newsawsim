@@ -87,6 +87,13 @@ func _ready() -> void:
 		var node := mill.get_node_or_null(node_name)
 		if node and "debug_log" in node:
 			node.debug_log = true
+	for node_name in ["GreenStacker", "StackerCrew", "SorterCrew"]:
+		var node := mill.get_node_or_null(node_name)
+		if node and "log_events" in node:
+			node.log_events = true
+	# --sorter-log: the sorter logs every board it queues, lands or loses.
+	if "--sorter-log" in OS.get_cmdline_user_args() and mill.get_node_or_null("BinSorter"):
+		mill.get_node("BinSorter").log_boards = true
 	# The mill has its own camera; ours takes over.
 	_cam = Camera3D.new()
 	_cam.fov = 60.0
@@ -347,7 +354,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var headrig := mill.get_node_or_null("Headrig")
 		if headrig and headrig.has_method("status_text"):
 			print("[probe] headrig: %s" % headrig.status_text())
-		for node_name in ["UnscramblerLine", "ScannerDeck", "ScannerCrew", "EdgerLine", "LandingTransfer", "BinSorter"]:
+		for node_name in ["HeadrigOutfeed", "GangResaw", "WasteSystem", "UnscramblerLine", "ScannerDeck", "ScannerCrew", "EdgerLine", "LandingTransfer", "BinSorter"]:
 			var m := mill.get_node_or_null(node_name)
 			if m and m.has_method("status_text"):
 				print("[probe] %s: %s" % [node_name, m.status_text()])
