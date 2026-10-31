@@ -407,8 +407,7 @@ func find_jam() -> Dictionary:
 			# haul-out or the stacker) or below the forks.
 			if not is_instance_valid(o) or o.freeze or to_local(o.global_position).y < bay.carriage_y - 0.3:
 				continue
-			var a: float = rad_to_deg(o.global_basis.y.angle_to(Vector3.UP))
-			if minf(a, 180.0 - a) < BAY_TILT_DEG or o.linear_velocity.length() > 0.05:
+			if not _badly_placed(o, i) or o.linear_velocity.length() > 0.05:
 				_tilted_since.erase(o)
 				continue
 			if not _tilted_since.has(o):
@@ -969,8 +968,13 @@ func _update_haul_to_stacker(delta: float) -> void:
 			_log("handed to the green stacker", board)
 		elif to_local(board.global_position).y < HAUL_TOP - 0.15:
 			_hauled.erase(b)          # fell off the chains
+		elif absf(board.global_basis.x.normalized().dot(global_basis.z.normalized())) < 0.87:
+			# Turned more than 30 deg off square (fell off a carriage as the forks went down):
+			# it would go onto the surge crosswise. Out of the stack; the chains stop for the crew.
+			_hauled.erase(b)
+			_log("TURNED on the haul-out, chains stopped for the crew", board)
 	var target: float = 0.0
-	if not _hauled.is_empty() and not bool(_stacker.call("is_locked")):
+	if not _hauled.is_empty() and not bool(_stacker.call("is_locked")) and not _loose_on_haul():
 		var back: float = float(_stacker.call("surge_back"))
 		var lead: float = -INF
 		for b: Variant in _hauled.keys():
@@ -986,7 +990,18 @@ func _update_haul_to_stacker(delta: float) -> void:
 	_haul_dist = fposmod(_haul_dist + _haul_current * delta, _haul_loop)
 
 
-## Has the queue of stacks on the end table reached back to the table's start?
+## A loose board (not part of a hauled stack) lying on the haul-out chains: they stay stopped
+## until the crew has it off.
+func _loose_on_haul() -> bool:
+	for b: Variant in _loose_t.keys():
+		if not is_instance_valid(b):
+			continue
+		var p: Vector3 = to_local((b as RigidBody3D).global_position)
+		if p.x > HAUL_X_TAIL and p.x < HAUL_X_HEAD + 0.3 and p.y > HAUL_TOP - 0.15 and p.y < HAUL_TOP + 0.8:
+			return true
+	return false
+
+
 ## Which full bay goes out next. The stacker closes its package whenever the next layer is a
 ## different kind (size and length class), so keep sending the kind it is on while a bay of it
 ## is full; otherwise start on the kind with the most full bays waiting. -1 if none is ready.
@@ -996,7 +1011,9 @@ func _next_to_discharge() -> int:
 	var ready: Array[int] = []
 	var waiting := {}
 	for i in NB:
-		if _bays[i].phase == BayPhase.FULL and _in_flight(i) == 0:
+		# A board standing on edge would topple as the forks lower and land turned across the
+		# haul-out: the crew lays it flat first (find_jam "bay").
+		if _bays[i].phase == BayPhase.FULL and _in_flight(i) == 0 and _upright_in(i) == null:
 			ready.append(i)
 			waiting[_kind(_bays[i])] = int(waiting.get(_kind(_bays[i]), 0)) + 1
 	if ready.is_empty():
@@ -1008,6 +1025,26 @@ func _next_to_discharge() -> int:
 		if int(waiting[_kind(_bays[i])]) > int(waiting[_kind(_bays[best])]):
 			best = i
 	return best
+
+
+## A board in the bay that must be laid right by hand before it goes out, or null.
+func _upright_in(i: int) -> RigidBody3D:
+	for o: RigidBody3D in _bays[i].boards:
+		if not is_instance_valid(o) or o.freeze or to_local(o.global_position).y < _bays[i].carriage_y - 0.3:
+			continue
+		if _badly_placed(o, i):
+			return o
+	return null
+
+
+## Standing up past BAY_TILT_DEG, or not over the tines (caught on the carriage's back beam or
+## hangers): either way it would fall off and turn across the haul-out as the forks lower.
+func _badly_placed(o: RigidBody3D, i: int) -> bool:
+	var a: float = rad_to_deg(o.global_basis.y.angle_to(Vector3.UP))
+	if minf(a, 180.0 - a) > BAY_TILT_DEG:
+		return true
+	var x: float = to_local(o.global_position).x - bay_x(i)
+	return x < CARRIAGE_X + 0.04 or x > CARRIAGE_X + TINE_LEN + 0.05
 
 
 func _kind(bay: Bay) -> String:
