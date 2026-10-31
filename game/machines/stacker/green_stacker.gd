@@ -1051,10 +1051,11 @@ func _overlaps_below(b: RigidBody3D) -> bool:
 
 ## The board this one lies partly on top of, or null. Past the course divider the layer is
 ## pushed together against the stops, where neighbours' footprints overlap a few cm while both
-## still lie on the chains, so there a board has to sit a third of a board higher to be riding.
+## still lie on the chains, and one can sit edge-up on a neighbour's edge, so there a board has to
+## sit well over half a board higher to be riding on top.
 func _board_below(b: RigidBody3D) -> RigidBody3D:
 	var p: Vector3 = _local(b)
-	var rise: float = 0.006 if p.x < HOLD_STOP_X else float(b.get("board_thickness")) * 0.33
+	var rise: float = 0.006 if p.x < HOLD_STOP_X else float(b.get("board_thickness")) * 0.6
 	for o: RigidBody3D in _boards:
 		if o == b or o.freeze or _package.has(o):
 			continue
