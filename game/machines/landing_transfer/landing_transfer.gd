@@ -5,7 +5,8 @@ extends Node3D
 ##
 ## The model (game/assets/models/board_line/board_landing_*, built by dev/blender/board_line/lt_build)
 ## is in mill coordinates, like this node. A board runs off the picker belt onto live lift rolls
-## that drive it on to the cushioned end stop. Once it has stopped and the start of the transfer
+## that drive it on to the cushioned end stop, so every length goes on to the sorter even-ended
+## at the stop. Once it has stopped and the start of the transfer
 ## is clear, the rolls drop below the chains and the board settles on five chain strands that
 ## carry it sideways (+Z), level, then down an 11 deg run to a level end where the lug incline's
 ## lugs come up through the strands and take it. The rolls come back up for the next board.
@@ -13,11 +14,10 @@ extends Node3D
 const ChainLoop := preload("res://game/transport/chains/chain_loop.gd")
 
 const BELT_END_X := 52.64                          # picker belt head (edger_line BELT_X.y)
-const BOARD_X := 55.6
 const STOP_X := 58.04
-## Five strands interleaved with the incline's lanes, plus two either side of the centre so a
-## 6 ft board, centred, lies on three.
-const STRAND_X: Array[float] = [52.85, 54.225, 55.26, 55.6, 55.94, 56.975, 58.35]
+## Strands interleaved with the incline's lanes; the last sits just inside the end stop so an
+## even-ended 6 ft board lies on two.
+const STRAND_X: Array[float] = [52.85, 54.225, 55.26, 55.6, 55.94, 56.975, 57.85]
 const LANE_Z := 21.6
 const PATH := [Vector2(21.25, 1.060), Vector2(22.10, 1.060), Vector2(26.82, 0.127), Vector2(27.82, 0.127)]
 const SPROCKET_R := 0.0762
@@ -67,7 +67,6 @@ func _process(delta: float) -> void:
 var _chain := {}
 var _shafts: Array[Node3D] = []
 var _landed: int = 0
-var _braked: bool = false
 
 
 func _ready() -> void:
@@ -108,7 +107,7 @@ func _ready() -> void:
 		rbox.size = Vector3(STRAND_X[-1] - STRAND_X[0] + 0.1, 0.06, a.distance_to(b))
 		rcs.shape = rbox
 		rcs.transform = Transform3D(Basis(Vector3.RIGHT, up, t),
-				Vector3(BOARD_X, (a.y + b.y) * 0.5, (a.x + b.x) * 0.5) - up * (0.03 + 0.003 * i))
+				Vector3((STRAND_X[0] + STRAND_X[-1]) * 0.5, (a.y + b.y) * 0.5, (a.x + b.x) * 0.5) - up * (0.03 + 0.003 * i))
 		run.add_child(rcs)
 		_runs.append(run)
 		_dirs.append(t)
@@ -128,19 +127,14 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	# A photo eye at the table centre stops the rolls as a board's middle reaches it, so every
-	# length lands centred on the sorter line (the end stop only catches a 16 ft board that
-	# overruns). Then, with the board still and the transfer start clear, the rolls drop.
+	# Even-ending: the live rolls run every board up against the cushioned end stop and keep
+	# turning under it. Once it is still there and the transfer start is clear, the rolls drop.
 	var at_stop := false
 	var on_table := false
-	var centred := false
 	for b in _boards_in(52.6, 59.0, LANE_Z - 0.45, LANE_Z + 0.45, 1.0, 1.3):
 		on_table = true
-		if b.global_position.x >= BOARD_X - 0.03 or b.global_position.x + _half_len(b) > STOP_X - 0.05:
-			centred = true
-			if absf(b.linear_velocity.x) < 0.1:
-				at_stop = true
-	_braked = centred
+		if b.global_position.x + _half_len(b) > STOP_X - 0.03 and absf(b.linear_velocity.x) < 0.1:
+			at_stop = true
 	var start_clear := _boards_in(52.6, 59.0, LANE_Z + 0.45, 22.4, 0.9, 1.3).is_empty()
 	if not _want_down and at_stop and start_clear:
 		_want_down = true
@@ -151,7 +145,7 @@ func _physics_process(delta: float) -> void:
 		_want_down = false
 	_down = move_toward(_down, 1.0 if _want_down else 0.0, delta / drop_time)
 	_place_lift()
-	var rv := roll_speed if _down < 0.5 and not _braked else 0.0
+	var rv := roll_speed if _down < 0.5 else 0.0
 	_lift_body.constant_linear_velocity = Vector3(rv, 0.0, 0.0)
 	_roll_v = rv
 	# The chains stop while the lug incline is held (the sorter has no room) and a board is

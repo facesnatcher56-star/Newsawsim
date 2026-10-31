@@ -65,7 +65,19 @@ var _time: float = 0.0
 
 func _ready() -> void:
 	var mill := MILL_SCENE.instantiate()
+	# Test windows must never take the user's mouse: the mill's free-fly camera would capture it
+	# on start and again on any click in the window.
+	var flies := mill.find_children("*", "Camera3D", true, false).filter(
+			func(c: Node) -> bool: return "auto_capture_on_start" in c)
+	for fly in flies:
+		fly.auto_capture_on_start = false
 	add_child(mill)
+	for fly in flies:
+		fly.set_process_unhandled_input(false)
+		fly.set_process(false)
+	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	# Clicks on the window don't take focus from whatever the user is working in.
+	DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_NO_FOCUS, true)
 	for deck_name in ["LogDeck", "LogDeckOpposite", "LogKicker"]:
 		var deck := mill.get_node_or_null("LogFeedStation/%s" % deck_name)
 		if deck and "debug_log" in deck:
@@ -335,7 +347,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var headrig := mill.get_node_or_null("Headrig")
 		if headrig and headrig.has_method("status_text"):
 			print("[probe] headrig: %s" % headrig.status_text())
-		for node_name in ["UnscramblerLine", "ScannerDeck", "EdgerLine", "LandingTransfer", "BinSorter"]:
+		for node_name in ["UnscramblerLine", "ScannerDeck", "ScannerCrew", "EdgerLine", "LandingTransfer", "BinSorter"]:
 			var m := mill.get_node_or_null(node_name)
 			if m and m.has_method("status_text"):
 				print("[probe] %s: %s" % [node_name, m.status_text()])

@@ -67,7 +67,7 @@ CARRIAGE_X = 0.20           # carriage origin offset inside each bay (clear of t
 END_BLOCK_Z = COL_Z - 0.20  # carriage end blocks and hoist drums
 HANG_H = 0.70               # carriage tine top to hanger beam
 
-TOP_STRANDS = (-1.375, 0.0, 1.375)   # midway between the incline's chain lanes
+TOP_STRANDS = (-2.25, -1.375, 0.0, 1.375)   # boards come even-ended at -z: a 6 ft board gets two lugs
 TOP_PITCH = 0.20
 TOP_TEETH = 10
 TOP_SPR = TOP_PITCH / (2 * math.sin(math.pi / TOP_TEETH))
@@ -104,9 +104,9 @@ XFER_SHAFT_Y = XFER_PIN_Y - XFER_SPR
 XFER_ROLLER_R = 0.0075
 INCLINE_LANES = (-2.0625, -0.6875, 0.6875, 2.0625)
 INCLINE_SWEEP_X = -0.15     # the incline's lugs swing through the plate up to here as they go round its head
-STOP_ZS = (-2.0, -0.6, 0.6, 2.0)     # stop fingers, clear of the lug lanes
+STOP_ZS = (-2.05, -0.95, 0.6, 2.0)   # stop fingers, clear of the lug lanes; an even-ended 6 ft board meets the first two
 
-HAUL_STRANDS = (-1.375, 0.0, 1.375)
+HAUL_STRANDS = (-2.25, -1.375, 0.0, 1.375)    # boards come even-ended at -z: a 6 ft board rides on the first two
 HAUL_PITCH = 0.10
 HAUL_TEETH = 6
 HAUL_SPR = HAUL_PITCH / (2 * math.sin(math.pi / HAUL_TEETH))
@@ -670,7 +670,7 @@ def build_end_table(coll, M):
     for x in [x0 + k * 1.2 for k in range(int((x1 - x0) / 1.2) + 1)]:
         if x < c1:
             gbox_span(bm, (x - 0.05, 0.0, -2.0), (x + 0.05, 0.08, 2.0))
-    for z in (-2.2, 2.2):
+    for z in (-2.55, 2.55):
         gbox_span(bm, (x0, 0.0, z - 0.06), (HAUL_X_HEAD - 0.35, 0.25, z + 0.06))
     # No end stops: stacks run on over the head sprocket onto the green stacker's surge chains
     # (dev/blender/green_stacker), whose tail sprockets reach in between the haul strands.

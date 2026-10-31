@@ -63,7 +63,7 @@ const HANG_H := 0.70
 const TINE_Z: Array[float] = [-2.05, -0.65, 0.65, 2.05]
 const TINE_LEN := 0.77
 
-const TOP_STRANDS: Array[float] = [-1.375, 0.0, 1.375]
+const TOP_STRANDS: Array[float] = [-2.25, -1.375, 0.0, 1.375]   # boards come even-ended at -z (landing_transfer)
 const TOP_PITCH := 0.20
 const TOP_SPR := 0.3236068          # TOP_PITCH / (2 sin(pi / 10))
 const TOP_SHAFT_Y := 5.00
@@ -85,10 +85,10 @@ const XFER_SPR := 0.0508          # XFER_PITCH / (2 sin(pi / 6))
 const XFER_PIN_Y := DECK_Y - 0.010
 const XFER_SHAFT_Y := XFER_PIN_Y - XFER_SPR
 const STOP_X := BX0 - 0.15
-const STOP_ZS: Array[float] = [-2.0, -0.6, 0.6, 2.0]
+const STOP_ZS: Array[float] = [-2.05, -0.95, 0.6, 2.0]   # an even-ended 6 ft board meets the first two
 const STOP_PIVOT := Vector3(STOP_X - 0.03, DECK_Y - DECK_T - 0.08, 0.0)
 
-const HAUL_STRANDS: Array[float] = [-1.375, 0.0, 1.375]
+const HAUL_STRANDS: Array[float] = [-2.25, -1.375, 0.0, 1.375]   # boards come even-ended at -z (landing_transfer)
 const HAUL_PITCH := 0.10
 const HAUL_SPR := 0.10              # HAUL_PITCH / (2 sin(pi / 6))
 const HAUL_SHAFT_Y := 0.22
@@ -426,7 +426,14 @@ func _physics_process(delta: float) -> void:
 				body.constant_linear_velocity = Vector3.ZERO
 		return
 	_update_infeed()
-	feed_hold = not _infeed_on or _queue.size() >= infeed_queue_max
+	# Only boards already pushed off the crest and down on the transfer count: the infeed zone
+	# also reaches boards still on the incline's lugs, which only the incline can deliver.
+	var waiting: int = 0
+	for b: RigidBody3D in _queue:
+		var p: Vector3 = to_local(b.global_position)
+		if p.x > CREST_X + 0.1 and p.y < DECK_Y + 0.15:
+			waiting += 1
+	feed_hold = not _infeed_on or waiting >= infeed_queue_max
 	var feeder := get_node_or_null(lug_drive)
 	if feeder != null and "hold" in feeder:
 		feeder.hold = feed_hold
@@ -546,6 +553,10 @@ func _update_top_chain(delta: float) -> void:
 	var incoming: bool = not _queue.is_empty() and not head_arrived
 	var target: float = lug_chain_speed
 	var drive := get_node_or_null(lug_drive)
+	# While this sorter holds the incline, the overhead chain is declutched from it and indexes on
+	# its own, so it can work off the boards waiting on the infeed and those on its lugs.
+	if drive != null and feed_hold:
+		drive = null
 	if drive != null:
 		target = _geared_speed(drive, head_arrived, delta)
 	if _hold_chain or _gate_wait:

@@ -19,6 +19,7 @@ extends Node3D
 ## scanner chain head waits there until the edger line's positioners are ready for it.
 
 const ChainLoop := preload("res://game/transport/chains/chain_loop.gd")
+const ScannerCrewScript := preload("res://game/machines/scanner_deck/scanner_crew.gd")
 
 const LUG_X: Array[float] = [43.1698, 42.5094, 42.0395, 41.3791, 40.7187, 39.8805, 39.3979, 38.2422]
 const LUG_B_OFFSET := -0.07
@@ -73,6 +74,8 @@ const LUG_SCENE := "res://game/assets/models/board_line/board_deck_lug.glb"
 ## The positioners and lineal infeed (can_take()).
 @export var edger_path: NodePath
 @export var debug_log: bool = false
+## Station a worker (scanner_crew.gd) who clears doubles stopped at the scanner.
+@export var with_crew: bool = true
 
 var _unscrambler: Node
 var _edger: Node
@@ -83,6 +86,7 @@ var _travel_a: float = 0.0
 var _a_v: float = 0.0                              # slow section's chain speed now
 var _half_down_t: float = 0.0                      # how long the halfway stops have been down
 var _travel_b: float = 0.0
+var _b_v: float = 0.0                              # fast section speed now
 var _travel_scan: float = 0.0
 var _scan_v: float = 0.0
 var _surf_a: StaticBody3D
@@ -111,12 +115,18 @@ var _lug_rows: Array[AnimatableBody3D] = []
 var _mm := {}
 var _shafts := {}
 var _scanned := {}
-var _counts := {"flipped": 0, "loaded": 0, "scanned": 0}
+var _double: RigidBody3D = null
+var _counts := {"flipped": 0, "loaded": 0, "scanned": 0, "doubles": 0}
 var _rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
 	_rng.randomize()
+	if with_crew:
+		var crew: Node3D = ScannerCrewScript.new()
+		crew.name = "ScannerCrew"
+		crew.deck = NodePath("../" + name)
+		get_parent().add_child.call_deferred(crew)
 	_unscrambler = get_node_or_null(unscrambler_path)
 	_edger = get_node_or_null(edger_path)
 	_loop_a = ChainLoop.from_path(PackedVector2Array([Vector2(LUG_A_Z.x, CHAIN_Y), Vector2(LUG_A_Z.y, CHAIN_Y)]), LUG_R)
@@ -248,6 +258,10 @@ func _physics_process(delta: float) -> void:
 	# A board coming up to the head is pushed off onto the positioning skids only when the edger
 	# line is ready for it; otherwise the scanner chains wait.
 	_scan_v = scanner_speed
+	# A double seen ahead of the scanner stops the chains until the crew takes the top board off.
+	_double = _find_double()
+	if _double != null:
+		_scan_v = 0.0
 	var edger_ready: bool = _edger != null and _edger.has_method("can_take") and _edger.can_take()
 	if not edger_ready:
 		for b in _boards_in(37.5, 44.5, SCAN_Z.y - 0.25, SCAN_Z.y + 0.3, CHAIN_Y - 0.1, CHAIN_Y + 0.3):
@@ -266,10 +280,18 @@ func _physics_process(delta: float) -> void:
 		a_stop = half["down"] > 0.0 or _flip_t >= 0.0 or _board_at(boards, STOP_HALF_Z) != null
 	_a_v = move_toward(_a_v, 0.0 if a_stop else loader_slow_speed, delta * 3.0)
 	_surf_a.constant_linear_velocity = Vector3(0.0, 0.0, _a_v)
-	_surf_b.constant_linear_velocity = Vector3(0.0, 0.0, loader_fast_speed)
+	# The fast section slows for the last stretch before the end stops, so a light board isn't
+	# flung into them and tipped up onto its edge.
+	var b_target := loader_fast_speed
+	for b in boards:
+		var front := b.global_position.z + _half_depth(b)
+		if front > STOP_END_Z - 0.35 and front < STOP_END_Z + 0.01:
+			b_target = minf(loader_fast_speed, 0.35)
+	_b_v = move_toward(_b_v, b_target, delta * 4.0)
+	_surf_b.constant_linear_velocity = Vector3(0.0, 0.0, _b_v)
 	_surf_scan.constant_linear_velocity = Vector3(0.0, 0.0, _scan_v)
 	_travel_a += _a_v * delta
-	_travel_b += loader_fast_speed * delta
+	_travel_b += _b_v * delta
 	_travel_scan += _scan_v * delta
 	_move_lug_rows()
 	_run_zero_rolls(delta)
@@ -305,10 +327,19 @@ func _half_width(b: Node) -> float:
 	return (b.board_width if "board_width" in b else 0.184) * 0.5
 
 
+## Half the board's depth along the line of travel (Z) as it lies: half its width flat, half its
+## thickness standing on edge.
+func _half_depth(b: RigidBody3D) -> float:
+	var g := b.global_basis.orthonormalized()
+	var length: float = float(b.get("product_length")) if b.get("product_length") != null else 4.88
+	var t: float = float(b.get("board_thickness")) if b.get("board_thickness") != null else 0.038
+	return 0.5 * (absf(g.x.z) * length + absf(g.y.z) * t + absf(g.z.z) * _half_width(b) * 2.0)
+
+
 ## The board standing against a set of stops (front edge at the stop face, nearly still).
 func _board_at(boards: Array[RigidBody3D], z: float) -> RigidBody3D:
 	for b in boards:
-		var front := b.global_position.z + _half_width(b)
+		var front := b.global_position.z + _half_depth(b)
 		if front > z - 0.06 and front < z + 0.005 and absf(b.linear_velocity.z) < 0.15:
 			return b
 	return null
@@ -330,6 +361,14 @@ func _run_half_stop(boards: Array[RigidBody3D], _delta: float) -> void:
 	var held := _board_at(boards, STOP_HALF_Z)
 	if held == null:
 		return
+	# A double (one board lying on another, the unscrambler missed it) is never flipped: rolling the
+	# bottom board would throw the top one anywhere.
+	var top := _rider_at(boards, held)
+	if top != null:
+		if not _decided.has(top.get_instance_id()):
+			_counts["doubles"] += 1
+		_decided[held.get_instance_id()] = true
+		_decided[top.get_instance_id()] = true
 	var id := held.get_instance_id()
 	if not _decided.has(id):
 		_decided[id] = true
@@ -381,7 +420,7 @@ func _line_clear(boards: Array[RigidBody3D], z: float, except: RigidBody3D) -> b
 			continue
 		var p := b.global_position.z
 		var w := _half_width(b)
-		if p - w < z + 0.025 and p + w > z - 0.025:
+		if p - w < z + 0.025 and p + w > z - 0.012:
 			return false
 	return true
 
@@ -433,6 +472,34 @@ func _run_flip(delta: float) -> void:
 			_flip_board.angular_velocity = Vector3.ZERO
 		_flip_board = null
 		_flip_t = -1.0
+
+
+## Double eye ahead of the scanner: the top board of any two lying one on the other on the scanner
+## chains between the zero rolls and the scanner, or null.
+func _find_double() -> RigidBody3D:
+	var zone := _boards_in(37.5, 44.5, ZERO_Z + 0.2, SCANNER_Z - 0.1, CHAIN_Y - 0.05, CHAIN_Y + 0.3)
+	for a in zone:
+		for b in zone:
+			if a != b and b.global_position.y - a.global_position.y > 0.02 					and absf(b.global_position.z - a.global_position.z) < _half_width(a) + _half_width(b) - 0.02:
+				return b
+	return null
+
+
+## The board the crew must take off a double on the scanner chains (null while there is none).
+func find_double() -> RigidBody3D:
+	return _double
+
+
+## The upper board of a double standing at the halfway stops, or null. `held` may be either one.
+func _rider_at(boards: Array[RigidBody3D], held: RigidBody3D) -> RigidBody3D:
+	for b in boards:
+		if b == held:
+			continue
+		var dz := absf(b.global_position.z - held.global_position.z)
+		var dy := b.global_position.y - held.global_position.y
+		if dz < _half_width(b) + _half_width(held) - 0.02 and absf(dy) > 0.02:
+			return b if dy > 0.0 else held
+	return null
 
 
 # --- Scanner chains and zero rollers ------------------------------------------------------------
@@ -577,6 +644,9 @@ func _ease(p: float) -> float:
 
 ## One line for debug HUDs.
 func status_text() -> String:
-	return "halfway %s, end %s, scanner %.1f m/s, loaded %d, flipped %d, scanned %d" % [
-			"down" if _stops["half"]["want_down"] else "up", "down" if _stops["end"]["want_down"] else "up",
-			_scan_v, _counts["loaded"], _counts["flipped"], _counts["scanned"]]
+	var at_half := _board_at(_loader_boards(), STOP_HALF_Z)
+	return ("DOUBLE at the scanner, chains stopped; " if _double else "") + "halfway %s (%.2f), end %s, slow %.2f m/s%s%s, scanner %.1f m/s, loaded %d, flipped %d, scanned %d, doubles %d" % [
+			"down" if _stops["half"]["want_down"] else "up", _stops["half"]["down"],
+			"down" if _stops["end"]["want_down"] else "up", _a_v,
+			", flipping" if _flip_t >= 0.0 else "", (", at stop: %s" % at_half.name) if at_half else "",
+			_scan_v, _counts["loaded"], _counts["flipped"], _counts["scanned"], _counts["doubles"]]
