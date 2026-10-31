@@ -31,6 +31,8 @@ var _view: int = 1
 var _snap_every: float = 0.0
 var _snap_timer: float = 4.0
 var _snap_n: int = 0
+## Started with `-- --view=N`: snapshots stay on that view instead of cycling.
+var _fixed_view: bool = false
 
 const VIEWS: Array = [
 	[Vector3(26.0, 7.5, 12.0), Vector3(27.0, 1.5, 0.0)],     # 1 whole line from the +Z side
@@ -108,6 +110,12 @@ func _ready() -> void:
 		sizes = ["2x8", "2x6"]      # packs that aren't whole layers, changing size: short layers for the crew
 	if "--snapshots" in OS.get_cmdline_user_args():
 		_snap_every = 5.0
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--layers="):
+			_stacker.set("package_layers", maxi(arg.trim_prefix("--layers=").to_int(), 1))
+		if arg.begins_with("--view="):
+			_set_view(clampi(arg.trim_prefix("--view=").to_int(), 1, VIEWS.size()))
+			_fixed_view = true
 
 	var ui := CanvasLayer.new()
 	_label = Label.new()
@@ -146,11 +154,12 @@ func _physics_process(delta: float) -> void:
 			_snap_n += 1
 			DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("res://dev/captures"))
 			get_viewport().get_texture().get_image().save_png(ProjectSettings.globalize_path("res://dev/captures/stacker_%d_v%d.png" % [_snap_n, _view]))
-			_set_view(_view % VIEWS.size() + 1)
+			if not _fixed_view:
+				_set_view(_view % VIEWS.size() + 1)
 		# Burst of close-ups through the second fork cycle.
 		var phase: int = int(_stacker.get("_phase"))
 		var layers: int = int(_stacker.get("_pkg_layers"))
-		if layers == 1 and phase != 0 and _burst < 40 and fmod(_snap_timer, 0.4) < delta:
+		if not _fixed_view and layers == 1 and phase != 0 and _burst < 40 and fmod(_snap_timer, 0.4) < delta:
 			_burst += 1
 			var keep: Transform3D = _cam.global_transform
 			_cam.position = CYCLE_VIEW[0]

@@ -1,8 +1,8 @@
 class_name Forklift
 extends VehicleBody3D
 
-## Heavy lumber-yard forklift (about 13 t empty, Hyster XD class). Model: dev/blender/forklift/
-## forklift_build.py. Drives itself: waits behind the green stacker's landing deck, drives the
+## Heavy lumber-yard forklift (about 13 t empty), modelled on the yard's own truck (a Hyster 230,
+## unit 4). Model: dev/blender/forklift/forklift_build.py. Drives itself: waits behind the green stacker's landing deck, drives the
 ## forks in between the lift rails under a finished package, lifts it, backs out, swings
 ## round and sets it down on 4x4 bunks in a yard row, then comes back.
 ##
@@ -20,9 +20,10 @@ extends VehicleBody3D
 const MODELS := "res://game/assets/models/forklift/"
 
 const WHEELBASE := 2.85
-const TYRE_R := 0.55
-const DRIVE_Z := 1.03
-const STEER_Z := 0.93
+const TYRE_R := 0.55                       # drive tyres; the wheel model is this size
+const STEER_R := 0.50                      # steer tyres: the same model scaled down
+const DRIVE_Z := 0.96
+const STEER_Z := 0.90
 const FORK_FACE_X := 0.70
 const FORK_LEN := 1.8288
 const FORK_T := 0.08
@@ -88,17 +89,21 @@ func _ready() -> void:
 	_model.name = "Model"
 	_model.basis = Basis(Vector3.UP, -PI * 0.5)
 	add_child(_model)
-	_model.add_child(_load_model("forklift_body.glb"))
+	var body_model: Node3D = _load_model("forklift_body.glb")
+	_model.add_child(body_model)
+	_glass_see_through(body_model)
 	_mast_inner = _load_model("forklift_mast_inner.glb")
 	_model.add_child(_mast_inner)
 	_carriage = Node3D.new()
 	_carriage.name = "Carriage"
 	_model.add_child(_carriage)
 	_carriage.add_child(_load_model("forklift_carriage.glb"))
-	# Body collision: counterweight, side bodies, cab, mast (wheels are raycasts).
-	_box(Vector3(-2.6, 1.13, 0.0), Vector3(2.0, 1.02, 2.4))
-	_box(Vector3(-0.7, 1.02, 0.0), Vector3(2.0, 1.06, 2.4))
-	_box(Vector3(-0.75, 2.26, 0.0), Vector3(1.82, 1.42, 1.68))
+	# Body collision: counterweight, side bodies, cab, mast (wheels are raycasts). The boxes
+	# stop 0.5-0.6 m up: taken down to the model's 0.3 m underside, the parked truck crept
+	# forward on its own.
+	_box(Vector3(-2.46, 1.13, 0.0), Vector3(1.48, 1.02, 2.26))
+	_box(Vector3(-0.75, 0.865, 0.0), Vector3(1.98, 0.75, 2.26))
+	_box(Vector3(-1.13, 2.08, 0.0), Vector3(1.22, 1.68, 1.46))
 	_box(Vector3(0.42, 1.9, 0.0), Vector3(0.28, 3.1, 1.5))
 	# Carriage plate and the two forks: moved with the lift.
 	_carriage_shapes = [_box(Vector3.ZERO, Vector3(0.2, 1.08, 2.4)), _box(Vector3.ZERO, Vector3(FORK_LEN, FORK_T, FORK_W)),
@@ -153,8 +158,9 @@ func _box(centre: Vector3, size: Vector3) -> CollisionShape3D:
 func _wheel(x: float, z: float, drive: bool) -> void:
 	var w := VehicleWheel3D.new()
 	w.name = ("Drive" if drive else "Steer") + ("R" if z > 0.0 else "L")
-	w.position = _m2b(Vector3(x, TYRE_R + 0.06, z))
-	w.wheel_radius = TYRE_R
+	var r: float = TYRE_R if drive else STEER_R
+	w.position = _m2b(Vector3(x, r + 0.06, z))
+	w.wheel_radius = r
 	w.wheel_rest_length = 0.10
 	w.suspension_travel = 0.08
 	w.suspension_stiffness = 160.0
@@ -168,8 +174,19 @@ func _wheel(x: float, z: float, drive: bool) -> void:
 	add_child(w)
 	var m: Node3D = _load_model("forklift_wheel.glb")
 	# The wheel model's axle is its Z and its outer face +Z; the wheel rolls about its own X.
-	m.basis = Basis(Vector3.UP, -PI * 0.5 if z > 0.0 else PI * 0.5)
+	m.basis = Basis(Vector3.UP, -PI * 0.5 if z > 0.0 else PI * 0.5).scaled(Vector3.ONE * (r / TYRE_R))
 	w.add_child(m)
+
+
+## The cab glass comes out of the glTF opaque: give it its alpha.
+static func _glass_see_through(root: Node) -> void:
+	for mi: Node in root.find_children("*", "MeshInstance3D", true, false):
+		var mesh: Mesh = (mi as MeshInstance3D).mesh
+		for i in mesh.get_surface_count():
+			var mat := mesh.surface_get_material(i) as StandardMaterial3D
+			if mat != null and mat.resource_name == "Forklift_Glass":
+				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				mat.albedo_color.a = 0.35
 
 
 func _place_carriage() -> void:
