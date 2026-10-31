@@ -400,7 +400,7 @@ func find_jam() -> Dictionary:
 			return {"kind": "floor", "board": board, "at": p}
 	for i in NB:
 		var bay: Bay = _bays[i]
-		if bay.phase != BayPhase.CATCH:
+		if bay.phase != BayPhase.CATCH and bay.phase != BayPhase.FULL:
 			continue
 		for o: RigidBody3D in bay.boards:
 			# Only boards lying loose on this bay's forks: not ones already handed on (held by the
@@ -803,6 +803,7 @@ func _update_bays(delta: float) -> void:
 	for bay: Bay in _bays:
 		if bay.phase in [BayPhase.LOWER, BayPhase.HAUL, BayPhase.RAISE]:
 			discharging = true
+	var next_out: int = -1 if discharging or _end_table_full() else _next_to_discharge()
 	for i in NB:
 		var bay: Bay = _bays[i]
 		var target: float = bay.carriage_y
@@ -821,9 +822,10 @@ func _update_bays(delta: float) -> void:
 				# One bay at a time: a lowered carriage's uprights would stop another stack.
 				# Stacks stay on the end table; once their queue reaches back to the table's
 				# start, wait for some to be taken away.
-				if not discharging and _in_flight(i) == 0 and not _end_table_full():
+				if i == next_out:
 					bay.phase = BayPhase.LOWER
 					discharging = true
+					_last_out_kind = _kind(bay)
 					_log("bay %d full: lowering the stack onto the haul-out chains (worst tilt %.0f deg)" % [i, _worst_tilt(bay.boards)])
 			BayPhase.LOWER:
 				target = HAUL_TOP - 0.1
@@ -985,6 +987,33 @@ func _update_haul_to_stacker(delta: float) -> void:
 
 
 ## Has the queue of stacks on the end table reached back to the table's start?
+## Which full bay goes out next. The stacker closes its package whenever the next layer is a
+## different kind (size and length class), so keep sending the kind it is on while a bay of it
+## is full; otherwise start on the kind with the most full bays waiting. -1 if none is ready.
+var _last_out_kind: String = ""
+
+func _next_to_discharge() -> int:
+	var ready: Array[int] = []
+	var waiting := {}
+	for i in NB:
+		if _bays[i].phase == BayPhase.FULL and _in_flight(i) == 0:
+			ready.append(i)
+			waiting[_kind(_bays[i])] = int(waiting.get(_kind(_bays[i]), 0)) + 1
+	if ready.is_empty():
+		return -1
+	var best: int = ready[0]
+	for i in ready:
+		if _kind(_bays[i]) == _last_out_kind:
+			return i
+		if int(waiting[_kind(_bays[i])]) > int(waiting[_kind(_bays[best])]):
+			best = i
+	return best
+
+
+func _kind(bay: Bay) -> String:
+	return "%s %s" % [bay.size, bay.length_class]
+
+
 func _end_table_full() -> bool:
 	if _stacker != null:
 		return bool(_stacker.call("surge_full"))
