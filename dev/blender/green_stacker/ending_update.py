@@ -16,7 +16,7 @@ import stacker_build as B  # noqa: E402
 import stacker_export as X  # noqa: E402
 
 ARGS = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
-NAMES = ("FarFence", "FarFencePosts", "FarFenceCylinders", "ShortBoardSkids", "EndingLift", "EndingLiftBearings", "EndingLiftRods",
+NAMES = ("EndingGate", "EndingGateRods", "FarFence", "FarFencePosts", "FarFenceCylinders", "ShortBoardSkids", "EndingLift", "EndingLiftBearings", "EndingLiftRods",
          "EndingRoll", "LayerStops", "LayerStopsGuides") + tuple("EndingRoll_%d" % i for i in range(len(B.END_Z)))
 MAT = {"green": "Sorter_FrameGreen", "orange": "Sorter_SafetyOrange", "grey": "Sorter_MotorGrey",
        "deck": "Sorter_DeckSteel", "uhmw": "Sorter_UHMW", "chain": "Sorter_ChainSteel", "shaft": "Sorter_MachinedSteel", "drum": "Stacker_DrumShell"}
@@ -32,6 +32,7 @@ def rebuild():
     parts = bpy.data.collections["StackerParts"]
     B.build_far_fence(coll, M)
     B.build_ending_lift(coll, M)
+    B.build_ending_gate(coll, M)
     B.build_ending_preview(coll, B.build_ending_rolls(parts, M))
     B.build_pop_stops(coll, M, "LayerStops", B.LAYER_STOP_X, B.LAYER_STOP_Z)
     # The unscrambler (its side guards): every object build_unscrambler makes, shafts included.
@@ -41,6 +42,14 @@ def rebuild():
         if o is not None:
             bpy.data.objects.remove(o, do_unlink=True)
     B.build_unscrambler(coll, M)
+    # The infeed (its fence flare). The sorter owns "InfeedDrive", so the stacker's comes out as
+    # "InfeedDrive.001" again, the name stacker_export expects.
+    for n in ("InfeedFrame", "InfeedPlates", "InfeedWearStrips", "InfeedDrive.001", "InfeedHeadShaft", "InfeedTailSprockets"):
+        o = bpy.data.objects.get(n)
+        if o is not None:
+            bpy.data.objects.remove(o, do_unlink=True)
+    B.build_infeed(coll, M)
+    assert bpy.data.objects.get("InfeedDrive.001") is not None
 
 
 def render(path, eye, target, lens=24):

@@ -209,6 +209,8 @@ var _carry_check: Dictionary = {}     # carried board -> [sorter-local x, clock]
 var _tilted_since: Dictionary = {}     # board in a bay -> clock when it was first seen lying badly
 ## Boards come even-ended (landing_transfer): their ends line up here, sorter-local Z.
 const EVEN_END_Z := -2.44
+## A board laid by hand on a pile: its length (board X) across the line along sorter Z, face up.
+const PILE_BASIS := Basis(Vector3(0, 0, 1), Vector3(0, 1, 0), Vector3(-1, 0, 0))
 ## A board settled in a bay standing up past this is a jam the crew lays flat (gate timing spreads
 ## make the odd one land on its edge).
 const BAY_TILT_DEG := 55.0
@@ -428,7 +430,7 @@ func restack_place(board: RigidBody3D) -> Transform3D:
 			for o: RigidBody3D in bay.boards:
 				if is_instance_valid(o) and o != board:
 					top = maxf(top, to_local(o.global_position).y + float(o.get("board_thickness")) * 0.5)
-			return global_transform * Transform3D(Basis(), Vector3(bay_x(i) + CARRIAGE_X + 0.35,
+			return global_transform * Transform3D(PILE_BASIS, Vector3(bay_x(i) + CARRIAGE_X + 0.35,
 					top + float(board.get("board_thickness")) * 0.5 + 0.01, _even_z(board)))
 	return board.global_transform
 
@@ -469,7 +471,7 @@ func hand_place(board: RigidBody3D) -> Transform3D:
 		bay.phase = BayPhase.FULL
 	_loose_t.erase(board)
 	var t: float = float(board.get("board_thickness"))
-	return global_transform * Transform3D(Basis(), Vector3(bay_x(i) + CARRIAGE_X + 0.35, top + t * 0.5 + 0.01, _even_z(board)))
+	return global_transform * Transform3D(PILE_BASIS, Vector3(bay_x(i) + CARRIAGE_X + 0.35, top + t * 0.5 + 0.01, _even_z(board)))
 
 
 func _log(text: String, board: RigidBody3D = null) -> void:

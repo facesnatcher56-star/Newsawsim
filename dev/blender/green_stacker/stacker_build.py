@@ -85,6 +85,8 @@ INF_HEAD = 29.15
 INF_BEAM_TOP = 2.25                             # infeed cross beams sit under the chain return runs
 INF_CROSS_X = (25.55, 25.85, 26.95, 29.05)
 LINEUP_FENCE_Z = -2.48                          # board ends butt here
+FLARE_X0, FLARE_OUT = 25.40, 0.12               # fence flare: a shallow (18 deg) lead-in, so a board end outside
+                                                # the fence line is eased in, not braked end-on
 ROLL_Z = (-2.1, -1.05, 0.0, 1.05, 2.1)
 ROLL_R = 0.075                                  # drum rolls, one per line, a bearing at each end
 ROLL_X0, ROLL_X1 = 25.92, 26.88
@@ -314,6 +316,8 @@ def build_surge_stop(coll, M):
 # ---------------------------------------------------------------- unscrambler
 
 GUARD_H = 0.15                                  # incline side guards: top this far above the bed
+GUARD_Z = ((-2.55, LINEUP_FENCE_Z - 0.015), (2.55, 2.55))   # each guard: z at the pocket cheek, z from GUARD_T_IN on
+GUARD_T_IN = 2.0
 
 
 def build_unscrambler(coll, M):
@@ -359,9 +363,12 @@ def build_unscrambler(coll, M):
     # Incline side guards bolted to the side stringers, on up from the pocket cheeks to short of
     # the head bearings: a short board lying skewed on the lugs slides along them instead of
     # hanging off the side of the bed and dropping to the floor.
-    for z in (-2.55, 2.55):
-        p0, p1 = along(base, 1.4, GUARD_H / 2 - 0.08), along(base, path_len - 0.4, GUARD_H / 2 - 0.08)
-        gbeam(bmd, (*p0, z), (*p1, z), 0.012, GUARD_H + 0.08)
+    # The -Z guard angles in (about 6 deg) to just outside the line-up fence line, so a long
+    # board comes over the crest already lined up instead of meeting the fence flare end-on.
+    for z0, z1 in GUARD_Z:
+        p0, pm, p1 = (along(base, t, GUARD_H / 2 - 0.08) for t in (1.4, GUARD_T_IN, path_len - 0.4))
+        gbeam(bmd, (*p0, z0), (*pm, z1), 0.012, GUARD_H + 0.08)
+        gbeam(bmd, (*pm, z1), (*p1, z1), 0.012, GUARD_H + 0.08)
     # Bearings and drive.
     for c, name in ((UNS_FOOT, "foot"), (UNS_HEAD, "head")):
         for z in (-2.45, 2.45):
@@ -469,7 +476,7 @@ def build_infeed(coll, M):
             gbox_span(bmy, (INF_TAIL - 0.035, INF_SHAFT_Y - 0.04, z + side * 0.05 - 0.012), (INF_TAIL + 0.035, top - 0.012, z + side * 0.05 + 0.012))
     # Line-up fence on the -Z side with a flared lead-in, on brackets off the side beam.
     gbox_span(bmd, (25.75, top - 0.03, LINEUP_FENCE_Z - 0.012), (LAYER_STOP_X, top + 0.20, LINEUP_FENCE_Z))
-    gbeam(bmd, (25.55, top + 0.085, LINEUP_FENCE_Z - 0.25), (25.75, top + 0.085, LINEUP_FENCE_Z - 0.006), 0.012, 0.23)
+    gbeam(bmd, (FLARE_X0, top + 0.085, LINEUP_FENCE_Z - FLARE_OUT), (25.75, top + 0.085, LINEUP_FENCE_Z - 0.006), 0.012, 0.23)
     # Fence posts stand on the side beam's inboard flange, clear of the fork trolley's path
     # (x 27.3 - 29.05) and the trolley cylinder on the beam centreline.
     gbox_span(bmd, (LAYER_STOP_X, top - 0.03, LINEUP_FENCE_Z - 0.012), (FENCE_POST_X[-1] + 0.03, top + 0.20, LINEUP_FENCE_Z))
@@ -636,6 +643,18 @@ END_CH_Y = END_AXLE_Y - 0.075                        # lift channel top (the bea
 END_CYL_X = (26.95, 29.05)                           # upstream / downstream cylinders, on the cross beams
 END_BARREL_TOP = END_CH_Y - 0.045 - END_DROP - 0.012  # just under the lowered channel
 END_POST_X = (27.0, 29.12)
+# Short packs (12 ft and under) are even-ended at the 12 ft mark instead of the 16 ft fence: a
+# pop-up gate plate between the +Z fork tine and the ending drums, its face 12 ft from the line-up
+# fence, raised only while a short layer is driven endwise. It lifts on two air cylinders hung on
+# brackets under the +Z chain way, inside the forks' sweep only where the fork cross tube passes
+# well below.
+GATE_Z = LINEUP_FENCE_Z + 12 * 0.3048 + 0.005
+GATE_X = (27.40, 29.00)
+GATE_TOP = INFEED_TOP + 0.10                         # raised (home): over a layer the drums have lifted
+GATE_H = 0.25
+GATE_DROP = 0.16                                     # lowered: top 6 cm under the chain tops
+GATE_CYL_X = (27.70, 28.65)
+GATE_BRACKET_Y = 2.05
 # Short-board idler rails: a 6 ft board even-ended at either fence has its middle over a single
 # chain strand (+-1.575) and would seesaw on it, so a rail of small free-spinning idler rollers
 # (axles across the line) between the outer fork tine and the outer ending drum carries its short
@@ -685,6 +704,14 @@ def build_far_fence(coll, M):
             gbox_span(bmg, (x - 0.05, y0, z - 0.05), (x + 0.05, y0 + 0.012, z + 0.05))                  # base plate
             gcyl(bmg, (x, (y0 + END_BARREL_TOP) / 2, z), 0.028, END_BARREL_TOP - y0, 'y', segs=14)
             gcyl(bmg, (x, END_BARREL_TOP - 0.007, z), 0.032, 0.014, 'y', segs=14)                       # gland
+    # 12 ft gate cylinders: a strap down from the +Z inner chain way and a bracket under the drum
+    # lift channel out to the gate line, a barrel standing on it.
+    way = INF_Z[-1] - 0.055
+    for x in GATE_CYL_X:
+        gbox_span(bm, (x - 0.03, GATE_BRACKET_Y, way - 0.012), (x + 0.03, INF_BEAM_TOP, way))
+        gbox_span(bm, (x - 0.03, GATE_BRACKET_Y - 0.04, GATE_Z - 0.035), (x + 0.03, GATE_BRACKET_Y, way))
+        gcyl(bmg, (x, GATE_BRACKET_Y + 0.085, GATE_Z + 0.006), 0.026, 0.17, 'y', segs=14)
+        gcyl(bmg, (x, GATE_BRACKET_Y + 0.17, GATE_Z + 0.006), 0.03, 0.012, 'y', segs=14)                  # gland
     bmu = bmesh.new()
     for s in (-1, 1):
         idler_rail(bm, bmu, SKID_X[0], SKID_X[1], s * SKID_Z, INF_BEAM_TOP, SKID_TOP)
@@ -717,6 +744,23 @@ def build_ending_lift(coll, M):
     gear = obj("EndingLiftBearings", bmy, coll, [M["grey"]], bevel=0.002, segs=1)
     gear.parent = root
     r = obj("EndingLiftRods", rods, coll, [M["shaft"]], bevel=0.0)
+    r.parent = root
+    return root
+
+
+def build_ending_gate(coll, M):
+    """Moving part, shown raised: the 12 ft gate plate (its -Z face is the fence face) with a
+    stiffening flange along the bottom and the two cylinder rods hanging from it."""
+    bm, rods = bmesh.new(), bmesh.new()
+    x0, x1 = GATE_X
+    gbox_span(bm, (x0, GATE_TOP - GATE_H, GATE_Z), (x1, GATE_TOP, GATE_Z + 0.012))
+    gbox_span(bm, (x0, GATE_TOP - GATE_H, GATE_Z + 0.012), (x1, GATE_TOP - GATE_H + 0.012, GATE_Z + 0.05))
+    for x in GATE_CYL_X:
+        lo = GATE_BRACKET_Y + 0.165                    # inside the barrel, also when lowered
+        hi = GATE_TOP - GATE_H
+        gcyl(rods, (x, (lo + hi) / 2, GATE_Z + 0.006), 0.011, hi - lo, 'y', segs=10)
+    root = obj("EndingGate", bm, coll, [M["orange"]], bevel=0.002, segs=1)
+    r = obj("EndingGateRods", rods, coll, [M["shaft"]], bevel=0.0)
     r.parent = root
     return root
 
@@ -1191,7 +1235,7 @@ def build(materials, preview_lumber=True, animated=False):
     moving = [adjusters, build_surge_stop(coll, materials), build_pop_stops(coll, materials, "LayerStops", LAYER_STOP_X, LAYER_STOP_Z),
               build_course_divider(coll, materials), *build_forks(coll, materials),
               build_fork_trolley(coll, materials), build_fence(coll, materials), build_stick_gates(coll, materials), hoist,
-              build_landing_lift(coll, materials), build_ending_lift(coll, materials)]
+              build_landing_lift(coll, materials), build_ending_lift(coll, materials), build_ending_gate(coll, materials)]
     build_far_fence(coll, materials)
     roll = build_roll(parts_coll, materials)
     build_ending_preview(coll, build_ending_rolls(parts_coll, materials))

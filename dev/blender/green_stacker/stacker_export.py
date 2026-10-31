@@ -46,6 +46,7 @@ MOVING = {
     "stacker_hoist.glb": ("Hoist", "HoistRods"),
     "stacker_landing_lift.glb": ("LandingLift", "LandingLiftRods"),
     "stacker_ending_lift.glb": ("EndingLift", "EndingLiftBearings", "EndingLiftRods"),
+    "stacker_ending_gate.glb": ("EndingGate", "EndingGateRods"),
 }
 # Static parts in their own files, in stacker coordinates.
 STATIC_PARTS = {
@@ -96,7 +97,7 @@ def export_ending():
             m.diffuse_color = (*rgb, 1.0)
             m.metallic = metal
             m.roughness = rough
-    out = [_export_rooted(os.path.join(OUT, "stacker_ending_lift.glb"), MOVING["stacker_ending_lift.glb"])]
+    out = [_export_rooted(os.path.join(OUT, f), MOVING[f]) for f in ("stacker_ending_lift.glb", "stacker_ending_gate.glb")]
     for fname, names in STATIC_PARTS.items():
         out.append(SE._export(os.path.join(OUT, fname), names, False))
     out.append(SE._export(os.path.join(OUT, "stacker_ending_roll.glb"), PARTS["stacker_ending_roll.glb"], True))

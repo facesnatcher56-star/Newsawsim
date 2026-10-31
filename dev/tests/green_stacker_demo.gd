@@ -35,8 +35,9 @@ var _snap_n: int = 0
 var _fixed_view: bool = false
 ## Started with `-- --views=9,10,...`: snapshots cycle through only these views.
 var _views: Array[int] = []
-## Started with `-- --lengths`: packs of mixed lengths (6-16 ft in turn), even-ended at the
-## line-up fence end as the sorter sends them, to watch the stacker alternate its ending.
+## Started with `-- --lengths`: short packs (6-12 ft) and long packs (14-16 ft) in turn,
+## even-ended at the line-up fence end as the sorter sends them, to watch the stacker alternate
+## its ending (short layers against the 12 ft gate, long ones against the far fence).
 var _lengths: bool = false
 
 const VIEWS: Array = [
@@ -228,7 +229,11 @@ func _feed_pack() -> void:
 		board.name = "Board_%d" % _fed
 		var z: float = randf_range(-0.04, 0.04)
 		if _lengths:
-			var feet: int = 6 + 2 * (_fed % 6)
+			# A package's worth of short packs (6-12 ft), then of long packs (14-16 ft), and so on:
+			# the sorter packs the two apart and the stacker builds one package of one class at a time.
+			var per_pkg: int = maxi(int(_stacker.get("package_layers")), 1)
+			var class_ft: Array = [6, 8, 10, 12] if ((_pack_n - 1) / per_pkg) % 2 == 0 else [14, 16]
+			var feet: int = class_ft[i % class_ft.size()]
 			board.call("configure_dimensions", feet * 0.3048, t, float(spec["width"]))
 			z = Stacker.LINEUP_FENCE_Z + 0.04 + feet * 0.3048 * 0.5
 		_fed += 1

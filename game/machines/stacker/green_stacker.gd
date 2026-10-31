@@ -52,6 +52,7 @@ const LugScene := preload("res://game/assets/models/green_stacker/stacker_uns_lu
 const RollScene := preload("res://game/assets/models/green_stacker/stacker_roll.glb")
 const END_LIFT_MODEL := "res://game/assets/models/green_stacker/stacker_ending_lift.glb"
 const END_ROLL_MODEL := "res://game/assets/models/green_stacker/stacker_ending_roll.glb"
+const GATE_MODEL := "res://game/assets/models/green_stacker/stacker_ending_gate.glb"
 const FAR_FENCE_MODEL := "res://game/assets/models/green_stacker/stacker_far_fence.glb"
 const StickScene := preload("res://game/assets/models/green_stacker/stacker_stick.glb")
 const CutBoardScript := preload("res://game/lumber/cut_board.gd")
@@ -116,6 +117,16 @@ const END_TOP := INFEED_TOP + 0.018        # raised drum tops: the layer rides c
 const END_DROP := 0.05                     # lowered: drum tops 3.2 cm under the chain tops
 const END_TIME := 0.4                      # air cylinders: seconds up or down
 const END_TIMEOUT := 20.0
+# The 12 ft gate (stacker_build.build_ending_gate): a pop-up plate whose face is 12 ft from the
+# line-up fence. A short layer (12 ft and under) is even-ended against it instead of the 16 ft far
+# fence, so a short package is 12 ft long and even on both faces.
+const GATE_Z := LINEUP_FENCE_Z + 12.0 * 0.3048 + 0.005
+const GATE_X0 := 27.40
+const GATE_X1 := 29.00
+const GATE_TOP := INFEED_TOP + 0.10        # raised
+const GATE_H := 0.25
+const GATE_DROP := 0.16                    # lowered: top 6 cm under the chain tops
+const GATE_TIME := 0.6
 # Short-board idler rails (stacker_build.SKID_*, idler_rail): rows of free-spinning rollers at
 # +-SKID_Z, their tops level with the chain tops, that carry the short end of a 6 ft board whose
 # middle would otherwise sit over a single chain strand. The idlers turn as a board rides over
@@ -292,6 +303,8 @@ var _visual_elapsed: float = 0.0
 
 var _surge_stop: float = 0.0        # 0 up, 1 down
 var _surge_target: float = 0.0
+var _release_t: float = 99.0              # since the pack stop last dropped
+var _surge_idle_t: float = 0.0             # every pack on the surge still this long: chains stop
 var _layer_stop: float = 0.0
 var _hold_stop: float = 1.0             # course divider: 1 at the doubles gauge, 0 down dividing
 var _hold_target: float = 1.0
@@ -365,6 +378,9 @@ var _inf_chains: StaticBody3D
 var _form_chains: StaticBody3D
 var _rolls: StaticBody3D
 var _end_rolls: StaticBody3D               # ending drum tops (moved with the lift)
+var _end_gate: StaticBody3D                # the 12 ft gate
+var _gate_up: float = 0.0                  # 0 down, 1 raised
+var _gate_target: float = 0.0
 var _end_roll_nodes: Array[Node3D] = []
 var _surge_stop_body: AnimatableBody3D
 var _layer_stop_body: AnimatableBody3D
@@ -459,8 +475,22 @@ func packages_done() -> int:
 	return _packages_done
 
 
-## Boards per layer and layers for a nominal size.
+## Pack, layer and package key: nominal size and length class. The sorter packs short boards
+## (12 ft and under) apart from long ones (14 and 16 ft), so really short never lies under
+## really long, and the stacker never mixes them in a layer or a package.
+const SHORT_MAX_FT := 12
+
+static func board_kind(b: Node) -> String:
+	return "%s %s" % [str(b.get("nominal_size")), "short" if int(b.get("length_feet")) <= SHORT_MAX_FT else "long"]
+
+
+static func is_short_kind(kind: String) -> bool:
+	return kind.ends_with(" short")
+
+
+## Boards per layer and layers for a nominal size (or a board_kind: the class is ignored).
 func layer_plan(size: String) -> Vector2i:
+	size = size.get_slice(" ", 0)
 	if size_overrides.has(size):
 		var o: Variant = size_overrides[size]
 		if o is Vector2i:
@@ -535,8 +565,11 @@ func find_jam() -> Dictionary:
 		var p: Vector3 = _local(b)
 		# A board turned crosswise on the surge chains (lying along the travel) would wedge across
 		# the pocket and stall the unscrambler: it is taken off before it gets there.
-		var on_surge: bool = p.x > SURGE_TAIL - 0.3 and p.x < SURGE_STOP_X + 0.3 and p.y > 0.2 and p.y < 1.2 and absf(p.z) < 2.8
+		# One lying on the haul-out but reaching onto the surge counts too: it blocks the hand-off.
+		var reach: float = absf(sin(_twist(b))) * float(b.get("product_length")) * 0.5 if b.get("product_length") != null else 0.0
+		var on_surge: bool = p.x + reach > SURGE_TAIL and p.x < SURGE_STOP_X + 0.3 and p.y > 0.2 and p.y < 1.2 and absf(p.z) < 2.8
 		if on_surge and absf(_twist(b)) > deg_to_rad(30.0):
+			_log_twist(b)
 			return {"kind": "twisted", "board": b, "at": p}
 		var on_infeed: bool = p.x > UNS_HEAD.x + 0.1 and p.x < LAYER_STOP_X + 0.1 and p.y > 2.4 and p.y < 3.0
 		# A board a little off square squares itself when it reaches the divider fingers or the
@@ -550,6 +583,7 @@ func find_jam() -> Dictionary:
 			var held: bool = p.x > HOLD_STOP_X or _hold_stop < 0.5 or _inf.speed < 0.1
 			_twist_t[b] = float(_twist_t.get(b, 0.0)) + dt if b.linear_velocity.length() < 0.05 and not held else 0.0
 			if twist > deg_to_rad(25.0) or float(_twist_t[b]) > 3.0:
+				_log_twist(b)
 				return {"kind": "twisted", "board": b, "at": p}
 		else:
 			_twist_t.erase(b)
@@ -559,12 +593,16 @@ func find_jam() -> Dictionary:
 		# (The ending drums lift a waiting layer END_TOP - INFEED_TOP clear of the chains.)
 		var lift: float = (END_TOP - INFEED_TOP) * _end_up if p.x > HOLD_STOP_X else 0.0
 		if on_infeed and (p.y > INFEED_TOP + float(b.get("board_thickness")) * 0.5 + 0.025 + lift or _overlaps_below(b)):
-			_rider_t[b] = float(_rider_t.get(b, 0.0)) + dt
-			if p.x > HOLD_STOP_X or float(_rider_t[b]) > 4.0:
+			# Upstream of the divider a rider is the divider's: the fingers hold it back and it drops
+			# into the first gap behind the board under it, which in a close queue can take a while.
+			# So it only counts while the infeed is running, and only a long stay is a jam.
+			if absf(_inf.speed) > 0.1:
+				_rider_t[b] = float(_rider_t.get(b, 0.0)) + dt
+			if p.x > HOLD_STOP_X or float(_rider_t.get(b, 0.0)) > 20.0:
 				# Riding on a board of another size in the layer: that one is the stray. It
 				# goes on the holdover rack (the crew lifts this one off it first).
 				var under: RigidBody3D = _board_below(b)
-				if under != null and _layer_size != "" and _local(under).x > HOLD_STOP_X 						and str(under.get("nominal_size")) != _layer_size:
+				if under != null and _layer_size != "" and _local(under).x > HOLD_STOP_X 						and board_kind(under) != _layer_size:
 					_fault = "extra"
 					_fault_boards = [under]
 					return {"kind": "extra", "board": under, "boards": [under], "at": _local(under)}
@@ -620,6 +658,15 @@ func find_jam() -> Dictionary:
 	return {}
 
 
+## Debug: a twisted board, for the log (once per board).
+func _log_twist(b: RigidBody3D) -> void:
+	if log_events and not b.has_meta("twist_logged"):
+		b.set_meta("twist_logged", true)
+		var p: Vector3 = _local(b)
+		_log("twisted %s %d ft at x%.2f y%.3f z%.2f (near end z%.2f) twist %.0f deg" % [b.name, int(b.get("length_feet")), p.x, p.y, p.z,
+			p.z - float(b.get("product_length")) * 0.5, rad_to_deg(_twist(b))])
+
+
 ## A board's twist off the line, radians (its length axis against the stacker's Z, from above).
 func _twist(b: RigidBody3D) -> float:
 	var up: Vector3 = global_basis.y
@@ -637,6 +684,7 @@ func _twist(b: RigidBody3D) -> float:
 ## Where a worker puts a board back: square on the infeed chains in the first clear gap
 ## upstream of the course divider, or, if there's no room, on the pile in the unscrambler pocket.
 func put_back_spot(b: RigidBody3D) -> Transform3D:
+	_passed.erase(b)                        # back upstream: no longer in the layer being formed
 	var w: float = float(b.get("board_width"))
 	var t: float = float(b.get("board_thickness"))
 	var length: float = float(b.get("product_length"))
@@ -646,7 +694,7 @@ func put_back_spot(b: RigidBody3D) -> Transform3D:
 	var running: Dictionary = _line_sizes()
 	if _layer_size != "":
 		running[_layer_size] = true
-	if not running.is_empty() and not running.has(str(b.get("nominal_size"))):
+	if not running.is_empty() and not running.has(board_kind(b)):
 		_boards.erase(b)
 		_passed.erase(b)
 		b.add_to_group("odd_boards")
@@ -713,13 +761,32 @@ func _square_boards() -> void:
 
 
 func _update_surge(delta: float) -> void:
-	var on_surge: bool = false
+	# The surge chains run while something on them has to move: a pack travelling, a pack with
+	# room to close up to the pack (or the pack stop) ahead of it, or the stop down for a
+	# release. Once every pack stands closed up and still for half a second they stop, so they
+	# don't scrub under packs held at the stop (that slews short boards round the stop fingers).
+	var spans: Array[Vector2] = []           # (trailing, leading) edge of every board on the surge
+	var moving: bool = false
 	for b: RigidBody3D in _boards:
 		var p: Vector3 = _local(b)
-		if p.y < 1.0 and p.x < SURGE_HEAD + 0.15:
-			on_surge = true
+		if p.y < 1.0 and p.y > 0.15 and p.x < SURGE_HEAD + 0.15 and p.x + _half_w(b) > SURGE_TAIL - 0.3:
+			spans.append(Vector2(p.x - _half_w(b), p.x + _half_w(b)))
+			if b.linear_velocity.length() > 0.05:
+				moving = true
+	var room: bool = false
+	for s: Vector2 in spans:
+		var ahead: float = SURGE_STOP_X if _surge_target < 0.5 else INF
+		for o: Vector2 in spans:
+			if o.x > s.y - 0.03:
+				ahead = minf(ahead, o.x)
+		if ahead - s.y > 0.05 and s.y < SURGE_HEAD:
+			room = true
 			break
-	_surge.speed = move_toward(_surge.speed, surge_speed if on_surge else 0.0, 0.5 * delta)
+	var on_surge: bool = not spans.is_empty()
+	var need: bool = on_surge and (moving or room or _surge_target > 0.5)
+	_surge_idle_t = 0.0 if need else _surge_idle_t + delta
+	var run: bool = on_surge and _surge_idle_t < 0.5
+	_surge.speed = move_toward(_surge.speed, surge_speed if run else 0.0, 0.5 * delta)
 	# Pocket and incline: every board past the surge head that hasn't reached the crest.
 	var in_pocket: int = 0
 	for b: RigidBody3D in _boards:
@@ -734,7 +801,12 @@ func _update_surge(delta: float) -> void:
 		var line: Dictionary = _line_sizes()
 		# A pack of another size waits until the pocket, unscrambler and infeed have run out of
 		# the last one, so sizes never mix on the way to the divider.
-		if in_pocket <= 8 and size != "" and not _pack_dropping() and (line.is_empty() or (line.size() == 1 and line.has(size))):
+		# One pack in the pocket at a time: the next goes only once the pocket is nearly empty and
+		# the last one has had time to settle (a pack still tipping in isn't counted yet), so packs
+		# never pile on each other in a heap the lugs can't take apart.
+		_release_t += delta
+		if in_pocket <= 2 and _release_t > 5.0 and size != "" and not _pack_dropping() 				and (line.is_empty() or (line.size() == 1 and line.has(size))):
+			_release_t = 0.0
 			_surge_target = 1.0
 			_log("pocket low (%d boards): releasing a %s pack" % [in_pocket, size])
 			_set_adjusters(size)
@@ -777,6 +849,7 @@ func _pocket_tangle() -> Array[RigidBody3D]:
 ## the plates. The bottom board rides up on them pushed by its lug; one lying on top of it has
 ## nothing behind it and slides back into the pocket. The pocket only ever holds one size.
 func _set_adjusters(size: String) -> void:
+	size = size.get_slice(" ", 0)
 	var t: float = 0.038
 	if CutBoardScript.LUMBER_SPECS.has(size):
 		t = float(CutBoardScript.LUMBER_SPECS[size]["thickness"])
@@ -800,7 +873,7 @@ func _waiting_pack_size() -> String:
 	for b: RigidBody3D in _boards:
 		var p: Vector3 = _local(b)
 		if p.y < 1.0 and absf(p.x + _half_w(b) - SURGE_STOP_X) < 0.03:
-			return str(b.get("nominal_size"))
+			return board_kind(b)
 	return ""
 
 
@@ -814,7 +887,7 @@ func _line_sizes() -> Dictionary:
 		var p: Vector3 = _local(b)
 		var in_pocket: bool = p.x < UNS_FOOT.x + 0.8 and absf(p.z) < 2.6
 		if p.x > SURGE_STOP_X + 0.10 and p.x - _half_w(b) < HOLD_STOP_X and p.y > (-0.05 if in_pocket else 0.15) and p.y < 3.0:
-			sizes[str(b.get("nominal_size"))] = true
+			sizes[board_kind(b)] = true
 	return sizes
 
 
@@ -847,7 +920,7 @@ func _update_unscrambler(delta: float) -> void:
 		if p.y > 2.4 and p.y < 2.9 and p.x > UNS_HEAD.x - 0.12 and p.x < LAYER_STOP_X + 0.05:
 			committed += 1
 			if size == "":
-				size = str(b.get("nominal_size"))
+				size = board_kind(b)
 	var need: int = layer_plan(size).x if size != "" else 1
 	var run: bool = _phase == Phase.FORM and _hold_target > 0.5 and committed < need
 	if not run and _crest_busy():
@@ -888,7 +961,7 @@ func _update_forming(delta: float) -> void:
 				continue
 			var p: Vector3 = _local(b)
 			if p.y > 2.55 and p.y < 2.8 and p.x > HOLD_STOP_X + 0.01 and p.x < LAYER_STOP_X + 0.05:
-				var size: String = str(b.get("nominal_size"))
+				var size: String = board_kind(b)
 				if _layer_size != "" and size != _layer_size:
 					continue
 				_passed.append(b)
@@ -912,7 +985,7 @@ func _update_forming(delta: float) -> void:
 			_log("forming stalled (%d passed, hold %.2f, infeed %.2f, uns %.2f, surge %.2f, stop %.1f): %s" % [_passed.size(), _hold_stop,
 				_inf.speed, _uns.speed, _surge.speed, _surge_stop, ", ".join(parts)])
 	var next: RigidBody3D = _next_at_hold()
-	if next != null and (_passed.is_empty() or str(next.get("nominal_size")) == _layer_size):
+	if next != null and (_passed.is_empty() or board_kind(next) == _layer_size):
 		# Doubles gauge for the next board of this layer (one of another size is held back
 		# instead): raising the fingers is always safe; lowering them waits until nothing is
 		# under them.
@@ -922,7 +995,7 @@ func _update_forming(delta: float) -> void:
 	if _passed.is_empty():
 		return
 	var full: bool = _passed.size() >= per
-	var other: bool = (next != null and str(next.get("nominal_size")) != _layer_size) or _stray_in_layer()
+	var other: bool = (next != null and board_kind(next) != _layer_size) or _stray_in_layer()
 	# A short layer is never stacked: it waits for more boards of its size, and if another
 	# size comes first the divider holds that back and the crew sets the short layer aside.
 	if full or other:
@@ -964,7 +1037,7 @@ func _stray_in_layer() -> bool:
 		if b.freeze or _package.has(b) or _passed.has(b):
 			continue
 		var p: Vector3 = _local(b)
-		if p.x - _half_w(b) > HOLD_STOP_X + 0.04 and p.x < LAYER_STOP_X + 0.1 and p.y > 2.45 and p.y < 2.8 				and str(b.get("nominal_size")) != _layer_size:
+		if p.x - _half_w(b) > HOLD_STOP_X + 0.04 and p.x < LAYER_STOP_X + 0.1 and p.y > 2.45 and p.y < 2.8 				and board_kind(b) != _layer_size:
 			return true
 	return false
 
@@ -1162,23 +1235,33 @@ func _update_ending(delta: float) -> bool:
 			_end_squaring = false
 			_end_t = 0.0
 			_end_target = 1.0
-			_log("layer squared: ending drums up")
+			_gate_target = 1.0 if is_short_kind(_layer_size) else 0.0
+			_log("layer squared: ending drums up%s" % (", 12 ft gate up" if _gate_target > 0.5 else ""))
 		return false
 	if _end_target > 0.5:
-		if _end_up < 1.0:
+		if _end_up < 1.0 or _gate_up < _gate_target:
 			return false
+		var face: float = _far_face()
 		var home: bool = true
 		for b: RigidBody3D in _passed:
 			if not is_instance_valid(b):
 				continue
 			var far: float = _local(b).z + float(b.get("product_length")) * 0.5
-			if far < FAR_FENCE_Z - 0.012 or absf(b.linear_velocity.dot(global_basis.z)) > 0.03:
+			if far < face - 0.012 or absf(b.linear_velocity.dot(global_basis.z)) > 0.03:
 				home = false
 		if home or _end_t > END_TIMEOUT:
 			_end_target = 0.0
-			_log("layer even-ended at the far fence%s: ending drums down%s" % ["" if home else " (timed out)", "" if home else _forming_dump()])
+			_gate_target = 0.0
+			_log("layer even-ended at the %s%s: ending drums down%s" % ["12 ft gate" if face == GATE_Z else "far fence",
+				"" if home else " (timed out)", "" if home else _forming_dump()])
 		return false
-	return _end_up <= 0.0
+	return _end_up <= 0.0 and _gate_up <= 0.0
+
+
+## Where the far end of the layer at the stops is even-ended: the 12 ft gate for a short layer,
+## the far fence for a long one.
+func _far_face() -> float:
+	return GATE_Z if is_short_kind(_layer_size) else FAR_FENCE_Z
 
 
 func _set_phase(p: int) -> void:
@@ -1207,7 +1290,7 @@ func _check_layer() -> bool:
 			_wait_why = "%s turned across or riding" % b.name
 			_still_t = 0.0
 			return false
-		if str(b.get("nominal_size")) == _layer_size:
+		if board_kind(b) == _layer_size:
 			mine.append(b)
 		else:
 			others.append(b)
@@ -1226,9 +1309,9 @@ func _check_layer() -> bool:
 	if _layer_size == "" and not others.is_empty():
 		# Nothing counted (the list was lost or never made): the layer is the front board's size.
 		others.sort_custom(func(a: RigidBody3D, c: RigidBody3D) -> bool: return _local(a).x > _local(c).x)
-		_layer_size = str(others[0].get("nominal_size"))
+		_layer_size = board_kind(others[0])
 		for b: RigidBody3D in others.duplicate():
-			if str(b.get("nominal_size")) == _layer_size:
+			if board_kind(b) == _layer_size:
 				mine.append(b)
 				others.erase(b)
 	var per: int = layer_plan(_layer_size).x
@@ -1246,7 +1329,7 @@ func _check_layer() -> bool:
 	var coming: bool = next != null or _line_sizes().has(_layer_size)
 	var waiting: String = _waiting_pack_size()
 	var stuck: bool = not coming and waiting != "" and waiting != _layer_size
-	if mine.is_empty() or (next == null and not stuck) or (next != null and str(next.get("nominal_size")) == _layer_size):
+	if mine.is_empty() or (next == null and not stuck) or (next != null and board_kind(next) == _layer_size):
 		if mine.is_empty():
 			_layer_size = ""
 		_hold_target = 1.0
@@ -1285,7 +1368,7 @@ func _forming_dump() -> String:
 func _rack_boards(size: String) -> Array[RigidBody3D]:
 	var found: Array[RigidBody3D] = []
 	for b: RigidBody3D in _rack:
-		if is_instance_valid(b) and str(b.get("nominal_size")) == size:
+		if is_instance_valid(b) and board_kind(b) == size:
 			found.append(b)
 	found.sort_custom(func(a: RigidBody3D, c: RigidBody3D) -> bool: return a.global_position.y > c.global_position.y)
 	return found
@@ -1308,7 +1391,7 @@ func fix_spot(b: RigidBody3D) -> Transform3D:
 			Vector3(_fill_back + w * 0.5, INFEED_TOP + t * 0.5 + 0.003, LINEUP_FENCE_Z + float(b.get("product_length")) * 0.5))
 	# An extra of the layer's own size goes back on the infeed for the next layer; one of
 	# another size would only come round again, so it is set aside like a short layer.
-	if _fault != "short" and (_fault != "extra" or _layer_size == "" or str(b.get("nominal_size")) == _layer_size):
+	if _fault != "short" and (_fault != "extra" or _layer_size == "" or board_kind(b) == _layer_size):
 		return put_back_spot(b)
 	_boards.erase(b)
 	_passed.erase(b)
@@ -1358,7 +1441,7 @@ func _grip_layer() -> void:
 		var t: float = float(b.get("board_thickness"))
 		var length: float = float(b.get("product_length"))
 		_layer_from.append(global_transform.affine_inverse() * b.global_transform)
-		var z: float = FAR_FENCE_Z - length * 0.5 if _layer_far else LINEUP_FENCE_Z + length * 0.5
+		var z: float = _far_face() - length * 0.5 if _layer_far else LINEUP_FENCE_Z + length * 0.5
 		_layer_home.append(Vector3(front - w * 0.5, INFEED_TOP + t * 0.5, z))
 		front -= w + 0.002
 		_layer_back = front
@@ -1646,7 +1729,8 @@ func _drive(delta: float) -> void:
 	# Ending drums: air cylinders lift them; the drum motors run only while they're up.
 	var end_before: float = _end_up
 	_end_up = move_toward(_end_up, _end_target, delta / END_TIME)
-	var end_run: bool = _end_target > 0.5 and _end_up >= 1.0
+	_gate_up = move_toward(_gate_up, _gate_target, delta / GATE_TIME)
+	var end_run: bool = _end_target > 0.5 and _end_up >= 1.0 and _gate_up >= _gate_target
 	_end_rolls.constant_linear_velocity = zb * ending_speed if end_run else Vector3.ZERO
 	if end_run:
 		_end_turn += ending_speed * delta / ROLL_R
@@ -1753,7 +1837,15 @@ func _build_parts() -> void:
 		_span_box(pocket, Vector3(POCKET_LIP.x - 0.05, 0.0, z - 0.006), Vector3(base.x + 1.2, 1.3, z + 0.006))
 		# Incline side guards (stacker_build.build_unscrambler) on up from the cheeks: a short
 		# board skewed on the lugs slides along them instead of off the side of the bed.
-		_slab(pocket, _uns_at(1.4, 0.15), _uns_at((UNS_HEAD - UNS_FOOT).length() - 0.4, 0.15), z - 0.006, z + 0.006, 0.23)
+		# The -Z guard angles in to just outside the fence line, so long boards come over the crest
+		# lined up instead of meeting the fence flare end-on.
+		var z1: float = LINEUP_FENCE_Z - 0.015 if z < 0.0 else z
+		var up := Vector3(-sin(UNS_ANGLE), cos(UNS_ANGLE), 0.0)
+		var g0: Vector2 = _uns_at(1.4, 0.035)
+		var gm: Vector2 = _uns_at(2.0, 0.035)
+		var g1: Vector2 = _uns_at((UNS_HEAD - UNS_FOOT).length() - 0.4, 0.035)
+		_plate(pocket, Vector3(g0.x, g0.y, z), Vector3(gm.x, gm.y, z1), up, 0.23, 0.012)
+		_plate(pocket, Vector3(gm.x, gm.y, z1), Vector3(g1.x, g1.y, z1), up, 0.23, 0.012)
 	# Incline: chain strands (live) and the bed between them (just under the chain tops).
 	var top0: Vector2 = UNS_FOOT + nrm * (UNS_SPR + UNS_PLATE_H)
 	var top1: Vector2 = UNS_HEAD + nrm * (UNS_SPR + UNS_PLATE_H)
@@ -1790,7 +1882,7 @@ func _build_parts() -> void:
 	_span_box(fence, Vector3(25.75, INFEED_TOP - 0.03, LINEUP_FENCE_Z - 0.012), Vector3(INF_HEAD, INFEED_TOP + 0.20, LINEUP_FENCE_Z))
 	# Flared lead-in on the fence's upstream end (as on the model): a board whose end comes off
 	# the unscrambler past the fence line is steered back in instead of butting the fence's end.
-	var a := Vector2(25.45, LINEUP_FENCE_Z - 0.30)
+	var a := Vector2(25.40, LINEUP_FENCE_Z - 0.12)
 	var b := Vector2(25.76, LINEUP_FENCE_Z - 0.006)
 	var flare_shape := BoxShape3D.new()
 	flare_shape.size = Vector3(a.distance_to(b), 0.23, 0.012)
@@ -1822,6 +1914,10 @@ func _build_parts() -> void:
 	# Ending drums on their lift (model home: raised), the whole body moving with the lift. Each
 	# drum collides as the round drum it is: a board sunk a few mm into a flat-sided collider
 	# would butt its end against the next drum as it slides across.
+	# The 12 ft gate (model home: raised); the board ends slide along it, so no drag.
+	_end_gate = _static("EndingGate", _mat(0.0, false))
+	_end_gate.add_child(_load_glb(GATE_MODEL))
+	_span_box(_end_gate, Vector3(GATE_X0, GATE_TOP - GATE_H, GATE_Z), Vector3(GATE_X1, GATE_TOP, GATE_Z + 0.012))
 	_end_rolls = _static("EndingRolls", _mat(0.9, true))
 	_end_rolls.add_child(_load_glb(END_LIFT_MODEL))
 	_end_roll_nodes.clear()
@@ -1990,6 +2086,18 @@ func _lead_in(body: Node3D, p0: Vector3, p1: Vector3) -> void:
 	body.add_child(node)
 
 
+## A plate from p0 to p1 (its mid-plane), `height` tall along `up`, `thick` thick.
+func _plate(body: Node3D, p0: Vector3, p1: Vector3, up: Vector3, height: float, thick: float) -> void:
+	var u: Vector3 = (p1 - p0).normalized()
+	var w: Vector3 = u.cross(up).normalized()
+	var shape := BoxShape3D.new()
+	shape.size = Vector3(p0.distance_to(p1), height, thick)
+	var node := CollisionShape3D.new()
+	node.shape = shape
+	node.transform = Transform3D(Basis(u, w.cross(u), w), (p0 + p1) * 0.5)
+	body.add_child(node)
+
+
 ## A slab whose top face runs from p0 to p1 in the XY plane, z0..z1 across, t thick.
 func _slab(body: Node3D, p0: Vector2, p1: Vector2, z0: float, z1: float, t: float) -> void:
 	var d: Vector2 = p1 - p0
@@ -2044,6 +2152,7 @@ func _place_all() -> void:
 	for roll: Node3D in _roll_nodes:
 		roll.basis = Basis(Vector3.RIGHT, -_roll_turn)
 	_end_rolls.position = Vector3(0.0, -END_DROP * (1.0 - _end_up), 0.0)
+	_end_gate.position = Vector3(0.0, -GATE_DROP * (1.0 - _gate_up), 0.0)
 	for drum: Node3D in _end_roll_nodes:
 		drum.basis = Basis(Vector3.RIGHT, _end_turn)
 	for k in _lugs.size():
