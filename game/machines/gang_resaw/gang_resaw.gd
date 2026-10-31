@@ -130,6 +130,22 @@ func board_lane_clear() -> bool:
 	return _lift_down >= 1.0
 
 
+var _press_on: Dictionary = {}
+var _out_speed: float = 0.0
+
+
+func _process(delta: float) -> void:
+	# The press rolls ride on top of the cant: their undersides move +X with it, so they turn
+	# positive about Z. The lift rolls carry from below: tops +X, about -Z. Drawn per frame,
+	# capped (RollSpin).
+	for i in _press_rolls.size():
+		if _press_rolls[i] and _press_on.get(i, false):
+			_press_rolls[i].rotation.z += RollSpin.step(feed_speed / 0.11, delta)
+	var lift_step := RollSpin.step(-_out_speed / 0.075, delta)
+	for r in _lift_rolls:
+		r.rotation.z += lift_step
+
+
 func _physics_process(delta: float) -> void:
 	_run_transfer(delta)
 	_run_feed(delta)
@@ -415,11 +431,8 @@ func _animate(delta: float) -> void:
 		_press_amt[i] = move_toward(_press_amt[i], 1.0 if on else 0.0, delta * 2.5)
 		if _press[i]:
 			_press[i].rotation.z = -deg_to_rad(PRESS_DEG) * _ease(_press_amt[i])
-		if _press_rolls[i] and on:
-			_press_rolls[i].rotation.z -= feed_speed * delta / 0.11
-	var out_speed := feed_speed if feed == Feed.FEED or feed == Feed.OUT and _front < OUT_STOP_X else 0.0
-	for r in _lift_rolls:
-		r.rotation.z -= out_speed * delta / 0.075
+		_press_on[i] = on
+	_out_speed = feed_speed if feed == Feed.FEED or feed == Feed.OUT and _front < OUT_STOP_X else 0.0
 	_update_chains()
 
 

@@ -53,6 +53,30 @@ func _ready() -> void:
 	bark_enabled = bark_controller.is_enabled()
 	_create_boards()
 	_setup_csg_cut()
+	_randomize_wood()
+
+
+## Every log its own wood: tint, ring spacing and grain pattern (wood.gdshader).
+var wood_tint := Vector3.ONE
+var wood_seed: float = 0.0
+var wood_rings: float = 160.0
+
+
+func _randomize_wood() -> void:
+	var warm := randf_range(-0.08, 0.08)
+	var shade := randf_range(0.82, 1.08)
+	wood_tint = Vector3(shade * (1.0 + warm), shade, shade * (1.0 - warm * 1.5))
+	wood_seed = randf_range(0.0, 100.0)
+	wood_rings = randf_range(110.0, 230.0)
+	var wood_core := get_node_or_null("WoodCore") as GeometryInstance3D
+	if wood_core:
+		apply_wood(wood_core)
+
+
+func apply_wood(g: GeometryInstance3D) -> void:
+	g.set_instance_shader_parameter("tint", wood_tint)
+	g.set_instance_shader_parameter("seed", wood_seed)
+	g.set_instance_shader_parameter("ring_scale", wood_rings)
 
 # Create a container with board meshes that can be cut off
 func _create_boards() -> void:
@@ -104,6 +128,17 @@ var cut_box_face_b: CSGBox3D = null
 func _setup_csg_cut() -> void:
 	var wood_core = get_node_or_null("WoodCore")
 	if wood_core is CSGShape3D:
+		# The end-grain discs join the core first, so the cuts take them off with the rest.
+		var at := 0
+		for end_name in ["WoodEndLeft", "WoodEndRight"]:
+			var end_disc := get_node_or_null(end_name) as CSGShape3D
+			if end_disc:
+				var local: Transform3D = wood_core.transform.affine_inverse() * end_disc.transform
+				remove_child(end_disc)
+				wood_core.add_child(end_disc)
+				wood_core.move_child(end_disc, at)
+				end_disc.transform = local
+				at += 1
 		cut_box_face_a = _get_or_create_cut_box(wood_core, "CutBoxFaceA")
 		cut_box_face_b = _get_or_create_cut_box(wood_core, "CutBoxFaceB")
 
@@ -134,10 +169,124 @@ func _update_csg_cut_position() -> void:
 			cut_box_face_b.position = Vector3(0.0, 0.0, cut_z - 0.5)
 			pass
 
+# --- Progressive cut ------------------------------------------------------------------------
+# While the log runs through the saw the cut opens from its front end back to the saw line: a
+# subtraction box in WoodCore takes the sawn length off the log, and the piece being cut (the
+# log's own cylinder between this cut's plane and the last one) grows out from the saw, leaning
+# off the blade. cut_board() then swaps it for the real slab or board where it is.
+
+const KERF: float = 0.004
+var _peel: CSGCombiner3D = null
+var _peel_cyl: CSGCylinder3D = null
+var _progress_box: CSGBox3D = null
+var _peel_travel := Vector3.RIGHT
+var _peel_len: float = 0.0
+
+
+func _face_sign() -> float:
+	return 1.0 if current_cut_face == 0 else -1.0
+
+
+## Distances from the log axis of this cut's plane (inner) and the last one (outer).
+func _cut_planes() -> Vector2:
+	var r := get_current_radius()
+	return Vector2(r - (cuts_on_current_face + 1) * CUT_DEPTH_PER_PASS, r - cuts_on_current_face * CUT_DEPTH_PER_PASS)
+
+
+func begin_cut(travel_direction: Vector3) -> void:
+	_end_peel()
+	var wood_core := get_node_or_null("WoodCore") as CSGCylinder3D
+	if wood_core == null or board_count <= 0:
+		return
+	_peel_travel = travel_direction.normalized()
+	var s := _face_sign()
+	var planes := _cut_planes()
+	var long := _get_log_core_length() + 1.0
+	_progress_box = CSGBox3D.new()
+	_progress_box.name = "CutProgress"
+	_progress_box.operation = CSGShape3D.OPERATION_SUBTRACTION
+	_progress_box.material = wood_core.material
+	wood_core.add_child(_progress_box)
+	_peel = CSGCombiner3D.new()
+	_peel.name = "CutPeel"
+	add_child(_peel)
+	_peel_cyl = CSGCylinder3D.new()
+	_peel_cyl.radius = wood_core.radius
+	_peel_cyl.sides = wood_core.sides
+	_peel_cyl.material = wood_core.material
+	_peel.add_child(_peel_cyl)
+	apply_wood(_peel)
+	# Keep only the slice between the two planes.
+	var inner := CSGBox3D.new()
+	inner.operation = CSGShape3D.OPERATION_SUBTRACTION
+	inner.material = wood_core.material
+	inner.size = Vector3(1.0, long, 1.0)
+	inner.position = Vector3(0.0, 0.0, s * (planes.x - 0.5))
+	_peel.add_child(inner)
+	if cuts_on_current_face > 0:
+		var outer := CSGBox3D.new()
+		outer.operation = CSGShape3D.OPERATION_SUBTRACTION
+		outer.material = wood_core.material
+		outer.size = Vector3(1.0, long, 1.0)
+		outer.position = Vector3(0.0, 0.0, s * (planes.y + 0.5))
+		_peel.add_child(outer)
+	update_cut(0.0)
+
+
+## progress: how far along the log (m, from its front end) the saw has cut.
+func update_cut(progress: float) -> void:
+	var wood_core := get_node_or_null("WoodCore") as CSGCylinder3D
+	if wood_core == null or _peel == null:
+		return
+	var h := _get_log_core_length()
+	_peel_len = clampf(progress, 0.0, h)
+	var s := _face_sign()
+	var planes := _cut_planes()
+	# Wood-core local +Y or -Y is the log's front end (the end leading into the saw).
+	var ydir := signf(wood_core.global_basis.y.dot(_peel_travel))
+	var mid := ydir * (h - _peel_len) * 0.5
+	_progress_box.visible = _peel_len > 0.01
+	_progress_box.size = Vector3(1.0, _peel_len + 0.12, 1.0)
+	_progress_box.position = Vector3(0.0, mid + ydir * 0.06, s * (planes.x + 0.5))
+	_peel.visible = _peel_len > 0.01
+	_peel_cyl.height = maxf(_peel_len, 0.01)
+	_peel_cyl.position = Vector3(0.0, mid, 0.0)
+	# Off the saw line by the kerf, the cut end leaning away from the blade (a slab more).
+	var lean := minf((0.05 if cuts_on_current_face == 0 else 0.012) * _peel_len / h, 0.05)
+	var pivot := Vector3(0.0, ydir * (h * 0.5 - _peel_len), 0.0)
+	var tilt := asin(clampf(s * ydir * lean / maxf(_peel_len, 0.05), -0.2, 0.2))
+	var bend := Transform3D(Basis(Vector3.RIGHT, tilt), Vector3.ZERO)
+	_peel.transform = wood_core.transform * Transform3D(Basis.IDENTITY, pivot + Vector3(0.0, 0.0, s * KERF)) \
+			* bend * Transform3D(Basis.IDENTITY, -pivot)
+
+
+## Where the cut piece is: centre, along-the-log axis (the travel direction) and its outward
+## face normal, in world space.
+func _peel_frame() -> Array:
+	var planes := _cut_planes()
+	var s := _face_sign()
+	var centre := _peel.global_transform * Vector3(0.0, _peel_cyl.position.y, s * (planes.x + planes.y) * 0.5)
+	var along := _peel_travel
+	var normal := (_peel.global_basis.z * s).normalized()
+	return [centre, along, normal]
+
+
+func _end_peel() -> void:
+	if _peel:
+		_peel.queue_free()
+	if _progress_box:
+		_progress_box.queue_free()
+	_peel = null
+	_peel_cyl = null
+	_progress_box = null
+
+
 func cut_board(_saw_pos: Vector3, travel_direction: Vector3 = Vector3.RIGHT) -> void:
 	if board_count <= 0:
+		_end_peel()
 		return
-	
+	var peel_frame: Array = _peel_frame() if _peel != null else []
+
 	# The first cut on every face removes the curved roundback/slab.
 	var is_roundback: bool = cuts_on_current_face == 0
 	var prefab_path = "res://game/lumber/cut_board.tscn"
@@ -177,21 +326,58 @@ func cut_board(_saw_pos: Vector3, travel_direction: Vector3 = Vector3.RIGHT) -> 
 		# Side boards off the headrig are rough flitches: wider than the board they will make,
 		# with bark on their edges, for the scanner and edger to make the most of.
 		if not is_roundback and board_node.has_method("set_wane"):
-			var width := randf_range(0.21, 0.33)
+			# Width and wane from where the cut is: the board's inner face is a chord at this cut's
+			# plane, its outer face the narrower chord at the last one, and the difference is the
+			# rounded, barky edge left on each side (the log is never quite centred: one side more).
+			var planes := _cut_planes()
+			var r := get_current_radius()
+			var inner_w := 2.0 * sqrt(maxf(r * r - planes.x * planes.x, 0.0))
+			var outer_w := 2.0 * sqrt(maxf(r * r - planes.y * planes.y, 0.0))
+			var width := minf(inner_w * randf_range(0.94, 1.0), 0.33)
+			var wane := maxf((inner_w - outer_w) * 0.5, 0.012)
+			var skew := randf_range(-0.35, 0.35)
 			var length := _board_length()
 			board_node.configure_dimensions(length, randf_range(0.038, 0.043), width)
 			board_node.nominal_size = "flitch"
-			board_node.set_wane(randf_range(0.012, 0.045), randf_range(0.012, 0.045))
+			board_node.set_wane(wane * (1.0 + skew), wane * (1.0 - skew))
 			# A short board comes from whichever stretch of the crooked log the cut stays in wood.
 			if length < LOG_PRODUCT_LENGTH - 0.01:
 				var slack := (LOG_PRODUCT_LENGTH - length) * 0.5
 				board_node.global_position.x += randf_range(-slack, slack)
-		
+		if not peel_frame.is_empty():
+			_take_over_peel(board_node, peel_frame, is_roundback)
+
 	board_count -= 1
+	_end_peel()
 	cuts_on_current_face += 1
 	
 	# Perform visual flat cut using CSG Subtraction!
 	_update_csg_cut_position()
+
+## Put the sawn product where the cut piece is, standing on edge off the saw line (thickness
+## along the cut face's normal, the rounded side of a slab outward), then let it fall away from
+## the blade onto the outfeed: moving on with the log, tipping outward.
+func _take_over_peel(product: RigidBody3D, frame: Array, is_roundback: bool) -> void:
+	var centre: Vector3 = frame[0]
+	var along: Vector3 = frame[1]
+	var normal: Vector3 = frame[2]
+	var shift := 0.0
+	if "product_length" in product and product.product_length < LOG_PRODUCT_LENGTH - 0.01:
+		# A short board from a crooked log: somewhere along the cut.
+		var slack: float = (LOG_PRODUCT_LENGTH - product.product_length) * 0.5
+		shift = randf_range(-slack, slack)
+	var width_axis := along.cross(normal).normalized()
+	product.global_transform = Transform3D(Basis(along, normal, width_axis), centre + along * shift)
+	product.linear_velocity = along * CUT_PRODUCT_FORWARD_SPEED + normal * 0.25
+	# Tip over outward about the long axis (top edge away from the log).
+	var tip := along * (1.8 if is_roundback else 1.4)
+	if tip.cross(Vector3.UP).dot(normal) < 0.0:
+		tip = -tip
+	product.angular_velocity = tip
+	var slab_look := product.get_node_or_null("CSGCombiner3D") as GeometryInstance3D
+	if slab_look:
+		apply_wood(slab_look)
+
 
 ## Length of the side board this cut makes, in whole 2 ft steps from 6 to 16 ft: full length on
 ## a straight log; on a crooked one the first board in from the slab is shortest and the next

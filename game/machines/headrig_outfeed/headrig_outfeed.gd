@@ -70,7 +70,7 @@ var _cant_target: Node
 var _rolls: Array[Node3D] = []
 var _kick := {}
 var _slab_target: Node
-var _roll_travel: float = 0.0
+var _roll_spin: float = 0.0
 var _case_speed: float = 0.0
 var _board_wait: float = 0.0
 var _rng := RandomNumberGenerator.new()
@@ -136,7 +136,6 @@ func _physics_process(delta: float) -> void:
 	_case.constant_linear_velocity = Vector3(_case_speed, 0.0, 0.0)
 	for k in _kick:
 		_run_kicker(k, delta)
-	_animate(delta)
 
 
 # --- Pieces on the case ------------------------------------------------------------------------
@@ -152,6 +151,16 @@ func _case_pieces() -> Array[RigidBody3D]:
 			if p.x > CASE_X.x and p.x < CASE_X.y and absf(p.z - 5.25) < 0.7 and p.y > TOP_Y - 0.1 and p.y < 0.7:
 				out.append(b)
 	return out
+
+
+## True if no piece lies on the rolls anywhere between x0 and x1: the headrig asks before it
+## saws (products drop under the saw) or sets a cant out, so wood never lands on wood.
+func zone_clear(x0: float, x1: float) -> bool:
+	for p in _case_pieces():
+		var half := _half_length(p)
+		if p.global_position.x + half > x0 and p.global_position.x - half < x1:
+			return false
+	return true
 
 
 func _kind(b: Node) -> String:
@@ -281,10 +290,11 @@ func _ease(p: float) -> float:
 
 # --- Animation --------------------------------------------------------------------------------
 
-func _animate(delta: float) -> void:
-	_roll_travel += _case_speed * delta
+func _process(delta: float) -> void:
+	# Top of the rolls moves +X with the wood: about -Z. Drawn per frame, capped (RollSpin).
+	_roll_spin += RollSpin.step(-_case_speed / ROLL_R, delta)
 	for r in _rolls:
-		r.rotation.z = -_roll_travel / ROLL_R
+		r.rotation.z = _roll_spin
 
 
 ## One line for debug HUDs.

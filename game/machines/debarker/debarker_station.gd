@@ -135,7 +135,12 @@ func _feed(delta: float) -> void:
 		return
 	# The spiked rolls bite and bring the log up to feed speed; it is pulled onto the ring
 	# axis over the first half second.
-	_carry_v = move_toward(_carry_v, feed_speed, 1.2 * delta)
+	# The feed rolls stop (the ring keeps turning) while the log ahead on the outfeed is held
+	# close in front, so the log coming through never shoves it on into a full trough.
+	var target_v := feed_speed
+	if outfeed.hold and _gap_ahead() < 0.4:
+		target_v = 0.0
+	_carry_v = move_toward(_carry_v, target_v, 1.2 * delta)
 	_carry_align = minf(1.0, _carry_align + delta / 0.5)
 	var xf := _carry.global_transform
 	var pos := xf.origin + Vector3.RIGHT * _carry_v * delta
@@ -150,6 +155,34 @@ func _feed(delta: float) -> void:
 		_carry.linear_velocity = Vector3.RIGHT * _carry_v
 		_carry.angular_velocity = Vector3.ZERO
 		_carry = null
+
+
+## Clear distance from the carried log's nose to the tail of the next log out on the outfeed.
+func _gap_ahead() -> float:
+	var nose := _carry.global_position.x + _carry_half
+	var gap := INF
+	for node in get_tree().get_nodes_in_group("logs"):
+		var l := node as RigidBody3D
+		if l == null or l == _carry or l.freeze:
+			continue
+		var p := l.global_position
+		if absf(p.z - _line.y) > 0.6 or p.x < nose:
+			continue
+		gap = minf(gap, p.x - _half_length(l) - nose)
+	return gap
+
+
+var _feed_roll_v: float = 0.0
+
+
+func _process(delta: float) -> void:
+	# Bottom rolls' tops and top rolls' bottoms both move +X with the log. Drawn per frame,
+	# capped (RollSpin).
+	var s := RollSpin.step(_feed_roll_v / FEED_ROLL_R, delta)
+	for r in _rolls_bottom:
+		r.rotation.z -= s
+	for r in _rolls_top:
+		r.rotation.z += s
 
 
 func _next_log_at_rolls() -> bool:
@@ -195,10 +228,7 @@ func _pose(delta: float) -> void:
 	# The infeed arm reaches +X from its pivot, the outfeed arm -X: they lift opposite ways.
 	_in_arm.rotation.z = _in_angle
 	_out_arm.rotation.z = -_out_angle
-	for r in _rolls_bottom:
-		r.rotation.z -= v / FEED_ROLL_R * delta
-	for r in _rolls_top:
-		r.rotation.z += v / FEED_ROLL_R * delta
+	_feed_roll_v = v
 	var pin_axis := -_axis_node.global_basis.z
 	for c in _cylinders:
 		var barrel: Node3D = c[0]

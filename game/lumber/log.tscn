@@ -1,36 +1,15 @@
 [gd_scene format=3 uid="uid://jsxgi8kpb468"]
 
 [ext_resource type="Script" uid="uid://15lnucnpcqvp" path="res://game/lumber/log.gd" id="1"]
+[ext_resource type="Shader" path="res://game/lumber/wood.gdshader" id="2_wood"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_log"]
 radius = 0.292
 height = 4.958
 
-[sub_resource type="Shader" id="Shader_inner_wood"]
-code = "shader_type spatial;
-render_mode diffuse_burley;
-
-varying vec3 local_pos;
-
-void vertex() {
-	local_pos = VERTEX;
-}
-
-void fragment() {
-	float length_grain = sin(local_pos.y * 45.0 + sin(local_pos.x * 20.0) * 0.4 + sin(local_pos.z * 20.0) * 0.4);
-	float dist_from_center = length(local_pos.xz);
-	float ring = sin(dist_from_center * 150.0 + sin(local_pos.y * 5.0) * 0.3);
-	float fine_grain = sin(local_pos.y * 120.0 + local_pos.x * 20.0) * 0.5 + 0.5;
-	float grain = smoothstep(0.45, 0.95, length_grain * 0.5 + 0.5) * 0.15 + smoothstep(0.6, 0.95, ring * 0.5 + 0.5) * 0.15 + fine_grain * 0.04;
-	vec3 base_color = vec3(0.78, 0.62, 0.42);
-	vec3 grain_color = vec3(0.45, 0.28, 0.12);
-	ALBEDO = mix(base_color, grain_color, grain);
-	ROUGHNESS = 0.9;
-}"
-
 [sub_resource type="ShaderMaterial" id="Material_inner_wood"]
 render_priority = 0
-shader = SubResource("Shader_inner_wood")
+shader = ExtResource("2_wood")
 
 [node name="LogPrefab" type="RigidBody3D" unique_id=1446840428 groups=["logs"]]
 mass = 50.0

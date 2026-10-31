@@ -36,6 +36,7 @@ const CHAIN_Y := 1.108
 const SCAN_Y := 1.101
 const DEAD_OUT_Y := 1.1045
 const DEAD_LEAD := 0.012                          # dead plate lead edge below its top
+const TAKE_HEAD_Z := 14.3864                      # take-away head, over the lug loader tail (unscrambler_line)
 const LUG_LEAD := 0.06                            # lug loader tail: chain rising round the sprockets
 const STOP_HALF_Z := 14.8436
 const STOP_END_Z := 15.5294
@@ -96,7 +97,16 @@ var _decided := {}
 var _zero_rolls: Array[AnimatableBody3D] = []
 var _zero_meshes: Array[Node3D] = []
 var _zero_lift: float = 0.0
-var _zero_spin: float = 0.0
+var _zero_spin: float = 0.0                         # drawn roll angle
+var _zero_v: float = 0.0                            # zero roll surface speed now
+
+
+func _process(delta: float) -> void:
+	# Roll tops move +X (toward the fence): about -Z. Drawn per frame, capped (RollSpin).
+	_zero_spin += RollSpin.step(-_zero_v / 0.0508, delta)
+	for m in _zero_meshes:
+		if m:
+			m.rotation.z = _zero_spin
 var _lug_rows: Array[AnimatableBody3D] = []
 var _mm := {}
 var _shafts := {}
@@ -267,7 +277,9 @@ func _physics_process(delta: float) -> void:
 	if _unscrambler and "hold" in _unscrambler:
 		var queued := 0
 		for b in boards:
-			if b.global_position.z < STOP_HALF_Z:
+			# Only boards wholly on the lug chains: one still partly on the take-away must not stop
+			# it, as the slick lug chains can't pull a board off stopped take-away chains.
+			if b.global_position.z < STOP_HALF_Z and b.global_position.z - _half_width(b) > TAKE_HEAD_Z:
 				queued += 1
 		_unscrambler.hold = queued >= queue_full or _a_v < loader_slow_speed * 0.5
 	_animate()
@@ -307,7 +319,7 @@ func _board_at(boards: Array[RigidBody3D], z: float) -> RigidBody3D:
 func _run_half_stop(boards: Array[RigidBody3D], _delta: float) -> void:
 	var st: Dictionary = _stops["half"]
 	if st["want_down"]:
-		var b := st["board"] as RigidBody3D
+		var b: RigidBody3D = st["board"] if is_instance_valid(st["board"]) else null
 		# Up again once the released board is clear and the fast chains have opened a gap behind it.
 		if _released_past(b, STOP_HALF_Z) and _line_clear(boards, STOP_HALF_Z, b):
 			st["want_down"] = false
@@ -337,7 +349,7 @@ func _run_half_stop(boards: Array[RigidBody3D], _delta: float) -> void:
 func _run_end_stop(boards: Array[RigidBody3D]) -> void:
 	var st: Dictionary = _stops["end"]
 	if st["want_down"]:
-		var b := st["board"] as RigidBody3D
+		var b: RigidBody3D = st["board"] if is_instance_valid(st["board"]) else null
 		if _released_past(b, STOP_END_Z):
 			st["want_down"] = false
 			st["board"] = null
@@ -447,7 +459,7 @@ func _run_zero_rolls(delta: float) -> void:
 		if over and _board_end_x(b) < FENCE_X - 0.01:
 			want = true
 	_zero_lift = move_toward(_zero_lift, 1.0 if want else 0.0, delta / 0.15)
-	_zero_spin += (zero_roll_speed if _zero_lift > 0.5 else 0.0) * delta
+	_zero_v = zero_roll_speed if _zero_lift > 0.5 else 0.0
 	_place_zero_rolls()
 
 
@@ -467,7 +479,7 @@ func _place_zero_rolls() -> void:
 			if not m.has_meta("home"):
 				m.set_meta("home", m.position.y)
 			m.position.y = float(m.get_meta("home")) - ZERO_LIFT + ZERO_LIFT * _zero_lift
-			m.rotation.z = -_zero_spin / 0.0508
+			m.rotation.z = _zero_spin
 
 
 func _note_scans() -> void:

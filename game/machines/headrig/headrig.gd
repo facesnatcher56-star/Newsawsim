@@ -100,7 +100,7 @@ var _deck_dogs: MultiMesh
 var _teeth: MultiMesh
 var _deck_travel: float = 0.0
 var _band_travel: float = 0.0
-var _out_travel: float = 0.0
+var _out_spin: float = 0.0
 var _deck_locked: Array[RigidBody3D] = []
 
 var _car_x: float = CAR_HOME_X
@@ -116,10 +116,12 @@ var _turner_deg: float = 0.0
 
 var _log: RigidBody3D = null
 var _roll: float = 0.0
+var _end_flip: bool = false                # the log on the carriage has local X along +X
 var _cuts_on_face: int = 0
 var _face: int = 0
 var _face_a_depth: float = 0.0
 var _cut_this_pass: bool = false
+var _sawing: bool = false                  # the log's front is past the saw on this pass
 var _timer: float = 0.0
 var _phase_time: float = 1.0
 var _load_from := Vector3.ZERO
@@ -165,10 +167,14 @@ func _physics_process(delta: float) -> void:
 	_run_deck(delta)
 	_run_carriage(delta)
 	_run_band(delta)
-	_out_travel += outfeed_speed * delta
-	for r in _out_rolls:
-		r.rotation.z = -_out_travel / OUT_ROLL_R
 	_apply_pose()
+
+
+func _process(delta: float) -> void:
+	# Top of the rolls moves +X with the wood: about -Z. Drawn per frame, capped (RollSpin).
+	_out_spin += RollSpin.step(-outfeed_speed / OUT_ROLL_R, delta)
+	for r in _out_rolls:
+		r.rotation.z = _out_spin
 
 
 # --- Collision -------------------------------------------------------------------------
@@ -440,8 +446,10 @@ func _run_carriage(delta: float) -> void:
 				_guide_target = UPPER_GUIDE_Y - (2.0 * LOG_R + 0.06)
 				_enter(Car.SETTING, 1.0)
 		Car.SETTING:
-			if absf(_knee_z - _knee_target) < 0.002 and _timer > 0.4:
+			# The sawyer waits for the outfeed rolls past the saw to clear before taking the cut.
+			if absf(_knee_z - _knee_target) < 0.002 and _timer > 0.4 and _outfeed_clear(SAW.x, SAW.x + 2.0 * LOG_HALF):
 				_cut_this_pass = false
+				_sawing = false
 				if debug_log:
 					print("[%s] cut %d on face %s" % [name, _cuts_on_face + 1, "AB"[_face]])
 				_enter(Car.GIG_FORWARD, 1.0)
@@ -450,11 +458,19 @@ func _run_carriage(delta: float) -> void:
 			if _in_cut():
 				speed = feed_speed * lerpf(0.8, 1.15, operator_skill)
 			_drive_to(CAR_END_X, speed, delta)
+			if not _cut_this_pass and _log and _log.has_method("begin_cut"):
+				# The cut opens from the front end back to the saw line as the log runs through.
+				var sawn := _car_x + LOG_HALF - SAW.x
+				if sawn > 0.0:
+					if not _sawing:
+						_sawing = true
+						_log.begin_cut(Vector3.RIGHT)
+					_log.update_cut(sawn)
 			if not _cut_this_pass and _tail_x() > SAW.x + 0.08:
+				_sawing = false
 				_cut()
 			if absf(_car_x - CAR_END_X) < 0.01:
 				if _log != null and _log.board_count <= 0:
-					_dog_target = DOG_OPEN_Y
 					_enter(Car.RELEASE, 1.0)
 				else:
 					# Recede a touch off the saw line for the gig back.
@@ -493,7 +509,14 @@ func _run_carriage(delta: float) -> void:
 				_dog_target = _dog_closed_y()
 				_enter(Car.DOGGING, 1.0)
 		Car.RELEASE:
-			if absf(_dog_y - _dog_target) < 0.003 and _timer > 0.4:
+			# The knees run up to just short of the saw line, setting the cant out past it over the
+			# outfeed rolls; then the dogs open and it settles onto them.
+			_knee_target = SAW.z + 0.03
+			if absf(_knee_z - _knee_target) > 0.004 or not _outfeed_clear(_car_x - LOG_HALF - 0.3, _car_x + LOG_HALF + 0.3):
+				pass
+			elif absf(_dog_y - DOG_OPEN_Y) > 0.003:
+				_dog_target = DOG_OPEN_Y
+			elif _timer > 0.4:
 				_kick_cant()
 				_enter(Car.RETURN_EMPTY, 1.0)
 		Car.RETURN_EMPTY:
@@ -559,6 +582,10 @@ func _seat_extent() -> float:
 
 func _log_basis() -> Basis:
 	# Log long axis (local X) along the carriage, local +Z (face A) toward the saw.
+	# A log is the same either end first: one that came onto the deck the other way round keeps
+	# its ends (local X along +X world), turned half over so face A still faces the saw.
+	if _end_flip:
+		return Basis(Vector3.RIGHT, _roll + PI)
 	return Basis(Vector3.UP, PI) * Basis(Vector3.RIGHT, _roll)
 
 
@@ -601,6 +628,7 @@ func _start_load(l: RigidBody3D) -> void:
 	_deck_locked.erase(l)
 	_load_from = l.global_position
 	_load_q = l.global_basis.get_rotation_quaternion()
+	_end_flip = l.global_basis.x.x > 0.0
 	_stop_shape.disabled = true
 	if debug_log:
 		print("[%s] loading a log" % name)
@@ -616,9 +644,28 @@ func _move_loading_log(p: float) -> void:
 	var b := over.lerp(seat, _ease(clampf((p - 0.45) / 0.55, 0.0, 1.0)))
 	var pos := a if p < 0.5 else b
 	var target := _log_basis().get_rotation_quaternion()
-	var roll := Quaternion(Vector3.RIGHT, -p * 3.0)
-	var q := _load_q.slerp(target, _ease(p)) * (roll if p < 0.95 else Quaternion.IDENTITY)
-	_log.global_transform = Transform3D(Basis(q), pos)
+	# It rolls the way it travels (toward the knees, -Z: about -X), about as far as it goes
+	# (~0.6 m on a 0.245 m radius), and ends exactly in the seated pose: the roll about X is
+	# picked from the turn it actually needs, plus or minus whole turns, nearest that.
+	var rel := (target * _load_q.inverse()).normalized()
+	var turn := rel.get_angle() * signf(rel.get_axis().x)
+	var natural := -2.4
+	for k in [-1.0, 1.0]:
+		if absf(turn + k * TAU - natural) < absf(turn - natural):
+			turn += k * TAU
+	var e := _ease(p)
+	var rest := (target * (Quaternion(Vector3.RIGHT, turn) * _load_q).inverse()).normalized()
+	var q := Quaternion.IDENTITY.slerp(rest, e) * Quaternion(Vector3.RIGHT, turn * e) * _load_q
+	_log.global_transform = Transform3D(Basis(q.normalized()), pos)
+
+
+## The outfeed rolls this carriage drops wood onto (its zone_clear says when there's room).
+@export var outfeed_path: NodePath = ^"../HeadrigOutfeed"
+
+
+func _outfeed_clear(x0: float, x1: float) -> bool:
+	var outfeed := get_node_or_null(outfeed_path)
+	return outfeed == null or not outfeed.has_method("zone_clear") or outfeed.zone_clear(x0, x1)
 
 
 func _kick_cant() -> void:
@@ -628,7 +675,9 @@ func _kick_cant() -> void:
 	_log = null
 	clamped_log = null
 	l.freeze = false
-	l.linear_velocity = Vector3(0.6, 0.4, -1.6)
+	# The knees push the cant level off the carriage onto the outfeed rolls past the saw line;
+	# no throw (it used to fly and could land anywhere).
+	l.linear_velocity = Vector3(0.0, 0.0, -0.2)
 	l.angular_velocity = Vector3.ZERO
 	l.sleeping = false
 	if debug_log:

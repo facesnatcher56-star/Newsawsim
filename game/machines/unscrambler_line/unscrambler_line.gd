@@ -91,7 +91,7 @@ var _over_top: int = 0
 var _seen_top := {}
 var _reject: Node3D
 var _reject_t: float = -1.0
-var _reject_board: RigidBody3D = null
+var _reject_hit: bool = false
 var _rejected: int = 0
 
 
@@ -320,18 +320,13 @@ func _run_reject(delta: float) -> void:
 	var up_slope: Vector2 = (UNS_PATH[1] - UNS_PATH[0]).normalized()
 	var n := Vector2(-up_slope.y, up_slope.x)
 	if _reject_t < 0.0:
-		for b in _boards_in(37.5, 44.5, 10.5, 12.4, -0.9, 1.0):
-			var rel := Vector2(b.global_position.z, b.global_position.y) - foot
-			var s := rel.dot(up_slope)
-			var off := rel.dot(n)
-			# Centre of a board lying on another: about one and a half thicknesses off the chains.
-			if absf(s - REJECT_S) < 0.12 and off > 0.045 and off < 0.12:
-				_reject_t = 0.0
-				_reject_board = b
-				_rejected += 1
-				if debug_log:
-					print("[%s] %.1f s double on a lug, reject %d" % [name, Time.get_ticks_msec() / 1000.0, _rejected])
-				break
+		var riders := _riders(foot, up_slope, n, 0.12)
+		if not riders.is_empty():
+			_reject_t = 0.0
+			_rejected += 1
+			if debug_log:
+				print("[%s] %.1f s double on a lug, reject %d (%d riding)" % [name, Time.get_ticks_msec() / 1000.0,
+						_rejected, riders.size()])
 		return
 	_reject_t += delta / reject_stroke
 	var p := minf(_reject_t, 1.0)
@@ -339,17 +334,31 @@ func _run_reject(delta: float) -> void:
 	var swing := sin(PI * p)
 	if _reject:
 		_reject.rotation.x = deg_to_rad(lerpf(REJECT_REST_DEG, REJECT_FIRE_DEG, swing))
-	# The pads reach the board as the arm passes straight down over it.
-	if _reject_board and p >= 0.25:
-		if is_instance_valid(_reject_board):
-			var push := Vector3(0.0, -up_slope.y, -up_slope.x) * 1.3 + Vector3(0.0, n.y, n.x) * 0.25
-			_reject_board.linear_velocity = push
-			_reject_board.angular_velocity = Vector3.ZERO
-		_reject_board = null
+	# The pads reach the boards as the arm passes straight down over them: every board riding on
+	# another there (a triple too) is knocked back, the one on the lug stays.
+	if not _reject_hit and p >= 0.25:
+		_reject_hit = true
+		var push := Vector3(0.0, -up_slope.y, -up_slope.x) * 1.3 + Vector3(0.0, n.y, n.x) * 0.25
+		for b in _riders(foot, up_slope, n, 0.2):
+			b.linear_velocity = push
+			b.angular_velocity = Vector3.ZERO
 	if _reject_t >= 1.0:
 		_reject_t = -1.0
+		_reject_hit = false
 		if _reject:
 			_reject.rotation.x = deg_to_rad(REJECT_REST_DEG)
+
+
+## Boards at the reject station (within reach along the slope) whose centre is about one and a
+## half thicknesses or more off the chains: lying on another board.
+func _riders(foot: Vector2, up_slope: Vector2, n: Vector2, reach: float) -> Array[RigidBody3D]:
+	var out: Array[RigidBody3D] = []
+	for b in _boards_in(37.5, 44.5, 10.5, 12.4, -0.9, 1.0):
+		var rel := Vector2(b.global_position.z, b.global_position.y) - foot
+		var off := rel.dot(n)
+		if absf(rel.dot(up_slope) - REJECT_S) < reach and off > 0.045 and off < 0.2:
+			out.append(b)
+	return out
 
 
 # --- Chains and shafts --------------------------------------------------------------------------

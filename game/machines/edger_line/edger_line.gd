@@ -126,7 +126,33 @@ func _ready() -> void:
 
 ## The scanner deck pushes the next board off its chains only while this is true.
 func can_take() -> bool:
-	return pos == Pos.WAIT and _skid_board() == null
+	return pos == Pos.WAIT and _skid_board() == null and not _belt_held
+
+
+## The picker belt stops with a board near its end while the landing table can't take it
+## (rolls down or a board still on it); boards on the belt wait there.
+@export var landing_path: NodePath = ^"../LandingTransfer"
+var _belt_held: bool = false
+var _belt_v: float = 0.0
+
+
+func _run_belt(delta: float) -> void:
+	var landing := get_node_or_null(landing_path)
+	var waiting := false
+	for node in get_tree().get_nodes_in_group("cut_boards"):
+		var b := node as RigidBody3D
+		if b == null or b.freeze or b.is_in_group("cut_slabs"):
+			continue
+		var p := b.global_position
+		var half: float = b.product_length * 0.5 if "product_length" in b else 2.44
+		# Only a board whose nose is coming up to the belt end waits; one already running off onto
+		# the table is carried on (stopping it there would leave it across the belt and the rolls).
+		if absf(p.z - Z_LINE) < BELT_HALF + 0.05 and absf(p.y - BELT_Y) < 0.15 and p.x + half > BELT_X.y - 0.6 \
+				and p.x + half < BELT_X.y + 0.02:
+			waiting = true
+	_belt_held = waiting and landing != null and landing.has_method("can_take") and not landing.can_take()
+	_belt_v = move_toward(_belt_v, 0.0 if _belt_held else belt_speed, delta * 3.0)
+	_belt.constant_linear_velocity = Vector3(_belt_v, 0.0, 0.0)
 
 
 # --- Pivots and bodies --------------------------------------------------------------------------
@@ -402,7 +428,8 @@ func _run_feed(delta: float) -> void:
 			if abs(f["x"] - HOLD_X[i]) < half:
 				on = true
 		_hold_amt[i] = move_toward(_hold_amt[i], 1.0 if on else 0.0, delta / 0.25)
-	_belt_travel += belt_speed * delta
+	_run_belt(delta)
+	_belt_travel += _belt_v * delta
 
 
 func _any_under_chip() -> bool:

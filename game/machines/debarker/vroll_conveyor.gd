@@ -25,12 +25,21 @@ func _ready() -> void:
 				_rolls.append(node)
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var v := 0.0 if hold else speed
 	constant_linear_velocity = Vector3.RIGHT * v
-	# Roll tops move with the log (+X), so the rolls turn negative about Z.
+	_v = v
+
+
+var _v: float = 0.0
+
+
+func _process(delta: float) -> void:
+	# Roll tops move with the log (+X), so the rolls turn negative about Z. Drawn per frame,
+	# capped (RollSpin).
+	var s := RollSpin.step(_v / CONTACT_RADIUS, delta)
 	for roll in _rolls:
-		roll.rotation.z -= v / CONTACT_RADIUS * delta
+		roll.rotation.z -= s
 
 
 func is_running() -> bool:

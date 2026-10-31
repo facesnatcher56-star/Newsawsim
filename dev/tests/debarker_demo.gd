@@ -103,6 +103,10 @@ func _ready() -> void:
 				_auto_shots.append(float(t))
 		elif arg.begins_with("--shot-dir="):
 			_shot_dir = arg.trim_prefix("--shot-dir=")
+		elif arg == "--probe-headrig":
+			# Probe the cut products around the headrig too, not just the board line.
+			_probe_min_x = 15.0
+			_probe_min_z = -2.0
 		elif arg == "--no-hud":
 			_label.visible = false
 		elif arg.begins_with("--cam="):
@@ -119,6 +123,8 @@ var _next_probe: float = 0.0
 var _auto_end: float = 0.0
 var _auto_shots: Array[float] = []
 var _auto_cams: Array = []
+var _probe_min_x: float = 36.0
+var _probe_min_z: float = 12.5
 var _shot_dir: String = "user://"
 
 
@@ -329,7 +335,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var headrig := mill.get_node_or_null("Headrig")
 		if headrig and headrig.has_method("status_text"):
 			print("[probe] headrig: %s" % headrig.status_text())
-		for node_name in ["UnscramblerLine", "ScannerDeck", "EdgerLine", "LandingTransfer"]:
+		for node_name in ["UnscramblerLine", "ScannerDeck", "EdgerLine", "LandingTransfer", "BinSorter"]:
 			var m := mill.get_node_or_null(node_name)
 			if m and m.has_method("status_text"):
 				print("[probe] %s: %s" % [node_name, m.status_text()])
@@ -338,7 +344,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			print("[probe] waste piece at %s v %s%s" % [wp.global_position, wp.linear_velocity, " frozen" if wp.freeze else ""])
 		for node in get_tree().get_nodes_in_group("cut_boards"):
 			var bd := node as RigidBody3D
-			if bd.global_position.x > 36.0 and bd.global_position.z > 12.5 and bd.global_position.z < 70.0 \
+			if bd.global_position.x > _probe_min_x and bd.global_position.z > _probe_min_z and bd.global_position.z < 70.0 \
 					and not bd.is_in_group("waste_piece"):
 				print("[probe] board %s %.1f ft at %s rot %s v %s" % [bd.name,
 					(bd.product_length if "product_length" in bd else 0.0) / 0.3048, bd.global_position,

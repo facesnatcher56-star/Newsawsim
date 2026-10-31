@@ -344,9 +344,6 @@ shape = SubResource("BoxShape3D_ground")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 27.5)
 mesh = SubResource("BoxMesh_Ground")
 
-[node name="LogPrefab" parent="Ground" unique_id=1446840428 instance=ExtResource("5_fe1yo")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5757113, 2.4846835, 0.1912241)
-
 [node name="SkyClouds" type="Node3D" parent="." unique_id=100000043]
 script = ExtResource("2_clouds")
 

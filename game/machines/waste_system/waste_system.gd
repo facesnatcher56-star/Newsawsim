@@ -59,7 +59,14 @@ var _slashers: Array[Dictionary] = []
 var _pans: Array[Dictionary] = []
 var _chipping: Array[RigidBody3D] = []
 var _jam_timer: float = 0.0
-var _feed_travel: float = 0.0
+var _feed_v: float = 0.0
+var _feed_angle: float = 0.0
+
+
+func _process(delta: float) -> void:
+	# The feed roll rides on top of the waste: its underside moves +X with it into the throat,
+	# so it turns positive about Z. Drawn per frame, capped (RollSpin).
+	_feed_angle += RollSpin.step(_feed_v / FEED_ROLL_R, delta)
 var _spin: float = 0.0
 var _time: float = 0.0
 var _feed_roll: Node3D
@@ -112,7 +119,7 @@ func _physics_process(delta: float) -> void:
 	if _drum:
 		_drum.rotation.z = -_spin * 0.5
 	if _feed_roll:
-		_feed_roll.rotation.z = -_feed_travel / FEED_ROLL_R
+		_feed_roll.rotation.z = _feed_angle
 
 
 # --- Slashers -------------------------------------------------------------------------------------
@@ -343,7 +350,7 @@ func _run_chipper(delta: float) -> void:
 		# Choked: the feed roll stalls, then backs off a little before taking it again.
 		_jam_timer -= delta
 		v = 0.0 if _jam_timer > 0.6 else -0.35
-	_feed_travel += v * delta
+	_feed_v = v
 	for b in _chipping.duplicate():
 		if not is_instance_valid(b):
 			_chipping.erase(b)

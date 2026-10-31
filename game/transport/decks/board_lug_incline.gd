@@ -92,6 +92,8 @@ const LEG_SPACING := 1.55
 
 # ── Runtime state ────────────────────────────────────────────────────────────
 var actual_speed: float = 0.0
+## Set by the sorter while it has no room: the chain stops, boards wait in their lugs.
+var hold: bool = false
 var _travel: float = 0.0
 var _loop_len: float = 0.0
 var _run_len: float = 0.0          # slope + bend + crest, the driven carrying run
@@ -159,7 +161,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	var commanded_speed: float = -chain_speed if reverse_direction else chain_speed
-	var may_run: bool = running and (_board_has_arrived or not wait_for_board)
+	var may_run: bool = running and not hold and (_board_has_arrived or not wait_for_board)
 	var target: float = commanded_speed if may_run else 0.0
 	actual_speed = move_toward(actual_speed, target, acceleration * delta)
 

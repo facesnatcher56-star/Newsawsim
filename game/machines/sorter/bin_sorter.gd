@@ -187,8 +187,12 @@ class Carried:
 
 var _rng := RandomNumberGenerator.new()
 
-## Kept for callers that pace their feed by it; the sorter never holds its feeder.
+## True while the sorter can't take another board (its infeed transfer stopped with no bay free,
+## or boards already waiting on it): the lug incline (lug_drive) holds, and it stops boards
+## being pushed off its crest onto a full infeed.
 var feed_hold: bool = false
+## Boards that may wait on the infeed transfer before the incline holds.
+@export_range(1, 6, 1) var infeed_queue_max: int = 2
 
 var _bays: Array[Bay] = []
 var _queue: Array[RigidBody3D] = []
@@ -294,6 +298,18 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 # ─────────────────────────────────────────────────────────────────────────────
 
 ## Stop (lock out) or restart the sorter and the lug incline feeding it.
+## One line for debug HUDs and probes.
+func status_text() -> String:
+	var bays := PackedStringArray()
+	for i in NB:
+		var b: Bay = _bays[i]
+		if b.count > 0 or b.phase != BayPhase.CATCH:
+			bays.append("%d:%s %d%s" % [i, BayPhase.keys()[b.phase], b.count, (" " + b.size) if b.size != "" else ""])
+	return "queue %d, carried %d, infeed %s%s%s, bays [%s]" % [_queue.size(), _carried.size(),
+			"on" if _infeed_on else "STOPPED", ", HOLDING incline" if feed_hold else "",
+			", end table full" if _end_table_full() else "", ", ".join(bays)]
+
+
 func set_locked(on: bool) -> void:
 	if on == _locked:
 		return
@@ -410,6 +426,10 @@ func _physics_process(delta: float) -> void:
 				body.constant_linear_velocity = Vector3.ZERO
 		return
 	_update_infeed()
+	feed_hold = not _infeed_on or _queue.size() >= infeed_queue_max
+	var feeder := get_node_or_null(lug_drive)
+	if feeder != null and "hold" in feeder:
+		feeder.hold = feed_hold
 	_update_top_chain(delta)
 	_update_carried(delta)
 	_update_bays(delta)

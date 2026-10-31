@@ -39,6 +39,10 @@ const CRANK_PIN := Vector3(13.65, -0.40, -0.30)
 const HEAD_X := 19.30
 const TAIL_X := 13.40
 const CHAIN_Y := 0.39
+## A log whose tail is this far into the trough's tail end is wholly in the trough.
+const ENTRY_MARGIN := 0.6
+## The next log is held on the outfeed with its nose this far short of the trough.
+const HOLD_SHORT := 0.8
 const SPROCKET_R := 0.15
 const LINKS := 84
 const DOG_EVERY := 4
@@ -212,18 +216,25 @@ func _run_trough(delta: float) -> void:
 	_update_chain()
 
 
-## Hold the debarker's outfeed while the chain is stopped and a log is about to come in.
+## The trough takes one log at a time (the kicker paddles sweep its whole length): hold the
+## debarker's outfeed, with the next log's nose short of the trough, while a log is wholly in
+## the trough or being kicked. It goes again once the trough is empty.
 func _hold_outfeed(logs: Array[RigidBody3D]) -> void:
 	if _outfeed == null or not ("hold" in _outfeed):
 		return
+	var occupied := state != State.CONVEYING
+	for l in logs:
+		if l.global_position.x - LOG_HALF > TAIL_X - ENTRY_MARGIN:
+			occupied = true
 	var hold := false
-	if _speed <= 0.0:
+	if occupied:
 		for node in get_tree().get_nodes_in_group("logs"):
 			var l := node as RigidBody3D
-			if l == null or l.freeze or logs.has(l):
+			if l == null or l.freeze or l == _log:
 				continue
 			var p := l.global_position
-			if absf(p.z - LINE.x) < 0.6 and p.x > 6.0 and p.x + LOG_HALF > 12.6 and p.x < 13.0:
+			if absf(p.z - LINE.x) < 0.6 and p.x > 6.0 and p.x - LOG_HALF < TAIL_X - ENTRY_MARGIN \
+					and p.x + LOG_HALF > TAIL_X - HOLD_SHORT:
 				hold = true
 				break
 	_outfeed.hold = hold

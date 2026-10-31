@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b85w3oc1qbxgn"]
 
 [ext_resource type="Script" uid="uid://dr75yl2dpwycc" path="res://game/lumber/cut_board.gd" id="1"]
+[ext_resource type="Shader" path="res://game/lumber/wood.gdshader" id="2_wood"]
 
 [sub_resource type="PhysicsMaterial" id="4"]
 friction = 0.85
@@ -13,6 +14,11 @@ size = Vector3(4.877, 0.05, 0.25)
 [sub_resource type="StandardMaterial3D" id="2"]
 albedo_color = Color(0.72, 0.54, 0.32, 1)
 roughness = 0.9
+
+[sub_resource type="ShaderMaterial" id="5"]
+shader = ExtResource("2_wood")
+shader_parameter/along_x = true
+shader_parameter/axis_offset = Vector3(0, -0.22, 0)
 
 [sub_resource type="BoxMesh" id="3"]
 material = SubResource("2")
@@ -27,4 +33,21 @@ script = ExtResource("1")
 shape = SubResource("1")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=822175352]
+visible = false
 mesh = SubResource("3")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1264719321]
+
+[node name="Cylinder" type="CSGCylinder3D" parent="CSGCombiner3D" unique_id=1264719322]
+rotation = Vector3(0, 0, 1.5707964)
+position = Vector3(0, -0.22, 0)
+radius = 0.245
+height = 4.877
+sides = 20
+material = SubResource("5")
+
+[node name="CutBox" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1264719323]
+position = Vector3(0, -0.525, 0)
+operation = 2
+size = Vector3(5.377, 1, 1)
+material = SubResource("5")

@@ -12,6 +12,7 @@ extends Node3D
 
 const ChainLoop := preload("res://game/transport/chains/chain_loop.gd")
 
+const BELT_END_X := 52.64                          # picker belt head (edger_line BELT_X.y)
 const BOARD_X := 55.6
 const STOP_X := 58.04
 ## Five strands interleaved with the incline's lanes, plus two either side of the centre so a
@@ -30,6 +31,19 @@ const LINK_SCENE := "res://game/assets/models/board_line/board_line_roller_link.
 @export var chain_speed: float = 0.5
 @export var drop_time: float = 0.5
 @export var debug_log: bool = false
+## The lug incline these chains feed (its `hold` stops them when a board is waiting at the end).
+@export var incline_path: NodePath = ^"../BoardLugIncline"
+
+var _chain_v: float = 0.0
+
+
+## True while the landing table is empty with its rolls up and the transfer start clear, so
+## the picker belt may run a board off onto it.
+func can_take() -> bool:
+	# Boards whose middle is still on the belt (x < BELT_END_X) are the one asking, not one in the way.
+	return _down <= 0.0 and not _want_down \
+			and _boards_in(BELT_END_X + 0.3, 59.0, LANE_Z - 0.45, LANE_Z + 0.45, 1.0, 1.3).is_empty() \
+			and _boards_in(52.6, 59.0, LANE_Z + 0.45, 22.4, 0.9, 1.3).is_empty()
 
 var _lift_body: AnimatableBody3D
 var _lift: Node3D
@@ -41,7 +55,15 @@ var _runs: Array[StaticBody3D] = []
 var _dirs: Array[Vector3] = []
 var _loop
 var _travel: float = 0.0
-var _roll_travel: float = 0.0
+var _roll_spin: float = 0.0
+var _roll_v: float = 0.0
+
+
+func _process(delta: float) -> void:
+	# Top of the lift rolls moves +X with the board: about -Z. Drawn per frame, capped (RollSpin).
+	_roll_spin += RollSpin.step(-_roll_v / ROLL_R, delta)
+	for r in _rolls:
+		r.rotation.z = _roll_spin
 var _chain := {}
 var _shafts: Array[Node3D] = []
 var _landed: int = 0
@@ -131,12 +153,16 @@ func _physics_process(delta: float) -> void:
 	_place_lift()
 	var rv := roll_speed if _down < 0.5 and not _braked else 0.0
 	_lift_body.constant_linear_velocity = Vector3(rv, 0.0, 0.0)
-	_roll_travel += rv * delta
-	for r in _rolls:
-		r.rotation.z = -_roll_travel / ROLL_R
+	_roll_v = rv
+	# The chains stop while the lug incline is held (the sorter has no room) and a board is
+	# waiting at their end for its lugs; boards behind wait on the stopped chains.
+	var incline := get_node_or_null(incline_path)
+	var held: bool = incline != null and incline.get("hold") == true \
+			and not _boards_in(52.6, 59.0, PATH[2].x - 0.6, PATH[3].x + 0.3, -0.3, 0.6).is_empty()
+	_chain_v = move_toward(_chain_v, 0.0 if held else chain_speed, delta * 1.5)
 	for i in _runs.size():
-		_runs[i].constant_linear_velocity = _dirs[i] * chain_speed
-	_travel += chain_speed * delta
+		_runs[i].constant_linear_velocity = _dirs[i] * _chain_v
+	_travel += _chain_v * delta
 	for s in _shafts:
 		if s:
 			s.rotation.x = _travel / SPROCKET_R
