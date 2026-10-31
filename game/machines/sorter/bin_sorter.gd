@@ -171,6 +171,7 @@ class Bay:
 	var phase: int = BayPhase.CATCH
 	var count: int = 0
 	var size: String = ""            # nominal size this bay is collecting, "" while empty
+	var length_class: String = ""    # "short" (12 ft and under) or "long" (14-16 ft), never mixed
 	var eye_blocked: float = 0.0      # seconds the photo eye has been blocked
 	var boards: Array[RigidBody3D] = []
 	var carriage_y: float = CATCH_Y
@@ -298,6 +299,7 @@ func _on_infeed_body_entered(body: Node3D) -> void:
 	if _queue.has(board) or _is_carried(board):
 		return
 	_queue.append(board)
+	board.set_meta("pack_class", length_class(board))
 	_log("queued for bay %d" % _bay_for(board), board)
 
 
@@ -312,7 +314,7 @@ func status_text() -> String:
 	for i in NB:
 		var b: Bay = _bays[i]
 		if b.count > 0 or b.phase != BayPhase.CATCH:
-			bays.append("%d:%s %d%s" % [i, BayPhase.keys()[b.phase], b.count, (" " + b.size) if b.size != "" else ""])
+			bays.append("%d:%s %d%s" % [i, BayPhase.keys()[b.phase], b.count, (" %s %s" % [b.size, b.length_class]) if b.size != "" else ""])
 	return "queue %d, carried %d, infeed %s%s%s, bays [%s]" % [_queue.size(), _carried.size(),
 			"on" if _infeed_on else "STOPPED", ", HOLDING incline" if feed_hold else "",
 			", end table full" if _end_table_full() else "", ", ".join(bays)]
@@ -432,6 +434,13 @@ func restack_place(board: RigidBody3D) -> Transform3D:
 	return board.global_transform
 
 
+## Packs never mix really short with really long: 12 ft and under is a short pack, 14-16 ft a
+## long one. Each board carries it as meta "pack_class" once queued (the stacker keys on it).
+static func length_class(board: Node) -> String:
+	var length: float = float(board.get("product_length")) if board.get("product_length") != null else 4.877
+	return "short" if length / 0.3048 < 13.0 else "long"
+
+
 ## Sorter-local Z of an even-ended board's centre.
 func _even_z(board: RigidBody3D) -> float:
 	return EVEN_END_Z + float(board.get("product_length")) * 0.5
@@ -448,6 +457,9 @@ func hand_bay(board: RigidBody3D) -> int:
 func hand_place(board: RigidBody3D) -> Transform3D:
 	var i: int = maxi(_choose_bay(board), 0)
 	var bay: Bay = _bays[i]
+	if bay.size == "":
+		bay.size = str(board.get("nominal_size"))
+		bay.length_class = length_class(board)
 	var top: float = bay.carriage_y
 	for o: RigidBody3D in bay.boards:
 		if is_instance_valid(o):
@@ -563,6 +575,7 @@ func _update_infeed() -> void:
 				c.board = head
 				c.bay = bay
 				_bays[bay].size = str(head.get("nominal_size"))
+				_bays[bay].length_class = length_class(head)
 				c.open_lead = maxf(gate_open_lead + _rng.randf_range(-0.5, 1.0) * gate_timing_spread, 0.0)
 				_carried.append(c)
 				releasing = true
@@ -589,12 +602,13 @@ func _update_infeed() -> void:
 ## size and has room, like a real sorter assigning more than one bin to a product. -1 if none.
 func _choose_bay(board: RigidBody3D) -> int:
 	var size: String = str(board.get("nominal_size"))
+	var cls: String = length_class(board)
 	var home: int = _bay_for(board)
 	for offset in NB:
 		for b: int in [home + offset, home - offset]:
 			if b < 0 or b >= NB or (offset == 0 and b != home):
 				continue
-			if _bay_has_room(b) and (_bays[b].size == "" or _bays[b].size == size):
+			if _bay_has_room(b) and (_bays[b].size == "" or (_bays[b].size == size and _bays[b].length_class == cls)):
 				return b
 	return -1
 
@@ -856,6 +870,7 @@ func _update_bays(delta: float) -> void:
 					bay.boards.clear()
 					bay.count = 0
 					bay.size = ""
+					bay.length_class = ""
 			BayPhase.RAISE:
 				target = CATCH_Y
 				if is_equal_approx(bay.carriage_y, target):
