@@ -203,6 +203,7 @@ var _table_full_logged: bool = false
 var _stacker: Node = null              # GreenStacker taking packs off the haul-out head
 var _locked: bool = false              # stopped by the crew (lockout) to clear a jam
 var _loose_t: Dictionary = {}          # board -> seconds lying still outside the sorter's hands
+var _wedged_since: Dictionary = {}    # board left above the chains in a hauling bay -> clock first seen still
 var _carry_check: Dictionary = {}     # carried board -> [sorter-local x, clock] when it last moved
 var _tilted_since: Dictionary = {}     # board in a bay -> clock when it was first seen lying badly
 ## Boards come even-ended (landing_transfer): their ends line up here, sorter-local Z.
@@ -389,7 +390,9 @@ func find_jam() -> Dictionary:
 	for b: Variant in loose:
 		var board := b as RigidBody3D
 		var p: Vector3 = to_local(board.global_position)
-		if p.y > DECK_Y - 0.3 and p.x > CREST_X and p.x < TOP_X_HEAD:
+		# On the deck, or caught up in a bay above the haul-out: either way the catwalk worker
+		# reaches it and lays it in a bay of its size.
+		if p.y > 1.0 and p.x > CREST_X and p.x < TOP_X_HEAD:
 			return {"kind": "deck", "board": board, "at": p}
 		if p.y < 1.0:
 			return {"kind": "floor", "board": board, "at": p}
@@ -828,10 +831,23 @@ func _update_bays(delta: float) -> void:
 			BayPhase.HAUL:
 				target = HAUL_TOP - 0.1
 				var clear: bool = true
-				for b: RigidBody3D in bay.boards:
+				for b: RigidBody3D in bay.boards.duplicate():
 					# A board that fell off the pile below the chains can't be hauled; don't wait on it.
 					if is_instance_valid(b) and to_local(b.global_position).y < HAUL_TOP - 0.05:
 						continue
+					# One left wedged up in the bay (the stack tumbled as it went down) won't come out
+					# on the chains: after a few seconds still, it is the crew's to take out by hand.
+					if is_instance_valid(b) and to_local(b.global_position).y > HAUL_TOP + 0.3 							and b.linear_velocity.length() < 0.05:
+						if not _wedged_since.has(b):
+							_wedged_since[b] = _clock
+						elif _clock - float(_wedged_since[b]) > 5.0:
+							_wedged_since.erase(b)
+							bay.boards.erase(b)
+							_hauled.erase(b)
+							_log("wedged in bay %d, left for the crew" % i, b)
+							continue
+					elif is_instance_valid(b):
+						_wedged_since.erase(b)
 					if is_instance_valid(b) and _trailing(b) < bay_x(i) + BAY + 0.05:
 						clear = false
 				if clear:
