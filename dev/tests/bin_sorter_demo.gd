@@ -54,7 +54,14 @@ func _ready() -> void:
 		stacker.set("log_events", true)
 		# The mill's packages are 31 layers (over 20 minutes at the mill's feed rate); 6 here
 		# so a whole package, its pickup and the forklift's trip show in one run.
-		stacker.set("package_layers", 6)
+		# --full keeps the mill's real packages: 31 layers of 1x, 26 of 2x, one whole package per bay.
+		if not "--full" in OS.get_cmdline_user_args():
+			stacker.set("package_layers", 6)
+			stacker.set("thick_package_layers", 6)
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--sizes="):
+			sizes.assign(arg.trim_prefix("--sizes=").split(","))
+	_bay_status = "--bays" in OS.get_cmdline_user_args()
 	for n: String in ["Forklift", "StackerCrew", "SorterCrew"]:
 		var node := _mill.get_node_or_null(n)
 		if node != null:
@@ -110,6 +117,8 @@ func _physics_process(_delta: float) -> void:
 		if passed:
 			_lay_board(now + 0.18)
 	_tally_lugs()
+	if _bay_status:
+		_print_bays(_delta)
 	if _trace:
 		_trace_crest(_delta)
 	if snapshot_every > 0.0:
@@ -148,6 +157,9 @@ func _tally_lugs() -> void:
 ## --crest: keeps the last 3 s of every board near the incline crest (sorter frame) and
 ## prints it, with the sorter's infeed state, when one falls off below the deck.
 var _trace: bool = false
+var _bay_status: bool = false
+var _bay_clock: float = 0.0
+var _bay_last: String = ""
 var _hist: Dictionary = {}
 var _trace_clock: float = 0.0
 var _sample_t: float = 0.0
@@ -198,3 +210,20 @@ func _lay_board(s: float) -> void:
 	var local := Vector3(0.0, point.y + lift * cos(a), point.x - lift * sin(a))
 	board.global_position = _incline.to_global(local)
 	board.global_rotation = _incline.global_rotation + Vector3(-a, 0.0, 0.0)
+
+
+## With --bays, every 10 s: each bay holding boards, its phase, count of capacity and fork height.
+func _print_bays(delta: float) -> void:
+	_bay_clock += delta
+	if _bay_clock < 10.0:
+		return
+	_bay_clock = 0.0
+	var parts: PackedStringArray = []
+	var bays: Array = _sorter.get("_bays")
+	for i in bays.size():
+		var bay: Variant = bays[i]
+		if bay.count > 0 or bay.phase != 0:
+			parts.append("bay %d %s %s %d/%d forks %.2f" % [i, bay.size, BinSorter.BayPhase.keys()[bay.phase],
+					bay.count, _sorter.call("_bay_capacity", i), bay.carriage_y])
+	var line: String = ", ".join(parts)
+	print("[bays] t %.0f s  %s" % [Time.get_ticks_msec() / 1000.0, line if line != "" else "all empty"])

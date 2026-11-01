@@ -9,9 +9,10 @@ extends Node3D
 ##   lays it on top of its bay's pile.
 ## - A board that landed on its edge (or badly tipped) in a bay: he reaches in and lays it flat
 ##   on that bay's pile.
-## - A board that fell to the floor: he goes down the sorter's stair, walks the aisle, steps
-##   in across the stopped haul-out chains (safe: the line is locked out), carries the board
-##   to the cull pile and goes back up to his post.
+## - A board that fell to the floor: he goes down the sorter's stair, walks the aisle, carries
+##   the board to the cull pile and goes back up to his post. One down in the haul-out pit: he
+##   climbs down the pit ladder and walks along the pit floor beside the stopped chains (safe:
+##   the line is locked out), and carries it back up the ladder.
 ## - Then he restarts the line. If the same jam keeps coming back (three fixes in a row) the
 ##   line stays locked out and the light stays red.
 ##
@@ -37,6 +38,8 @@ const AISLE_Z := 5.0
 const CULL := Vector3(13.6, 0.0, 5.7)          # cull pile on the floor, boards along X
 const STACK_LIGHT := Vector3(12.2, 0.0, 4.7)
 const JAM_CONFIRM := 0.5
+## Walking lane along the pit floor: between the haul strands and the carriage end blocks.
+const PIT_LANE_Z := 2.65
 const MAX_REPEATS := 3
 
 enum St { RUNNING, FIXING, RETURNING, HALTED }
@@ -144,10 +147,37 @@ func _down_to(x: float, z: float) -> PackedVector3Array:
 	return pts
 
 
-func _up_to_post() -> PackedVector3Array:
+## Down the stair, along the aisle to the pit ladder, down it and along the pit floor to x.
+func _down_into_pit(x: float, z: float) -> PackedVector3Array:
+	var pts := _down_to(BinSorter.LADDER_X, AISLE_Z)
+	pts.append(_s(Vector3(BinSorter.LADDER_X, 0.0, BinSorter.PIT_Z + 0.35)))
+	pts.append(_s(Vector3(BinSorter.LADDER_X, BinSorter.PIT_FLOOR_Y, BinSorter.PIT_Z - 0.35)))
+	pts.append(_s(Vector3(BinSorter.LADDER_X, BinSorter.PIT_FLOOR_Y, PIT_LANE_Z)))
+	pts.append(_s(Vector3(clampf(x, BinSorter.PIT_X0 + 0.3, BinSorter.PIT_X1 - 0.3), BinSorter.PIT_FLOOR_Y, z)))
+	return pts
+
+
+## The first points of any route from where the worker stands: back along the pit floor and up
+## the ladder if he is down in the pit, then to the aisle.
+func _out_to_aisle() -> PackedVector3Array:
 	var here: Vector3 = _l(_worker)
 	var pts := PackedVector3Array()
+	if here.y < -0.3:
+		pts.append(_s(Vector3(here.x, BinSorter.PIT_FLOOR_Y, PIT_LANE_Z)))
+		pts.append(_s(Vector3(BinSorter.LADDER_X, BinSorter.PIT_FLOOR_Y, PIT_LANE_Z)))
+		pts.append(_s(Vector3(BinSorter.LADDER_X, BinSorter.PIT_FLOOR_Y, BinSorter.PIT_Z - 0.35)))
+		pts.append(_s(Vector3(BinSorter.LADDER_X, 0.0, BinSorter.PIT_Z + 0.35)))
+		here = Vector3(BinSorter.LADDER_X, 0.0, AISLE_Z)
 	pts.append(_s(Vector3(here.x, 0.0, AISLE_Z)))
+	return pts
+
+
+static func _in_pit(p: Vector3) -> bool:
+	return p.y < -0.3 and p.x > BinSorter.PIT_X0 and p.x < BinSorter.PIT_X1 and absf(p.z) < BinSorter.PIT_Z
+
+
+func _up_to_post() -> PackedVector3Array:
+	var pts := _out_to_aisle()
 	pts.append(_s(Vector3(STAIR_FOOT.x + 0.3, 0.0, AISLE_Z)))
 	pts.append(_s(STAIR_FOOT))
 	pts.append(_s(STAIR_TOP))
@@ -188,6 +218,8 @@ func _physics_process(delta: float) -> void:
 			var at: Vector3 = _jam["at"]
 			if _jam["kind"] == "deck" or _jam["kind"] == "bay":
 				_worker.call("walk", _along(at.x))
+			elif _in_pit(at):
+				_worker.call("walk", _down_into_pit(at.x, PIT_LANE_Z))
 			else:
 				# Stand at the board's +Z end (boards lie along Z), clear of the columns.
 				_worker.call("walk", _down_to(at.x, minf(at.z + 2.7, 4.6)))
@@ -233,8 +265,7 @@ func _physics_process(delta: float) -> void:
 					0:
 						_worker.call("face", b.global_position)
 						_worker.call("shoulder", b)
-						var pts := PackedVector3Array()
-						pts.append(_s(Vector3(_l(_worker).x, 0.0, AISLE_Z)))
+						var pts := _out_to_aisle()
 						pts.append(_s(Vector3(CULL.x, 0.0, AISLE_Z)))
 						pts.append(_s(Vector3(CULL.x, 0.0, CULL.z - 0.5)))
 						_worker.call("walk", pts)

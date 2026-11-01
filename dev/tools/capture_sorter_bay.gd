@@ -79,7 +79,7 @@ func _run() -> void:
 			await _shot("bay", Vector3(bx + 0.5, 3.55, 3.3), Vector3(bx + 0.6, 3.0, 0.0))
 	for f in 2400:
 		await physics_frame
-		if not _sorter._parked.is_empty() and _sorter._hauled.is_empty():
+		if not _sorter._lift_load.is_empty() and _sorter._hauled.is_empty():
 			break
 	await _settle(30)
 	await _shot("endtable", Vector3(13.4, 1.5, 3.6), Vector3(14.8, 0.45, 0.0))

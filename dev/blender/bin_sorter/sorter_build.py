@@ -19,7 +19,10 @@ Board path (every step is a physical part):
 4. Each carriage hangs from two cables on its own hoist (cross shaft, drums,
    gearmotor) and steps down by one board thickness per board.
 5. A full bay lowers its tines below the haul-out chains, leaving the stack on
-   them; the chains carry it on to the green stacker's surge chains.
+   them. The haul-out runs in a pit under the bays, deep enough that a whole
+   package (31 layers of 1x, 26 of 2x) rides out under the other bays' piles.
+   At the pit's end the stack runs onto the pack lift, which raises it to floor
+   level and runs it on to the green stacker's surge chains.
 
 Support: every part rests on, hangs from, or is bolted to something that
 traces back to the column base plates (checked with common/support_check.py).
@@ -59,8 +62,8 @@ RAIL_W = 0.05               # wear rail / arm top flange width
 WEAR_T = 0.008              # UHMW cap on rails and arms
 RAIL_GAP = 0.05             # fixed rails stop this far upstream of a gate shaft
 FRONT_X = 0.985             # bay front bars, from the bay's upstream edge: past the tine tips, short of the next carriage
-FRONT_BOTTOM = 1.2          # nearly down to the haul-out: a pile stays boxed in as the forks lower it,
-                            # and stacks riding out on the haul chains still pass beneath
+FRONT_BOTTOM = 1.2          # a pile stays boxed in as the forks lower it, and the tallest stack
+                            # riding out on the pit's haul chains still passes beneath
 FRONT_Z = (-2.4, -1.7, -1.0, -0.3, 0.3, 1.0, 1.7, 2.4)
 CATCH_Y = 3.20              # carriage tine top at the catch position
 CARRIAGE_X = 0.20           # carriage origin offset inside each bay (clear of the deck supports)
@@ -110,11 +113,38 @@ HAUL_STRANDS = (-2.25, -1.375, 0.0, 1.375)    # boards come even-ended at -z: a 
 HAUL_PITCH = 0.10
 HAUL_TEETH = 6
 HAUL_SPR = HAUL_PITCH / (2 * math.sin(math.pi / HAUL_TEETH))
-HAUL_SHAFT_Y = 0.22
-HAUL_X_TAIL = BX0 - 0.40
-HAUL_X_HEAD = BX0 + NB + 4.40
+# The haul-out runs in a pit. A bay's forks index down no lower than FORK_MIN_Y, so a pile
+# fills at most CATCH_Y - FORK_MIN_Y (2.3 m: a 26-layer package of 2x12 lies about that
+# deep in a bay), and the pit puts the chains far enough down that a stack that tall rides
+# out under the other bays' tines.
+FORK_MIN_Y = 0.90
+PIT_FLOOR_Y = -1.95
+HAUL_SHAFT_Y = -1.70
+HAUL_X_TAIL = BX0 - 0.25
+HAUL_X_END = BX0 + NB + 2.0                   # pit chain head shaft, just short of the pack lift
+HAUL_X_HEAD = BX0 + NB + 4.40                 # where packs go over to the stacker's surge chains
 HAUL_TOP = HAUL_SHAFT_Y + HAUL_SPR + 0.012   # top of the carrying chain: stacks rest here
+OUT_TOP = 0.22 + HAUL_SPR + 0.012             # floor-level chain top: the lift raised, the stacker's surge
 HAUL_HALF = 2.6
+# Pit: inner faces (walls outside them, up to the floor).
+PIT_X0, PIT_X1 = 0.55, BX0 + NB + 4.10
+PIT_Z = 3.30
+PIT_WALL = 0.2
+# Pack lift: a short chain deck at the pit's end that rises from the pit chains' height to
+# floor level, on two guide posts a side, lifted by a ram a side through a chain over a
+# sheave (like a forklift mast: the deck travels twice the ram's stroke).
+LIFT_X_TAIL = HAUL_X_END + 0.25
+LIFT_X_HEAD = BX0 + NB + 3.95
+LIFT_RISE = OUT_TOP - HAUL_TOP
+LIFT_POST_X = (LIFT_X_TAIL + 0.30, LIFT_X_HEAD - 0.30)
+LIFT_POST_Z = 3.08
+LIFT_RAM_X = (LIFT_X_TAIL + LIFT_X_HEAD) / 2
+LIFT_RAM_Z = 3.12
+LIFT_BARREL_TOP = PIT_FLOOR_Y + 1.40
+LIFT_SHEAVE_Y = LIFT_BARREL_TOP + 0.12        # sheave centre with the deck down
+LIFT_SHEAVE_R = 0.09
+LIFT_HOOK_DY = -0.25                          # chain hook on the deck, below its chain top
+LADDER_X = BX0 + NB + 1.30                    # pit ladder, on the catwalk side wall
 TABLE_X0 = BX0 + NB + 0.6
 STACK_STOP_X = HAUL_X_HEAD - HAUL_SPR - 0.25    # stacks stop before the chains wrap the head sprocket
 END_STOP_Z = (-1.9, -0.65, 0.65, 1.9)           # end stop posts, between the haul strands
@@ -197,12 +227,14 @@ def build_frame(coll, M):
     bm = bmesh.new()
     top = TOP_BEAM_Y + 0.15
     for x in column_xs():
+        # Columns over the pit stand on its floor; the carriages' guide rollers run down them.
+        foot = PIT_FLOOR_Y if PIT_X0 < x < PIT_X1 else 0.0
         for z in (-COL_Z, COL_Z):
-            ibeam(bm, 'y', (x, top / 2, z), top, h=0.2, w=0.2, tf=0.014, tw=0.009)
-            gbox(bm, (x, 0.012, z), (0.36, 0.024, 0.36))                        # base plate
+            ibeam(bm, 'y', (x, (top + foot) / 2, z), top - foot, h=0.2, w=0.2, tf=0.014, tw=0.009)
+            gbox(bm, (x, foot + 0.012, z), (0.36, 0.024, 0.36))                        # base plate
             for dx in (-0.13, 0.13):
                 for dz in (-0.13, 0.13):
-                    gcyl(bm, (x + dx, 0.035, z + dz), 0.012, 0.03, 'y', segs=6)  # anchor bolts
+                    gcyl(bm, (x + dx, foot + 0.035, z + dz), 0.012, 0.03, 'y', segs=6)  # anchor bolts
     for z in (-COL_Z, COL_Z):
         ibeam(bm, 'x', ((X_START + X_END) / 2, TOP_BEAM_Y, z), X_END - X_START + 0.2, h=0.36, w=0.17)
     for x in column_xs():
@@ -560,7 +592,7 @@ def build_drives(coll, M):
     parts = [
         shaft_assembly(coll, M, "TopDriveShaft", TOP_X_HEAD, TOP_SHAFT_Y, TOP_STRANDS, TOP_SPR, TOP_TEETH, 0.022, 2 * COL_Z + 0.3),
         shaft_assembly(coll, M, "TopTailShaft", TOP_X_TAIL, TOP_SHAFT_Y, TOP_STRANDS, TOP_SPR, TOP_TEETH, 0.022, 2 * COL_Z + 0.3),
-        shaft_assembly(coll, M, "HaulDriveShaft", HAUL_X_HEAD, HAUL_SHAFT_Y, HAUL_STRANDS, HAUL_SPR, HAUL_TEETH, 0.015, 2 * HAUL_HALF, 0.07),
+        shaft_assembly(coll, M, "HaulDriveShaft", HAUL_X_END, HAUL_SHAFT_Y, HAUL_STRANDS, HAUL_SPR, HAUL_TEETH, 0.015, 2 * HAUL_HALF, 0.07),
         shaft_assembly(coll, M, "HaulTailShaft", HAUL_X_TAIL, HAUL_SHAFT_Y, HAUL_STRANDS, HAUL_SPR, HAUL_TEETH, 0.015, 2 * HAUL_HALF, 0.07),
     ]
     bm = bmesh.new()      # grey machinery
@@ -577,11 +609,11 @@ def build_drives(coll, M):
             base_bottom = TOP_SHAFT_Y - 0.085
             gbox_span(bmg, (min(face, far), base_bottom - 0.05, z - 0.08), (max(face, far), base_bottom, z + 0.08))
             gbeam(bmg, (face, base_bottom - 0.4, z), (far, base_bottom - 0.05, z), 0.06, 0.06)            # gusset
-    # Haul shafts: pillow blocks on floor pedestals.
-    for x in (HAUL_X_HEAD, HAUL_X_TAIL):
+    # Haul shafts: pillow blocks on pedestals on the pit floor.
+    for x in (HAUL_X_END, HAUL_X_TAIL):
         for z in (-(HAUL_HALF - 0.2), HAUL_HALF - 0.2):
             pillow_block(bm, x, HAUL_SHAFT_Y, z)
-            gbox_span(bmg, (x - 0.15, 0.0, z - 0.08), (x + 0.15, HAUL_SHAFT_Y - 0.085, z + 0.08))
+            gbox_span(bmg, (x - 0.15, PIT_FLOOR_Y, z - 0.08), (x + 0.15, HAUL_SHAFT_Y - 0.085, z + 0.08))
     # Overhead head drive: shaft-mounted gearbox and motor on a braced bracket off the end
     # column, on the side away from the catwalk.
     gx, gz = TOP_X_HEAD, -(COL_Z + 0.45)
@@ -595,11 +627,12 @@ def build_drives(coll, M):
         a = 2 * math.pi * k / 10
         gbox(bm, (gx + 0.05 + 0.165 * math.cos(a), plate_top + 0.16 + 0.165 * math.sin(a), gz - 0.40), (0.02, 0.02, 0.4))
     gbox(bm, (gx + 0.05, plate_top + 0.355, gz - 0.40), (0.14, 0.1, 0.16))
-    # Haul-out drive on the shaft end, on its own floor plate.
-    hx, hz = HAUL_X_HEAD, HAUL_HALF + 0.16
-    gbox(bm, (hx, HAUL_SHAFT_Y + 0.05, hz), (0.4, 0.5, 0.34))
-    gcyl(bm, (hx + 0.05, 0.16, hz + 0.37), 0.14, 0.4, 'z', segs=24)
-    gbox_span(bmg, (hx - 0.3, 0.0, hz - 0.25), (hx + 0.3, HAUL_SHAFT_Y + 0.05 - 0.25, hz + 0.65))
+    # Haul-out drive on the shaft end, on its own plate on the pit floor (upstream of the
+    # shaft, clear of the pack lift).
+    hx, hz = HAUL_X_END - 0.15, HAUL_HALF + 0.16
+    gbox(bm, (hx, HAUL_SHAFT_Y + 0.05, hz), (0.3, 0.5, 0.34))
+    gcyl(bm, (hx, PIT_FLOOR_Y + 0.16, hz + 0.3), 0.14, 0.24, 'z', segs=24)
+    gbox_span(bmg, (hx - 0.2, PIT_FLOOR_Y, hz - 0.25), (hx + 0.15, HAUL_SHAFT_Y + 0.05 - 0.25, hz + 0.45))
     # Sprocket guards: outer side of each overhead sprocket, strapped to the end column's cross beam.
     # At the tail the guard stops above the board path so boards pass beneath it.
     for x, outward, col_x, sweep in ((TOP_X_HEAD, 1.0, X_END - 0.05, 180), (TOP_X_TAIL, -1.0, X_START + 0.05, 125)):
@@ -655,27 +688,142 @@ def build_hoists(coll, M):
 def build_end_table(coll, M):
     bm = bmesh.new()
     bmu = bmesh.new()
-    x0, x1 = TABLE_X0, HAUL_X_HEAD + 0.3
-    # Drag-chain channels: the carrying run slides on the top strip, the return run on the lower one.
-    c0, c1 = HAUL_X_TAIL + HAUL_SPR + 0.08, HAUL_X_HEAD - HAUL_SPR - 0.08
+    x0, x1 = TABLE_X0, HAUL_X_END
+    f = PIT_FLOOR_Y
+    # Drag-chain channels on the pit floor: the carrying run slides on the top strip, the
+    # return run on the lower one.
+    c0, c1 = HAUL_X_TAIL + HAUL_SPR + 0.08, HAUL_X_END - HAUL_SPR - 0.08
     strip_top = HAUL_TOP - 0.024
     ret_top = HAUL_SHAFT_Y - HAUL_SPR - 0.012
     for z in HAUL_STRANDS:
-        gbox_span(bm, (c0, 0.0, z - 0.09), (c1, strip_top + 0.02, z - 0.07))
-        gbox_span(bm, (c0, 0.0, z + 0.07), (c1, strip_top + 0.02, z + 0.09))
-        gbox_span(bm, (c0, 0.0, z - 0.09), (c1, 0.01, z + 0.09))
+        gbox_span(bm, (c0, f, z - 0.09), (c1, strip_top + 0.02, z - 0.07))
+        gbox_span(bm, (c0, f, z + 0.07), (c1, strip_top + 0.02, z + 0.09))
+        gbox_span(bm, (c0, f, z - 0.09), (c1, f + 0.01, z + 0.09))
         gbox_span(bmu, (c0, strip_top - 0.02, z - 0.07), (c1, strip_top, z + 0.07))
         gbox_span(bmu, (c0, ret_top - 0.02, z - 0.07), (c1, ret_top, z + 0.07))
-        gbox_span(bm, (c0, 0.01, z - 0.02), (c1, ret_top - 0.02, z + 0.02))                       # return strip web
-    for x in [x0 + k * 1.2 for k in range(int((x1 - x0) / 1.2) + 1)]:
+        gbox_span(bm, (c0, f + 0.01, z - 0.02), (c1, ret_top - 0.02, z + 0.02))                   # return strip web
+    for x in [c0 + 0.3 + k * 1.2 for k in range(int((c1 - c0) / 1.2) + 1)]:
         if x < c1:
-            gbox_span(bm, (x - 0.05, 0.0, -2.0), (x + 0.05, 0.08, 2.0))
+            gbox_span(bm, (x - 0.05, f, -2.4), (x + 0.05, f + 0.08, 1.5))
     for z in (-2.55, 2.55):
-        gbox_span(bm, (x0, 0.0, z - 0.06), (HAUL_X_HEAD - 0.35, 0.25, z + 0.06))
-    # No end stops: stacks run on over the head sprocket onto the green stacker's surge chains
-    # (dev/blender/green_stacker), whose tail sprockets reach in between the haul strands.
+        gbox_span(bm, (x0, f, z - 0.06), (x1 - 0.35, f + 0.25, z + 0.06))
+    # Dead plate bridging the pit chains' head sprockets and the lift's tail sprockets, on
+    # brackets off the head shaft's pedestals.
+    px0, px1 = HAUL_X_END + HAUL_SPR + 0.005, LIFT_X_TAIL - HAUL_SPR - 0.01
+    gbox_span(bmu, (px0, HAUL_TOP - 0.02, -2.6), (px1, HAUL_TOP - 0.004, 2.6))
+    for z in (-2.45, 2.45):
+        gbox_span(bm, (px0, HAUL_TOP - 0.04, z - 0.04), (px1, HAUL_TOP - 0.02, z + 0.04))
+        gbox_span(bm, (HAUL_X_END + 0.12, HAUL_SHAFT_Y - 0.11, z - 0.03), (px0 + 0.01, HAUL_TOP - 0.04, z + 0.03))
+    # Stacks run on over the lift's head sprockets onto the green stacker's surge chains
+    # (dev/blender/green_stacker).
     obj("EndTable", bm, coll, [M["green"]], bevel=0.004)
     obj("HaulWearStrips", bmu, coll, [M["uhmw"]], bevel=0.0)
+
+
+def build_pit(coll, M):
+    """Concrete pit under the bays for the haul-out and the pack lift: floor slab, walls up to
+    the mill floor, a ladder down the catwalk-side wall, and the dead plate on the end wall
+    that bridges the raised lift's head sprockets to the stacker's surge chains."""
+    bm = bmesh.new()
+    x0, x1, zi, w, f = PIT_X0, PIT_X1, PIT_Z, PIT_WALL, PIT_FLOOR_Y
+    gbox_span(bm, (x0 - w, f - 0.25, -zi - w), (x1 + w, f, zi + w))                    # floor slab
+    gbox_span(bm, (x0 - w, f, -zi - w), (x0, 0.0, zi + w))                              # infeed end wall
+    gbox_span(bm, (x1, f, -zi - w), (x1 + w, 0.0, zi + w))                              # stacker end wall
+    for sgn in (-1, 1):
+        gbox_span(bm, (x0, f, sgn * zi), (x1, 0.0, sgn * (zi + w)))                     # side walls
+    obj("Pit", bm, coll, [M["concrete"]], bevel=0.01, segs=1)
+    steel = bmesh.new()
+    rails = bmesh.new()
+    # Edge angle on the pit's rim, all round.
+    for sgn in (-1, 1):
+        gbox_span(steel, (x0, -0.06, sgn * zi - 0.005), (x1, 0.0, sgn * zi + 0.005))
+    for x in (x0, x1):
+        gbox_span(steel, (x - 0.005, -0.06, -zi), (x + 0.005, 0.0, zi))
+    # Ladder: two stiles and rungs against the wall, stiles carried on up as grab rails.
+    for dx in (-0.22, 0.22):
+        grod(rails, (LADDER_X + dx, f, zi - 0.16), (LADDER_X + dx, 0.0, zi - 0.16), 0.022, segs=10)
+        grod(rails, (LADDER_X + dx, 0.0, zi - 0.16), (LADDER_X + dx, 1.05, zi - 0.16), 0.022, segs=10)
+        for y in (f + 0.3, -0.4):
+            gbox_span(steel, (LADDER_X + dx - 0.02, y - 0.02, zi - 0.16), (LADDER_X + dx + 0.02, y + 0.02, zi))   # wall bracket
+    y = f + 0.30
+    while y < -0.05:
+        grod(rails, (LADDER_X - 0.22, y, zi - 0.16), (LADDER_X + 0.22, y, zi - 0.16), 0.014, segs=8)
+        y += 0.28
+    # Dead plate, raised lift to the surge chains, cantilevered off the end wall.
+    gbox_span(steel, (LIFT_X_HEAD + HAUL_SPR + 0.01, OUT_TOP - 0.024, -2.6), (x1 + 0.09, OUT_TOP - 0.004, 2.6))
+    for z in (-2.4, -0.8, 0.8, 2.4):
+        gbox_span(steel, (x1 - 0.005, OUT_TOP - 0.16, z - 0.03), (x1 + 0.09, OUT_TOP - 0.024, z + 0.03))
+    obj("PitSteel", steel, coll, [M["galv"]], bevel=0.002, segs=1)
+    obj("PitLadder", rails, coll, [M["yellow"]], bevel=0.0)
+
+
+def build_lift(coll, M):
+    """Pack lift at the pit's end. Fixed: guide posts and ram barrels (LiftFrame). Moving: the
+    deck with its chain shafts (LiftDeck, LiftHeadShaft, LiftTailShaft, LiftWearStrips), built
+    lowered with its chain top at HAUL_TOP, and the rams' rods and sheaves (LiftRams), which
+    rise half as far as the deck."""
+    f = PIT_FLOOR_Y
+    frame = bmesh.new()
+    for x in LIFT_POST_X:
+        for sgn in (-1, 1):
+            z = sgn * LIFT_POST_Z
+            ibeam(frame, 'y', (x, (f + OUT_TOP + 0.35) / 2, z), OUT_TOP + 0.35 - f, h=0.12, w=0.10, tf=0.01, tw=0.007)
+            gbox(frame, (x, f + 0.012, z), (0.22, 0.024, 0.22))
+            gbox_span(frame, (x - 0.04, -0.3, z), (x + 0.04, -0.22, sgn * (PIT_Z + 0.0)))         # tie to the wall
+    for sgn in (-1, 1):
+        z = sgn * LIFT_RAM_Z
+        gcyl(frame, (LIFT_RAM_X, (f + LIFT_BARREL_TOP) / 2, z), 0.075, LIFT_BARREL_TOP - f, 'y', segs=20)
+        gbox(frame, (LIFT_RAM_X, f + 0.02, z), (0.26, 0.04, 0.26))
+        gcyl(frame, (LIFT_RAM_X, LIFT_BARREL_TOP - 0.03, z), 0.09, 0.06, 'y', segs=20)            # gland
+        # Chain anchor on the barrel's outboard side.
+        gbox_span(frame, (LIFT_RAM_X - 0.04, LIFT_BARREL_TOP - 0.12, sgn * (LIFT_RAM_Z + 0.075)),
+                  (LIFT_RAM_X + 0.04, LIFT_BARREL_TOP - 0.06, sgn * (LIFT_RAM_Z + LIFT_SHEAVE_R + 0.03)))
+    obj("LiftFrame", frame, coll, [M["green"]], bevel=0.003, segs=1)
+
+    y0 = HAUL_TOP
+    deck = bmesh.new()
+    xa, xb = LIFT_X_TAIL - 0.10, LIFT_X_HEAD + 0.08
+    for sgn in (-1, 1):
+        gbox_span(deck, (xa, y0 - 0.33, sgn * 2.72), (xb, y0 - 0.15, sgn * 2.80))                # side beams
+        # Guide roller brackets out to the posts, and the chain hook under the ram.
+        for x in LIFT_POST_X:
+            gbox_span(deck, (x - 0.07, y0 - 0.30, sgn * 2.80), (x + 0.07, y0 - 0.18, sgn * (LIFT_POST_Z - 0.06)))
+        gbox_span(deck, (LIFT_RAM_X - 0.06, y0 + LIFT_HOOK_DY - 0.06, sgn * 2.80),
+                  (LIFT_RAM_X + 0.06, y0 + LIFT_HOOK_DY + 0.04, sgn * (LIFT_RAM_Z - LIFT_SHEAVE_R + 0.02)))
+    for x in (LIFT_X_TAIL, LIFT_X_TAIL + 0.55, LIFT_X_HEAD - 0.55, LIFT_X_HEAD):
+        gbox_span(deck, (x - 0.05, y0 - 0.33, -2.72), (x + 0.05, y0 - 0.25, 2.72))               # cross beams
+    strip_top = y0 - 0.024
+    ret_top = HAUL_SHAFT_Y - HAUL_SPR - 0.012
+    c0, c1 = LIFT_X_TAIL + HAUL_SPR + 0.06, LIFT_X_HEAD - HAUL_SPR - 0.06
+    strips = bmesh.new()
+    for z in HAUL_STRANDS:
+        for side in (-1, 1):
+            gbox_span(deck, (c0, y0 - 0.25, z + side * 0.07), (c1, strip_top + 0.02, z + side * 0.09))
+        gbox_span(strips, (c0, strip_top - 0.02, z - 0.07), (c1, strip_top, z + 0.07))
+        gbox_span(strips, (c0, ret_top - 0.02, z - 0.07), (c1, ret_top, z + 0.07))
+    for x in (LIFT_X_TAIL, LIFT_X_HEAD):
+        for z in (-(HAUL_HALF - 0.2), HAUL_HALF - 0.2):
+            pillow_block(deck, x, HAUL_SHAFT_Y, z)
+            gbox_span(deck, (x - 0.12, y0 - 0.25, z - 0.08), (x + 0.12, HAUL_SHAFT_Y - 0.085, z + 0.08))
+    # Lift chain drive: gearmotor on the deck's catwalk-side beam, chained to the head shaft end.
+    gbox(deck, (LIFT_X_HEAD - 0.35, y0 - 0.12, 2.92), (0.3, 0.2, 0.2))
+    gcyl(deck, (LIFT_X_HEAD - 0.62, y0 - 0.12, 2.92), 0.08, 0.26, 'x', segs=16)
+    gbox_span(deck, (LIFT_X_HEAD - 0.7, y0 - 0.25, 2.80), (LIFT_X_HEAD - 0.2, y0 - 0.22, 3.0))
+    lift = obj("LiftDeck", deck, coll, [M["orange"]], bevel=0.003, segs=1)
+    obj("LiftWearStrips", strips, coll, [M["uhmw"]], bevel=0.0).parent = lift
+    for name, x in (("LiftHeadShaft", LIFT_X_HEAD), ("LiftTailShaft", LIFT_X_TAIL)):
+        sh = shaft_assembly(coll, M, name, x, HAUL_SHAFT_Y, HAUL_STRANDS, HAUL_SPR, HAUL_TEETH, 0.015, 2 * HAUL_HALF, 0.07)
+        sh.parent = lift
+    rams = bmesh.new()
+    for sgn in (-1, 1):
+        z = sgn * LIFT_RAM_Z
+        top = LIFT_SHEAVE_Y
+        gcyl(rams, (LIFT_RAM_X, top - 0.65, z), 0.045, 1.3, 'y', mi=1, segs=16)                    # rod
+        gbox_span(rams, (LIFT_RAM_X - 0.05, top - 0.05, z - 0.11), (LIFT_RAM_X + 0.05, top + 0.0, z + 0.11))   # crosshead
+        for dx in (-0.045, 0.045):
+            gbox_span(rams, (LIFT_RAM_X + dx - 0.008, top - 0.05, z - 0.11), (LIFT_RAM_X + dx + 0.008, top + 0.12, z + 0.11))
+        gcyl(rams, (LIFT_RAM_X, top, z), LIFT_SHEAVE_R, 0.06, 'x', segs=24)                         # sheave
+    obj("LiftRams", rams, coll, [M["grey"], M["shaft"]], bevel=0.002, segs=1)
 
 
 # ---------------------------------------------------------------- moving parts
@@ -815,22 +963,22 @@ def top_path(s, total):
     return Vector((TOP_X_TAIL + TOP_SPR * math.cos(phi), TOP_SHAFT_Y + TOP_SPR * math.sin(phi)))
 
 
-def haul_path(s, total):
-    span = HAUL_X_HEAD - HAUL_X_TAIL
+def haul_path(s, total, x_tail=HAUL_X_TAIL, x_head=HAUL_X_END, shaft_y=HAUL_SHAFT_Y):
+    span = x_head - x_tail
     arc = math.pi * HAUL_SPR
     s %= total
     if s < span:
-        return Vector((HAUL_X_TAIL + s, HAUL_SHAFT_Y + HAUL_SPR))
+        return Vector((x_tail + s, shaft_y + HAUL_SPR))
     s -= span
     if s < arc:
         phi = math.pi / 2 - s / HAUL_SPR
-        return Vector((HAUL_X_HEAD + HAUL_SPR * math.cos(phi), HAUL_SHAFT_Y + HAUL_SPR * math.sin(phi)))
+        return Vector((x_head + HAUL_SPR * math.cos(phi), shaft_y + HAUL_SPR * math.sin(phi)))
     s -= arc
     if s < span:
-        return Vector((HAUL_X_HEAD - s, HAUL_SHAFT_Y - HAUL_SPR))
+        return Vector((x_head - s, shaft_y - HAUL_SPR))
     s -= span
     phi = -math.pi / 2 - s / HAUL_SPR
-    return Vector((HAUL_X_TAIL + HAUL_SPR * math.cos(phi), HAUL_SHAFT_Y + HAUL_SPR * math.sin(phi)))
+    return Vector((x_tail + HAUL_SPR * math.cos(phi), shaft_y + HAUL_SPR * math.sin(phi)))
 
 
 def xfer_path(s, total):
@@ -890,10 +1038,13 @@ def build_chain_preview(coll, M, parts, top_phase=0.0):
         return L.make_object(name, bm, coll, mats, weighted=False)
 
     top_total = 2 * (TOP_X_HEAD - TOP_X_TAIL) + 2 * math.pi * TOP_SPR
-    haul_total = 2 * (HAUL_X_HEAD - HAUL_X_TAIL) + 2 * math.pi * HAUL_SPR
+    haul_total = 2 * (HAUL_X_END - HAUL_X_TAIL) + 2 * math.pi * HAUL_SPR
+    lift_total = 2 * (LIFT_X_HEAD - LIFT_X_TAIL) + 2 * math.pi * HAUL_SPR
     place(parts["TopChainLink"], [M["chain"]], top_path, top_total, TOP_PITCH, TOP_STRANDS, name="PreviewTopChain", phase=top_phase)
     place(parts["TopChainLug"], [M["orange"]], top_path, top_total, TOP_PITCH, TOP_STRANDS, every=LUG_EVERY, name="PreviewTopLugs", phase=top_phase)
     place(parts["HaulChainLink"], [M["chain"]], haul_path, haul_total, HAUL_PITCH, HAUL_STRANDS, name="PreviewHaulChain")
+    place(parts["HaulChainLink"], [M["chain"]], lambda s, t: haul_path(s, t, LIFT_X_TAIL, LIFT_X_HEAD), lift_total,
+          HAUL_PITCH, HAUL_STRANDS, name="PreviewLiftChain")
     xfer_total = 2 * (XFER_HEAD - XFER_TAIL) + 2 * math.pi * XFER_SPR
     place(parts["TransferChainLink"], [M["chain"]], xfer_path, xfer_total, XFER_PITCH, XFER_Z, name="PreviewTransferChain")
     for src in parts.values():
@@ -915,6 +1066,8 @@ def build(materials, top_phase=0.0):
     build_drives(coll, materials)
     build_hoists(coll, materials)
     build_end_table(coll, materials)
+    build_pit(coll, materials)
+    build_lift(coll, materials)
     gate = build_gate(parts_coll, materials)
     carriage, rollers = build_carriage(parts_coll, materials)
     chain_parts = build_chain_parts(parts_coll, materials)

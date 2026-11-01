@@ -11,6 +11,8 @@ which the +Y-up glTF export converts back, so parts land in Godot unchanged.
   sorter_top_link.glb     overhead chain link; sorter_top_lug.glb is the link with its lug
   sorter_haul_link.glb    haul-out drag chain link
   sorter_infeed_stop.glb  pop-up stop rocker, in sorter coordinates
+  sorter_lift.glb         pack lift deck (lowered) with its two chain shafts as child nodes,
+                          in sorter coordinates; sorter_lift_rams.glb its rams' rods and sheaves
 
 Materials go out as their viewport colours (export_materials='VIEWPORT'); the game's
 sorter script swaps in its own StandardMaterial3Ds by material name.
@@ -27,7 +29,14 @@ STATIC = (
     "ChainSupports", "RaceWearStrips", "CatwalkBrackets", "CatwalkGrating", "CatwalkRails",
     "Drives", "ChainGuards", "DriveBrackets", "Hoists", "EndTable", "HaulWearStrips",
     "TopDriveShaft", "TopTailShaft", "HaulDriveShaft", "HaulTailShaft",
+    "Pit", "PitSteel", "PitLadder", "LiftFrame",
 )
+# Moving parts exported where they stand (sorter coordinates): the pack lift's deck lowered,
+# with its chain shafts as child nodes, and the rams.
+IN_PLACE = {
+    "sorter_lift.glb": ("LiftDeck", "LiftWearStrips", "LiftHeadShaft", "LiftTailShaft"),
+    "sorter_lift_rams.glb": ("LiftRams",),
+}
 PARTS = {
     "sorter_gate.glb": ("Gate",),
     "sorter_carriage.glb": ("Carriage", "CarriageRollers"),
@@ -48,6 +57,7 @@ VIEWPORT = {
     "Sorter_ChainSteel": ((0.12, 0.12, 0.13), 0.9, 0.4),
     "Sorter_UHMW": ((0.75, 0.74, 0.7), 0.0, 0.35),
     "Sorter_MachinedSteel": ((0.5, 0.5, 0.5), 1.0, 0.3),
+    "Sorter_Concrete": ((0.16, 0.155, 0.145), 0.0, 0.9),
 }
 
 
@@ -87,4 +97,6 @@ def export_all():
            _export(os.path.join(OUT, "sorter_infeed_stop.glb"), ("InfeedStop",), False)]
     for fname, names in PARTS.items():
         out.append(_export(os.path.join(OUT, fname), names, True))
+    for fname, names in IN_PLACE.items():
+        out.append(_export(os.path.join(OUT, fname), names, False))
     return [os.path.basename(p) for p in out]

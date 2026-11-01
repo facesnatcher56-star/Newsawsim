@@ -199,8 +199,10 @@ const MAX_LAYER_W := 1.42
 @export_group("Package")
 ## Package width, inches: boards per layer = as many as fit (a 1x10 is 5 wide in 52 in).
 @export_range(12.0, 56.0, 0.5) var package_width_in: float = 52.0
-## Layers per package.
+## Layers per package of 1x boards.
 @export_range(1, 40, 1) var package_layers: int = 31
+## Layers per package of 2x boards.
+@export_range(1, 40, 1) var thick_package_layers: int = 26
 ## Per-size overrides: nominal size -> Vector2i(boards per layer, layers). Sizes not listed use
 ## package_width_in and package_layers.
 @export var size_overrides: Dictionary = {}
@@ -496,10 +498,12 @@ func layer_plan(size: String) -> Vector2i:
 		if o is Vector2i:
 			return o
 	var w: float = 0.184
+	var t: float = 0.019
 	if CutBoardScript.LUMBER_SPECS.has(size):
 		w = float(CutBoardScript.LUMBER_SPECS[size]["width"])
+		t = float(CutBoardScript.LUMBER_SPECS[size]["thickness"])
 	var per: int = maxi(1, floori(minf(package_width_in * INCH, MAX_LAYER_W) / w + 0.001))
-	return Vector2i(per, package_layers)
+	return Vector2i(per, thick_package_layers if t > 0.03 else package_layers)
 
 
 # ─────────────────────────────────────────────────────────────────────────────

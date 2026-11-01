@@ -16,14 +16,17 @@ extends Node3D
 ##    one) the gate arms swing down and the board falls onto the fork carriage, landing and
 ##    settling however it falls. The forks hold still until the pile breaks the bay's photo eye
 ##    near the top, then lower until the beam is clear.
-## 4. A full bay lowers its forks below the haul-out chains. The chains carry the pile to
-##    the end table stops and the forks go back up to catch height. Piles stay on the end
-##    table; later ones queue up behind them.
+## 4. A full bay (one whole stacker package: 31 layers of 1x, 26 of 2x) lowers its forks
+##    below the haul-out chains, which run in a pit under the bays so that pile rides out
+##    under the other bays' tines. The forks go back up to catch height while the chains
+##    carry the pile to the pack lift at the pit's end.
+## 5. The pack lift takes the pile onto its own chains, rises to floor level and runs it on
+##    to the green stacker's surge chains, then goes back down for the next one.
 ##
-## Static collision (Deck, TransferChains, HaulChains, EndStops, InfeedZone) is saved in
-## bin_sorter.tscn. After changing a layout constant below, rerun
-## dev/tools/build_bin_sorter_scene.gd to regenerate it. Gates, carriages, overhead lugs
-## and the stop are built by this script when the scene loads.
+## Static collision (Deck, TransferChains, InfeedZone) is saved in bin_sorter.tscn. After
+## changing a layout constant below, rerun dev/tools/build_bin_sorter_scene.gd to regenerate
+## it. Gates, carriages, overhead lugs, the stop, the pit, the haul-out chains and the pack
+## lift are built by this script when the scene loads.
 
 const FrameScene := preload("res://game/assets/models/bin_sorter/sorter_frame.glb")
 const GateScene := preload("res://game/assets/models/bin_sorter/sorter_gate.glb")
@@ -32,6 +35,8 @@ const StopScene := preload("res://game/assets/models/bin_sorter/sorter_infeed_st
 const TopLinkScene := preload("res://game/assets/models/bin_sorter/sorter_top_link.glb")
 const TopLugScene := preload("res://game/assets/models/bin_sorter/sorter_top_lug.glb")
 const HaulLinkScene := preload("res://game/assets/models/bin_sorter/sorter_haul_link.glb")
+const LiftScene := preload("res://game/assets/models/bin_sorter/sorter_lift.glb")
+const LiftRamsScene := preload("res://game/assets/models/bin_sorter/sorter_lift_rams.glb")
 const TransferLinkScene := preload("res://game/assets/models/bin_sorter/sorter_transfer_link.glb")
 const CutBoardScript := preload("res://game/lumber/cut_board.gd")
 
@@ -91,13 +96,31 @@ const STOP_PIVOT := Vector3(STOP_X - 0.03, DECK_Y - DECK_T - 0.08, 0.0)
 const HAUL_STRANDS: Array[float] = [-2.25, -1.375, 0.0, 1.375]   # boards come even-ended at -z (landing_transfer)
 const HAUL_PITCH := 0.10
 const HAUL_SPR := 0.10              # HAUL_PITCH / (2 sin(pi / 6))
-const HAUL_SHAFT_Y := 0.22
-const HAUL_X_TAIL := BX0 - 0.40
-const HAUL_X_HEAD := BX0 + NB + 4.40
+# The haul-out runs in a pit (sorter_build.py). A pile fills a bay down to FORK_MIN_Y at most,
+# and the pit chains are low enough that a stack that tall rides out under the other bays' tines.
+const PIT_FLOOR_Y := -1.95
+const HAUL_SHAFT_Y := -1.70
+const HAUL_X_TAIL := BX0 - 0.25
+const HAUL_X_END := BX0 + NB + 2.0          # pit chain head shaft
+const HAUL_X_HEAD := BX0 + NB + 4.40        # a board wholly past this is on the stacker's surge chains
 const HAUL_TOP := HAUL_SHAFT_Y + HAUL_SPR + 0.012
-const TABLE_X0 := BX0 + NB + 0.6
-const STACK_STOP_X := HAUL_X_HEAD - HAUL_SPR - 0.25
-const END_STOP_Z: Array[float] = [-1.9, -0.65, 0.65, 1.9]
+const OUT_TOP := 0.22 + HAUL_SPR + 0.012    # the raised lift's chain top, level with the surge chains
+const PIT_X0 := 0.55
+const PIT_X1 := BX0 + NB + 4.10
+const PIT_Z := 3.30
+const PIT_WALL := 0.2
+## Pack lift: chain deck at the pit's end, raised on two rams through chains over sheaves.
+const LIFT_X_TAIL := HAUL_X_END + 0.25
+const LIFT_X_HEAD := BX0 + NB + 3.95
+const LIFT_RISE := OUT_TOP - HAUL_TOP
+const LIFT_RAM_X := (LIFT_X_TAIL + LIFT_X_HEAD) * 0.5
+const LIFT_RAM_Z := 3.12
+const LIFT_BARREL_TOP := PIT_FLOOR_Y + 1.40
+const LIFT_SHEAVE_Y := LIFT_BARREL_TOP + 0.12
+const LIFT_SHEAVE_R := 0.09
+const LIFT_HOOK_DY := -0.25
+## Pit ladder (the crew's way down), on the catwalk side wall.
+const LADDER_X := BX0 + NB + 1.30
 
 const HOIST_Y := 5.75
 const DRUM_R := 0.065
@@ -139,14 +162,16 @@ const PROFILES: Array[String] = ["1x4", "1x6", "1x8", "1x10", "1x12", "2x4", "2x
 ## ...and swings up to this fraction faster or slower than `gate_speed_deg`, so boards land
 ## somewhere different each time instead of on the same spot.
 @export_range(0.0, 0.8, 0.05) var gate_speed_spread: float = 0.35
-## Boards per bay before the pile is lowered onto the haul-out chains.
+## Boards per bay before the pile is lowered onto the haul-out chains, without a stacker.
+## Feeding a stacker, a bay holds one whole stacker package unless bay_pack_boards says otherwise.
 @export_range(1, 20, 1) var max_boards_per_bay: int = 10
 ## Which nominal size each bay takes, bay 0 first. A size not listed goes to the bay with the
 ## nearest dressed size.
 @export var bay_sizes: Array[String] = ["1x4", "1x6", "1x8", "1x10", "1x12", "2x4", "2x6", "2x8", "2x10", "2x12"]
 ## Boards per pack for each bay, same order as bay_sizes; a missing or 0 entry uses
-## max_boards_per_bay. With a stacker connected, every pack is rounded to whole stacker
-## layers (its boards per layer for that size), at least one layer.
+## max_boards_per_bay (one whole stacker package with a stacker connected). With a stacker
+## connected, every pack is rounded to whole stacker layers (its boards per layer for that
+## size), at least one layer.
 @export var bay_pack_boards: Array[int] = []
 ## The green stacker the haul-out runs packs on to. Its surge chains take the place of the
 ## end table: packs leave the haul-out onto them and the bays only wait when the surge queue
@@ -159,6 +184,8 @@ const PROFILES: Array[String] = ["1x4", "1x6", "1x8", "1x10", "1x12", "2x4", "2x
 @export_range(0.05, 1.5, 0.05) var carriage_speed: float = 0.5
 ## Carriage speed while lowering a full stack to the haul-out chains.
 @export_range(0.05, 1.5, 0.05) var discharge_speed: float = 0.6
+## Pack lift travel speed, metres per second (it eases in and out at each end).
+@export_range(0.03, 0.5, 0.01) var lift_speed: float = 0.15
 
 @export_group("Debug")
 ## Print each board's progress (queued, released, gate opened, landed) and bay discharges.
@@ -199,9 +226,8 @@ var feed_hold: bool = false
 var _bays: Array[Bay] = []
 var _queue: Array[RigidBody3D] = []
 var _carried: Array[Carried] = []
-var _hauled: Dictionary = {}          # board -> seconds it has been still
-var _parked: Array[RigidBody3D] = []  # boards resting on the end table
-var _table_full_logged: bool = false
+var _hauled: Dictionary = {}          # board on the pit's haul-out chains -> true
+var _lift_load: Array[RigidBody3D] = []   # the stack riding the pack lift
 var _stacker: Node = null              # GreenStacker taking packs off the haul-out head
 var _locked: bool = false              # stopped by the crew (lockout) to clear a jam
 var _loose_t: Dictionary = {}          # board -> seconds lying still outside the sorter's hands
@@ -228,6 +254,16 @@ var _haul_links: int = 0
 var _haul_spacing: float = HAUL_PITCH
 var _haul_dist: float = 0.0
 var _haul_current: float = 0.0
+enum LiftPhase { DOWN, RAISE, UP, LOWER }
+var _lift_phase: int = LiftPhase.DOWN
+var _lift_y: float = 0.0                  # how far the deck is up from the pit chains' height
+var _lift_current: float = 0.0            # lift chain speed
+var _lift_dist: float = 0.0
+var _lift_loop: float = 0.0
+var _lift_links: int = 0
+var _lift_spacing: float = HAUL_PITCH
+var _lift_settle: float = 0.0             # seconds the stack's front has been at the lift's end
+var _lift_drawn_y: float = NAN
 var _stop_down: bool = false
 var _infeed_on: bool = true
 var _infeed_current: float = 0.0
@@ -248,6 +284,11 @@ var _stop: AnimatableBody3D
 var _links_mm: MultiMeshInstance3D
 var _lugs_mm: MultiMeshInstance3D
 var _haul_mm: MultiMeshInstance3D
+var _lift_mm: MultiMeshInstance3D
+var _haul_body: StaticBody3D
+var _lift_body: AnimatableBody3D
+var _lift_rams: Node3D
+var _lift_chains: Array[MeshInstance3D] = []
 var _xfer_mm: MultiMeshInstance3D
 var _cylinders: Array[MeshInstance3D] = []
 var _rods: Array[MeshInstance3D] = []
@@ -260,9 +301,12 @@ func _ready() -> void:
 	_top_links = int(round(_top_loop / TOP_PITCH))
 	_top_spacing = _top_loop / float(_top_links)
 	_lug_count = floori(float(_top_links) / LUG_EVERY)
-	_haul_loop = 2.0 * (HAUL_X_HEAD - HAUL_X_TAIL) + TAU * HAUL_SPR
+	_haul_loop = 2.0 * (HAUL_X_END - HAUL_X_TAIL) + TAU * HAUL_SPR
 	_haul_links = int(round(_haul_loop / HAUL_PITCH))
 	_haul_spacing = _haul_loop / float(_haul_links)
+	_lift_loop = 2.0 * (LIFT_X_HEAD - LIFT_X_TAIL) + TAU * HAUL_SPR
+	_lift_links = int(round(_lift_loop / HAUL_PITCH))
+	_lift_spacing = _lift_loop / float(_lift_links)
 	_xfer_loop = 2.0 * (XFER_HEAD - XFER_TAIL) + TAU * XFER_SPR
 	_xfer_links = int(round(_xfer_loop / XFER_PITCH))
 	_xfer_spacing = _xfer_loop / float(_xfer_links)
@@ -274,7 +318,7 @@ func _ready() -> void:
 		_bays.append(Bay.new())
 	_build_parts()
 	for shaft_name: String in ["TopDriveShaft", "TopTailShaft", "HaulDriveShaft", "HaulTailShaft",
-			"TransferHeadShaft", "TransferTailSprockets"]:
+			"TransferHeadShaft", "TransferTailSprockets", "LiftHeadShaft", "LiftTailShaft"]:
 		var shaft := find_child(shaft_name, true, false) as Node3D
 		if shaft != null:
 			_shafts[shaft_name] = shaft
@@ -282,10 +326,6 @@ func _ready() -> void:
 		return
 	if not stacker.is_empty():
 		_stacker = get_node_or_null(stacker)
-	if _stacker != null:
-		var stops := get_node_or_null("EndStops")
-		if stops != null:
-			stops.queue_free()
 	var zone := get_node_or_null("InfeedZone") as Area3D
 	if zone != null:
 		zone.body_entered.connect(_on_infeed_body_entered)
@@ -318,9 +358,10 @@ func status_text() -> String:
 		var b: Bay = _bays[i]
 		if b.count > 0 or b.phase != BayPhase.CATCH:
 			bays.append("%d:%s %d%s" % [i, BayPhase.keys()[b.phase], b.count, (" %s %s" % [b.size, b.length_class]) if b.size != "" else ""])
-	return "queue %d, carried %d, infeed %s%s%s, bays [%s]" % [_queue.size(), _carried.size(),
+	return "queue %d, carried %d, infeed %s%s%s, lift %s %d, bays [%s]" % [_queue.size(), _carried.size(),
 			"on" if _infeed_on else "STOPPED", ", HOLDING incline" if feed_hold else "",
-			", end table full" if _end_table_full() else "", ", ".join(bays)]
+			", surge full" if _end_table_full() else "", LiftPhase.keys()[_lift_phase], _lift_load.size(),
+			", ".join(bays)]
 
 
 func set_locked(on: bool) -> void:
@@ -337,9 +378,9 @@ func is_locked() -> bool:
 	return _locked
 
 
-## Is this board in the sorter's hands (queued, carried, in a bay, hauling or parked)?
+## Is this board in the sorter's hands (queued, carried, in a bay, hauling or on the lift)?
 func _owned(b: RigidBody3D) -> bool:
-	if _queue.has(b) or _is_carried(b) or _hauled.has(b) or _parked.has(b):
+	if _queue.has(b) or _is_carried(b) or _hauled.has(b) or _lift_load.has(b):
 		return true
 	for bay: Bay in _bays:
 		if bay.boards.has(b):
@@ -387,7 +428,8 @@ func _track_loose(delta: float) -> void:
 
 
 ## The first sorter jam, or {}: "deck" a board lying loose on the deck (it missed its lug or
-## its bay), "floor" a board that fell off onto the floor. "at" is in sorter coordinates.
+## its bay), "floor" a board that fell off onto the floor or down into the pit. "at" is in
+## sorter coordinates.
 func find_jam() -> Dictionary:
 	# Highest first: off the top of a pile before the board under it.
 	var loose: Array = _loose_t.keys().filter(func(b: Variant) -> bool: return is_instance_valid(b) and float(_loose_t[b]) >= 4.0)
@@ -504,9 +546,9 @@ func _physics_process(delta: float) -> void:
 	if _locked:
 		_top_speed = 0.0
 		_haul_current = 0.0
+		_lift_current = 0.0
 		_infeed_current = 0.0
-		for n: String in ["TransferChains", "HaulChains"]:
-			var body := get_node_or_null(n) as StaticBody3D
+		for body: StaticBody3D in [get_node_or_null("TransferChains") as StaticBody3D, _haul_body, _lift_body]:
 			if body != null:
 				body.constant_linear_velocity = Vector3.ZERO
 		return
@@ -813,8 +855,10 @@ func _eye_blocked(bay: int) -> bool:
 	return false
 
 
-## Lowest the forks index to before the bay counts as full (pile room used up).
-const FORK_MIN_Y := 1.5
+## Lowest the forks index to before the bay counts as full (pile room used up): 2.3 m of pile,
+## about a 26-layer package of 2x12. The pit chains are low enough that a stack that tall
+## rides out under tines this low.
+const FORK_MIN_Y := 0.90
 
 
 func _update_bays(delta: float) -> void:
@@ -871,8 +915,11 @@ func _update_bays(delta: float) -> void:
 					if is_instance_valid(b) and to_local(b.global_position).y < HAUL_TOP - 0.05:
 						continue
 					# One left wedged up in the bay (the stack tumbled as it went down) won't come out
-					# on the chains: after a few seconds still, it is the crew's to take out by hand.
-					if is_instance_valid(b) and to_local(b.global_position).y > HAUL_TOP + 0.3 							and b.linear_velocity.length() < 0.05:
+					# on the chains: still in the bay for a few seconds while the chains run, it is the
+					# crew's to take out by hand. (A tall stack standing on stopped chains is not.)
+					var lp: Vector3 = to_local(b.global_position) if is_instance_valid(b) else Vector3.ZERO
+					if is_instance_valid(b) and lp.y > HAUL_TOP + 0.3 and lp.x < bay_x(i) + BAY \
+							and b.linear_velocity.length() < 0.05 and _haul_current > 0.1:
 						if not _wedged_since.has(b):
 							_wedged_since[b] = _clock
 						elif _clock - float(_wedged_since[b]) > 5.0:
@@ -929,95 +976,149 @@ func _bay_capacity(bay: int) -> int:
 		return wanted
 	# Feeding the stacker, every pack is whole layers (the stacker's boards per layer for the
 	# size in the bay), so a size change on the stacker always comes between layers. A set pack
-	# size is rounded to the nearest whole layers; the default is as many layers as fit in
-	# max_boards_per_bay. Never less than one layer.
+	# size is rounded to the nearest whole layers; the default is one whole stacker package
+	# (31 layers of 1x, 26 of 2x). Never less than one layer.
 	var size: String = _bays[bay].size if bay < _bays.size() and _bays[bay].size != "" else bay_sizes[mini(bay, bay_sizes.size() - 1)]
-	var per: int = int((_stacker.call("layer_plan", size) as Vector2i).x)
-	var layers: int = roundi(float(wanted) / per) if bay < bay_pack_boards.size() and bay_pack_boards[bay] > 0 		else floori(float(wanted) / per)
-	return per * maxi(layers, 1)
+	var plan: Vector2i = _stacker.call("layer_plan", size)
+	if bay >= bay_pack_boards.size() or bay_pack_boards[bay] <= 0:
+		return plan.x * plan.y
+	return plan.x * maxi(roundi(float(wanted) / plan.x), 1)
 
 
-## The haul-out chains run while a stack is moving on them and stop once every stack has
-## come to rest against the end stops (or the stack ahead of it).
+## The pit's haul-out chains carry each stack to the pack lift. They run while the lift is
+## down and empty (and its chains run with them, drawing the stack on); otherwise they stop
+## with the stack short of the lift. Once the stack's front is at the lift's far end and every
+## board is on it, the lift rises, runs the stack on to the stacker's surge chains as the surge
+## queue makes room, and goes back down. Every board is followed until it is off the lift's head
+## and handed to the stacker. Without a stacker the lift just holds its stack up at floor level.
 func _update_haul(delta: float) -> void:
-	if _stacker != null:
-		_update_haul_to_stacker(delta)
-		return
 	for b: Variant in _hauled.keys():
 		if not is_instance_valid(b):
 			_hauled.erase(b)
 			continue
 		var board := b as RigidBody3D
-		if _stacker != null and _trailing(board) > HAUL_X_HEAD:
-			# Off the haul-out and on the surge chains: the stacker's now.
-			_hauled.erase(b)
-			_stacker.call("receive", board)
-			continue
-		var moving: bool = absf(board.linear_velocity.x) > 0.03 or to_local(board.global_position).y > HAUL_TOP + 0.6
-		_hauled[b] = 0.0 if moving or _haul_current < haul_approach_speed * 0.5 else float(_hauled[b]) + delta
-		if float(_hauled[b]) > 0.5:
-			_hauled.erase(b)
-			if to_local(board.global_position).x > TABLE_X0:
-				_parked.append(board)
-	var run: bool = false
-	for bay: Bay in _bays:
-		if bay.phase == BayPhase.HAUL:
-			run = true
-	run = run or not _hauled.is_empty()
-	var target: float = 0.0
-	if run:
-		target = haul_approach_speed if _stack_arriving() else haul_speed
-	_haul_current = move_toward(_haul_current, target, 0.25 * delta)
-	_haul_dist = fposmod(_haul_dist + _haul_current * delta, _haul_loop)
-
-
-## With a green stacker: each stack set down on the haul-out is run straight on to the
-## stacker's surge chains (no waiting for other bays). Every board is followed until it is
-## off the haul-out head, then handed to the stacker. The chains only stop when the surge
-## queue has backed up to the haul-out head; they slow for the last half metre before it.
-func _update_haul_to_stacker(delta: float) -> void:
-	_parked.clear()
-	for b: Variant in _hauled.keys():
-		if not is_instance_valid(b):
-			_hauled.erase(b)
-			continue
-		var board := b as RigidBody3D
-		if _trailing(board) > HAUL_X_HEAD:
-			_hauled.erase(b)
-			_stacker.call("receive", board)
-			_log("handed to the green stacker", board)
-		elif to_local(board.global_position).y < HAUL_TOP - 0.15:
-			_hauled.erase(b)          # fell off the chains
-		elif absf(board.global_basis.x.normalized().dot(global_basis.z.normalized())) < 0.87:
-			# Turned more than 30 deg off square (fell off a carriage as the forks went down):
-			# it would go onto the surge crosswise. Out of the stack; the chains stop for the crew.
+		if to_local(board.global_position).y < HAUL_TOP - 0.15:
+			_hauled.erase(b)          # fell off the chains, into the pit
+		elif _turned(board):
 			_hauled.erase(b)
 			_log("TURNED on the haul-out, chains stopped for the crew", board)
+	var stopped: bool = _locked or _loose_on_haul() or (_stacker != null and bool(_stacker.call("is_locked")))
+	var taking: bool = _lift_phase == LiftPhase.DOWN and _lift_load.is_empty()
+	var lead: float = -INF
+	var trail: float = INF
+	for b: Variant in _hauled.keys():
+		lead = maxf(lead, _leading(b as RigidBody3D))
+		trail = minf(trail, _trailing(b as RigidBody3D))
 	var target: float = 0.0
-	if not _hauled.is_empty() and not bool(_stacker.call("is_locked")) and not _loose_on_haul():
-		var back: float = float(_stacker.call("surge_back"))
-		var lead: float = -INF
-		for b: Variant in _hauled.keys():
-			lead = maxf(lead, _leading(b as RigidBody3D))
-		var room: float = back - lead
-		if room < 0.05:
+	if _hauled.is_empty():
+		_lift_settle = 0.0
+	if not _hauled.is_empty() and not stopped:
+		# Taking a stack on: run until its front is at the lift's far end. Otherwise hold it short
+		# of the lift's tail sprockets.
+		var limit: float = LIFT_X_HEAD - HAUL_SPR - 0.04 if taking else LIFT_X_TAIL - HAUL_SPR - 0.06
+		var room: float = limit - lead
+		if room < 0.02:
 			target = 0.0
 		elif room < 0.5 + _haul_current * _haul_current / (2.0 * 0.25):
 			target = haul_approach_speed
 		else:
 			target = haul_speed
+		# Front at the far end and boards still behind the lift's tail: the pit chains nudge them
+		# on (the lift's chains have stopped) for a few seconds before the lift goes up anyway.
+		if taking and room < 0.02:
+			_lift_settle += delta
+			if trail < LIFT_X_TAIL - 0.03 and _lift_settle < 4.0:
+				target = haul_approach_speed
+	if taking and not _hauled.is_empty() and lead >= LIFT_X_HEAD - HAUL_SPR - 0.06 and _lift_settle > 0.5 \
+			and (trail >= LIFT_X_TAIL - 0.03 or _lift_settle >= 4.0):
+		_load_lift()
 	_haul_current = move_toward(_haul_current, target, 0.25 * delta)
 	_haul_dist = fposmod(_haul_dist + _haul_current * delta, _haul_loop)
+	_update_lift(delta, stopped, taking and target > 0.0 and lead < LIFT_X_HEAD - HAUL_SPR - 0.04)
 
 
-## A loose board (not part of a hauled stack) lying on the haul-out chains: they stay stopped
-## until the crew has it off.
+## Hand the stack on the lift's chains over to the lift: everything wholly past the dead plate
+## rides up; a board left behind on the pit chains stays there, one caught across the gap is
+## loose (it will tip off as the lift rises, and the crew picks it up out of the pit).
+func _load_lift() -> void:
+	_lift_settle = 0.0
+	for b: Variant in _hauled.keys():
+		var board := b as RigidBody3D
+		if _trailing(board) >= LIFT_X_TAIL - 0.03:
+			_lift_load.append(board)
+			_hauled.erase(b)
+		elif _leading(board) > HAUL_X_END + HAUL_SPR:
+			_hauled.erase(b)
+			_log("caught across the lift's tail, left for the crew", board)
+	if _lift_load.is_empty():
+		return
+	_lift_phase = LiftPhase.RAISE
+	_log("pack lift raising a stack of %d" % _lift_load.size())
+
+
+## Lift travel and its chains. `drawing_on`: the lift is down and taking a stack, so its chains
+## run with the pit chains.
+func _update_lift(delta: float, stopped: bool, drawing_on: bool) -> void:
+	for i in range(_lift_load.size() - 1, -1, -1):
+		var board: RigidBody3D = _lift_load[i]
+		if not is_instance_valid(board):
+			_lift_load.remove_at(i)
+		elif _stacker != null and _trailing(board) > HAUL_X_HEAD:
+			_lift_load.remove_at(i)
+			_stacker.call("receive", board)
+			_log("handed to the green stacker", board)
+		elif to_local(board.global_position).y < HAUL_TOP + _lift_y - 0.15:
+			_lift_load.remove_at(i)    # fell off the lift
+		elif _turned(board):
+			_lift_load.remove_at(i)
+			_log("TURNED on the pack lift, chains stopped for the crew", board)
+	var chain_target: float = 0.0
+	match _lift_phase:
+		LiftPhase.DOWN:
+			if drawing_on and not stopped:
+				chain_target = _haul_current
+		LiftPhase.RAISE, LiftPhase.LOWER:
+			if not stopped:
+				var to: float = LIFT_RISE if _lift_phase == LiftPhase.RAISE else 0.0
+				# Ease in and out at both ends, slow and heavy.
+				var taper: float = clampf(minf(_lift_y, LIFT_RISE - _lift_y) / 0.25, 0.0, 1.0)
+				_lift_y = move_toward(_lift_y, to, lift_speed * (0.2 + 0.8 * taper) * delta)
+				if is_equal_approx(_lift_y, to):
+					_lift_y = to
+					_lift_phase = LiftPhase.UP if _lift_phase == LiftPhase.RAISE else LiftPhase.DOWN
+					_log("pack lift %s" % ("up" if _lift_phase == LiftPhase.UP else "down"))
+		LiftPhase.UP:
+			if _lift_load.is_empty():
+				_lift_phase = LiftPhase.LOWER
+			elif _stacker != null and not stopped:
+				# Run the stack on to the surge chains as their queue makes room, slowing for the last
+				# half metre before the pack ahead.
+				var back: float = float(_stacker.call("surge_back"))
+				var lead: float = -INF
+				for b: RigidBody3D in _lift_load:
+					lead = maxf(lead, _leading(b))
+				var room: float = back - lead
+				if room >= 0.05:
+					chain_target = haul_approach_speed if room < 0.5 + _lift_current * _lift_current / (2.0 * 0.25) else haul_speed
+	_lift_current = move_toward(_lift_current, chain_target, (1.0 if _lift_phase == LiftPhase.DOWN else 0.25) * delta)
+	_lift_dist = fposmod(_lift_dist + _lift_current * delta, _lift_loop)
+
+
+## Turned more than 30 deg off square (fell off a carriage as the forks went down): it would go
+## onto the surge crosswise. Out of the stack; the chains stop for the crew.
+func _turned(board: RigidBody3D) -> bool:
+	return absf(board.global_basis.x.normalized().dot(global_basis.z.normalized())) < 0.87
+
+
+## A loose board (not part of a hauled stack) lying on the haul-out chains or the lift's: they
+## stay stopped until the crew has it off.
 func _loose_on_haul() -> bool:
 	for b: Variant in _loose_t.keys():
 		if not is_instance_valid(b):
 			continue
 		var p: Vector3 = to_local((b as RigidBody3D).global_position)
-		if p.x > HAUL_X_TAIL and p.x < HAUL_X_HEAD + 0.3 and p.y > HAUL_TOP - 0.15 and p.y < HAUL_TOP + 0.8:
+		var top: float = HAUL_TOP + _lift_y if p.x > LIFT_X_TAIL - HAUL_SPR else HAUL_TOP
+		if p.x > HAUL_X_TAIL and p.x < HAUL_X_HEAD + 0.3 and p.y > top - 0.15 and p.y < top + 0.8:
 			return true
 	return false
 
@@ -1071,39 +1172,12 @@ func _kind(bay: Bay) -> String:
 	return "%s %s" % [bay.size, bay.length_class]
 
 
+## No room for another stack: the stacker's surge queue is full, or (with no stacker) the lift
+## is still holding the last one up.
 func _end_table_full() -> bool:
 	if _stacker != null:
 		return bool(_stacker.call("surge_full"))
-	for p: RigidBody3D in _parked:
-		if is_instance_valid(p) and _trailing(p) < TABLE_X0 + 0.5:
-			if not _table_full_logged:
-				_table_full_logged = true
-				_log("end table full: bays wait to discharge until stacks are taken away")
-			return true
-	_table_full_logged = false
-	return false
-
-
-## Is a moving stack within half a metre of the end stops or of a stack waiting there?
-## (Plus the distance the chains need to slow down.)
-func _stack_arriving() -> bool:
-	for i in range(_parked.size() - 1, -1, -1):
-		if not is_instance_valid(_parked[i]):
-			_parked.remove_at(i)
-	var margin: float = 0.5 + _haul_current * _haul_current / (2.0 * 0.25)
-	for b: Variant in _hauled.keys():
-		var board := b as RigidBody3D
-		if not is_instance_valid(board):
-			continue
-		var lead: float = _leading(board)
-		var obstacle: float = STACK_STOP_X if _stacker == null else float(_stacker.call("surge_back"))
-		for p: RigidBody3D in _parked:
-			var t: float = _trailing(p)
-			if t > lead - 0.05 and t < obstacle:
-				obstacle = t
-		if obstacle - lead < margin:
-			return true
-	return false
+	return _lift_phase != LiftPhase.DOWN or not _lift_load.is_empty()
 
 
 ## Move every driven body to where this tick's state says it is.
@@ -1114,9 +1188,13 @@ func _drive_bodies(delta: float) -> void:
 	var transfer := get_node_or_null("TransferChains") as StaticBody3D
 	if transfer != null:
 		transfer.constant_linear_velocity = global_basis.x * _infeed_current
-	var haul := get_node_or_null("HaulChains") as StaticBody3D
-	if haul != null:
-		haul.constant_linear_velocity = global_basis.x * _haul_current
+	if _haul_body != null:
+		_haul_body.constant_linear_velocity = global_basis.x * _haul_current
+	if _lift_body != null:
+		_lift_body.transform = Transform3D(Basis(), Vector3(0.0, _lift_y, 0.0))
+		_lift_body.constant_linear_velocity = global_basis.x * _lift_current
+		_lift_rams.position = Vector3(0.0, _lift_y * 0.5, 0.0)
+		_place_lift_chains()
 
 	var stop_target: float = 70.0 if _stop_down else 0.0
 	_stop_deg = move_toward(_stop_deg, stop_target, 420.0 * delta)
@@ -1129,12 +1207,15 @@ func _drive_bodies(delta: float) -> void:
 
 	var top_turn: float = _top_speed * delta / TOP_SPR
 	var haul_turn: float = _haul_current * delta / HAUL_SPR
+	var lift_turn: float = _lift_current * delta / HAUL_SPR
 	var xfer_turn: float = _infeed_current * delta / XFER_SPR
 	for shaft_name: String in _shafts:
-		var turn: float = top_turn if shaft_name.begins_with("Top") else (-haul_turn if shaft_name.begins_with("Haul") else -xfer_turn)
+		var turn: float = top_turn if shaft_name.begins_with("Top") else (-haul_turn if shaft_name.begins_with("Haul") \
+				else (-lift_turn if shaft_name.begins_with("Lift") else -xfer_turn))
 		(_shafts[shaft_name] as Node3D).rotate_z(turn)
 	_visual_elapsed += delta
-	if _visual_elapsed >= 1.0 / 30.0 and (_top_speed > 0.0 or _haul_current > 0.0 or _infeed_current > 0.0):
+	if _visual_elapsed >= 1.0 / 30.0 and (_top_speed > 0.0 or _haul_current > 0.0 or _infeed_current > 0.0
+			or _lift_current > 0.0 or _lift_y != _lift_drawn_y):
 		_visual_elapsed = 0.0
 		_place_chain_visuals()
 
@@ -1202,23 +1283,32 @@ func _top_path(s: float) -> Vector2:
 
 
 ## Haul-out loop from the tail sprocket's top tangent: carrying run +X, head wrap,
-## return run -X underneath, tail wrap.
+## return run -X underneath, tail wrap. The lift's chains are the same loop, shorter, raised
+## by dy.
 func _haul_path(s: float) -> Vector2:
-	s = fposmod(s, _haul_loop)
-	var span: float = HAUL_X_HEAD - HAUL_X_TAIL
+	return _chain_loop(s, _haul_loop, HAUL_X_TAIL, HAUL_X_END, HAUL_SHAFT_Y)
+
+
+func _lift_path(s: float) -> Vector2:
+	return _chain_loop(s, _lift_loop, LIFT_X_TAIL, LIFT_X_HEAD, HAUL_SHAFT_Y + _lift_y)
+
+
+static func _chain_loop(s: float, loop: float, x_tail: float, x_head: float, shaft_y: float) -> Vector2:
+	s = fposmod(s, loop)
+	var span: float = x_head - x_tail
 	var arc: float = PI * HAUL_SPR
 	if s < span:
-		return Vector2(HAUL_X_TAIL + s, HAUL_SHAFT_Y + HAUL_SPR)
+		return Vector2(x_tail + s, shaft_y + HAUL_SPR)
 	s -= span
 	if s < arc:
 		var phi: float = PI * 0.5 - s / HAUL_SPR
-		return Vector2(HAUL_X_HEAD + HAUL_SPR * cos(phi), HAUL_SHAFT_Y + HAUL_SPR * sin(phi))
+		return Vector2(x_head + HAUL_SPR * cos(phi), shaft_y + HAUL_SPR * sin(phi))
 	s -= arc
 	if s < span:
-		return Vector2(HAUL_X_HEAD - s, HAUL_SHAFT_Y - HAUL_SPR)
+		return Vector2(x_head - s, shaft_y - HAUL_SPR)
 	s -= span
 	var phi2: float = -PI * 0.5 - s / HAUL_SPR
-	return Vector2(HAUL_X_TAIL + HAUL_SPR * cos(phi2), HAUL_SHAFT_Y + HAUL_SPR * sin(phi2))
+	return Vector2(x_tail + HAUL_SPR * cos(phi2), shaft_y + HAUL_SPR * sin(phi2))
 
 
 ## Transfer chain loop from the tail's top tangent: carrying run +X, head wrap, return run
@@ -1267,6 +1357,7 @@ func _build_parts() -> void:
 	_cylinders.clear()
 	_rods.clear()
 	_cables.clear()
+	_lift_chains.clear()
 
 	var arm_grip := _physics_material(0.3)
 	var steel_grip := _physics_material(0.6)
@@ -1339,8 +1430,79 @@ func _build_parts() -> void:
 	_links_mm = _multimesh("TopChainLinks", TopLinkScene, (_top_links - _lug_count) * TOP_STRANDS.size())
 	_lugs_mm = _multimesh("TopChainLugs", TopLugScene, _lug_count * TOP_STRANDS.size())
 	_haul_mm = _multimesh("HaulChainLinks", HaulLinkScene, _haul_links * HAUL_STRANDS.size())
+	_lift_mm = _multimesh("LiftChainLinks", HaulLinkScene, _lift_links * HAUL_STRANDS.size())
+	_build_haul_out(wire)
 	_xfer_mm = _multimesh("TransferChainLinks", TransferLinkScene, _xfer_links * XFER_Z.size())
 	_place_chain_visuals()
+
+
+## The pit (floor and walls), the haul-out chains along its floor, the dead plates either end
+## of the lift, and the lift itself: its deck and chains (one body, raised by _lift_y), its rams
+## and the lifting chains over their sheaves.
+func _build_haul_out(wire: Material) -> void:
+	var pit := StaticBody3D.new()
+	pit.name = "Pit"
+	pit.physics_material_override = _physics_material(0.6)
+	_parts.add_child(pit)
+	var w: float = PIT_WALL
+	_span_shape(pit, Vector3(PIT_X0 - w, PIT_FLOOR_Y - 0.25, -PIT_Z - w), Vector3(PIT_X1 + w, PIT_FLOOR_Y, PIT_Z + w))
+	_span_shape(pit, Vector3(PIT_X0 - w, PIT_FLOOR_Y, -PIT_Z - w), Vector3(PIT_X0, 0.0, PIT_Z + w))
+	_span_shape(pit, Vector3(PIT_X1, PIT_FLOOR_Y, -PIT_Z - w), Vector3(PIT_X1 + w, 0.0, PIT_Z + w))
+	for sgn: float in [-1.0, 1.0]:
+		_span_shape(pit, Vector3(PIT_X0, PIT_FLOOR_Y, minf(sgn * PIT_Z, sgn * (PIT_Z + w))),
+			Vector3(PIT_X1, 0.0, maxf(sgn * PIT_Z, sgn * (PIT_Z + w))))
+
+	# Dead plates (UHMW: boards slide over them, pushed by the stack behind): pit chains to the
+	# lift's tail, and the raised lift's head to the stacker's surge chains.
+	var plates := StaticBody3D.new()
+	plates.name = "DeadPlates"
+	plates.physics_material_override = _static_material(0.15, false)
+	_parts.add_child(plates)
+	_span_shape(plates, Vector3(HAUL_X_END + HAUL_SPR + 0.005, HAUL_TOP - 0.02, -2.6), Vector3(LIFT_X_TAIL - HAUL_SPR - 0.01, HAUL_TOP - 0.004, 2.6))
+	_span_shape(plates, Vector3(LIFT_X_HEAD + HAUL_SPR + 0.01, OUT_TOP - 0.024, -2.6), Vector3(PIT_X1 + 0.09, OUT_TOP - 0.004, 2.6))
+
+	# Haul-out drag chains: the carrying run of each strand. Low friction, like a real
+	# accumulating chain: plenty to carry a stack, sliding on under one held short of the lift.
+	_haul_body = StaticBody3D.new()
+	_haul_body.name = "HaulChains"
+	_haul_body.physics_material_override = _static_material(0.35, false)
+	_parts.add_child(_haul_body)
+	for z: float in HAUL_STRANDS:
+		_span_shape(_haul_body, Vector3(HAUL_X_TAIL, HAUL_TOP - 0.024, z - 0.025), Vector3(HAUL_X_END, HAUL_TOP, z + 0.025))
+
+	# The lift: model and collision built lowered; the body is raised by _lift_y.
+	_lift_body = AnimatableBody3D.new()
+	_lift_body.name = "PackLift"
+	_lift_body.sync_to_physics = true
+	_lift_body.physics_material_override = _static_material(0.35, false)
+	_parts.add_child(_lift_body)
+	_lift_body.add_child(LiftScene.instantiate())
+	for z: float in HAUL_STRANDS:
+		_span_shape(_lift_body, Vector3(LIFT_X_TAIL, HAUL_TOP - 0.024, z - 0.025), Vector3(LIFT_X_HEAD, HAUL_TOP, z + 0.025))
+	_lift_rams = LiftRamsScene.instantiate()
+	_parts.add_child(_lift_rams)
+	for _i in 4:
+		_lift_chains.append(_rod_mesh(0.012, wire))
+	_lift_body.transform = Transform3D(Basis(), Vector3(0.0, _lift_y, 0.0))
+	_lift_rams.position = Vector3(0.0, _lift_y * 0.5, 0.0)
+	_place_lift_chains()
+
+
+## Each side: chain from its anchor on the ram barrel up over the sheave and down to the hook
+## on the deck. The sheave rises half as far as the deck.
+func _place_lift_chains() -> void:
+	var sheave: float = LIFT_SHEAVE_Y + _lift_y * 0.5
+	var hook: float = HAUL_TOP + _lift_y + LIFT_HOOK_DY
+	for side in 2:
+		var sgn: float = -1.0 if side == 0 else 1.0
+		var outer: float = sgn * (LIFT_RAM_Z + LIFT_SHEAVE_R)
+		var inner: float = sgn * (LIFT_RAM_Z - LIFT_SHEAVE_R)
+		_span(_lift_chains[side * 2], Vector3(LIFT_RAM_X, LIFT_BARREL_TOP - 0.09, outer), Vector3(LIFT_RAM_X, sheave, outer))
+		_span(_lift_chains[side * 2 + 1], Vector3(LIFT_RAM_X, hook, inner), Vector3(LIFT_RAM_X, sheave, inner))
+
+
+func _span_shape(body: Node3D, p0: Vector3, p1: Vector3) -> void:
+	_box(body, (p0 + p1) * 0.5, (p1 - p0).abs())
 
 
 func _body(body_name: String, mat: PhysicsMaterial) -> AnimatableBody3D:
@@ -1522,6 +1684,17 @@ func _place_chain_visuals() -> void:
 			_put_link(haul, h, p1, p2, z)
 			h += 1
 	_haul_mm.multimesh.buffer = haul
+	var lift := _mm_buffer(_lift_mm)
+	var l: int = 0
+	for k in _lift_links:
+		var s: float = _lift_dist + float(k) * _lift_spacing
+		var p1: Vector2 = _lift_path(s)
+		var p2: Vector2 = _lift_path(s + _lift_spacing)
+		for z: float in HAUL_STRANDS:
+			_put_link(lift, l, p1, p2, z)
+			l += 1
+	_lift_mm.multimesh.buffer = lift
+	_lift_drawn_y = _lift_y
 	var xfer := _mm_buffer(_xfer_mm)
 	var x: int = 0
 	for k in _xfer_links:
@@ -1621,22 +1794,7 @@ static func build_static_colliders(root: Node3D) -> void:
 		_span_box(root, transfer, "Chain", Vector3(XFER_TAIL, XFER_PIN_Y - 0.008, z - 0.012),
 			Vector3(XFER_HEAD, XFER_PIN_Y + 0.008, z + 0.012))
 
-	# Haul-out drag chains: the carrying run of each strand. Low friction, like a real
-	# accumulating chain: plenty to carry a stack, without crushing the queue on the end table
-	# when the chains slide on under it.
-	var haul := StaticBody3D.new()
-	haul.name = "HaulChains"
-	haul.physics_material_override = _static_material(0.35, false)
-	_attach(root, haul)
-	for z: float in HAUL_STRANDS:
-		_span_box(root, haul, "Strand", Vector3(HAUL_X_TAIL, HAUL_TOP - 0.024, z - 0.025), Vector3(HAUL_X_HEAD, HAUL_TOP, z + 0.025))
-
-	# End table stops the stacks run up against.
-	var stops := StaticBody3D.new()
-	stops.name = "EndStops"
-	_attach(root, stops)
-	for z: float in END_STOP_Z:
-		_span_box(root, stops, "Stop", Vector3(STACK_STOP_X, 0.0, z - 0.08), Vector3(STACK_STOP_X + 0.12, 0.9, z + 0.08))
+	# (The haul-out chains, pit and pack lift are built at load time: _build_haul_out.)
 
 	# Boards entering the infeed are queued from here.
 	var zone := Area3D.new()

@@ -155,7 +155,7 @@ func _run() -> void:
 			if sorter._bays[bay].boards.has(b) and sorter._bays[bay].size == feed[i]:
 				where = "in bay %d" % bay
 				physical[bay] += 1
-		elif p.y < 1.2 and p.x > BinSorter.STACK_STOP_X - 4.0 and binned.has(b):
+		elif p.x > BinSorter.HAUL_X_END - 3.0 and binned.has(b):
 			where = "hauled out"
 		else:
 			problems += 1

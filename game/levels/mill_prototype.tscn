@@ -57,7 +57,7 @@ material = SubResource("Material_kilnyard")
 size = Vector3(34, 0.2, 69)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(100, 0.2, 120)
+size = Vector3(100, 0.2, 67.1132)
 
 [sub_resource type="StandardMaterial3D" id="Material_Ground"]
 albedo_color = Color(0.35, 0.35, 0.38, 1)
@@ -65,7 +65,28 @@ roughness = 0.95
 
 [sub_resource type="BoxMesh" id="BoxMesh_Ground"]
 material = SubResource("Material_Ground")
-size = Vector3(100, 0.2, 120)
+size = Vector3(100, 0.2, 67.1132)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_groundB"]
+size = Vector3(100, 0.2, 37.9368)
+
+[sub_resource type="BoxMesh" id="BoxMesh_GroundB"]
+material = SubResource("Material_Ground")
+size = Vector3(100, 0.2, 37.9368)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_groundC"]
+size = Vector3(68.1, 0.2, 14.95)
+
+[sub_resource type="BoxMesh" id="BoxMesh_GroundC"]
+material = SubResource("Material_Ground")
+size = Vector3(68.1, 0.2, 14.95)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_groundD"]
+size = Vector3(24.9, 0.2, 14.95)
+
+[sub_resource type="BoxMesh" id="BoxMesh_GroundD"]
+material = SubResource("Material_Ground")
+size = Vector3(24.9, 0.2, 14.95)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hhae2"]
 size = Vector3(0.4, 0.05, 8)
@@ -337,12 +358,36 @@ script = ExtResource("1_cam")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.805786, -0.9, 2)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=100000041]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 27.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 1.0566)
 shape = SubResource("BoxShape3D_ground")
 
 [node name="Visuals" type="MeshInstance3D" parent="Ground" unique_id=100000042]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 27.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 1.0566)
 mesh = SubResource("BoxMesh_Ground")
+
+[node name="CollisionShapeB" type="CollisionShape3D" parent="Ground" unique_id=100000051]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 68.5316)
+shape = SubResource("BoxShape3D_groundB")
+
+[node name="VisualsB" type="MeshInstance3D" parent="Ground" unique_id=100000052]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.194214, -0.48825264, 68.5316)
+mesh = SubResource("BoxMesh_GroundB")
+
+[node name="CollisionShapeC" type="CollisionShape3D" parent="Ground" unique_id=100000053]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.244214, -0.48825264, 42.0882)
+shape = SubResource("BoxShape3D_groundC")
+
+[node name="VisualsC" type="MeshInstance3D" parent="Ground" unique_id=100000054]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.244214, -0.48825264, 42.0882)
+mesh = SubResource("BoxMesh_GroundC")
+
+[node name="CollisionShapeD" type="CollisionShape3D" parent="Ground" unique_id=100000055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.744214, -0.48825264, 42.0882)
+shape = SubResource("BoxShape3D_groundD")
+
+[node name="VisualsD" type="MeshInstance3D" parent="Ground" unique_id=100000056]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 53.744214, -0.48825264, 42.0882)
+mesh = SubResource("BoxMesh_GroundD")
 
 [node name="SkyClouds" type="Node3D" parent="." unique_id=100000043]
 script = ExtResource("2_clouds")

@@ -83,10 +83,17 @@ def build(M, open_gate=None, stacks=EMPTY, demo_lumber=False):
     else:
         lumber.free()
 
-    # Floor slab.
+    # Floor slab, open over the haul-out pit (Blender axes: x, -z, y).
     me = bpy.data.meshes.new("Floor")
     s = 60.0
-    me.from_pydata([(-s, -s, 0), (s, -s, 0), (s, s, 0), (-s, s, 0)], [], [(0, 1, 2, 3)])
+    x0, x1 = S.PIT_X0 - S.PIT_WALL, S.PIT_X1 + S.PIT_WALL
+    z0 = S.PIT_Z + S.PIT_WALL
+    verts, faces = [], []
+    for (a0, b0, a1, b1) in ((-s, -s, x0, s), (x1, -s, s, s), (x0, -s, x1, -z0), (x0, z0, x1, s)):
+        k = len(verts)
+        verts += [(a0, b0, 0), (a1, b0, 0), (a1, b1, 0), (a0, b1, 0)]
+        faces.append((k, k + 1, k + 2, k + 3))
+    me.from_pydata(verts, [], faces)
     me.materials.append(M["concrete"])
     floor = bpy.data.objects.new("Floor", me)
     coll.objects.link(floor)
@@ -161,6 +168,8 @@ def build_all(M):
         "Infeed": camera(coll, "Cam_Infeed", (-3.4, -4.2, 5.6), (0.6, 0.0, 4.3), 26),
         "Stacks": camera(coll, "Cam_Stacks", (-1.6, 1.6, 2.6), (7.0, -0.4, 1.9), 22),
         "HaulEnd": camera(coll, "Cam_HaulEnd", (17.8, -4.6, 2.2), (13.6, 0.0, 0.4), 30),
+        "Pit": camera(coll, "Cam_Pit", (8.0, -8.5, 3.4), (10.5, 0.0, -1.0), 24),
+        "Lift": camera(coll, "Cam_Lift", (16.6, -6.5, 1.6), (13.9, 0.0, -0.9), 26),
     }
     setup_render()
     bpy.context.scene.camera = cams["Overview"]
