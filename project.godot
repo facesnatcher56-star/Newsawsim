@@ -33,6 +33,7 @@ port_override=6550
 
 [physics]
 
+common/max_physics_steps_per_frame=3
 3d/physics_engine="Jolt Physics"
 jolt_physics_3d/simulation/penetration_slop=0.005
 3d/solver/solver_iterations=32

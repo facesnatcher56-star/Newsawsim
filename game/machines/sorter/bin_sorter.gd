@@ -178,6 +178,7 @@ class Bay:
 	var gate_deg: float = 0.0
 	var gate_open: bool = false
 	var gate_speed: float = 200.0     # this swing's speed, deg/s
+	var rest_y: float = NAN           # carriage height the pile last settled at
 
 class Carried:
 	var board: RigidBody3D
@@ -525,8 +526,25 @@ func _physics_process(delta: float) -> void:
 	_update_top_chain(delta)
 	_update_carried(delta)
 	_update_bays(delta)
+	_settle_bays()
 	_update_haul(delta)
 	_drive_bodies(delta)
+
+
+## Boards resting in a bay whose forks hold still may sleep, so a full sorter's piles cost the
+## physics nothing; they wake as soon as the forks move or the bay starts to discharge (a
+## board landing on a pile wakes it too). Boards never sleep anywhere else: the mill's chains
+## drive them by surface velocity, which doesn't wake a sleeping body.
+func _settle_bays() -> void:
+	for bay: Bay in _bays:
+		var still: bool = bay.phase in [BayPhase.CATCH, BayPhase.FULL] and bay.carriage_y == bay.rest_y
+		bay.rest_y = bay.carriage_y
+		for b: RigidBody3D in bay.boards:
+			if not is_instance_valid(b) or b.can_sleep == still:
+				continue
+			b.can_sleep = still
+			if not still:
+				b.sleeping = false
 
 
 ## Boards waiting on the infeed, oldest first. Releases the head board to the next lug,
@@ -1475,6 +1493,10 @@ func _place_stop() -> void:
 
 
 func _place_chain_visuals() -> void:
+	# Each multimesh gets its whole buffer at once: hundreds of separate instance transforms every
+	# visual update were a good part of the sorter's tick.
+	var links := _mm_buffer(_links_mm)
+	var lugs := _mm_buffer(_lugs_mm)
 	var link_i: int = 0
 	var lug_i: int = 0
 	for k in _top_links:
@@ -1482,29 +1504,62 @@ func _place_chain_visuals() -> void:
 		var p1: Vector2 = _top_path(s)
 		var p2: Vector2 = _top_path(s + _top_spacing)
 		for z: float in TOP_STRANDS:
-			var t: Transform3D = _link_frame(p1, p2, z)
 			if k % LUG_EVERY == 0:
-				_lugs_mm.multimesh.set_instance_transform(lug_i, t)
+				_put_link(lugs, lug_i, p1, p2, z)
 				lug_i += 1
 			else:
-				_links_mm.multimesh.set_instance_transform(link_i, t)
+				_put_link(links, link_i, p1, p2, z)
 				link_i += 1
+	_links_mm.multimesh.buffer = links
+	_lugs_mm.multimesh.buffer = lugs
+	var haul := _mm_buffer(_haul_mm)
 	var h: int = 0
 	for k in _haul_links:
 		var s: float = _haul_dist + float(k) * _haul_spacing
 		var p1: Vector2 = _haul_path(s)
 		var p2: Vector2 = _haul_path(s + _haul_spacing)
 		for z: float in HAUL_STRANDS:
-			_haul_mm.multimesh.set_instance_transform(h, _link_frame(p1, p2, z))
+			_put_link(haul, h, p1, p2, z)
 			h += 1
+	_haul_mm.multimesh.buffer = haul
+	var xfer := _mm_buffer(_xfer_mm)
 	var x: int = 0
 	for k in _xfer_links:
 		var s: float = _xfer_dist + float(k) * _xfer_spacing
 		var p1: Vector2 = _xfer_path(s)
 		var p2: Vector2 = _xfer_path(s + _xfer_spacing)
 		for z: float in XFER_Z:
-			_xfer_mm.multimesh.set_instance_transform(x, _link_frame(p1, p2, z))
+			_put_link(xfer, x, p1, p2, z)
 			x += 1
+	_xfer_mm.multimesh.buffer = xfer
+
+
+## A zeroed transform buffer for every instance of `mmi`.
+static func _mm_buffer(mmi: MultiMeshInstance3D) -> PackedFloat32Array:
+	var buf := PackedFloat32Array()
+	buf.resize(mmi.multimesh.instance_count * 12)
+	return buf
+
+
+## _link_frame(p1, p2, z) written straight into a multimesh buffer (rows of basis + origin).
+static func _put_link(buf: PackedFloat32Array, index: int, p1: Vector2, p2: Vector2, z: float) -> void:
+	if index * 12 >= buf.size():
+		return
+	var d: Vector2 = (p2 - p1).normalized()
+	var k: int = index * 12
+	# Basis columns: x = (d.x, d.y, 0), y = BACK x x = (-d.y, d.x, 0), z = (0, 0, 1).
+	buf[k] = d.x
+	buf[k + 1] = -d.y
+	buf[k + 2] = 0.0
+	buf[k + 3] = p1.x
+	buf[k + 4] = d.y
+	buf[k + 5] = d.x
+	buf[k + 6] = 0.0
+	buf[k + 7] = p1.y
+	buf[k + 8] = 0.0
+	buf[k + 9] = 0.0
+	buf[k + 10] = 1.0
+	buf[k + 11] = z
 
 
 # ─────────────────────────────────────────────────────────────────────────────

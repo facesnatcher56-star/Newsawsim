@@ -126,6 +126,9 @@ func _ready() -> void:
 			# Probe the cut products around the headrig too, not just the board line.
 			_probe_min_x = 15.0
 			_probe_min_z = -2.0
+		elif arg == "--perf":
+			# Frame-time log: a line every 5 s, and one for every slow frame.
+			_perf = true
 		elif arg == "--no-hud":
 			_label.visible = false
 		elif arg.begins_with("--cam="):
@@ -145,6 +148,127 @@ var _auto_cams: Array = []
 var _probe_min_x: float = 36.0
 var _probe_min_z: float = 12.5
 var _shot_dir: String = "user://"
+var _perf: bool = false
+var _perf_last_us: int = 0
+var _perf_worst_ms: float = 0.0
+var _perf_frames: int = 0
+var _perf_next: float = 0.0
+var _perf_ticks: int = 0
+
+
+## One line of engine monitors and body counts, for the frame-time log.
+func _perf_line() -> String:
+	var counts := {}
+	for g in ["cut_boards", "logs", "waste_piece", "cut_slabs"]:
+		counts[g] = get_tree().get_nodes_in_group(g).size()
+	var bodies := get_tree().root.find_children("*", "RigidBody3D", true, false)
+	var awake := 0
+	var frozen := 0
+	var awake_by := {}
+	for b in bodies:
+		if (b as RigidBody3D).freeze:
+			frozen += 1
+		elif not (b as RigidBody3D).sleeping:
+			awake += 1
+			var kind := "other"
+			for g in ["bark_pieces", "waste_piece", "cut_boards", "logs"]:
+				if b.is_in_group(g):
+					kind = g
+					break
+			awake_by[kind] = int(awake_by.get(kind, 0)) + 1
+	counts["awake"] = awake_by
+	return "phys %.1f ms proc %.1f ms  bodies %d awake %d frozen %d  jolt active %d pairs %d islands %d  nodes %d objs %d  draws %d  %s" % [
+		Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0,
+		Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0,
+		bodies.size(), awake, frozen,
+		Performance.get_monitor(Performance.PHYSICS_3D_ACTIVE_OBJECTS),
+		Performance.get_monitor(Performance.PHYSICS_3D_COLLISION_PAIRS),
+		Performance.get_monitor(Performance.PHYSICS_3D_ISLAND_COUNT),
+		Performance.get_monitor(Performance.OBJECT_NODE_COUNT),
+		Performance.get_monitor(Performance.OBJECT_COUNT),
+		Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), counts]
+
+
+## --perf: every node's own physics tick, driven from here so each script's cost can be timed.
+var _timed: Array[Node] = []
+var _script_us := {}
+var _script_us_window := {}
+
+
+func _take_physics_ticks() -> void:
+	for n in get_child(0).find_children("*", "", true, false):
+		if n.get_script() != null and n.has_method("_physics_process") and n.is_physics_processing() \
+				and not n is RigidBody3D:
+			n.set_physics_process(false)
+			_timed.append(n)
+	print("[perf] timing %d physics scripts" % _timed.size())
+	# Physics inventory: bodies and shapes by type and by top-level machine.
+	var by_type := {}
+	var by_machine := {}
+	for b in get_child(0).find_children("*", "CollisionObject3D", true, false):
+		var shapes := 0
+		for c in b.get_children():
+			if c is CollisionShape3D and not (c as CollisionShape3D).disabled:
+				shapes += 1
+				var s := (c as CollisionShape3D).shape
+				var sk := "%s:%s" % [b.get_class(), s.get_class() if s else "none"]
+				by_type[sk] = int(by_type.get(sk, 0)) + 1
+		var top: Node = b
+		while top.get_parent() != get_child(0) and top.get_parent() != null:
+			top = top.get_parent()
+		by_machine[top.name] = int(by_machine.get(top.name, 0)) + shapes
+	print("[perf] shapes by body:shape type %s" % by_type)
+	print("[perf] shapes by machine %s" % by_machine)
+
+
+func _physics_process(delta: float) -> void:
+	if _timed.is_empty():
+		return
+	for n in _timed:
+		if not is_instance_valid(n):
+			continue
+		var t0 := Time.get_ticks_usec()
+		n._physics_process(delta)
+		var key: String = "%s/%s" % [n.get_parent().name, n.name]
+		_script_us_window[key] = int(_script_us_window.get(key, 0)) + Time.get_ticks_usec() - t0
+
+
+## The scripts that took the most physics time since the last call, ms per tick.
+func _top_scripts(ticks: int) -> String:
+	var keys := _script_us_window.keys()
+	keys.sort_custom(func(a, b): return _script_us_window[a] > _script_us_window[b])
+	var parts := PackedStringArray()
+	var total := 0
+	for k in _script_us_window:
+		total += int(_script_us_window[k])
+	for k in keys.slice(0, 6):
+		parts.append("%s %.2f" % [k, _script_us_window[k] / 1000.0 / maxi(ticks, 1)])
+	_script_us_window.clear()
+	return "scripts %.2f ms/tick: %s" % [total / 1000.0 / maxi(ticks, 1), ", ".join(parts)]
+
+
+func _perf_tick() -> void:
+	if _timed.is_empty() and _time > 1.0:
+		_take_physics_ticks()
+	var now := Time.get_ticks_usec()
+	var ms := (now - _perf_last_us) / 1000.0 if _perf_last_us > 0 else 0.0
+	_perf_last_us = now
+	_perf_frames += 1
+	_perf_worst_ms = maxf(_perf_worst_ms, ms)
+	if ms > 60.0 and _time > 5.0:
+		print("[perf] t %.1f slow frame %.0f ms  %s" % [_time, ms, _perf_line()])
+		for node in get_tree().get_nodes_in_group("logs"):
+			var l := node as RigidBody3D
+			if l != null and not l.freeze and not l.sleeping:
+				print("[perf]     log %s at %s v %s w %s" % [l.name, l.global_position, l.linear_velocity, l.angular_velocity])
+	if _time >= _perf_next:
+		var ticks := Engine.get_physics_frames() - _perf_ticks
+		_perf_ticks = Engine.get_physics_frames()
+		print("[perf] t %.1f fps %.0f worst %.0f ms  %s" % [_time, Performance.get_monitor(Performance.TIME_FPS),
+			_perf_worst_ms, _perf_line()])
+		print("[perf]   %s" % _top_scripts(ticks))
+		_perf_next = _time + 2.0
+		_perf_worst_ms = 0.0
 
 
 func _press(code: Key) -> void:
@@ -178,6 +302,8 @@ func _run_auto() -> void:
 
 func _process(delta: float) -> void:
 	_time += delta
+	if _perf:
+		_perf_tick()
 	_run_auto()
 	_cam.current = true
 	var lines := PackedStringArray(["t %.1f s   views: 1-9   F: %dx speed   D: log on deck" % [_time, Engine.time_scale]])
@@ -454,6 +580,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		var speed := 1.0 if Engine.time_scale >= 8.0 else Engine.time_scale * 2.0
 		Engine.time_scale = speed
 		Engine.physics_ticks_per_second = int(60 * speed)
+		# The project caps catch-up steps per frame (3 at 1x); faster runs need that many per speed step.
+		Engine.max_physics_steps_per_frame = int(3 * speed)
 
 
 func _set_view(n: int) -> void:

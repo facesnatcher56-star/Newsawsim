@@ -525,42 +525,57 @@ func _build_chain_runs() -> void:
 func _place_chain_links() -> void:
 	if not is_instance_valid(_plates_mm) or not is_instance_valid(_rollers_mm):
 		return
-	var plate_index := 0
-	var roller_index := 0
-	for track_x: float in track_x_positions:
-		for j in _num_links:
-			var slot: float = float(j) * _link_spacing + _travel
-			var sample: Array = _sample(slot)
-			var point: Vector2 = sample[0]
-
-			# A roller sits at every pin. Each pair of side plates bridges this pin
-			# to the next one; centering plates on a pin left visible disconnected
-			# gaps. Alternating inner/outer offsets overlap at the articulated joint.
-			for side: float in [-1.0, 1.0]:
-				_plates_mm.multimesh.set_instance_transform(
-					plate_index, _chain_plate_transform(slot, track_x, j, side))
-				plate_index += 1
-
-			var roller_link := Transform3D(
-				Basis(Vector3.RIGHT, float(sample[1])),
-				Vector3(track_x, point.y, point.x))
-			_rollers_mm.multimesh.set_instance_transform(
-				roller_index,
-				roller_link * Transform3D(Basis(Vector3.FORWARD, PI * 0.5), Vector3.ZERO))
-			roller_index += 1
-
-
-func _chain_plate_transform(slot: float, track_x: float, link_index: int, side: float) -> Transform3D:
-	var point: Vector2 = _sample(slot)[0]
-	var next_point: Vector2 = _sample(slot + _link_spacing)[0]
-	var chord: Vector2 = next_point - point
-	var midpoint: Vector2 = (point + next_point) * 0.5
-	var plate_rotation: float = atan2(-chord.y, chord.x)
+	# Every track runs the same loop, so each pin is sampled once and reused across the tracks,
+	# and the whole chain goes to the renderer in one buffer per multimesh: setting hundreds of
+	# instance transforms one by one every update cost the sorter incline over 2 ms a tick.
+	var tracks: int = track_x_positions.size()
+	var plates := PackedFloat32Array()
+	plates.resize(_num_links * tracks * 2 * 12)
+	var rollers := PackedFloat32Array()
+	rollers.resize(_num_links * tracks * 12)
+	var roller_turn := Basis(Vector3.FORWARD, PI * 0.5)
 	var inner_x: float = LINK_SPAN * 0.5 + PLATE_W * 0.5
-	var lateral_offset: float = inner_x + (PLATE_W * 1.15 if link_index % 2 == 1 else 0.0)
-	return Transform3D(
-		Basis(Vector3.RIGHT, plate_rotation),
-		Vector3(track_x + side * lateral_offset, midpoint.y, midpoint.x))
+	var pins: Array = []
+	for j in _num_links + 1:
+		pins.append(_sample(float(j) * _link_spacing + _travel))
+	for j in _num_links:
+		var point: Vector2 = pins[j][0]
+		var next_point: Vector2 = pins[j + 1][0]
+		# A roller sits at every pin. Each pair of side plates bridges this pin
+		# to the next one; centering plates on a pin left visible disconnected
+		# gaps. Alternating inner/outer offsets overlap at the articulated joint.
+		var chord: Vector2 = next_point - point
+		var midpoint: Vector2 = (point + next_point) * 0.5
+		var plate_basis := Basis(Vector3.RIGHT, atan2(-chord.y, chord.x))
+		var lateral_offset: float = inner_x + (PLATE_W * 1.15 if j % 2 == 1 else 0.0)
+		var roller_basis: Basis = Basis(Vector3.RIGHT, float(pins[j][1])) * roller_turn
+		for t in tracks:
+			var track_x: float = track_x_positions[t]
+			var plate_index: int = (t * _num_links + j) * 2
+			_put_transform(plates, plate_index, plate_basis,
+					Vector3(track_x - lateral_offset, midpoint.y, midpoint.x))
+			_put_transform(plates, plate_index + 1, plate_basis,
+					Vector3(track_x + lateral_offset, midpoint.y, midpoint.x))
+			_put_transform(rollers, t * _num_links + j, roller_basis, Vector3(track_x, point.y, point.x))
+	_plates_mm.multimesh.buffer = plates
+	_rollers_mm.multimesh.buffer = rollers
+
+
+## Writes one instance transform into a multimesh buffer (TRANSFORM_3D: three rows of basis + origin).
+static func _put_transform(buf: PackedFloat32Array, index: int, b: Basis, o: Vector3) -> void:
+	var k: int = index * 12
+	buf[k] = b.x.x
+	buf[k + 1] = b.y.x
+	buf[k + 2] = b.z.x
+	buf[k + 3] = o.x
+	buf[k + 4] = b.x.y
+	buf[k + 5] = b.y.y
+	buf[k + 6] = b.z.y
+	buf[k + 7] = o.y
+	buf[k + 8] = b.x.z
+	buf[k + 9] = b.y.z
+	buf[k + 10] = b.z.z
+	buf[k + 11] = o.z
 
 
 # ─────────────────────────────────────────────────────────────────────────────

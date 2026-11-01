@@ -17,6 +17,8 @@ var _swap_timer: float = -1.0
 
 func _ready() -> void:
 	_heap = get_node_or_null(heap_path) as Node3D
+	# Bark pieces are on a layer of their own (bark_piece.gd).
+	collision_mask |= 1 << 5
 	body_entered.connect(_on_body_entered)
 	_update_heap()
 

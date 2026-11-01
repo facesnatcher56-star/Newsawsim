@@ -2173,26 +2173,66 @@ func _place_all() -> void:
 
 
 func _place_chain_visuals() -> void:
-	var lug_i: int = 0
+	# Only loops that moved since the last update are redrawn, each as one buffer: setting every
+	# link's transform separately, moving or not, cost the stacker about a millisecond a tick.
 	for loop: ChainLoop in _link_mms:
+		if _drawn_dist.get(loop, -1.0) == loop.dist:
+			continue
+		_drawn_dist[loop] = loop.dist
 		var entry: Array = _link_mms[loop]
 		var mmi: MultiMeshInstance3D = entry[0]
 		var strands: Array[float] = entry[1]
 		var every: int = entry[2]
+		var buf := PackedFloat32Array()
+		buf.resize(mmi.multimesh.instance_count * 12)
+		var lugs := PackedFloat32Array()
+		if every > 0:
+			lugs.resize(_lug_mm.multimesh.instance_count * 12)
+		var lug_i: int = 0
 		var i: int = 0
 		for k in loop.links:
 			var s: float = loop.dist + float(k) * loop.spacing
 			var p1: Vector2 = loop.at(s)
 			var p2: Vector2 = loop.at(s + loop.spacing)
 			for z: float in strands:
-				var t: Transform3D = _link_frame(p1, p2, z)
 				if every > 0 and k % every == 0 and lug_i < _lug_mm.multimesh.instance_count:
-					_lug_mm.multimesh.set_instance_transform(lug_i, t)
+					# A lug in place of the link; the link itself is left scaled to nothing.
+					_put_link(lugs, lug_i, p1, p2, z)
 					lug_i += 1
-					mmi.multimesh.set_instance_transform(i, Transform3D(Basis.from_scale(Vector3.ZERO), t.origin))
+					var o: int = i * 12
+					buf[o + 3] = p1.x
+					buf[o + 7] = p1.y
+					buf[o + 11] = z
 				else:
-					mmi.multimesh.set_instance_transform(i, t)
+					_put_link(buf, i, p1, p2, z)
 				i += 1
+		mmi.multimesh.buffer = buf
+		if every > 0:
+			_lug_mm.multimesh.buffer = lugs
+
+
+var _drawn_dist: Dictionary = {}       # ChainLoop -> its dist when last drawn
+
+
+## _link_frame(p1, p2, z) written straight into a multimesh buffer (rows of basis + origin).
+static func _put_link(buf: PackedFloat32Array, index: int, p1: Vector2, p2: Vector2, z: float) -> void:
+	if index * 12 >= buf.size():
+		return
+	var d: Vector2 = (p2 - p1).normalized()
+	var k: int = index * 12
+	# Basis columns: x = (d.x, d.y, 0), y = BACK x x = (-d.y, d.x, 0), z = (0, 0, 1).
+	buf[k] = d.x
+	buf[k + 1] = -d.y
+	buf[k + 2] = 0.0
+	buf[k + 3] = p1.x
+	buf[k + 4] = d.y
+	buf[k + 5] = d.x
+	buf[k + 6] = 0.0
+	buf[k + 7] = p1.y
+	buf[k + 8] = 0.0
+	buf[k + 9] = 0.0
+	buf[k + 10] = 1.0
+	buf[k + 11] = z
 
 
 ## Link frame: origin on pin 1, +X along the chord to pin 2, +Z along the pin.
